@@ -192,7 +192,7 @@ class WebQueries extends BDD {
 
     public function getSQLCiclesHome($idC = 0, $DataInicial = '', $DataFinal = '', $extingit = 0, $site = 1, $actiu = 1){
                 
-        $WIDC = ($idC > 0) ? " AND C.CicleID = {$idC}" : ""; 
+        $WIDC = ($idC > 0) ? " AND c.CicleID = {$idC}" : ""; 
         if((!empty($DataInicial) && !empty($DataFinal))) { 
             $WIDC .= " AND h.Dia > '".$DataInicial."' AND h.Dia < '".$DataFinal."'"; }
         
@@ -202,23 +202,23 @@ class WebQueries extends BDD {
                         c.tMig as NomActivitat, 
                         c.Nom as NomActivitatIntern,
                         '0' as Categories,                        
-                        (Select min(h.Dia) as Dia from Cicles c LEFT JOIN Activitats a ON (c.CicleID = a.Cicles_CicleID) LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID) where c.CicleID = idCicle AND h.actiu = 1) as Dia,
-                        (Select min(h.HoraInici) as HoraInici from Cicles c LEFT JOIN Activitats a ON (c.CicleID = a.Cicles_CicleID) LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID) where c.CicleID = idCicle AND h.actiu = 1) as HoraInici,
+                        (Select min(h.Dia) as Dia from cicles c LEFT JOIN activitats a ON (c.CicleID = a.Cicles_CicleID) LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID) where c.CicleID = idCicle AND h.actiu = 1) as Dia,
+                        (Select min(h.HoraInici) as HoraInici from cicles c LEFT JOIN activitats a ON (c.CicleID = a.Cicles_CicleID) LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID) where c.CicleID = idCicle AND h.actiu = 1) as HoraInici,
                         h.HoraFi as HoraFi, 
                         e.Nom as NomEspai, 
-                        (Select max(h.Dia) as DiaMax from Cicles c LEFT JOIN Activitats a ON (c.CicleID = a.Cicles_CicleID) LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID) where c.CicleID = idCicle AND h.actiu = 1) as DiaMax,
+                        (Select max(h.Dia) as DiaMax from cicles c LEFT JOIN activitats a ON (c.CicleID = a.Cicles_CicleID) LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID) where c.CicleID = idCicle AND h.actiu = 1) as DiaMax,
                         c.dMig as Descripcio,
                         '0' as CategoriaVinculada
                 FROM cicles c 
-                LEFT JOIN activitats a on (C.CicleID = a.Cicles_CicleID)
+                LEFT JOIN activitats a on (c.CicleID = a.Cicles_CicleID)
                 LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID)
                 LEFT JOIN horarisespais he ON (he.Horaris_HorarisID = h.HorarisID)
                 LEFT JOIN espais e ON (e.EspaiID = he.Espais_EspaiID)
                 WHERE 1 = 1 ";
                 if( $idC == 0 ) {
                     $SQL .= " AND c.actiu = 1 
-                    AND C.Visibleweb = 1 
-                    AND C.extingit = {$extingit}                     
+                    AND c.Visibleweb = 1 
+                    AND c.extingit = {$extingit}                     
                     AND c.site_id = {$site}";                    
                 }
                 $SQL .= $WIDC;

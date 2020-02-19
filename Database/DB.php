@@ -63,7 +63,8 @@ class BDD extends PDO {
     }
 
     public function getTableName() {
-        return $this->OldTableName.' as '.$this->NewTableName;
+        return $this->OldTableName;
+        //    return $this->OldTableName.' as '.$this->NewTableName;
     }
 
     public function getFromNewFieldTableNameToOldFieldTableName($FIELD) {
