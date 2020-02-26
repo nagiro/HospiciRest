@@ -39,6 +39,39 @@ class MyAPIAdmin extends API
 
     }
 
+    protected function Sites() {
+        
+        $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
+        
+        if($this->Auth->isAuthenticated()) {                        
+
+            // Aquí només hi accedim per carregar el login o bé quan no hem estat autenticats
+              switch($accio) {
+                case 'ALL_SITES':      
+                    
+                    $S = new SitesController();
+                    $RET = $S->getSitesActius();                     
+                    return array($RET, 200); 
+                break;
+                default: $RET = array(array("No estàs autenticat."), 500);
+            }            
+
+        } else { 
+            
+            // Aquí només hi accedim per carregar el login o bé quan no hem estat autenticats
+            switch($accio) {
+                case 'ALL_SITES':      
+                    
+                    $S = new SitesController();
+                    $RET = $S->getSitesActius();                     
+                    return array($RET, 200); 
+                break;
+                default: $RET = array(array("No estàs autenticat."), 500);
+            }            
+
+        }         
+    }
+
     protected function Promocions() {
         
         if($this->Auth->isAuthenticated()) {            
@@ -126,6 +159,7 @@ class MyAPIAdmin extends API
      * @Params accio
      * @Params idUsuari
      * @Params AuthToken
+     * /admin/login
     */     
     protected function Auth() {
                 
@@ -164,19 +198,30 @@ class MyAPIAdmin extends API
 
         if($this->Auth->isAuthenticated()) {
             
-            $accio = $this->request["post"]["accio"];
-            $file  = $this->request["post"]["File"];
-            $tipus = $this->request["post"]["Tipus"];
-            $idElement = $this->request["post"]["idElement"];
-            $extensio = $this->request["post"]["extensio"];            
+            $accio = (isset($this->request["post"]["accio"])) ? $this->request["post"]["accio"] : "";            
+            $file  = (isset($this->request["post"]["File"])) ? $this->request["post"]["File"] : "";
+            $tipus = (isset($this->request["post"]["Tipus"])) ? $this->request["post"]["Tipus"] : "" ;
+            $idElement = (isset($this->request["post"]["idElement"])) ? $this->request["post"]["idElement"] : "" ;
+            $extensio = (isset($this->request["post"]["extensio"])) ? $this->request["post"]["extensio"] : "";
             $RET = array();                        
             
             switch($accio) {
-                case 'Promocio': $PC = new PromocionsController(); 
-                                 try {
-                                    $PC->doUpload($accio, $file, $extensio, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
-                                 } catch(Exception $e){ return array($e->getMessage(), 500);  };
-                                 break;        
+                case 'Promocio':                     
+                    $PC = new PromocionsController(); 
+
+                    try {
+                        $PC->doUpload($accio, $file, $extensio, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                    } catch(Exception $e){ return array($e->getMessage(), 500);  };
+                    break;        
+
+                case 'Promocio_Delete': 
+                                                                
+                    $PC = new PromocionsController();                     
+                    try {
+                        // Aquí Tipus és la mida de la imatge 's', 'm', 'l'
+                        $PC->doUploadDelete($tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                    } catch(Exception $e){ return array($e->getMessage(), 500);  };
+                    break;        
             }
 
         }

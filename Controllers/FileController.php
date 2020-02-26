@@ -31,7 +31,7 @@ class FileController {
                                 break;
         }
 
-        $File = $idElement.'-'.$tipus.'.'.$extensio;        
+        $File = $idElement.'-'.strtoupper($tipus).'.'.$extensio;
         $Dir  = $Dir . $File;        
 
         if (!file_exists($Dir)) touch($Dir);         

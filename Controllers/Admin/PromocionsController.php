@@ -15,6 +15,7 @@ class PromocionsController
 
         $FC = new FileController();                
         $WebUrl = "";
+        $tipus = strtoupper($tipus);
         
         try {
             $FileName = $FC->doUpload($modul, $file, $extensio, $tipus, $idElement, $idU, $idS);                                
@@ -26,6 +27,22 @@ class PromocionsController
         //Guardo que la imatge en qüestió està entrada
         $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.$tipus)] = $FileName;
         $this->PromocionsModel->doUpdate($Promocio);     
+
+    }
+
+    /**
+     * $tipus és la mida de la imatge 's', m, l
+     *  */
+    public function doUploadDelete($tipus, $idElement, $idU, $idS){
+                                
+        //Carrego la promoció        
+        $Promocio = $this->PromocionsModel->getById($idElement);
+        
+        //Indico la nova URL de la imatge
+        if($tipus == 's' || $tipus == 'l' || $tipus == 'm'){
+            $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.strtoupper($tipus))] = '';
+            $this->PromocionsModel->doUpdate($Promocio);     
+        }
 
     }
 

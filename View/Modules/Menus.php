@@ -18,16 +18,15 @@
   el: '#menuComponent',
   data: { menuItemsAgrupats: [] },
   created: function() {
-          this.$http.get('/apiadmin/Menus?accio=UM&IdUsuari=1&IdSite=1', { 
-            'params' : { 
-              'accio': 'UM', 
-              'IdUsuari': 1,
-              'IdSite': 1} } ).then(function(response){                
-          this.menuItemsAgrupats = response.body;          
           
-    }, function() {
-          alert('Error!');
-    });
+    this.axios.get('/apiadmin/Menus', { 
+                'params' : { 
+                  'accio': 'UM', 
+                  'IdUsuari': 1,
+                  'IdSite': 1} } )
+              .then( R => ( this.menuItemsAgrupats = R.data ) )
+              .catch( E => ( alert(E) ) );
+
   },
   computed: {},
   methods: {}

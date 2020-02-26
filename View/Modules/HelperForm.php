@@ -85,7 +85,7 @@ function ButtonHelper($ClickAction, $cols, $Titol, $estil){
  * URLAMostrar: Funció o variable de vuejs on hi ha la url que s'ha de mostrar
  */
 function ImageHelper($ChangeAction, $cols, $Titol, $id, $URLAMostrar = '') {
-    $RET = "";
+    $RET = "";    
     $RET .= '
     <tr>
         <td> '.$Titol.' </td>
@@ -93,6 +93,7 @@ function ImageHelper($ChangeAction, $cols, $Titol, $id, $URLAMostrar = '') {
             <div class="custom-file">
                 <div v-if="'.$URLAMostrar.'.length > 0" style="height: 50px">
                     <img :src="'.$URLAMostrar.'" style="height: 50px">
+                    <i @click="EsborraImatge(\''.$id.'\')" class="withHand fas fa-trash-alt"></i>
                 </div> 
                 <div v-if="'.$URLAMostrar.'.length == 0">
                     <input @change="'.$ChangeAction.'" type="file" class="form-control" id="'.$id.'" >

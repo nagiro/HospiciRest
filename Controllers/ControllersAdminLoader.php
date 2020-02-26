@@ -1,5 +1,6 @@
 <?php 
 
+require_once 'Admin/SitesController.php';
 require_once 'Admin/AvuiController.php';
 require_once 'Admin/PromocionsController.php';
 require_once 'Admin/MenusController.php';
