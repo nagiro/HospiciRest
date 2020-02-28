@@ -164,7 +164,7 @@
     BotoCerca: function() {
 
       this.axios.get('/apiadmin/Promocions', { 'params' : { 'accio': 'L', 'q': this.textCercador, 't': this.tipusCercador } } )
-        .then( R => { console.log(R.data); this.Promocions = R.data; this.Editant = false; } )
+        .then( R => { this.Promocions = R.data; this.Editant = false; } )
         .catch( E => { alert(E) } );
 
     },
