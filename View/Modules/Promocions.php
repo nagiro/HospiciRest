@@ -41,71 +41,88 @@
     </div>
   </div>  
 
-
-
-
   <div v-if="Editant" class="card border-secondary card-default" style="margin-top:20px;">
     
     <div class="card-header"><h5>Editant la promoció {{PromocioDetall.PROMOCIONS_PROMOCIO_ID}}</h5></div>  
     <div class="card-body">    
     
-    <table class="table table-striped table-sm">        
-        <tbody>
+    <div class="table table-striped table-sm">    
+    
+      <input-helper             
+          :titol = "'Nom'"
+          :valor-defecte = "PromocioDetall.PROMOCIONS_NOM"
+          :id = "'PROMOCIONS_NOM'"
+          @onchange = "PromocioDetall.PROMOCIONS_NOM = $event"
+        ></input-helper>
+      
         <input-helper             
-            :titol = "'Nom'"
-            :valor-defecte = "PromocioDetall.PROMOCIONS_NOM"
-            :id = "PROMOCIONS_NOM"
-            @onchange = "PromocioDetall.PROMOCIONS_NOM = $event"
-          ></input-helper>
-          {{PromocioDetall.PROMOCIONS_NOM}}
-          <?php echo InputHelper('PromocioDetall.PROMOCIONS_NOM', 0, "Nom", "PROMOCIONS_NOM", "", true); ?>
-          <?php echo InputHelper('PromocioDetall.PROMOCIONS_TITOL', 0,"Títol", "PROMOCIONS_TITOL", "", true); ?>
-          <?php echo InputHelper('PromocioDetall.PROMOCIONS_SUBTITOL',0, "Subtítol", "PROMOCIONS_SUBTITOL", "", true); ?>
-          <?php echo SelectHelper('PromocioDetall.PROMOCIONS_ORDRE', 0, "Ordre", 'OptionsOrdre', true); ?>                            
-          <?php echo SelectHelper('PromocioDetall.PROMOCIONS_IS_ACTIVA', 0, "Està activa?", 'OptionsActiuNoActiu', true); ?>                  
-          <?php echo InputHelper('PromocioDetall.PROMOCIONS_URL', 0, "URL", "PROMOCIONS_URL", "", true); ?>           
+          :titol = "'Titol'"
+          :valor-defecte = "PromocioDetall.PROMOCIONS_TITOL"
+          :id = "'PROMOCIONS_TITOL'"
+          @onchange = "PromocioDetall.PROMOCIONS_TITOL = $event"
+        ></input-helper>
 
-          <image-helper 
-            :accio-esborra = "'Promocio_Delete'"
-            :accio-guarda="'Promocio'"
-            :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
-            :mida-imatge = "'s'"
-            :url-a-mostrar = "getUrlImatge('s')"            
-            :titol = "'Imatge petita'"
-            @reload = "EditaPromocio($event)"
-          ></image-helper>
-          <image-helper 
-            :accio-esborra = "'Promocio_Delete'"
-            :accio-guarda="'Promocio'"
-            :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
-            :mida-imatge = "'m'"
-            :url-a-mostrar = "getUrlImatge('m')"            
-            :titol = "'Imatge mitjana'"
-            @reload = "EditaPromocio($event)"
-          ></image-helper>
-          <image-helper 
-            :accio-esborra = "'Promocio_Delete'"
-            :accio-guarda="'Promocio'"
-            :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
-            :mida-imatge = "'l'"
-            :url-a-mostrar = "getUrlImatge('l')"            
-            :titol = "'Imatge gran'"
-            @reload = "EditaPromocio($event)"
-          ></image-helper>
+        <input-helper             
+          :titol = "'Subtítol'"
+          :valor-defecte = "PromocioDetall.PROMOCIONS_SUBTITOL"
+          :id = "'PROMOCIONS_SUBTITOL'"
+          @onchange = "PromocioDetall.PROMOCIONS_SUBTITOL = $event"
+        ></input-helper>
 
+        <select-helper             
+          :titol = "'Activa?'"
+          :valor-defecte = "PromocioDetall.PROMOCIONS_IS_ACTIVA"
+          :id = "'PROMOCIONS_IS_ACTIVA'"
+          :options = "OptionsActiuNoActiu"
+          @onchange = "PromocioDetall.PROMOCIONS_IS_ACTIVA = $event"
+        ></select-helper>
 
+        <input-helper             
+          :titol = "'Url'"
+          :valor-defecte = "PromocioDetall.PROMOCIONS_URL"
+          :id = "'PROMOCIONS_URL'"
+          @onchange = "PromocioDetall.PROMOCIONS_URL = $event"
+        ></input-helper>
 
-          <tr>
-            <td>
-              <button v-on:click="GuardaPromocio" class="btn btn-success">Guardar</button>
-              <button v-on:click="EsborraPromocio" class="btn btn-danger">Eliminar</button>
-            </td>
-            <td>              
-              <button v-on:click="CancelaEdicio" class="btn btn-info">Tornar</button>
-            </td>
-          </tr>                                                                  
-        </tbody>
-      </table>
+        <image-helper 
+          :accio-esborra = "'Promocio_Delete'"
+          :accio-guarda="'Promocio'"
+          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
+          :mida-imatge = "'s'"
+          :url-a-mostrar = "getUrlImatge('s')"            
+          :titol = "'Imatge petita'"
+          @reload = "EditaPromocio($event)"
+        ></image-helper>
+        <image-helper 
+          :accio-esborra = "'Promocio_Delete'"
+          :accio-guarda="'Promocio'"
+          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
+          :mida-imatge = "'m'"
+          :url-a-mostrar = "getUrlImatge('m')"            
+          :titol = "'Imatge mitjana'"
+          @reload = "EditaPromocio($event)"
+        ></image-helper>
+        <image-helper 
+          :accio-esborra = "'Promocio_Delete'"
+          :accio-guarda="'Promocio'"
+          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
+          :mida-imatge = "'l'"
+          :url-a-mostrar = "getUrlImatge('l')"            
+          :titol = "'Imatge gran'"
+          @reload = "EditaPromocio($event)"
+        ></image-helper>
+
+        <div class="R">
+          <div class="FT">
+            <button v-on:click="GuardaPromocio" class="btn btn-success">Guardar</button>
+            <button v-on:click="EsborraPromocio" class="btn btn-danger">Eliminar</button>
+          </div>
+          <div class="FI">              
+            <button v-on:click="CancelaEdicio" class="btn btn-info">Tornar</button>
+          </div>
+        </div>          
+
+      </div>
   
     </div>
   </div>
@@ -151,6 +168,7 @@
         .catch( E => { alert(E) } );
 
     },
+    
     MouPromocio(index, direccio) {
 
       //Canviem l'ordre de la promocio

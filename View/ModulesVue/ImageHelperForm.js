@@ -73,41 +73,41 @@ Vue.component('image-helper', {
       
     },
     template: `    
-    <tr>
-        <td> {{titol}} </td>
-        <td> 
+        <div class="R">
+            <div class="FT"> {{titol}} </div>
+            <div class="FI"> 
 
-            <div class="custom-file">
-                            
-                <div style="height: 50px" v-if="MostraUrl()">
-                    <img :src="UrlAMostrar" style="height: 50px">
-                    <i @click="EsborraImatge()" class="withHand fas fa-trash-alt"></i>
-                </div>                         
-                <div v-else>
-                    <input type="file" class="form-control" id="MidaImatge" @change="inputNouArxiu($event)" >
-                    <label class="custom-file-label" for="MidaImatge" >Escull arxiu</label>
-                </div>        
+                <div class="custom-file">
+                                
+                    <div style="height: 50px" v-if="MostraUrl()">
+                        <img :src="UrlAMostrar" style="height: 50px">
+                        <i @click="EsborraImatge()" class="withHand fas fa-trash-alt"></i>
+                    </div>                         
+                    <div v-else>
+                        <input type="file" class="form-control" id="MidaImatge" @change="inputNouArxiu($event)" >
+                        <label class="custom-file-label" for="MidaImatge" >Escull arxiu</label>
+                    </div>        
 
-                <div class="modalbox" v-if="MostraModal">    
-                    <table>
-                    <tr>
-                        <td><div style="width: 400px; height: 400px;">  <cropper :src="img" :stencil-props="stencilProps" @change="change"></cropper></div></td>
-                        <td><div style="width: 400px; height: 400px;">  <img style="width: 100%" :src="image" /> </div> </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <button v-on:click="GuardaImatge()" class="btn btn-success">Guarda</button>
-                        <button v-on:click="TancaModalImatge()" class="btn btn-info">Torna</button>
-                        </td>
-                        <td></td>
-                
-                    </tr>
-                    </table>            
-                </div>  
+                    <div class="modalbox" v-if="MostraModal">    
+                        <table>
+                        <tr>
+                            <td><div style="width: 400px; height: 400px;">  <cropper :src="img" :stencil-props="stencilProps" @change="change"></cropper></div></td>
+                            <td><div style="width: 400px; height: 400px;">  <img style="width: 100%" :src="image" /> </div> </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <button v-on:click="GuardaImatge()" class="btn btn-success">Guarda</button>
+                            <button v-on:click="TancaModalImatge()" class="btn btn-info">Torna</button>
+                            </td>
+                            <td></td>
+                    
+                        </tr>
+                        </table>            
+                    </div>  
 
-            </div>                
-        </td>
-    </tr>
+                </div>                
+            </div>
+        </div>
                 `,
 });
 

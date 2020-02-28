@@ -1,16 +1,17 @@
 
-Vue.component('input-helper', {
+Vue.component('select-helper', {
     props: {        
         titol: String,
-        valorDefecte: String,
-        id: String        
+        valorDefecte: '',
+        id: String, 
+        options: Array,
     },          
     data: function() { return { valorAutentic: this.valorDefecte }},
     computed: {},
     watch: {},
     methods: {
 
-        OnChange() {            
+        OnChange() {
             this.$emit('onchange', this.valorAutentic)
         }
               
@@ -20,14 +21,16 @@ Vue.component('input-helper', {
         <div class="FT"> {{titol}} </div>
         <div class="FI"> 
 
-            <input  type="text" 
-                    class="form-control form-control-sm" 
+            <select class="form-control form-control-sm" 
                     :id="id" 
                     v-model="valorAutentic"
-                    @keyup="OnChange"
-                    :placeholder="valorDefecte">     
-
+                    @change="OnChange"
+                    >
+                <option v-for="O in options" :value="O.id" :key="O.id">{{O.nom}}</option>
+            </select>
         </div>
     </div>
                 `,
 });
+
+

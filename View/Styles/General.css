@@ -8,6 +8,17 @@
     font-size: 12px;
 }
 
+.R {
+  display: flex;
+  width: 100%; 
+}
+
+.R:nth-child(even) { background-color: #DDDDDD }
+
+.FT, .FI { padding: 5px; vertical-align: middle; }
+.FT { width: 30%; font-weight: bold; }
+.FI { width: 70%; }
+
 .withHand { cursor: pointer; }
 
 .modalbox {
