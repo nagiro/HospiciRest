@@ -22,6 +22,9 @@ class TaulellController
         $RESPOSTES = array();        
         if($WithRespostes) {            
             $RESPOSTES = $this->RespostesModel->getFromMissatge($idMissatge);            
+            foreach($RESPOSTES as $K=>$R): 
+                $RESPOSTES[$K]['GEN_POT_EDITAR'] = ( $R['Respostes_UsuariId'] ==  $idUsuari);
+            endforeach;
         }
 
         return array('MISSATGE'=>$MISSATGE, 'RESPOSTES'=>$RESPOSTES);
@@ -56,7 +59,8 @@ class TaulellController
     }
 
     public function getRespostesFromMissatge($idMissatge) {
-        return $this->RespostesModel->getFromMissatge($idMissatge);
+        $RET = $this->RespostesModel->getFromMissatge($idMissatge);        
+        return $RET;
     }
 
     public function doUpdate($MissatgesModel) {
@@ -67,8 +71,12 @@ class TaulellController
         return $this->RespostesModel->doUpdate($RespostaDetall);        
     }
 
-    public function doDelete($MissatgesModel) {
+    public function doDeleteMissatge($MissatgesModel) {
         return $this->MissatgesModel->doDelete($MissatgesModel);        
+    }
+
+    public function doDeleteResposta($RespostaModel) {
+        return $this->RespostesModel->doDelete($RespostaModel);        
     }
 
  }

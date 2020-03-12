@@ -37,7 +37,7 @@
     </div>
   </div>  
 
-  <div v-if="EditantPropi == true || EditantAltri == true" class="card border-secondary card-default" style="margin-top:20px;">
+  <div v-if="EditantPropi || EditantAltri" class="card border-secondary card-default" style="margin-top:20px;">
     
     <div class="card-header"><h5>Editant el missatge {{MissatgeDetall.PROMOCIONS_PROMOCIO_ID}}</h5></div>  
     <div class="card-body">    
@@ -80,6 +80,7 @@
       <div class="RespostesLlistat" v-for="R in MissatgeRespostes">        
         <div class="RespostaCol1">{{R.USUARIS_NomComplet}} <div class="RespostaCol1Dia">{{R.Respostes_Data}}</div></div>
         <div class="RespostaCol2">{{R.Respostes_Text}}</div>          
+        <div class="RespostaCol3 withHand" @click="EsborraResposta(R)"><i class="fas fa-trash"></i></div>
       </div>              
 
       <div class="RespostaInput" v-if="RespostaEdit">
@@ -109,9 +110,10 @@
 .Franja { background-color: #CCCCCC; padding: 5px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; font-size: 12px; }
 .RespostaInput {}
 .RespostesLlistat { padding: 5px; display: flex; border-bottom: 1px solid #CCCCCC }
-.RespostaCol1 { font-size:10px; width: 20%; }
+.RespostaCol1 { font-size:10px; width: 17%; }
 .RespostaCol1Dia { font-size: 10px; }
-.RespostaCol2 { width: 80%; font-size:12px; }
+.RespostaCol2 { width: 77%; font-size:12px; }
+.RespostaCol3 { width: 6%;}
 
 .VeureMes { padding: 10px; background-color: #999; text-align: center; margin-top: 15px; font-weight: bold; color: white; }
 
@@ -225,8 +227,8 @@
                 .then(  R => {  this.MissatgeDetall = R.data.MISSATGE; 
                                 this.MissatgeRespostes = R.data.RESPOSTES;
                                 this.EditantPropi = this.MissatgeDetall.GEN_POT_EDITAR; 
-                                this.EditantAltri = !this.EditantPropi;    
-                                console.log(R);                            
+                                this.EditantAltri = !this.EditantPropi;                                                            
+                                console.log(R.data);
                              } )
                 .catch( E => { alert(E); } );      
 
@@ -259,7 +261,20 @@
                 .then( R => { this.BotoCerca(); this.Editant = false; } )
                 .catch( E => { alert(E); } );      
 
+    },
+
+    /* Esborro un missatge */
+    EsborraResposta: function(RespostaDetall) {
+      let fd = new FormData();
+      fd.append('accio', 'DR'); 
+      fd.append('RespostaDetall', JSON.stringify(RespostaDetall));
+      
+      this.$http.post('/apiadmin/taulell', fd )
+                .then( R => { this.LoadRespostes(RespostaDetall.Respostes_PareId) } )
+                .catch( E => { alert(E); } );      
+
     }
+
 
   }
   });

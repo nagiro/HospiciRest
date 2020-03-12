@@ -132,11 +132,11 @@ class MyAPIAdmin extends API
                 case 'CU':  $RET = $P->getById($idMissatge, $this->Auth->idUsuari, true); break;                        
                 case 'AR':  $RET = $P->getNewResposta($idMissatge, $this->Auth->idUsuari, $this->Auth->idSite); break;
                 case 'UR':  $RET = $P->doUpdateResposta($RespostaDetall); break;        
-                case 'LR':  $RET = $P->getRespostesFromMissatge($idMissatge); break;        
+                case 'LR':  $RET = $P->getRespostesFromMissatge($idMissatge, $this->Auth->idUsuari); break;        
                 case 'A':   $RET = $P->getNewMissatge($this->Auth->idUsuari, $this->Auth->idSite); break;
                 case 'U':   $RET = $P->doUpdate($MissatgeDetall); break;
-
-                case 'D':   $RET = $P->doDelete($MissatgeDetall); break;                        
+                case 'DR':  $RET = $P->doDeleteResposta($RespostaDetall); break;
+                case 'D':   $RET = $P->doDeleteMissatge($MissatgeDetall); break;                        
             }
             
             return array($RET, 200);

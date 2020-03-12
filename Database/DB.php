@@ -94,30 +94,33 @@ class BDD extends PDO {
         else throw new Exception("getFromNewFieldTableNameToNewFieldName: Camp {$FIELD} no trobat." );
     }
 
-    public function _doUpdate($NewFieldsWithTableArray, $WhereArray) {
+    public function _doUpdate($NFWTAV, $WhereArray) {
         //Carreguem els nous valors a guardar
         $VALUES = array();
-        foreach($NewFieldsWithTableArray as $NewFieldWithTableName => $NewFieldValue) {            
-            $VALUES[] = $this->getFromNewFieldTableNameToOldFieldTableName($NewFieldWithTableName).' = :'.$NewFieldWithTableName;
+        $VALUES_VAL = array();
+        
+        foreach($this->NewFieldsWithTableArray as $NewFieldWithTableName) {                        
+            $VALUES[] = $this->getFromNewFieldTableNameToOldFieldTableName($NewFieldWithTableName).' = :'.$NewFieldWithTableName;            
+            $VALUES_VAL[':'.$NewFieldWithTableName] = $NFWTAV[$NewFieldWithTableName];            
         }
 
         $W = array();        
         $WV = array();
         foreach($WhereArray as $NewFieldName){            
             $W[]  = $this->getOldFieldNameWithTable($NewFieldName).' = :W_'.$NewFieldName;
-            $WV[':W_'.$NewFieldName] = $NewFieldsWithTableArray[$this->getNewFieldNameWithTable($NewFieldName)];
+            $WV[':W_'.$NewFieldName] = $NFWTAV[$this->getNewFieldNameWithTable($NewFieldName)];
         }                
         
         $SQL = "UPDATE {$this->OldTableName} SET ".implode(", ", $VALUES).' WHERE '.implode(' AND ', $W);
-        
-        return $this->runQuery($SQL, array_merge($NewFieldsWithTableArray, $WV), false, false, 'U');
+        return $this->runQuery($SQL, array_merge($VALUES_VAL, $WV), false, false, 'U');
     }
 
     /* Per a mi esborrar és marcar com a "Actiu =  */
-    public function _doDelete($NewFieldsWithTableArray, $WhereArray) {        
+    public function _doDelete($NewFieldsWithTableArrayValues, $WhereArray) {        
         //Carreguem els nous valors a guardar
-        $VALUES = array();        
-        foreach($NewFieldsWithTableArray as $NewFieldWithTableName => $NewFieldValue) {            
+        $VALUES = array();                
+
+        foreach($this->NewFieldsWithTableArray as $NewFieldWithTableName => $NewFieldValue) {
             $VALUES[] = $this->getFromNewFieldTableNameToOldFieldTableName($NewFieldWithTableName).' = :'.$NewFieldWithTableName;
         }
 

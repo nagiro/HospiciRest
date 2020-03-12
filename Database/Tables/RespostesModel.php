@@ -32,6 +32,7 @@ class RespostesModel extends BDD {
                             {$UM->getNomCompletFields()}
                             from {$this->getTableName()} LEFT JOIN {$UM->getTableName()} ON ({$this->getOldFieldNameWithTable('UsuariId')} = {$UM->getOldFieldNameWithTable('IdUsuari')})
                             where {$this->getOldFieldNameWithTable("PareId")} = :id
+                              AND {$this->getOldFieldNameWithTable("Actiu")} = 1
                             order by {$this->getOldFieldNameWithTable("Data")} desc
                         ", 
                         array('id'=>$idMissatge), false);
@@ -47,12 +48,6 @@ class RespostesModel extends BDD {
     public function doUpdate($RespostaDetall) {        
         return $this->_doUpdate($RespostaDetall, array('RespostaId'));        
     }
-/*
-    public function doDelete($RespostaDetall) {                
-        $RespostaDetall[$this->getNewFieldNameWithTable('Actiu')] = 0;        
-        return $this->doUpdate($RespostaDetall);        
-    }
-*/
     
     public function getSQLQuantesRespostes($NomCampAltraConsulta) {
 
@@ -86,6 +81,13 @@ class RespostesModel extends BDD {
         $lastId= $this->runQuery($SQL, array(), false, false, 'A');                
         return $this->getById($lastId);
     }
+
+
+    public function doDelete($RespostaModel) {                
+        $RespostaModel[$this->getNewFieldNameWithTable('Actiu')] = 0;                
+        return $this->doUpdate($RespostaModel);        
+    }
+
 
 }
 
