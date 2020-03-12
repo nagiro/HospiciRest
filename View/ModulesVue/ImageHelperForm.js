@@ -69,7 +69,11 @@ Vue.component('image-helper', {
           change({coordinates, canvas}) {
                 this.coordinates = coordinates;
                 this.image = canvas.toDataURL();            
-          },                
+          },      
+          
+          TancaModalImatge: function() {
+            this.MostraModal = false;
+          }      
       
     },
     template: `    

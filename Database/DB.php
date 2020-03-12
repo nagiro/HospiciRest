@@ -40,6 +40,14 @@ class BDD extends PDO {
         return implode(', ',$RET);
     }
 
+    public function gsfn($Field) { return $this->getSelectFieldName($Field); }
+    public function getSelectFieldName($Field) {
+        $index = array_search($Field, $this->NewFieldsNameArray, true);
+        if( $index > -1 ) {
+            return $this->OldTableName.'.'.$this->OldFieldsNameArray[$index]. ' as '.$this->NewTableName.'_'.$this->NewFieldsNameArray[$index];
+        } else { throw new Exception("getSelectFieldName: Camp ".$Field." no trobat..."); }        
+    }
+
     /**
      * Retorna el camp NewTableName_NewFieldName
      */
@@ -51,15 +59,19 @@ class BDD extends PDO {
         } else { throw new Exception("getOldFieldNameWithTable: Camp ".$Field." no trobat..."); }
     }
 
-    public function getNewFieldNameWithTable($Field) {
+    public function getNewFieldNameWithTable($Field, $isTableField = true) {
         $index = array_search($Field, $this->NewFieldsNameArray, true);        
-        if( $index > -1 ) {
+        if( $index > -1 || !$isTableField ) {
             return $this->NewTableName.'_'.$Field;
         } else { throw new Exception("getNewFieldNameWithTable: Camp ".$Field." no trobat..."); }
     }
 
     public function getOldTableName() {
         return $this->OldTableName;
+    }
+
+    public function getNewTableName() {
+        return $this->NewTableName;
     }
 
     public function getTableName() {

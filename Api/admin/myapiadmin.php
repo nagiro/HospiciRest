@@ -106,6 +106,50 @@ class MyAPIAdmin extends API
         
     }
 
+    protected function Taulell() {
+        
+        if($this->Auth->isAuthenticated()) {            
+            $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
+            $paraules = (isset($this->request['q']))?$this->request['q']:'';            
+            $limitCerca = (isset($this->request['lim']))?$this->request['lim']:'';            
+            $idMissatge = (isset($this->request['idMissatge']))?$this->request['idMissatge']:0;
+            $TaulellDetall = array();
+            $RespostaDetall = array();
+
+            if(isset($this->request['post'])) {
+                $P = $this->request['post'];
+                $accio = $P['accio'];
+                $idMissatge = (isset($P['idMissatge']))?$P['idMissatge']:0;
+                $MissatgeDetall = (isset($P['MissatgeDetall']))?json_decode($P['MissatgeDetall'], true):array();
+                $RespostaDetall = (isset($P['RespostaDetall']))?json_decode($P['RespostaDetall'], true):array();
+            } 
+                        
+            $P = new TaulellController();            
+            $RET = array();
+            
+            switch($accio) {
+                case 'L':   $RET = $P->getLlistaMissatges($this->Auth->idSite, $paraules, $limitCerca); break;                        
+                case 'CU':  $RET = $P->getById($idMissatge, $this->Auth->idUsuari, true); break;                        
+                case 'AR':  $RET = $P->getNewResposta($idMissatge, $this->Auth->idUsuari, $this->Auth->idSite); break;
+                case 'UR':  $RET = $P->doUpdateResposta($RespostaDetall); break;        
+                case 'LR':  $RET = $P->getRespostesFromMissatge($idMissatge); break;        
+                case 'A':   $RET = $P->getNewMissatge($this->Auth->idUsuari, $this->Auth->idSite); break;
+                case 'U':   $RET = $P->doUpdate($MissatgeDetall); break;
+
+                case 'D':   $RET = $P->doDelete($MissatgeDetall); break;                        
+            }
+            
+            return array($RET, 200);
+
+        } else { 
+            
+            return array(array("No estàs autenticat."), 500); 
+
+        }         
+        
+    }
+
+
     /**
      * @Params accio
      * @Params idUsuari

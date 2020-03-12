@@ -18,11 +18,11 @@
 .FT, .FI { padding: 5px; vertical-align: middle; }
 .FT { width: 30%; font-weight: bold; }
 .FI { width: 70%; }
-
 .withHand { cursor: pointer; }
+.MesMissatges { text-align: center; background-color: #CCCCCC; font-weight: bold; }
 
 .modalbox {
-  z-index: 1;   
+  z-index: 2;   
   border: 1px solid gray;
   position: absolute;
   background-color: white;
@@ -31,16 +31,15 @@
   transform: translate(-50%, -50%);  
 }
 
-.tooltip {
+.mytooltip {
     position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+    display: inline-block;        
   }
   
   /* Tooltip text */
-.tooltip .tooltiptext {
+.mytooltip .mytooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 100%;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -50,9 +49,11 @@
     /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 3;
+    top: 20px;
+    left: 10%;
 }
   
   /* Show the tooltip text when you mouse over the tooltip container */
-  .tooltip:hover .tooltiptext {
+  .mytooltip:hover .mytooltiptext {
     visibility: visible;
   }

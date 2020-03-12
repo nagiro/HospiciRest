@@ -25,6 +25,10 @@ class UsuarisModel extends BDD {
         return $this->runQuery($SQL, array('login'=>$login, 'Password'=>$Password, 'SiteId' => $SiteId));
         
     }
+
+    public function getNomCompletFields() {
+        return "CONCAT({$this->getOldFieldNameWithTable('Cog1')},' ',{$this->getOldFieldNameWithTable('Cog2')},', ',{$this->getOldFieldNameWithTable('Nom')}) as USUARIS_NomComplet";
+    }
 }
 
 ?>

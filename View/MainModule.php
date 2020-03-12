@@ -76,6 +76,7 @@ class MainModule {
             case 'admin/login': $this->getModuleContent('Login.php'); break;
             case 'admin/avui': $this->getModuleContent('Avui.php'); break;
             case 'admin/promocions': $this->getModuleContent('Promocions.php'); break;
+            case 'admin/taulell': $this->getModuleContent('Taulell.php'); break;
         }         
     }
 

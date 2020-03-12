@@ -20,13 +20,23 @@
     <script src="https://unpkg.com/vue-advanced-cropper@latest/dist/index.umd.js" ></script>
     <link href="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.css" rel="stylesheet">    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>    
+    
     <script type="text/javascript" src="/View/ModulesVue/ImageHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/inputHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/selectHelperForm.js?<?php echo date('U', time()) ?>"></script>
+    <script type="text/javascript" src="/View/ModulesVue/ckeditorHelperForm.js?<?php echo date('U', time()) ?>"></script>
+    <script type="text/javascript" src="/View/ModulesVue/datepickerHelperForm.js?<?php echo date('U', time()) ?>"></script>
+    
     <link rel="stylesheet" href="/View/Styles/General.css?<?php echo date('U', time()) ?>">    
+
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script>
+
+    <script src='https://unpkg.com/v-calendar@next'></script>
 
     <script>
         window.Vue.use(VuejsDialog.main.default)        
+        window.Vue.use(CKEditor);        
     </script>
 
 <!--    <script src="/View/Scripts/cropper.js"></script>

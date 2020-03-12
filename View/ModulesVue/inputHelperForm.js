@@ -10,6 +10,10 @@ Vue.component('input-helper', {
     watch: {},
     methods: {
 
+        OnIntro() {            
+            this.$emit('onintro', this.valorAutentic)
+        },
+
         OnChange() {            
             this.$emit('onchange', this.valorAutentic)
         }
@@ -25,7 +29,8 @@ Vue.component('input-helper', {
                     :id="id" 
                     v-model="valorAutentic"
                     @keyup="OnChange"
-                    :placeholder="valorDefecte">     
+                    @keyup.enter = "OnIntro"
+                    :placeholder="'Entra un text...'">     
 
         </div>
     </div>

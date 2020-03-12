@@ -91,7 +91,7 @@
           :mida-imatge = "'s'"
           :url-a-mostrar = "getUrlImatge('s')"            
           :titol = "'Imatge petita'"
-          @reload = "EditaPromocio($event)"
+          @reload = "ReloadImatge($event, 'IMATGE_S')"
         ></image-helper>
         <image-helper 
           :accio-esborra = "'Promocio_Delete'"
@@ -100,7 +100,7 @@
           :mida-imatge = "'m'"
           :url-a-mostrar = "getUrlImatge('m')"            
           :titol = "'Imatge mitjana'"
-          @reload = "EditaPromocio($event)"
+          @reload = "ReloadImatge($event, 'IMATGE_M')"
         ></image-helper>
         <image-helper 
           :accio-esborra = "'Promocio_Delete'"
@@ -109,7 +109,7 @@
           :mida-imatge = "'l'"
           :url-a-mostrar = "getUrlImatge('l')"            
           :titol = "'Imatge gran'"
-          @reload = "EditaPromocio($event)"
+          @reload = "ReloadImatge($event, 'IMATGE_L')"
         ></image-helper>
 
         <div class="R">
@@ -202,10 +202,21 @@
     },
     
     EditaPromocio: function(idPromocio) {
-      console.log('idPromocio', idPromocio);
+      
       this.axios.get('/apiadmin/Promocions', { params: { 'accio': 'CU', 'idPromocio': idPromocio }} )
                 .then(  R => { this.PromocioDetall = R.data; this.Editant = true; } )
                 .catch( E => { alert(E); } );      
+
+    },
+
+    ReloadImatge: function(idPromocio, ImatgeTipus) {
+      
+      console.log(R.data['ImatgeTipus']);
+
+      this.axios.get('/apiadmin/Promocions', { params: { 'accio': 'CU', 'idPromocio': idPromocio }} )
+                .then(  R => { this.PromocioDetall = R.data['ImatgeTipus']; this.Editant = true; } )
+                .catch( E => { alert(E); } );      
+      
     },
 
     CancelaEdicio: function() { this.Editant = false; this.PromocioDetall = {}; },
@@ -239,10 +250,6 @@
         case 'l': ret += (this.PromocioDetall.PROMOCIONS_IMATGE_L) ? urlbase + this.PromocioDetall.PROMOCIONS_IMATGE_L + '?t=' + Date.now() : ''; break;
       }      
       return ret;
-    },
-
-    TancaModalImatge: function() {
-      this.MostraModal = false;
     }
 
   }

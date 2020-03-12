@@ -9,7 +9,8 @@ class Router {
     public $urlSecured = array(
         'admin/*',
         'admin/avui',
-        'admin/promocions'
+        'admin/promocions',
+        'admin/taulell'
     );
 
     public $urlOpen = array(
