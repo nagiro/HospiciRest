@@ -1,0 +1,14 @@
+.barra_superior { background-color:black; width:100%; color: white; display: flex; }
+.barra_superior > a { display: flex; color: white; align-items: center; padding: 1vw 1vw; font-size: 1rem; border-right: 0.5px solid #AAAAAA; }
+.barra_superior > a:last-child { border-right: 0px; }
+
+.barra_superior a > img { width: 100%; display: table-cell; }
+
+
+@media screen and (min-width: 900px) and (max-width: 1200px)  {    
+    .barra_superior > a { font-size: 1rem; }
+}
+
+@media screen and (max-width: 899px)  {
+    .barra_superior { display: none; }
+}

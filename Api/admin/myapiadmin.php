@@ -50,7 +50,7 @@ class MyAPIAdmin extends API
                 case 'ALL_SITES':      
                     
                     $S = new SitesController();
-                    $RET = $S->getSitesActius();                     
+                    $RET = $S->getSitesActius();                      
                     return array($RET, 200); 
                 break;
                 default: $RET = array(array("No estàs autenticat."), 500);
@@ -60,10 +60,9 @@ class MyAPIAdmin extends API
             
             // Aquí només hi accedim per carregar el login o bé quan no hem estat autenticats
             switch($accio) {
-                case 'ALL_SITES':      
-                    
+                case 'ALL_SITES':                          
                     $S = new SitesController();
-                    $RET = $S->getSitesActius();                     
+                    $RET = $S->getSitesActius();                                          
                     return array($RET, 200); 
                 break;
                 default: $RET = array(array("No estàs autenticat."), 500);
@@ -149,7 +148,43 @@ class MyAPIAdmin extends API
         
     }
 
+    protected function Horaris() {
+        
+        $RET = "";                
+//        if($this->Auth->isAuthenticated()) {            
+        
+            $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
+            $paraules = (isset($this->request['q']))?$this->request['q']:'';            
+            $DataInicial = (isset($this->request['DataInicial']))   ? $this->request['DataInicial'] : Date('Y-m-d');
+            $DataFinal = (isset($this->request['DataFinal']))       ? $this->request['DataFinal']: Date(mktime(0,0,0, Date('m') + 1, Date('d'), Date('Y')));
+//            $idPromocio = (isset($this->request['idPromocio']))     ? $this->request['idPromocio']:0;
+//            $PromocioDetall = (isset($this->request['post']['PromocioDetall'])) ? json_decode($this->request['post']['PromocioDetall'], true):array();
 
+            if(isset($this->request['post'])) $accio = $this->request['post']['accio'];
+            
+            $H = new HorarisController();
+            $RET = array();
+            
+            switch($accio) {
+                case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial, $DataFinal); break;        
+//                case 'C':   $RET = $P->getPromocionsActives($this->Auth->idSite); break;        
+//                case 'CU':  $RET = $P->getById($idPromocio); break;        
+//                case 'A':   $RET = $P->getNewPromocio($this->Auth->idSite); break;
+//                case 'U':   $RET = $P->doUpdate($PromocioDetall); break;        
+ //               case 'D':   $RET = $P->doDelete($PromocioDetall); break;        
+//                case 'UO':  $RET = $P->doOrderChange( $this->request['post']['Promocions']); break;                
+            }
+
+            return array($RET, 200);
+
+//        } else { 
+            
+//            return array(array("No estàs autenticat."), 500); 
+
+//        }         
+        
+    }
+    
     /**
      * @Params accio
      * @Params idUsuari

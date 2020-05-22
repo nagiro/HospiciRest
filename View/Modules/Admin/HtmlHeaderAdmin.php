@@ -26,11 +26,12 @@
     <script type="text/javascript" src="/View/ModulesVue/selectHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/ckeditorHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/datepickerHelperForm.js?<?php echo date('U', time()) ?>"></script>
+    <script type="text/javascript" src="/View/ModulesVue/calendarHelper.js?<?php echo date('U', time()) ?>"></script>
     
     <link rel="stylesheet" href="/View/Styles/General.css?<?php echo date('U', time()) ?>">    
 
     <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->
 
     <script src='https://unpkg.com/v-calendar@next'></script>
 
@@ -43,13 +44,11 @@
     <link rel="stylesheet" href="/View/Styles/cropper.css"> -->
 </head>
 
-<body style="background-color: #680000; margin-top:0px;">
+<body id="adminBody">
 <div class="container" id="app">
     <div class="row">
-        <div class="col" style="background-color: red; padding: 15px;">Casa de Cultura</div>
+        <div class="col-12" style="background-color: black; padding: 15px; color: white; font-weight: bold; ">Casa de Cultura</div>
     </div>
     <div class="row">        
         <div class="col" style="background-color: white;">
             <div class="row">
-
-

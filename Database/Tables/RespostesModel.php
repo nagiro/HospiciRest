@@ -13,6 +13,10 @@ class RespostesModel extends BDD {
             
     }        
 
+    public function getEmptyObject() {
+        $O = $this->getDefaultObject();        
+    }
+
     public function getById($idResposta) {
 
         return $this->runQuery("Select ".$this->getSelectFieldsNames().

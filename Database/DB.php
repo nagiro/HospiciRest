@@ -8,19 +8,34 @@ class BDD extends PDO {
     private $OldTableName;
     private $NewTableName;
     private $OldFieldsNameArray;
-    private $NewFieldsNameArray;
-    private $NewFieldsWithTableArray;
+    public $NewFieldsNameArray;
+    public $NewFieldsWithTableArray;
+    // abstract function getEmptyObject();
 
     public function __construct($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray) {
-        try {
-            $this->db = new PDO( PDOString, Username, Password );            
-        } catch (Exception $e) { return array($e->getMessage(), 500); }        
+                
+        $this->db = new PDO( PDOString, Username, Password );                    
         $this->db->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         if(strlen($OldTableName) > 0) $this->ConstructStructure($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray);        
 
-    }    
+    }            
+
+    public function getDefaultObject() {
+        $O = array();        
+        $select = $this->db->query("select * from information_schema.columns where table_name = '{$this->OldTableName}' and table_schema = 'intranet'");
+        $select->execute();
+        while( $F = $select->fetch() ){                        
+            $valor = $F['COLUMN_DEFAULT'];
+            
+            if($F['DATA_TYPE'] == 'tinyint' || $F['DATA_TYPE'] == 'int' || $F['DATA_TYPE'] == 'bigint') $valor = intval($valor);
+            if($F['EXTRA'] == 'auto_increment') $valor = '';
+
+            $O[ $this->getFromOltFieldNameToNewFieldNameWithTable($F['COLUMN_NAME']) ] = $valor;                        
+        }
+        return $O;        
+    }
 
     private function ConstructStructure($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray) {
         $this->OldTableName = $OldTableName;
@@ -30,7 +45,7 @@ class BDD extends PDO {
         foreach($this->NewFieldsNameArray as $K => $F) {
             $this->NewFieldsWithTableArray[$K] = $this->getNewFieldNameWithTable($F);
         }
-    }
+    }        
 
     public function getSelectFieldsNames() {
         $RET = array();
@@ -50,20 +65,27 @@ class BDD extends PDO {
 
     /**
      * Retorna el camp NewTableName_NewFieldName
-     */
-     
-    public function getOldFieldNameWithTable($Field) {        
+     */    
+    public function gofnwt($Field) { return $this->getOldFieldNameWithTable($Field); }
+    public function getOldFieldNameWithTable($Field) {                
         $index = array_search($Field, $this->NewFieldsNameArray, true);                
         if( $index > -1 ) {
             return $this->OldTableName.'.'.$this->OldFieldsNameArray[$index];
         } else { throw new Exception("getOldFieldNameWithTable: Camp ".$Field." no trobat..."); }
     }
 
+    public function getAllNewFieldsNameWithTable() {
+        return $this->NewFieldsWithTableArray;
+    }
+
+    public function gnfnwt($Field, $isTableField = true) {
+        return $this->getNewFieldNameWithTable($Field, $isTableField);
+    }
+
     public function getNewFieldNameWithTable($Field, $isTableField = true) {
-        $index = array_search($Field, $this->NewFieldsNameArray, true);        
-        if( $index > -1 || !$isTableField ) {
-            return $this->NewTableName.'_'.$Field;
-        } else { throw new Exception("getNewFieldNameWithTable: Camp ".$Field." no trobat..."); }
+        $index = array_search($Field, $this->NewFieldsNameArray, true);                
+        if( $index > -1 || !$isTableField ) { return $this->NewTableName.'_'.$Field; } 
+        else { throw new Exception("getNewFieldNameWithTable: Camp ".$Field." no trobat..."); }
     }
 
     public function getOldTableName() {
@@ -93,6 +115,56 @@ class BDD extends PDO {
         if($index > -1) return $this->NewFieldsNameArray[$index];
         else throw new Exception("getFromNewFieldTableNameToNewFieldName: Camp {$FIELD} no trobat." );
     }
+
+    private function getFromOltFieldNameToNewFieldNameWithTable($OldField) {
+        
+        $index = array_search($OldField, $this->OldFieldsNameArray, true);        
+        if($index > -1) return $this->NewFieldsWithTableArray[$index];
+        else throw new Exception("getFromOltFieldNameToNewFieldNameWithTable: Camp {$OldField} no trobat." );
+    }
+
+    /**
+     * EXCEPTION CODE 1 //No ha trobat cap fila
+     * */
+    public function _getRowWhere($W, $multiple = false) {        
+        $WHERE = array();
+        $SQL = "Select {$this->getSelectFieldsNames()} 
+        from {$this->getTableName()}
+        where 1 = 1 "; 
+        foreach($W as $K => $V) {
+            $PdoKey = str_replace(".", "_", $K);            
+            if(is_array($V)) {
+                $SQL .= " AND {$K} in (".implode(',', $V).")";            
+            } else {
+                $SQL .= " AND {$K} = :{$PdoKey}";            
+                $WHERE[ $PdoKey ] = $V;
+            }
+            
+        }
+        
+        $RET = $this->runQuery($SQL, $WHERE, !$multiple);
+        return $RET;        
+
+    }
+
+    /* Funció per a fer un insert */
+    public function _doInsert($NFWTAV) {
+        //Carreguem els nous valors a guardar
+        $FIELDS = array();
+        $VALUES = array();
+        $VALUES_VAL = array();
+        
+        foreach($this->NewFieldsWithTableArray as $NewFieldWithTableName) {                        
+            $FIELDS[] = $this->getFromNewFieldTableNameToOldFieldTableName($NewFieldWithTableName);
+            $VALUES[] = ':'.$NewFieldWithTableName;
+            $VALUES_VAL[':'.$NewFieldWithTableName] = $NFWTAV[$NewFieldWithTableName];            
+        }       
+        
+        $SQL = "INSERT INTO {$this->OldTableName} (" . implode(',', $FIELDS) .") VALUES (". implode(",", $VALUES) .")";
+        
+        return $this->runQuery($SQL, array_merge($VALUES_VAL), false, false, 'A');
+    }
+
 
     public function _doUpdate($NFWTAV, $WhereArray) {
         //Carreguem els nous valors a guardar

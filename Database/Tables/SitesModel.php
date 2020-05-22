@@ -9,13 +9,17 @@ class SitesModel extends BDD {
                             
         $OldFields = array("site_id","nom","actiu","poble","logoUrl","webUrl","telefon","email");
         $NewFields = array("SiteId", "Nom", "Actiu", "Poble", "LogoUrl", "WebUrl", "Telefon", "Email");
-        parent::__construct("sites", "SITES", $OldFields, $NewFields );
-            
+        parent::__construct("sites", "SITES", $OldFields, $NewFields );        
+        
+    }
+
+    public function getEmptyObject() {
+        $O = $this->getDefaultObject();        
     }
 
     public function getAllSites() {
 
-        $SQL = "Select {$this->getSelectFieldsNames()} from {$this->getTableName()}";        
+        $SQL = "Select {$this->getSelectFieldsNames()} from {$this->getTableName()}";                
                 
         return $this->runQuery($SQL, array());
         
@@ -37,7 +41,6 @@ class SitesModel extends BDD {
                         {$this->getOldFieldNameWithTable('Actiu')} = 1                
                 ORDER BY {$this->getOldFieldNameWithTable('SiteId')} asc
             ";
-        
         return $this->runQuery($SQL, array());
     }
 

@@ -1,0 +1,34 @@
+.breadcumb {
+  z-index:0;
+  margin: 2vw 2vw 0vw 2vw;
+  display: flex;
+  position: relative;
+  background-color: #EEEEEE;
+}
+.breadcumb_element {
+  display: flex;
+}
+
+.breadcumb_element_fletxa {    
+  border-left: 1.5vw solid #AAAAAA;
+  border-top: 1.5vw solid #DDDDDD;
+  border-bottom: 1.5vw solid #DDDDDD;  
+}
+
+.breadcumb_element_text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: inline-flex;
+  padding: 0.5vw;
+}
+
+.breadcumb_element_text > span {
+  margin: 0.5vw;
+}
+
+
+@media screen and (min-width: 300px) and (max-width: 1200px) {
+    
+
+}
+

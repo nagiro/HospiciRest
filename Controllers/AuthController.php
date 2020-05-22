@@ -25,8 +25,8 @@ class AuthController {
         return $this->UM->doLogin($login, $password, $idS);
     }    
 
-    public function isAuthenticated() {                        
-        return ($this->TokenLiteral !== 0);        
+    public function isAuthenticated() {        
+        return ($this->idUsuari > 0 && $this->idSite > 0);        
     }
 
     public function getToken() {

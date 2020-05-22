@@ -1,0 +1,32 @@
+.SingleImage_requadre_imatge { position: relative; width: 24vw; min-height: 24vw; display: block; }
+/* .SingleImage_tag {    position: absolute;    right: 0;    top: 0;    background-color: transparent;    width: 0px;    height: 0px;    border-left: 1.5vw solid;    border-right: 1.5vw solid;    border-top: 1.5vw solid;    border-bottom: 1.5vw solid;    /* borders per fer fletxa surt de single-list.component.ts   } */
+.SingleImage_tag { position: absolute; right: 0; top: 0; background-color: transparent; width: 3vw; height: 3vw;  }
+.SingleImage_tag > .fas { font-size: 3vw; color: darkred; }
+.SingleImage_tag > img {    width: 1.5vw; height: 1.5vw; position: absolute; top: 0.5vw; right: 1.2vw; } 
+/* .SingleImage_tag > img {    width: 2vw;    height: 2vw;    position: absolute;    top: -1vw;    right: -1vw;  } */
+.SingleImage_requadre_imatge_img { height: 24vw; width: 24vw; }      
+.SingleImage_requadre_text { display: flex; flex-wrap: wrap; position: absolute; bottom: 1vw; left: 1vw; right: 1vw; background-color: white; }
+.SingleImage_requadre_text_titol { font-size: 1rem;    font-weight: bold; border-bottom: 1px solid black; width: 100%; padding: 0.5vw; }
+.SingleImage_requadre_text_data {  font-size: 0.8rem;    width: 45% ; border-right: 1px solid black; padding: 0.5vw;  }  
+.SingleImage_requadre_text_espai { font-size: 0.8rem;    width: 45%; padding: 0.5vw;  }
+
+@media screen and (min-width: 300px) and (max-width: 1199px) {
+  
+  .SingleImage_requadre_imatge { position: relative; width: 100%; min-height: 88vw; height: auto; }
+
+  .SingleImage_tag { position: absolute; right: 6vw; top: 0vw; background-color: transparent; width: 3vw; height: 3vw;  }
+  .SingleImage_tag > .fas { font-size: 9vw; color: darkred; }
+  .SingleImage_tag > img {    width: 5vw; height: 5vw; position: absolute; top: 1vw; right: -2.8vw; } 
+
+  /*.SingleImage_tag > img { width: 6vw; height: 6vw; top: -3vw;    right: -3vw;  }*/
+  /* .SingleImage_tag { position: absolute;    right: 0;    top: 0;    background-color: transparent;    width: 0px;    height: 0px;    border-left: 4.5vw solid;    border-right: 4.5vw solid;    border-top: 4.5vw solid;    border-bottom: 4.5vw solid;    /* borders per fer fletxa surt de single-list.component.ts  } */
+  .SingleImage_requadre_text { bottom: 2.5vw; left: 2vw; right: 2vw; }
+  .SingleImage_requadre_text_titol { font-size: 1.5rem;  }
+  .SingleImage_requadre_text_data {  font-size: 1.3rem; }  
+  .SingleImage_requadre_text_espai { font-size: 1.3rem; }
+  .SingleImage_requadre_text_data_horari > img { width: 1vw; height: 1vw; }
+
+  .SingleImage_requadre_imatge { margin-bottom: 1vw;  }
+  .SingleImage_requadre_imatge_img { height: 91.5vw; width: 91.5vw; }      
+
+}

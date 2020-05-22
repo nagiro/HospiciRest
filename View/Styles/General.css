@@ -1,12 +1,16 @@
-#menuComponent {    
-    font-size:12px;
-}
+#adminBody { font-size: 1rem; color: black; background-color: #ffd5d5; }
+#menuComponent a { color: black; }
+#menuComponent a:hover { text-decoration: underline; }
+#menuComponent {  }
+#menuComponent .menuTitol {  margin-top: 1.5vw; background-color: #730000; padding: 0.5vw; color: white; font-weight: bold; }
+#menuComponent .menuItem { margin-top: 0vw; background-color: white; padding:0.5vw; }
+#avuiComponent {  }
 
-#menuComponent .menuTitol { margin-top: 10px; }
+#taulellComponent { margin-bottom: 30px; }
 
-#avuiComponent {
-    font-size: 12px;
-}
+#promocionsComponent {  }
+
+#horarisComponent {  }
 
 .R {
   display: flex;
@@ -57,3 +61,5 @@
   .mytooltip:hover .mytooltiptext {
     visibility: visible;
   }
+
+  

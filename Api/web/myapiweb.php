@@ -38,6 +38,56 @@ class MyAPIWeb extends API
     }
 
 
+    protected function ExisteixDNI() {
+        
+        if( isset( $this->request['DNI'] ) ) {
+            $WAPI = new WebApiController();
+            $ExisteixDNI = $WAPI->ExisteixDNI($this->request['DNI']);
+            return array(array('ExisteixDNI' => $ExisteixDNI), 200);
+        } 
+
+    }    
+
+    /*
+
+    array(2) {
+  ["post"]=>
+  array(7) {
+    ["DNI"]=> string(9) "40359575A"
+    ["Nom"]=> string(0) ""
+    ["Cog1"]=> string(0) ""
+    ["Cog2"]=> string(0) ""
+    ["Email"]=> string(0) ""
+    ["Telefon"]=> string(0) ""
+    ["QuantesEntrades"]=> string(1) "1"
+  }
+  ["files"]=> array(0) {}
+}
+
+    */
+
+    protected function AltaUsuariSimple() {
+        
+        //Agafo el DNI, Nom, Email i Telèfon... de contrasenya poso un número aleatori. 
+        $DNI = isset($this->request['post']['DNI']) ? $this->request['post']['DNI'] : '';
+        $Nom = isset($this->request['post']['Nom']) ? $this->request['post']['Nom'] : '';
+        $Cog1 = isset($this->request['post']['Cog1']) ? $this->request['post']['Cog1'] : '';
+        $Cog2 = isset($this->request['post']['Cog2']) ? $this->request['post']['Cog2'] : '';
+        $Email = isset($this->request['post']['Email']) ? $this->request['post']['Email'] : '';        
+        $Telefon = isset($this->request['post']['Telefon']) ? $this->request['post']['Telefon'] : '';
+        $QuantesEntrades = isset($this->request['post']['QuantesEntrades']) ? $this->request['post']['QuantesEntrades'] : '';        
+        $ActivitatId = isset($this->request['post']['ActivitatId']) ? $this->request['post']['ActivitatId'] : 0;
+        $CicleId = isset($this->request['post']['CicleId']) ? $this->request['post']['CicleId'] : 0;        
+
+        $WAPI = new WebApiController();
+        try {
+            $Matricules = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $QuantesEntrades, $ActivitatId, $CicleId);
+        } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
+        
+        return array( array('matricules' => $Matricules, 'error' => '' ), 200 );
+
+    }
+
     /**
      * @Params accio
      * @Params idUsuari

@@ -35,7 +35,8 @@ class WebController
         $E["ProperesActivitats"] =  $this->WebQueries->getActivitatsHome(array(), $this->DataAvui, $this->DataFi, 1);
         $E["Noticies"] =            $this->WebQueries->getNoticiesHome(1, $this->DataAvui);
         $E["Promocions"] =          $this->WebQueries->getPromocions();   
-        $E["Breadcumb"] =           array(array('Titol'=>'Inici', "Link"=> array('/home'))); 
+        $E["Breadcumb"] =           array(array('Titol'=>'Inici', "Link"=> '/')); 
+        $E["Menu"]      =           $this->getMenu();
         return $E;
     }
 
@@ -64,56 +65,159 @@ class WebController
         foreach($EXTRES["Cicles"] as $Row) { $C[$Row["idCicle"]] = $Row["idCicle"]; }                                                                    
         $EXTRES["Activitats"] = $this->WebQueries->getActivitatsHome(array(), '', '', 1, 1, $C);         
                             
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> array('/home'))); 
+        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
         if( $EsUnCicle ){ 
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => array('/cicles', 0, urlencode('Tots els cicles')));    
-            $EXTRES["Breadcumb"][] =     array('Titol' => $EXTRES['Cicles'][0]['NomActivitat'], "Link" => array('/cicles', $idC, urlencode($EXTRES['Cicles'][0]['NomActivitat'])));
+            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles'));    
+            $EXTRES["Breadcumb"][] =     array('Titol' => $EXTRES['Cicles'][0]['NomActivitat'], "Link" => '/cicles/' . $idC . '/' . $this->aUrl($EXTRES['Cicles'][0]['NomActivitat']));
         } else {
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => array('/cicles', 0, urlencode('Tots els cicles')));
+            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => array('/cicles/0/' . $this->aUrl('Tots els cicles')));
         }
+
+        if($idC == 0) {
+            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', 'Tots els nostres cicles', 'C', 0 );                
+        } else {            
+            $C = $EXTRES['Cicles'][0];
+            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', $C['NomActivitat'], 'C', $idC );
+        }
+        $EXTRES['Menu'] = $this->getMenu();
 
         return $EXTRES;
 
     }
 
-    /**
-     * $idT : Tipus d'activitat
-     */
-    public function viewActivitats( $idT = 0, $Filtres ) {
 
+    /**
+        url: UrlArrayParts
+    */
+    public function getUrlToFilters( $URL ) {
+        //Url[0] = 'activitats'
+        //Url[1] = Tipus enviament ( Pot ser FILTRE o CATEGORIA o TIPUS o DATA )
+        //Url[2] = Dada ( Si és CATEGORIA => IdCategoria || Si és Tipus => idTipus || Si és Data => Data || Filtre => JSON(_BASE64) ) 
+        
+        $FILTRES = array();
+
+        if(isset($URL[0]) && $URL[0] == 'activitats'){
+            if(     isset($URL[1]) 
+                &&  in_array($URL[1], array('filtre', 'categoria', 'tipus', 'data', 'text')) 
+                &&  isset($URL[2]) 
+                &&  strlen($URL[2]) > 0 ) {
+
+                switch( $URL[1] ) {
+                    case 'filtre': 
+                        $DadesPerFiltrar = json_decode($URL[2], true);
+                        foreach($DadesPerFiltrar as $K => $V):
+                            $FILTRES[] = $V;
+                        endforeach;
+                    break;
+                    case 'categoria':                
+                        $FILTRES[] = array('type' => 'CATEGORIA', 'key' => $URL[2]);
+                    break;
+                    case 'tipus':
+                        $FILTRES[] = array('type' => 'TAG_VINCULAT', 'key' => $URL[2]);
+                    break;
+                    case 'data':
+                        $FILTRES[] = array('type' => 'DATA_INICIAL', 'key' => $URL[2]);
+                    break;
+                    case 'text':
+                        $FILTRES[] = array('type' => 'TEXT', 'key' => $URL[2]);
+                    break;
+
+                }
+            } else if( !isset($URL[1]) && !isset($URL[2]) ) {
+                $FILTRES[] = array('type' => 'DATA_INICIAL', 'key' => Date('Y-m-d', time()));
+            }
+        }
+
+        return $FILTRES;
+
+    }
+
+    private function hCercaArray($agulla, $palla, $NomCamp) {
+        foreach($palla as $V){
+            if($V[$NomCamp] == $agulla) return $V;
+        }
+        return null;
+    }
+
+    function aURL($cadena) {
+        $eliminar=array("!","¡","?","¿","‘","\"","$","(",")",".",":",";","_","/","\\","\$","%","@","#",",", "«", "»");
+        $buscados=array(" ","á","é","í","ó","ú","Á","É","Í","Ó","Ú","ñ","Ñ","ü","à","è","ì","ò","ù","À","È","Ì","Ò","Ù");
+        $sustitut=array("-","a","e","i","o","u","a","e","i","o","u","n","n","u","a","e","i","o","u","A","E","I","O","U");
+        $final=strtolower(str_replace($buscados,$sustitut,str_replace($eliminar,"",$cadena)));
+        $final=str_replace("–","-",$final);
+        $final=str_replace("–","-",$final);
+        return (strlen($final)>50) ? substr($final,0,strrpos(substr($final,0,50),"-")):$final;
+    }    
+
+    /**
+     * 
+     * $Filtres 
+     * Url[0] = 'activitats'
+     * Url[1] = Tipus enviament ( Pot ser FILTRE o CATEGORIA o TIPUS o DATA o TEXT ) Si vull buscar Text
+     * Url[2] = Dada ( Si és CATEGORIA => IdCategoria || Si és Tipus => idTipus || Si és Data => Data || Filtre => JSON(_BASE64) )        
+     * 
+     */    
+
+     public function viewActivitats( $Filtres ) {
+        
+        $CategoriesVinculades = array(1 => 'Artística', 2 => 'Curs', 3 => 'Familiar', 4 => 'Científica', 5 => 'Exposició', 6 => 'Humanitats', 7 => 'Música', 8 => 'Conferència', 11 => 'Tecnològica');
         $TotsElsTipus = true;
         $CategoriesArray = array();
         $TagsVinculatsArray = array();
-        if($idT > 0) { 
-            $TotsElsTipus = false;
-            $CategoriesArray[] = $idT;
-        }
+        $ParaulesCerca = array();        
+
+        $EXTRES["TipusActivitats"]["Tipus"] = $this->WebQueries->getTipusActivitats();                      
+        $EXTRES["TagsActivitats"]["Tags"] = $this->WebQueries->getTagsActivitats();        
+        
+        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
 
         foreach( $Filtres as $F ):
-            if ($F['type'] == 'DATA_INICIAL') if($this->validateDate($F['key'])) { $this->setNewDate($F['key']); $this->DataFi = $this->DataAvui; }
-            if ($F['type'] == 'TAG_VINCULAT') $TagsVinculatsArray[] = $F['key'];
-        endforeach;                
-                                                                             
-        $EXTRES['Activitats'] = $this->WebQueries->getActivitatsHome( array(), $this->DataAvui, $this->DataFi, 1, true, array(), $TagsVinculatsArray );
-        $EXTRES["TipusActivitats"]["Tipus"] = $this->WebQueries->getTipusActivitats();
-        $EXTRES["TagsActivitats"]["Tags"] = $this->WebQueries->getTagsActivitats();
-        
-        // Si és un tipus concret, busquem el nom únic del tipus per facilitar el mostrar-lo
-        if(!$TotsElsTipus){
-            foreach($EXTRES["TipusActivitats"]["Tipus"] as $K => $Tipus) {                            
-                if( $Tipus['idTipus'] == $CategoriesArray[0] ) $EXTRES["TipusActivitatUnic"] = $Tipus;
+            
+            if ($F['type'] == 'CATEGORIA') { 
+                $CategoriesArray[] = $F['key'];
+
+                $F['Text'] = $this->hCercaArray($F['key'], $EXTRES['TipusActivitats']["Tipus"], 'idTipus')['tipusDesc'];                                 
+                $EXTRES["Breadcumb"][] = array('Titol' => $F['Text'], "Link" => "/activitats/categoria/{$F['key']}/" . $this->aUrl($F['Text']) );                 
             }
-        }
-        
-        $Text = (isset($EXTRES['TipusActivitatUnic']['tipusDesc']))?$EXTRES['TipusActivitatUnic']['tipusDesc']:'';
-        
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> array('/home'))); 
-        if($TotsElsTipus) {
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => array('/activitats', 0, urlencode('Totes les activitats'))); 
-        } else {
-           $EXTRES["Breadcumb"][] =     array('Titol' => $Text, "Link" => array('/activitats', $idT, urlencode($Text)));
-        }
+
+            if ($F['type'] == 'DATA_INICIAL') {
+                if($this->validateDate($F['key'])) { 
+                    $this->setNewDate($F['key']); 
+                    $this->DataFi = 
+                    $this->DataAvui;                     
+                }
                 
+                $DP = explode("-", $this->DataAvui);
+                $F['Text'] = "Activitats el dia " . implode("/", array( $DP[2], $DP[1], $DP[0] ));
+                $EXTRES["Breadcumb"][] = array('Titol' => $F['Text'], "Link" => "/activitats/data/{$F['key']}" ); 
+            }
+
+            if ($F['type'] == 'TAG_VINCULAT') { 
+                $TagsVinculatsArray[] = $F['key'];
+                
+                $F['Text'] = 'Activitats amb l\'etiqueta "' . $CategoriesVinculades[$F['key']] . '"';
+                $EXTRES["Breadcumb"][] = array('Titol' => $F['Text'], "Link" => "/activitats/tipus/{$F['key']}/" . $this->aUrl($F['Text']) );
+                
+            }
+
+            // També faltarà afegir-hi la cerca a les pàgines que fem nosaltres
+            if ($F['type'] == 'TEXT'){ 
+                $ParaulesCerca = explode(' ', $F['key']);
+                $F['Text'] = "Activitats amb les paraules \"{$F['key']}\"";
+                $EXTRES["Breadcumb"][] = array('Titol' => $F['Text'], "Link" => "/activitats/text/" . urlencode($F['key']) );
+            }
+
+            $EXTRES['FiltresAplicats'][] = $F;
+        endforeach;                                                              
+
+        if(sizeof($ParaulesCerca) > 0) $EXTRES['Nodes'] = $this->WebQueries->getNodesCerca( $ParaulesCerca );                                            
+        $EXTRES['Activitats'] = $this->WebQueries->getActivitatsHome( $CategoriesArray, $this->DataAvui, $this->DataFi, 1, true, array(), $TagsVinculatsArray, $ParaulesCerca );
+        
+        $Text = $EXTRES['Breadcumb'][sizeof($EXTRES['Breadcumb']) - 1]['Titol'];
+        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CERCA', $Text, 'A', 0 );                
+        
+        $EXTRES['Menu'] = $this->getMenu();
+
         return $EXTRES;
     }
 
@@ -121,10 +225,10 @@ class WebController
 
         $EXTRES["Activitat"] = $this->WebQueries->getActivitatsDetall( $idA );                    
         $EXTRES['Horaris'] = $this->WebQueries->getHorarisActivitatDetall( $idA );                      
-
-        $Nom = $EXTRES['Activitat'][0]['Activitats_TitolMig'];
         
-        $idC = $EXTRES["Activitat"][0]["Activitats_CiclesCicleId"];
+        $Nom = $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'];
+        
+        $idC = $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"];
         $ArrayCicles = array($idC);
         if( ! ($idC > 0) ) $ArrayCicles = array();
         
@@ -135,23 +239,27 @@ class WebController
         else    $EXTRES["ActivitatsRelacionades"] = array();
         
                 
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> array('/home'))); 
+        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
         
+        $NOM_CICLE = '';
         if($idC > 1){                        
 
             $Cicles = $this->WebQueries->getCiclesHome( $idC );   
             $NOM_CICLE = (empty($Cicles[0]['NomActivitat']))?$Cicles[0]['NomActivitatIntern'] : $Cicles[0]['NomActivitat'];                        
 
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => array('/cicles', 0, urlencode('Tots els cicles'))); 
-            $EXTRES["Breadcumb"][] =     array('Titol' => $NOM_CICLE, "Link" => array('/cicles', $idC, urlencode($NOM_CICLE))); 
+            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles')); 
+            $EXTRES["Breadcumb"][] =     array('Titol' => $NOM_CICLE, "Link" => '/cicles/' . $idC . '/' . $this->aUrl($NOM_CICLE)); 
             
         } else {
 
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => array('/activitats', 0, urlencode('Totes les activitats'))); 
+            $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
             
         }
 
-        $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => array('/activitats', $idA, urlencode($Nom))); 
+        $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)); 
+
+        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                
+        $EXTRES['Menu'] = $this->getMenu();
                 
         return $EXTRES;
     }
@@ -173,7 +281,7 @@ class WebController
         $EXTRES["Pagina"] = $R[$NodeIndex];
         $EXTRES["Fills"] = $NodeSons;                
         
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> array('/home'))); 
+        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
 
         //Si hem trobat el node, mirem per cada nivell quin és el pare i entrem el breadcumb.
         $Pares = array($NodeIndex);
@@ -192,8 +300,11 @@ class WebController
         $Pares = array_reverse($Pares);
 
         foreach($Pares as $IndexNode) {
-            $EXTRES["Breadcumb"][] =     array('Titol' => $R[$IndexNode]['Nodes_TitolMenu'], "Link" => array('/pagina', $R[$IndexNode]['Nodes_idNodes'], urlencode($R[$IndexNode]['Nodes_TitolMenu']))); 
+            $EXTRES["Breadcumb"][] =     array('Titol' => $R[$IndexNode]['Nodes_TitolMenu'], "Link" => '/pagina/' . $R[$IndexNode]['Nodes_idNodes'] . '/' . $this->aUrl($R[$IndexNode]['Nodes_TitolMenu'])); 
         }
+        
+        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, '', '', 'A', 0 );                
+        $EXTRES['Menu'] = $this->getMenu();
 
         return $EXTRES;
     }
@@ -203,8 +314,8 @@ class WebController
         $R = $this->getMenu();                                        
         $EXTRES["Calendari"] = array();                
         
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> array('/home'))); 
-        $EXTRES["Breadcumb"][] =       array('Titol'=>'Calendari', "Link"=> array('/calendari')); 
+        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
+        $EXTRES["Breadcumb"][] =       array('Titol'=>'Calendari', "Link"=> '/calendari'); 
 
         return $EXTRES;
     }    

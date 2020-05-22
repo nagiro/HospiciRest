@@ -3,8 +3,8 @@
 
   <div v-for="cat in menuItemsAgrupats">
     <div class="menuTitol"> <span class="label label-primary"> {{ cat.Tipus }} </span> </div>
-    <div v-for="m in cat.Dades">
-      <a :href="m.MENUS_Url"> {{ m.MENUS_Titol }}</a>
+    <div v-for="m in cat.Dades" class="menuItem">      
+      <a :href="m.MENUS_Url"> <i class="fas fa-angle-double-right"></i>  {{ m.MENUS_Titol }}</a>
     </div>
   </div>
     

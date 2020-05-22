@@ -4,7 +4,7 @@
 const PDOString = "mysql:host=127.0.0.1;dbname=intranet;charset=utf8";
 const Username = 'root';
 const Password = '';
-const BASEDIR = "C:/Users/Usuario/Documents/Code/HospiciRest/";
+const BASEDIR = "C:\Users\USER\Documents\Code\HospiciRest/";
 
 const APIDIR = BASEDIR . 'Api/';
 const APIDIRADMIN = APIDIR . 'admin/'; 
@@ -23,6 +23,9 @@ const IMATGESURL = WEBFILESURL . 'Imatges/';
 const IMATGES_DIR_PROMOCIONS = IMATGESDIR . 'promocions/';
 const IMATGES_URL_PROMOCIONS = IMATGESURL . 'promocions/';
 
+const IMATGES_URL_ACTIVITATS = 'http://www.casadecultura.cat/images/activitats/';
+const IMATGES_URL_CICLES = 'http://www.casadecultura.cat/images/cicles/';
+
 const DOCUMENTSDIR = WEBFILESDIR . 'Documents/';
 const DOCUMENTSURL = WEBFILESURL . 'Documents/';
 
@@ -34,6 +37,8 @@ const LOCAL_WEB_EMPRESES_URL = LOCAL_WEB_URL . "empreses/";
 const LOCAL_WEB_USUARIS_URL = LOCAL_WEB_URL . "usuaris/";
 // const SESSION_PATH = "C:\Users\Usuario\Documents\Code\src\BorsaLaboral\php";
 const SESSION_TIME = 900;
+
+const EXCEPTION_CODE_NO_ROW_FIND = 1;
 
 /*
 const PDOString = "mysql:host=127.0.0.1;dbname=cryjzmpucv;charset=utf8";

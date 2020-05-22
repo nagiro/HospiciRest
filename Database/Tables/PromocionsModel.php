@@ -12,6 +12,10 @@ class PromocionsModel extends BDD {
             
     }        
 
+    public function getEmptyObject() {
+        $O = $this->getDefaultObject();        
+    }
+
     public function getById($idPromocio = 0) {
         return $this->runQuery("Select ".$this->getSelectFieldsNames().
                         " from ".$this->getTableName().
@@ -70,6 +74,10 @@ class PromocionsModel extends BDD {
     public function doDelete($PromocioDetall) {                
         $PromocioDetall[$this->getNewFieldNameWithTable('ACTIU')] = 0;        
         return $this->doUpdate($PromocioDetall);        
+    }
+
+    public function getEmptyArray() {
+        return $this->getAllNewFieldsNameWithTable();
     }
 
     public function getNew() {          

@@ -1,0 +1,6 @@
+#links_bloc { margin: 2vw; border: 1px solid black; padding: 2vw; }
+#links_bloc > h1 { margin-bottom: 4vw; }
+.links_requadre { display: flex; justify-content: space-between; flex-flow: wrap; }
+.link_enllac { width: 35vw; height: 35vw; background-color: #CCCCCC; margin-bottom: 2vw; position: relative; }
+.link_text { position: absolute; bottom: 1vw; left: 1vw; right: 1vw; background-color: black; color: white; padding: 1vw; font-size:1.3rem; }
+.link_imatge { width: 35vw; height: 35vw; }

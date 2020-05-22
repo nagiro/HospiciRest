@@ -12,6 +12,20 @@ class UsuarisModel extends BDD {
             
     }
 
+    public function getEmptyObject($SiteId) {
+        $OU = $this->getDefaultObject();        
+        $OU[$this->getNewFieldNameWithTable('IdNivell')] = 2;
+        $OU[$this->getNewFieldNameWithTable('Actualitzacio')] = date('Y-m-d', time());
+        $OU[$this->getNewFieldNameWithTable('Actiu')] = 1;
+        $OU[$this->getNewFieldNameWithTable('SiteId')] = $SiteId;
+        return $OU;
+    }
+
+
+    public function doInsert($OU) {
+        return $this->_doInsert($OU);        
+    }
+
     public function doLogin($login, $Password, $SiteId) {
 
         $SQL = "Select {$this->getSelectFieldsNames()} 
@@ -28,7 +42,22 @@ class UsuarisModel extends BDD {
 
     public function getNomCompletFields() {
         return "CONCAT({$this->getOldFieldNameWithTable('Cog1')},' ',{$this->getOldFieldNameWithTable('Cog2')},', ',{$this->getOldFieldNameWithTable('Nom')}) as USUARIS_NomComplet";
+    }    
+
+    public function getUsuariRow($W) { return $this->_getRowWhere($W); }
+    public function getUsuariId($Id) { return $this->_getRowWhere( array($this->gofnwt('IdUsuari') => $Id) ); }                
+    public function getUsuariDNI($DNI) { return $this->_getRowWhere( array($this->gofnwt('Dni') => $DNI) ); }                
+
+    public function ExisteixDNI($DNI = '') {
+    
+        $W = array();
+        $W[ $this->getOldFieldNameWithTable('Dni') ] = $DNI;
+        $W[ $this->getOldFieldNameWithTable('Actiu') ] = 1;
+        $RET = $this->getUsuariRow( $W );            
+        return (sizeof($RET) > 0);
+        
     }
+
 }
 
 ?>

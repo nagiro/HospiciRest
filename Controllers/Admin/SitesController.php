@@ -15,8 +15,8 @@ class SitesController
         return $this->SitesModel->getById($idSite);                
     }
     
-    public function getSitesActius() {
-        $RET = $this->SitesModel->getSitesActius();        
+    public function getSitesActius() {                
+        $RET = $this->SitesModel->getSitesActius();                
         return $RET;
     }
 

@@ -1,0 +1,40 @@
+
+.bc_section_style { position: relative; padding: 2vw 2vw 0vw 2vw; }
+.bc_carrousel { position: relative; }
+.bc_menu_button { position: absolute; left: -1px; top: -1px; background-color: white; padding: 2vw 2.5vw; border: 0px; z-index:3; }
+.bc_menu_button > .fa-bars { font-size: 3vw; }
+.bc_img_menu { font-size: 3vw; }
+.bc_img_logo { height: 8vw; position: absolute; right: -1px; top: -1px; background-color: white; padding: 1vw; display: block; z-index: 2 }
+
+.bc_roller {  }
+.bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { z-index:0; width: 100%; height: 37.9vw; display: block; filter: brightness(0.4); }
+.bc_banner_image_small { height: 35vw; background-color: black; }
+.bc_banner_image_no_image { background-color: black; }
+.bc_text_banner, .bc_text_banner_small  {  z-index: 1;  position: absolute;  color: black;  top: 15vw;  text-align: center;  width: 100%; color: white;}
+.bc_text_banner_small { top: 13vw; font-size: 1rem; }
+.bc_text_banner:hover { text-decoration: underline; }
+.bc_text_banner_titol { font-size: 3rem; }
+.bc_text_banner_subtitol {  font-size: 2rem; }
+.bc_grup_paginacio { position: absolute; bottom: 3vw; width: 100%; text-align: center; }
+.paginacio { display: inline-block; padding: 0.5vw; }
+.bc_bola_gris { font-size: 0.8rem; color: grey; }
+.bc_bola_blanca { font-size: 0.8rem; color: white;  }
+
+.bc_menu { font-size: 1.5rem; line-height: 1.6rem; z-index: 4; position: absolute; top: 0vw; right: 0px; left: 0px; background-color: white; padding: 0vw 2vw 2vw 0vw; display: flex;} 
+.bc_close_menu { padding: 2vw 2.5vw; font-size: 3vw; display: block; }
+
+.bc_menu_primer_nivell { display: flex; flex-direction: row; flex-grow: initial; flex-wrap: wrap;     width: 100%; justify-content: space-around; }
+.bc_menu_primer_nivell > li { padding-left: 1vw; }
+.bc_menu_altres_nivells { flex-direction: column; flex-grow: initial; flex-wrap: nowrap;  }
+.bc_menu_altres_nivells li { padding-left: 1vw; padding-top: 0.3vw; }
+
+.bc_text_menu { color: black; font-size: 0.8vw; padding-top: 0.2vw; }
+.bc_menu_text { display: flex; width: 100%; }
+.bc_menu_enllac {}
+
+
+@media screen and (min-width: 300px) and (max-width: 1200px) {
+  
+.bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { height: 47.8vw; }
+
+}

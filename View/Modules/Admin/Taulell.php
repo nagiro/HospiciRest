@@ -1,5 +1,5 @@
 
-<div id="taulellComponent" style="margin-bottom: 30px;" class="col-10">
+<div id="taulellComponent" class="col-10">
 
   <div class="card border-secondary card-default" style="margin-top:20px;">
     

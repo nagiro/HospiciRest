@@ -12,7 +12,11 @@ class MenuModel extends BDD {
         parent::__construct("gestio_menus", "MENUS", $OldFields, $NewFields );                        
 
     }
-
+    
+    public function getEmptyObject() {
+        $O = $this->getDefaultObject();        
+    }
+    
     public function getMenusByUser($idUsuari = 0, $idSite = 0) {
 
         $SQL = "Select {$this->getSelectFieldsNames()}

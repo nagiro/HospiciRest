@@ -7,14 +7,15 @@ class Router {
     public $request;
 
     public $urlSecured = array(
-        'admin/*',
-        'admin/avui',
-        'admin/promocions',
-        'admin/taulell'
+        'admin',        
     );
 
-    public $urlOpen = array(
-        'admin/login'
+    public $urlOpen = array(        
+        '',     //Empty route
+        'detall',
+        'activitats',
+        'cicles', 
+        'pagina'
     );
 
     public function __construct($SERVER) {
@@ -69,6 +70,10 @@ class Router {
         return $this->request['request'];
     }
 
+    public function getUrlParts() {
+        return explode("/" , $this->request['request']);
+    }
+
     public function getParameters() {
         $RET = array();
         foreach($this->request as $K => $P) { if($K != "request") $RET[$K] = $P; }        
@@ -76,11 +81,13 @@ class Router {
     }    
 
     public function isSecured() {        
-        return in_array( $this->getUrl(), $this->urlSecured);
+        $URL = $this->getUrlParts();
+        return in_array( $URL[0], $this->urlSecured);
     }
 
-    public function isOpen() {
-        return in_array( $this->getUrl(), $this->urlOpen);
+    public function isOpen() {    
+        $URL = $this->getUrlParts();        
+        return in_array( $URL[0], $this->urlOpen);        
     }
 
     public function isCorrect() {

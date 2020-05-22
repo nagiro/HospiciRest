@@ -1,0 +1,18 @@
+
+.noticies_section_style { position: relative; padding: 2vw 2vw 0vw 2vw; }
+
+.noticies_requadre {  padding: 2vw; background-color: rgb(106, 152, 196); padding-bottom: 4vw; }
+.noticies_requadre:hover { }
+.noticies_titol {  }  
+.noticies_text { color: whitesmoke; margin-top: 1.5vw; }  
+
+.noticies_grup_paginacio { position: absolute; bottom: 2vw; width: 100%; text-align: center; }
+.noticies_paginacio { display: inline-block; padding: 0.5vw; }
+.noticies_bola_gris { font-size: 0.8rem; color: gray; }
+.noticies_bola_blanca { font-size: 0.8rem; color: white;  }
+
+
+@media screen and (min-width: 300px) and (max-width: 1200px) {
+  
+
+}

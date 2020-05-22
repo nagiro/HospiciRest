@@ -27,6 +27,11 @@ class CiclesModel extends BDD {
 
 
     }
+
+    public function getEmptyObject() {
+        $O = $this->getDefaultObject();        
+    }
+
 }
 
 ?>

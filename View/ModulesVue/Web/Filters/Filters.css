@@ -1,0 +1,54 @@
+
+@media screen and (min-width: 300px) and (max-width: 1200px) {
+    
+  .filtres_requadre_filtres { padding: 2vw 2vw 0vw 2vw; }
+  .filtres_calendari { display: none; }
+  .filtres_box-mes-filtres {     display: none;  }  
+  .filtres_titol_filtres { background-color: black; color: white; padding: 2vw 2vw 2vw 2vw; }
+  .filtres_requadre_tots_filtres {  background-color: black; padding: 2vw; }  
+  .filtres_requadre_calendari { position:relative; display: flex; width: 100%; justify-content: center;  }    
+  .filtres_cal-mesos-fletxa {  flex-grow: 1;  background-color: rgb(106, 152, 196);    width: 10%;    text-align: center;    cursor: pointer;    vertical-align: middle; position: relative; }
+  .filtres_cal-mesos-fletxa > a { position: absolute; top: 40%; left: 40%; font-size: 2rem; }
+  .filtres_control-mesos {  color: white; padding: 0.5vw;  text-align: center; font-size:1.2rem; }
+  .filtres_requadre-taula-calendari {    width: 80%;    display: block;  }  
+  .filtres_taula-calendari {    width: 100%;    border-collapse: collapse;  }  
+  
+  .filtres_cal-dia:hover {    background-color: rgb(106, 152, 196);  }
+  .filtres_cal-dia, .filtres_cal-dia-title { font-size: 1rem;  text-align: center; color: black; padding: 0.5vw;  }
+  .filtres_cal-dia-title { color: white; }
+  .filtres_cal-dia-normal {    background-color: white;   }
+  .filtres_cal-dia-festa {    background-color: gray; }
+  .filtres_cal-dia-text {    text-align: center;   }
+  .filtres_cal-dia-numero {    text-align: center;   }
+  
+  .filtres_AltresFiltresBlock { padding-top: 2vw; }
+  #TagsSelect { width: 100%; font-size: 1.2rem; padding: 0.5vw; height: 4vw; }
+  .filtres_input_search { display: flex; }
+  .filtres_input_search > input { margin-top: 2vw; padding: 0.5vw; width: 80%; height: 4vw; }
+  .filtres_input_search > button { margin-top: 2vw; padding: 0.5vw; width: 20%; height: 4vw; }
+
+}
+
+@media screen and (min-width: 1201px) {
+
+  .filtres_requadre_filtres { display: none;  }
+  .filtres_calendari {    padding: 2vw 2vw 0vw 2vw;  background-color: white;  display: flex;  }
+  .filtres_control-dies {    display: flex; margin-left: 2%;    width: 64.1vw;    justify-content: space-between;  }
+  .filtres_control-mesos {  display: flex;    width: 10vw;  }
+  .filtres_cal-mesos-fletxa { position: relative; background-color: rgb(106, 152, 196); width: 15%; }
+  .filtres_cal-mesos-fletxa > span { position: absolute; top: 35%; left: 35%; }
+  .filtres_cal-mesos { padding: 0.5vw;    width: 70%;    height: 100%;    background-color: rgb(106, 152, 196);    text-align: center;    font-size: 1.2rem; font-weight:bold; }
+  .filtres_cal-dia {   font-size: 1rem;    width: 3%;    cursor: pointer;  }
+  .filtres_cal-dia-normal { position: relative;   background-color: white;    font-size: 1rem;  }
+  .filtres_cal-dia-festa { position: relative;   background-color: #c5d3e1;    font-size: 1rem;  }
+  .filtres_cal-dia-text {  position: absolute; top: 0.2vw;  text-align: center; width: 100%;  }
+  .filtres_cal-dia-numero { position: absolute; bottom: 0.5vw; text-align: center; width: 100%;  }
+
+  .filtres_box-mes-filtres { padding: 0vw 2vw; background-color: white; display: flex; width: 100%; }
+  .filtres_mes-filtres {  background-color: black; padding: 0.5vw; font-size: 1rem; text-align: center; width: 10vw; color: white; cursor: pointer;  }
+  .filtres_mes-filtres-resta {   width: 65.6vw;    background-color: #cccccc;    border-top: 1px solid black;    display: flex; padding-left: 2%; justify-content: space-around;  }
+  .filtres_mes-filtres-resta-element {    padding: 0.5vw;    color: black;    font-size: 1rem;    cursor: pointer;  }
+  #InputTextCerca { border: 1px solid #cccccc;  }
+  #InputTextBoto { background-color: black; color: white; }
+
+}

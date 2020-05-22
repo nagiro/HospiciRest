@@ -18,9 +18,17 @@ class WebQueries extends BDD {
         $N = new NodesModel();
         $SQL = "SELECT {$N->getSelectFieldsNames()} 
                 FROM {$N->getTableName()} 
-               WHERE {$N->getOldFieldNameWithTable('Actiu')} = 1                  
-                 AND {$N->getOldFieldNameWithTable('Nivell')} < 4";        
+               WHERE {$N->getOldFieldNameWithTable('Actiu')} = 1
+                 AND {$N->getOldFieldNameWithTable('idSite')} = 10
+                 AND {$N->getOldFieldNameWithTable('isActiva')} = 1                 
+                 AND {$N->getOldFieldNameWithTable('Nivell')} < 4
+        ORDER BY {$N->getOldFieldNameWithTable('Ordre')} asc";        
         return $this->runQuery( $SQL , array());
+    }    
+
+    public function getNodesCerca($ParaulesCerca) {
+        $N = new NodesModel();
+        return $N->getNodesCerca($ParaulesCerca);
     }
 
     public function getHorarisActivitatDetall( $idA ) {
@@ -32,8 +40,8 @@ class WebQueries extends BDD {
     }
 
                                         
-    public function getActivitatsHome($Cat, $Dia, $DiaF, $Site, $Activa = true, $ArrayCicles = array(), $TagsVinculatsArray = array() ) { 
-        return $this->runQuery( $this->getSQLActivitatsHome( $Cat , $Dia, $DiaF, $Site, $Activa, $ArrayCicles, $TagsVinculatsArray) , array());
+    public function getActivitatsHome($Cat, $Dia, $DiaF, $Site, $Activa = true, $ArrayCicles = array(), $TagsVinculatsArray = array(), $ParaulesCerca = array() ) { 
+        return $this->runQuery( $this->getSQLActivitatsHome( $Cat , $Dia, $DiaF, $Site, $Activa, $ArrayCicles, $TagsVinculatsArray, $ParaulesCerca) , array());
     }
 
     public function getCiclesHome($idC = 0, $DataInicial = '', $DataFinal = '') {        
@@ -44,13 +52,31 @@ class WebQueries extends BDD {
         return $this->runQuery( $this->getSQLNoticies($idS, $DataInicial) , array());
     }
 
-    public function getPromocions() {
-        $RET = $this->runQuery( $this->getSQLPromocions() , array());
-        foreach($RET as $index => $Row) {
-            $RET[$index]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_S'];
-            $RET[$index]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_M'];
-            $RET[$index]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_L'];
+    public function getPromocions($empty = false, $title = '', $subtitle = '', $TipusImatge = 'A', $idImatge = '', $Link = '') {
+        if(!$empty) {
+            $RET = $this->runQuery( $this->getSQLPromocions() , array());                
+            foreach($RET as $index => $Row) {
+                $RET[$index]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_S'];
+                $RET[$index]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_M'];
+                $RET[$index]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_L'];
+            }
+        } else {
+            $P = new PromocionsModel();
+            $RET[0] = $P->getEmptyArray();
+            if($TipusImatge == 'A'):            
+                $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_ACTIVITATS . 'A-' . $idImatge . '-M.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_ACTIVITATS . 'A-' . $idImatge . '-L.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_ACTIVITATS . 'A-' . $idImatge . '-XL.jpg';
+            elseif($TipusImatge == 'C'):
+                $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-M.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-L.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-XL.jpg';
+            endif;
+            $RET[0]['PROMOCIONS_TITOL'] = $title;
+            $RET[0]['PROMOCIONS_SUBTITOL'] = $subtitle;
+            $RET[0]['PROMOCIONS_URL'] = $Link;                        
         }
+            
         return $RET;
     }
 
@@ -144,7 +170,9 @@ class WebQueries extends BDD {
         $site = 0, 
         $actiu = 1, 
         $CiclesArray = array(),
-        $TagsVinculatsArray = array()){
+        $TagsVinculatsArray = array(),
+        $ParaulesCerca = array()
+        ){
         
         $SQL = " SELECT a.ActivitatID as idActivitat,
                 a.Cicles_CicleID as idCicle,
@@ -178,6 +206,10 @@ class WebQueries extends BDD {
 
         if(sizeof($TagsVinculatsArray) > 0) {
             $SQL .= " AND ta.CategoriaVinculada in (" . implode(",", $TagsVinculatsArray).")";
+        }   
+        
+        if(sizeof($ParaulesCerca) > 0) {            
+            $SQL .= " AND a.tMig like '%" . implode("%", $ParaulesCerca) . "%' ";
         }   
 
         if(!empty($dia) && !empty($diaf)) { $SQL .= " and h.Dia >= '".$dia."' AND h.Dia <= '".$diaf."'"; }

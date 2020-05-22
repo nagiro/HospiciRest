@@ -1,5 +1,6 @@
 <?php 
 
+require_once 'Admin/HorarisController.php';
 require_once 'Admin/TaulellController.php';
 require_once 'Admin/SitesController.php';
 require_once 'Admin/AvuiController.php';
