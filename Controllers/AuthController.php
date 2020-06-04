@@ -11,7 +11,7 @@ class AuthController {
     public $idSite; 
     public $isAdmin;
 
-    public function __construct() {
+    public function __construct() {        
         $this->UM = new UsuarisModel();
         $this->TokenLiteral = 0;
         $this->TokenArray = array();

@@ -5,7 +5,7 @@ Vue.component('banner-carrousel', {
         WithTitle: Boolean        
     },          
     data: function() {
-        return { BannerImageID: "bc_banner_image", TextBannerID: 'bc_text_banner', TotesPromocions: [], Boletes: [], PromocioActual: {}, IndexPromocioActual: 0, Menu: [], MenuObert: false }
+        return { StyleApplyFilter: 'filter: brightness(0.4);', BannerImageID: "bc_banner_image", TextBannerID: 'bc_text_banner', TotesPromocions: [], Boletes: [], PromocioActual: {}, IndexPromocioActual: 0, Menu: [], MenuObert: false }
     },    
     computed: {
     },
@@ -67,9 +67,14 @@ Vue.component('banner-carrousel', {
         gURLImatge: function( PromocioHome ) {
             
             if ( PromocioHome && PromocioHome.PROMOCIONS_IMATGE_L && PromocioHome.PROMOCIONS_IMATGE_L.length > 0) {
-                let UrlArray = PromocioHome.PROMOCIONS_IMATGE_L.split('/');
+                
+                if(!this.WithTitle) { this.StyleApplyFilter = ''; }
+                else { this.StyleApplyFilter = 'filter: brightness(0.4);'; }
+
+                let UrlArray = PromocioHome.PROMOCIONS_IMATGE_L.split('/');                
 //                UrlArray.splice(0,3);     // Trec el domini del servidor                                           
                 return UrlArray.join('/'); 
+
             } else {                
                 return null;                
             }
@@ -139,9 +144,6 @@ Vue.component('banner-carrousel', {
             </button>
 
             <div class="bc_menu" v-if="MenuObert">
-                <a class="bc_close_menu" @click="MenuObert = false">
-                    <i class="fas fa-times"></i>
-                </a>
 
                 <div class="bc_menu_text">
                     <ul class="bc_menu_primer_nivell">
@@ -177,13 +179,20 @@ Vue.component('banner-carrousel', {
                         </li>
                     </ul>
                 </div>
+
+                <a class="bc_close_menu" @click="MenuObert = false">
+                    <i class="fas fa-times"></i>
+                </a>
+
             </div>
                     
-            <img src="/WebFiles/Web/img/LogoCCG.jpg" class="bc_img_logo" alt="Logo de la Casa de Cultura" />            
+            <a href="/" aria="Enllaç a inici">
+                <img src="/WebFiles/Web/img/LogoCCG.jpg" class="bc_img_logo" alt="Logo de la Casa de Cultura" />
+            </a>            
 
             <div class="bc_roller" v-for="(PromocioHome, index) of TotesPromocions" :style="IsVisible(index)">
                 
-                <img :class="BannerImageID" :src="gURLImatge(PromocioHome)" @error="NoExisteixImatge($event)" :alt="PromocioHome.PROMOCIONS_TITOL" />
+                <img :style="StyleApplyFilter" :class="BannerImageID" :src="gURLImatge(PromocioHome)" @error="NoExisteixImatge($event)" :alt="PromocioHome.PROMOCIONS_TITOL" />
                 <a href="gUrlLink(PromocioHome)" :class="TextBannerID">
                     <h1 v-if="WithTitle" class="bc_text_banner_titol"> {{ PromocioHome.PROMOCIONS_TITOL }} </h1>
                     <h2 v-if="WithTitle" class="bc_text_banner_subtitol"> {{ PromocioHome.PROMOCIONS_SUBTITOL }} </h2>

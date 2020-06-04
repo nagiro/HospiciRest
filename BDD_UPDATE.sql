@@ -67,6 +67,7 @@ ALTER TABLE `matricules`
 	CHANGE COLUMN `Data_pagament` `Data_pagament` DATE NULL COMMENT 'DataPagament' AFTER `tutor_nom`,
 	CHANGE COLUMN `rebut` `rebut` VARCHAR(40) NULL COMMENT 'Rebut' COL/* gran consulta SQL (2,0 KiB), recortada a los 2.000 caracteres */
 
+/* PASSAT */
 
 ALTER TABLE `cursos`
 	ADD COLUMN `cicle_id` INT NULL DEFAULT NULL AFTER `actiu`;
@@ -74,3 +75,6 @@ ALTER TABLE `cursos`
 ALTER TABLE `matricules`
 	CHANGE COLUMN `tpv_operacio` `tpv_operacio` VARCHAR(20) NULL COMMENT 'TpvOperacio' COLLATE 'utf8_general_ci' AFTER `actiu`,
 	CHANGE COLUMN `tpv_order` `tpv_order` INT(11) NULL COMMENT 'TpvOrder' AFTER `tpv_operacio`;
+
+ALTER TABLE `usuaris`
+	ADD COLUMN `Genere` CHAR(1) NULL DEFAULT 'A' COMMENT 'Genere' COLLATE 'utf8_general_ci' AFTER `Email`;	

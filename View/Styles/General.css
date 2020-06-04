@@ -38,23 +38,24 @@
 .mytooltip {
     position: relative;
     display: inline-block;        
+    cursor: pointer;
   }
   
   /* Tooltip text */
 .mytooltip .mytooltiptext {
     visibility: hidden;
-    width: 100%;
+    width: max-content;
     background-color: black;
     color: #fff;
     text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
+    padding: 0.5vw;
+    border-radius: 1vw;
    
     /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 3;
     top: 20px;
-    left: 10%;
+    left: 10%;    
 }
   
   /* Show the tooltip text when you mouse over the tooltip container */
@@ -63,3 +64,16 @@
   }
 
   
+  /* Calendar Helper */
+  .CalendarHelper_Div { display: flex; justify-content: space-around; }   
+  .CalendarHelper_Table_TitolAny, .CalendarHelper_Table_Setmana { background-color: grey; }
+  .CalendarHelper_Table td { padding: 0.5vw; text-align: center; }
+
+  /* LlistatActivitatsHelper */
+
+  .LlistatActivitatsHelper_Div {  }  
+  .LlistatActivitatsHelper_Table { width: 100%; border-collapse: collapse;  }
+  .LlistatActivitatsHelper_Table td, th { padding: 0vw 1vw; }  
+  .LlistatActivitatsHelper_Table tr {  }  
+  .LlistatActivitatsHelper_Table tbody { padding: 1vw 0vw; }  
+  /* .LlistatActivitatsHelper_Table tbody:nth-child(odd) { background-color: whitesmoke; } */

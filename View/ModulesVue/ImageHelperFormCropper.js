@@ -1,5 +1,5 @@
 
-Vue.component('image-helper', {
+Vue.component('image-helper-cropper', {
     props: {        
         titol: String,
         UrlAMostrar: String,                

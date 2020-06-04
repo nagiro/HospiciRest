@@ -23,7 +23,8 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
 
     <script src="https://kit.fontawesome.com/4479587b76.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/vue-advanced-cropper@latest/dist/index.umd.js" ></script>
+
+    
     <link href="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.css" rel="stylesheet">    
     <script  src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>        
     

@@ -27,7 +27,7 @@
   
         <barra-superior></barra-superior>
 
-        <banner-carrousel v-if="Loaded" :input-dades="WebStructure.Promocions" :input-menu="WebStructure.Menu" :with-title="true"></banner-carrousel>  
+        <banner-carrousel v-if="Loaded" :input-dades="WebStructure.Promocions" :input-menu="WebStructure.Menu" :with-title="false"></banner-carrousel>  
 
         <breadcumb-div v-if="Loaded" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
 

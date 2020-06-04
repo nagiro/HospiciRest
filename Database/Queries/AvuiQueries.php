@@ -33,11 +33,11 @@ class AvuiQueries extends BDD {
                   AND (missatges.Date = :dataMissatges OR respostes.Data > :dataRespostes)
         ";        
         
-        $data = '2019-05-16';
-        $dataMissatges = '2019-05-13';
+        //$data = '2019-05-16';
+        //$dataMissatges = '2019-05-13';
         $idSite = 1;        
-        //$data = date('Y-m-d', strtotime("now"));
-        //$dataMissatges = date('Y-m-d', strtotime("-3 days"))
+        $data = date('Y-m-d', strtotime("now"));
+        $dataMissatges = date('Y-m-d', strtotime("-3 days"));
 
         return $this->runQuery($SQL, 
                         array(

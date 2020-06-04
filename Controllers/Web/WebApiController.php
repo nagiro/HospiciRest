@@ -28,7 +28,7 @@ class WebApiController
 
     }
 
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $QuantesEntrades, $ActivitatId, $CicleId) {                
+    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId) {                
         
         $OU = array();
         $UM = new UsuarisModel();
@@ -47,6 +47,9 @@ class WebApiController
             $OU[$UM->gnfnwt('Password')] = substr(str_shuffle($permitted_chars), 0, 10); 
             $OU[$UM->gnfnwt('Cog1')] = $Cog1; 
             $OU[$UM->gnfnwt('Cog2')] = $Cog2; 
+            $OU[$UM->gnfnwt('Genere')] = $Genere; 
+            $OU[$UM->gnfnwt('PoblacioText')] = $Municipi; 
+            $OU[$UM->gnfnwt('DataNaixement')] = $AnyNaixement.'-01-01';
             $OU[$UM->gnfnwt('Mobil')] = $Telefon; 
             $OU[$UM->gnfnwt('Email')] = $Email; 
             $OU[$UM->gnfnwt('Poblacio')] = 1; // Posem 1 perquè és constraint

@@ -16,8 +16,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
 
-    <script src="https://kit.fontawesome.com/4479587b76.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/4479587b76.js"></script>
+    
+    <!-- CROPPERS -->
     <script src="https://unpkg.com/vue-advanced-cropper@latest/dist/index.umd.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha/cropper.min.js" > </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha/cropper.min.css" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.css" rel="stylesheet">    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>    
     
@@ -27,6 +32,7 @@
     <script type="text/javascript" src="/View/ModulesVue/ckeditorHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/datepickerHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/calendarHelper.js?<?php echo date('U', time()) ?>"></script>
+    <script type="text/javascript" src="/View/ModulesVue/llistatActivitatsHelper.js?<?php echo date('U', time()) ?>"></script>
     
     <link rel="stylesheet" href="/View/Styles/General.css?<?php echo date('U', time()) ?>">    
 

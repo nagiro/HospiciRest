@@ -156,7 +156,7 @@ class MyAPIAdmin extends API
             $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
             $paraules = (isset($this->request['q']))?$this->request['q']:'';            
             $DataInicial = (isset($this->request['DataInicial']))   ? $this->request['DataInicial'] : Date('Y-m-d');
-            $DataFinal = (isset($this->request['DataFinal']))       ? $this->request['DataFinal']: Date(mktime(0,0,0, Date('m') + 1, Date('d'), Date('Y')));
+//            $DataFinal = (isset($this->request['DataFinal']))       ? $this->request['DataFinal']: Date( mktime(0,0,0, Date('m') + 1, Date('d'), Date('Y')));            
 //            $idPromocio = (isset($this->request['idPromocio']))     ? $this->request['idPromocio']:0;
 //            $PromocioDetall = (isset($this->request['post']['PromocioDetall'])) ? json_decode($this->request['post']['PromocioDetall'], true):array();
 
@@ -166,7 +166,7 @@ class MyAPIAdmin extends API
             $RET = array();
             
             switch($accio) {
-                case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial, $DataFinal); break;        
+                case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial); break;        
 //                case 'C':   $RET = $P->getPromocionsActives($this->Auth->idSite); break;        
 //                case 'CU':  $RET = $P->getById($idPromocio); break;        
 //                case 'A':   $RET = $P->getNewPromocio($this->Auth->idSite); break;
@@ -240,8 +240,7 @@ class MyAPIAdmin extends API
      * @Params AuthToken
      * /admin/login
     */     
-    protected function Auth() {
-                
+    protected function Auth() {                
         $accio = $this->request['accio'];
         $Login = (isset($this->request['login'])) ? $this->request['login'] : '';
         $Password = (isset($this->request['password'])) ? $this->request['password'] : '';

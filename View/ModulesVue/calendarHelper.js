@@ -1,10 +1,10 @@
 
 Vue.component('calendar-helper', {
     props: {        
-        horaris: Array,
+        horaris: Object,
         calendari: Array        // Year -> Month -> Day -> PROPIETATS -> { DIA_SETMANA, DIA }
     },          
-    data: function() { return { valorAutentic: new Date(this.valorDefecte) }},
+    data: function() { return { valorAutentic: new Date(this.valorDefecte), DiaEscollit: '' }},
     computed: {},
     watch: {},
     methods: {
@@ -13,23 +13,39 @@ Vue.component('calendar-helper', {
             const D = this.valorAutentic.getFullYear() + '-' 
                         + (this.valorAutentic.getMonth() + 1) + '-' 
                         + this.valorAutentic.getDate();
-            this.$emit('onchange', D)
+            this.$emit('onchange', D);
+        },
+        mostraDia: function($Dia) {
+            this.DiaEscollit = $Dia;
+            this.$emit('mostra-dia', $Dia);
+        },
+        getEstilDia: function(Dia) {
+            console.log(Dia);
+            console.log(this.horaris);
+            
         }
               
     },
     template: `        
-    <div>        
+    <div class="CalendarHelper_Div">        
         
-        <table v-for="Mesos of calendari">
-            <tr><td>{{Mesos.AnyMes}}</td></tr>
+        <table class="CalendarHelper_Table" v-for="Mesos of calendari">
+            <tr><td colspan="8" class="CalendarHelper_Table_TitolAny">{{Mesos.AnyMes}}</td></tr>
             <tr v-for="Setmanes of Mesos.D">
-                <td>{{Setmanes.Setmana}}</td>
+                <td class="CalendarHelper_Table_Setmana">{{Setmanes.Setmana}}</td>
                 <td v-for="Dies of Setmanes.D">
-                    {{Dies.Dia}}
+                    <a class="mytooltip" v-if="Dies.Dia > 0" @click="mostraDia(Dies.Propietats.DIA)"> 
+                        <div :style="getEstilDia(Dies.Propietats.Dia)">{{Dies.Dia}}</div>
+                        <div class="mytooltiptext">                            
+                            <llistat-activitats-helper :horaris = "horaris" :data-dia = "Dies.Propietats.DIA" :resum="true"></llistat-activitats-helper>
+                        </div>
+                    </a>
+                
                 </td>                
             </tr>
-        </table>
-        {{calendari}} 
+        </table>        
     </div>
+    
+
                 `,
 });

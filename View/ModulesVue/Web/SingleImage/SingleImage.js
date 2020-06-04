@@ -63,7 +63,7 @@ Vue.component('single-image', {
             }            
         },
         gTextHores: function( ActivitatHome ) {            
-            return "A les " + ConvertirHora(ActivitatHome.HoraInici, 'THM');             
+            return "A les " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + 'h';
         },        
         NoExisteixImatge: function($event) {
             $event.target.style = 'background-color: black;';

@@ -87,7 +87,7 @@
         <image-helper 
           :accio-esborra = "'Promocio_Delete'"
           :accio-guarda="'Promocio'"
-          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
+          :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
           :mida-imatge = "'s'"
           :url-a-mostrar = "getUrlImatge('s')"            
           :titol = "'Imatge petita'"
@@ -96,7 +96,7 @@
         <image-helper 
           :accio-esborra = "'Promocio_Delete'"
           :accio-guarda="'Promocio'"
-          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
+          :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
           :mida-imatge = "'m'"
           :url-a-mostrar = "getUrlImatge('m')"            
           :titol = "'Imatge mitjana'"
@@ -105,7 +105,7 @@
         <image-helper 
           :accio-esborra = "'Promocio_Delete'"
           :accio-guarda="'Promocio'"
-          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
+          :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
           :mida-imatge = "'l'"
           :url-a-mostrar = "getUrlImatge('l')"            
           :titol = "'Imatge gran'"
@@ -209,12 +209,10 @@
 
     },
 
-    ReloadImatge: function(idPromocio, ImatgeTipus) {
-      
-      console.log(R.data['ImatgeTipus']);
+    ReloadImatge: function(idPromocio, ImatgeTipus) {      
 
       this.axios.get('/apiadmin/Promocions', { params: { 'accio': 'CU', 'idPromocio': idPromocio }} )
-                .then(  R => { this.PromocioDetall = R.data['ImatgeTipus']; this.Editant = true; } )
+                .then(  R => { this.PromocioDetall = R.data; this.Editant = true; } )
                 .catch( E => { alert(E); } );      
       
     },
@@ -242,13 +240,14 @@
     },
 
     getUrlImatge: function(mida) {
-      let urlbase = '<?php echo IMATGES_URL_PROMOCIONS ?>';            
+      let urlbase = '<?php echo IMATGES_URL_PROMOCIONS ?>';                  
       let ret = '';      
       switch(mida){
         case 's': ret += (this.PromocioDetall.PROMOCIONS_IMATGE_S) ? urlbase + this.PromocioDetall.PROMOCIONS_IMATGE_S + '?t=' + Date.now() : ''; break;
         case 'm': ret += (this.PromocioDetall.PROMOCIONS_IMATGE_M) ? urlbase + this.PromocioDetall.PROMOCIONS_IMATGE_M + '?t=' + Date.now() : ''; break;
         case 'l': ret += (this.PromocioDetall.PROMOCIONS_IMATGE_L) ? urlbase + this.PromocioDetall.PROMOCIONS_IMATGE_L + '?t=' + Date.now() : ''; break;
       }      
+      
       return ret;
     }
 

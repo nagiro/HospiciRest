@@ -217,7 +217,7 @@ class WebQueries extends BDD {
         
         $SQL .= " GROUP BY a.ActivitatID ";                                        
         $SQL .= " ORDER BY Dia";                        
-        
+                
         return $SQL;
 
     }

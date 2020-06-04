@@ -1,4 +1,3 @@
-
 <div id="avuiComponent" class="col-10">
 
   <div class="card border-secondary card-default" style="margin-top:20px;">
@@ -93,19 +92,28 @@
 
   var vm = new Vue({
   el: '#avuiComponent',  
-  data: { Missatges: [], Incidencies: [], Feines: [], Activitats: [] },
+  data: { 
+    Missatges: [], 
+    Incidencies: [], 
+    Feines: [], 
+    Activitats: [] 
+  },
   created: function() {
-          this.$http.get('/apiadmin/Avui?accio=C', {} ).then(function(response){          
-          this.Missatges = response.body.Missatges;
-          this.Incidencies = response.body.Incidencies;
-          this.Feines = response.body.Feines;
-          this.Activitats = response.body.Activitats;                    
-          console.log(this.Missatges);
-    }, function() {
-          alert('Error!');
-    });
+    this.CarregaDades();      
   },
   computed: {},
-  methods: {}
+  methods: {
+
+    CarregaDades: function() {
+      this.axios.get('/apiadmin/Avui?accio=C', {} )
+        .then( R => 
+          {                        
+              this.Missatges = R.data.Missatges;
+              this.Incidencies = R.data.Incidencies;
+              this.Feines = R.data.Feines;
+              this.Activitats = R.data.Activitats;                                            
+          }).catch(E => { alert(E); });
+      }
+    }
   });
 </script>

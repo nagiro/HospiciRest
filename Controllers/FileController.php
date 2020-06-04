@@ -38,7 +38,7 @@ class FileController {
         if ( file_put_contents($Dir, $data) ) {
             return $File;
         } else {
-            throw new Exception("No he pogut guardar l'arxiu {$WebName}");
+            throw new Exception("No he pogut guardar l'arxiu {$File}");
         }
     }    
 

@@ -1,4 +1,3 @@
-
 <div id="loginComponent" class="col-10">
 
     <div class="">Usuari: </div>

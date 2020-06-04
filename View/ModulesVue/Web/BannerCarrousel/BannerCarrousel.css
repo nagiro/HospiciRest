@@ -1,13 +1,13 @@
 
 .bc_section_style { position: relative; padding: 2vw 2vw 0vw 2vw; }
 .bc_carrousel { position: relative; }
-.bc_menu_button { position: absolute; left: -1px; top: -1px; background-color: white; padding: 2vw 2.5vw; border: 0px; z-index:3; }
+.bc_menu_button { position: absolute; right: -1px; top: -1px; background-color: white; padding: 2vw 2.5vw; border: 0px; z-index:3; }
 .bc_menu_button > .fa-bars { font-size: 3vw; }
 .bc_img_menu { font-size: 3vw; }
-.bc_img_logo { height: 8vw; position: absolute; right: -1px; top: -1px; background-color: white; padding: 1vw; display: block; z-index: 2 }
+.bc_img_logo { height: 8vw; position: absolute; left: -1px; top: -1px; background-color: white; padding: 1vw; display: block; z-index: 2 }
 
 .bc_roller {  }
-.bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { z-index:0; width: 100%; height: 37.9vw; display: block; filter: brightness(0.4); }
+.bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { z-index:0; width: 100%; height: 37.9vw; display: block; }
 .bc_banner_image_small { height: 35vw; background-color: black; }
 .bc_banner_image_no_image { background-color: black; }
 .bc_text_banner, .bc_text_banner_small  {  z-index: 1;  position: absolute;  color: black;  top: 15vw;  text-align: center;  width: 100%; color: white;}
@@ -29,7 +29,7 @@
 .bc_menu_altres_nivells li { padding-left: 1vw; padding-top: 0.3vw; }
 
 .bc_text_menu { color: black; font-size: 0.8vw; padding-top: 0.2vw; }
-.bc_menu_text { display: flex; width: 100%; }
+.bc_menu_text { display: flex; width: 100%; padding-top: 2vw; }
 .bc_menu_enllac {}
 
 

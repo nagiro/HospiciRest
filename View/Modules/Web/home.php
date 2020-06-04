@@ -76,11 +76,11 @@
     
         <div id="home_requadres">            
             <nav id="home_requadres_nav">
-                <a class="home_requadres_nav_a" href="/pagina/78/cursos" style="background-color: #A0C3CB"> <span>CURSOS</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/102/tramits" style="background-color: #B06A17"> <span>Tràmits i espais</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/63/projectes-als-municipis" style="background-color: #E8D131"> <span>Projectes als municipis</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/105/projectes-per-a-escoles" style="background-color: #9A7EB1"> <span>Projectes per a escoles</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/59/la-casa" style="background-color: #9FB86B"> <span>La casa</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/168/cursos" style="background-color: #A0C3CB"> <span>Cursos</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/140/tramits-i-espais" style="background-color: #B06A17"> <span>Tràmits i espais</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/139/municipis-i-escoles" style="background-color: #E8D131"> <span>Municipis i escoles</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/169/estem-oberts" style="background-color: #9A7EB1"> <span>Estem oberts!</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/137/la-casa" style="background-color: #9FB86B"> <span>La casa</span> </a>
             </nav>
         </div>        
 
@@ -91,12 +91,11 @@
                 <p>info@casadecultura.cat <br/> 972202013 </p> 
             </div>           
             <nav>
-                <a href="/pagina/67/Intranet">Intranet</a>
-                <a href="/pagina/84/Portal-transparencia">Portal de transparència</a>
-                <a href="">Sala de premsa</a>
-                <a href="/pagina/127/Tramits">Tràmits administratius</a>
-                <a href="/pagina/116/Avis_legal">Avís legal</a>
-                <a href="/pagina/115/Cookies">Política de cookies</a>
+                <a href="/pagina/186/intranet-hospici">Intranet</a>
+                <a href="/pagina/154/portal-de-transparencia">Portal de transparència</a>
+                <a href="/pagina/194/sala-de-premsa">Sala de premsa</a>
+                <a href="/pagina/140/tramits-i-espais">Tràmits i espais</a>
+                <a href="/pagina/190/informacio-legal">Informació legal</a>                
             </nav> 
         </footer>
 

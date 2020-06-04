@@ -14,6 +14,9 @@ Vue.component('form-inscripcio-simple', {
                     Cog2: '',
                     Telefon: '', 
                     Email: '', 
+                    Municipi: '',
+                    Genere: '',
+                    AnyNaixement: '',
                     QuantesEntrades: 1,
                     Pas: 0, 
                     classDNI: 'form-control', 
@@ -22,6 +25,9 @@ Vue.component('form-inscripcio-simple', {
                     classCog2: 'form-control',
                     classTelefon: 'form-control',
                     classEmail: 'form-control', 
+                    classMunicipi: 'form-control',
+                    classGenere: 'form-control',
+                    classAnyNaixement: 'form-control',
                     MatriculesArray: Array,
                     ErrorInscripcio: '',
                     ConfirmoAssistencia: false
@@ -53,14 +59,21 @@ Vue.component('form-inscripcio-simple', {
             const ValCog1 = (this.Cog1.length > 1);
             const ValTelefon = ValidaTelefon( this.Telefon );
             const ValEmail = ValidaEmail(this.Email);
+            const ValMunicipi = (true);
+            const ValGenere = (true);
+            const ValAnyNaixement = (!isNaN(this.AnyNaixement));
 
             this.classNom = (!ValNom) ? 'form-control is-invalid' : 'form-control is-valid';
             this.classCog1 = (!ValCog1) ? 'form-control is-invalid' : 'form-control is-valid';
             this.classCog2 = 'form-control';
             this.classEmail = (!ValEmail) ? 'form-control is-invalid' : 'form-control is-valid';
             this.classTelefon = (!ValTelefon) ? 'form-control is-invalid' : 'form-control is-valid';
+
+            this.classMunicipi = (!ValMunicipi) ? 'form-control is-invalid' : 'form-control is-valid';
+            this.classGenere = (!ValGenere) ? 'form-control is-invalid' : 'form-control is-valid';
+            this.classAnyNaixement = (!ValAnyNaixement) ? 'form-control is-invalid' : 'form-control is-valid';
             
-            if( ValNom && ValCog1 && ValTelefon && ValEmail ) {
+            if( ValNom && ValCog1 && ValTelefon && ValEmail && ValAnyNaixement ) {
                 this.Pas = 4;
             } else {
                 this.Pas = 1;
@@ -73,7 +86,10 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('Cog1', this.Cog1);
             $FD.append('Cog2', this.Cog2);
             $FD.append('Email', this.Email);
-            $FD.append('Telefon', this.Telefon);
+            $FD.append('Telefon', this.Telefon);            
+            $FD.append('Municipi', this.Municipi);
+            $FD.append('Genere', this.Genere);
+            $FD.append('AnyNaixement', this.AnyNaixement);
             $FD.append('QuantesEntrades', this.QuantesEntrades);
             $FD.append('ActivitatId', this.ActivitatId);
             $FD.append('CicleId', this.CicleId);
@@ -152,6 +168,27 @@ Vue.component('form-inscripcio-simple', {
                 <small id="EmailHelp" class="form-text text-muted">Entri el seu correu electrònic.</small>
             </div>            
         </div>
+        <div class="row" v-if="Pas == 1 || Pas == 4">                                                
+            <div class="col">
+                <label for="municipi">Municipi</label>
+                <input type="text" :class="classMunicipi" v-on:blur="keymonitor" v-model="Municipi" id="municipi" placeholder="">
+                <small id="MunicipiHelp" class="form-text text-muted">Opcional: El seu municipi de residència.</small>
+            </div>
+            <div class="col">
+                <label for="genere">Gènere</label>
+                <select :class="classGenere" v-on:change="keymonitor" v-model="Genere" id="genere">
+                    <option value="M">Masculí</option>
+                    <option value="F">Femení</option>
+                    <option value="A">Altres</option>
+                </select>                
+                <small id="GenereHelp" class="form-text text-muted">Opcional: El seu gènere.</small>
+            </div>            
+            <div class="col">
+                <label for="anynaixement">Any de naixement</label>
+                <input type="text" :class="classAnyNaixement" v-on:blur="keymonitor" v-model="AnyNaixement" id="anynaixement" placeholder="">
+                <small id="AnyNaixementHelp" class="form-text text-muted">Opcional: El seu any de naixement.</small>
+            </div>                        
+        </div>        
         <div>
 
             <div class="row">

@@ -8,6 +8,7 @@ class HorarisController
 {
     private $HorarisModel;
     private $ActivitatsModel;
+    private $QuantsMesos = 2;
 
     public function __construct() {
         $this->HorarisModel = new HorarisModel();        
@@ -66,15 +67,15 @@ class HorarisController
         for($mes = intval($DiA[1]); ($mes <= intval($DfA[1]) && $any <= $DfA[0]); $mes++ ) {
             if($mes == 13) { $any++; $mes = 1; }
             $DiesAlMes = cal_days_in_month( CAL_GREGORIAN, $mes, $any );    
-            $Dia1DeLaSetmana = date('w', mktime(0,0,0, $mes, 1, $any));
-            $Dia1DeLaSetmana = ($Dia1DeLaSetmana == 0) ? 7 : $Dia1DeLaSetmana;
-            $Dia1DeLaSetmana = 2 - $Dia1DeLaSetmana;
+            $Dia1DeLaSetmana = date('w', mktime(0,0,0, $mes, 1, $any));             //Busquem la data que volem consultar
+            $Dia1DeLaSetmana = ($Dia1DeLaSetmana == 0) ? 7 : $Dia1DeLaSetmana;      // Si és diumenge, li assignem el dia 7
+            $Dia1DeLaSetmana = 2 - $Dia1DeLaSetmana;                                // Resto 2 perquè em quadri. Quedarà negatiu perquè hi ha el primer dia de la setmana que és del mes anterior 
 
-            for($dia = $Dia1DeLaSetmana; $dia <= $DiesAlMes; $dia++) {                
+            for($dia = $Dia1DeLaSetmana; $dia <= $DiesAlMes; $dia++) {              // Des del primre dia de la setmnaa fins a fi de mes
                 
                 //Si el primer dia no és 1 ( dilluns ) omplim els que faltin.                 
 
-                $time = mktime(0,0,0, $mes, ( $dia < 1 ) ? 1 : $dia, $any);
+                $time = mktime(0,0,0, $mes, ( $dia < 1 ) ? 1 : $dia, $any);         //Si és un dia del mes anterior, hi deixo l'1... però no el mostraré
                 $IndexMes = $any.$mes;                
                 $IndexSetmana = date('W', $time);
                 $IndexDia = $dia;
@@ -83,12 +84,13 @@ class HorarisController
 
                 if(!isset($CAL[ $IndexMes ])) $CAL[ $IndexMes ] = array();
                 if(!isset($CAL[ $IndexMes ][ $IndexSetmana ])) $CAL[$IndexMes][ $IndexSetmana ] = array();
-                if(!isset($CAL[ $IndexMes ][ $IndexSetmana ][ $dia ])) $CAL[ $IndexMes ][ $IndexSetmana ][ $dia ] = array();
-                $Propietats = array('DIA_SETMANA' => $DiaSetmana, 'DIA' => $any.'-'.$mes.'-'.$dia);
-                $CAL[ $IndexMes ][ $IndexSetmana ][ $dia ]['PROPIETATS'] = $Propietats;                
+                if(!isset($CAL[ $IndexMes ][ $IndexSetmana ][ $dia ])) $CAL[ $IndexMes ][ $IndexSetmana ][ $dia ] = array();                
+                $Propietats = array('DIA_SETMANA' => $DiaSetmana, 'DIA' => $any.'-'.$mes.'-'.$dia);     // Entro les propietats de cada dia
+                $CAL[ $IndexMes ][ $IndexSetmana ][ $dia ]['PROPIETATS'] = $Propietats;             
             }
         }
 
+        // Extrec les dades del seu Array numerat i les passo a un array no numerat. 
         $CALA = array();
         foreach($CAL as $IndexMes => $V) {
             $ArrayMes = array();
@@ -107,8 +109,11 @@ class HorarisController
     }
 
     // Ha de retornar, cada dia, de cada mes de cada any, tant si hi ha com si no, què hi ha i quin tipus de dia és
-    public function getLlistaHoraris($idS, $paraules, $DataInicial, $DataFinal) {
+    public function getLlistaHoraris($idS, $paraules, $DataInicial) {
                 
+        $D = explode('-', $DataInicial);        
+        $DataFinal = date("Y-m-d", mktime(0,0,0, $D[1] + $this->QuantsMesos, $D[2], $D[0]) ) ;                
+        
         $CAL = $this->GeneroCalendari($DataInicial, $DataFinal);        
 
         $RET = array();

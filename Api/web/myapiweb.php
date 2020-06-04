@@ -75,13 +75,18 @@ class MyAPIWeb extends API
         $Cog2 = isset($this->request['post']['Cog2']) ? $this->request['post']['Cog2'] : '';
         $Email = isset($this->request['post']['Email']) ? $this->request['post']['Email'] : '';        
         $Telefon = isset($this->request['post']['Telefon']) ? $this->request['post']['Telefon'] : '';
+
+        $Municipi = isset($this->request['post']['Municipi']) ? $this->request['post']['Municipi'] : '';
+        $Genere = isset($this->request['post']['Genere']) ? $this->request['post']['Genere'] : '';
+        $AnyNaixement = isset($this->request['post']['AnyNaixement']) ? $this->request['post']['AnyNaixement'] : '';
+
         $QuantesEntrades = isset($this->request['post']['QuantesEntrades']) ? $this->request['post']['QuantesEntrades'] : '';        
         $ActivitatId = isset($this->request['post']['ActivitatId']) ? $this->request['post']['ActivitatId'] : 0;
         $CicleId = isset($this->request['post']['CicleId']) ? $this->request['post']['CicleId'] : 0;        
 
         $WAPI = new WebApiController();
         try {
-            $Matricules = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $QuantesEntrades, $ActivitatId, $CicleId);
+            $Matricules = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
         
         return array( array('matricules' => $Matricules, 'error' => '' ), 200 );
