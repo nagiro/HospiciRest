@@ -84,7 +84,7 @@
           @onchange = "PromocioDetall.PROMOCIONS_URL = $event"
         ></input-helper>
 
-        <image-helper 
+        <image-helper-cropper
           :accio-esborra = "'Promocio_Delete'"
           :accio-guarda="'Promocio'"
           :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
@@ -92,8 +92,8 @@
           :url-a-mostrar = "getUrlImatge('s')"            
           :titol = "'Imatge petita'"
           @reload = "ReloadImatge($event, 'IMATGE_S')"
-        ></image-helper>
-        <image-helper 
+        ></image-helper-cropper>
+        <image-helper-cropper
           :accio-esborra = "'Promocio_Delete'"
           :accio-guarda="'Promocio'"
           :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
@@ -101,8 +101,8 @@
           :url-a-mostrar = "getUrlImatge('m')"            
           :titol = "'Imatge mitjana'"
           @reload = "ReloadImatge($event, 'IMATGE_M')"
-        ></image-helper>
-        <image-helper 
+          ></image-helper-cropper>
+          <image-helper-cropper
           :accio-esborra = "'Promocio_Delete'"
           :accio-guarda="'Promocio'"
           :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
@@ -110,7 +110,7 @@
           :url-a-mostrar = "getUrlImatge('l')"            
           :titol = "'Imatge gran'"
           @reload = "ReloadImatge($event, 'IMATGE_L')"
-        ></image-helper>
+          ></image-helper-cropper>
 
         <div class="R">
           <div class="FT">

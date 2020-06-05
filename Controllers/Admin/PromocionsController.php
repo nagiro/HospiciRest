@@ -11,14 +11,14 @@ class PromocionsController
         $this->PromocionsModel = new PromocionsModel();
     }
         
-    public function doUpload($modul, $file, $extensio, $tipus, $idElement, $idU, $idS){
+    public function doUpload($modul, $file, $tipus, $idElement, $idU, $idS){
 
         $FC = new FileController();                
         $WebUrl = "";
         $tipus = strtoupper($tipus);
         
         try {
-            $FileName = $FC->doUpload($modul, $file, $extensio, $tipus, $idElement, $idU, $idS);                                
+            $FileName = $FC->doUpload($modul, $file, $tipus, $idElement, $idU, $idS);                                
         } catch (Exception $e) { throw $e; } //Propaguem l'excepció
 
         //Carrego la promoció        

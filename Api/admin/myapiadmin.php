@@ -275,12 +275,12 @@ class MyAPIAdmin extends API
     protected function Upload() {
 
         if($this->Auth->isAuthenticated()) {
-            
-            $accio = (isset($this->request["post"]["accio"])) ? $this->request["post"]["accio"] : "";            
-            $file  = (isset($this->request["post"]["File"])) ? $this->request["post"]["File"] : "";
-            $tipus = (isset($this->request["post"]["Tipus"])) ? $this->request["post"]["Tipus"] : "" ;
-            $idElement = (isset($this->request["post"]["idElement"])) ? $this->request["post"]["idElement"] : "" ;
-            $extensio = (isset($this->request["post"]["extensio"])) ? $this->request["post"]["extensio"] : "";
+                    
+            $file  = (isset($this->request["files"]["File"])) ? $this->request["files"]["File"] : "";
+
+            $accio =        (isset($this->request["post"]["accio"]))        ? $this->request["post"]["accio"]       : "";                                    
+            $tipus =        (isset($this->request["post"]["Tipus"]))        ? $this->request["post"]["Tipus"]       : "" ;
+            $idElement =    (isset($this->request["post"]["idElement"]))    ? $this->request["post"]["idElement"]   : "" ;
             $RET = array();                        
             
             switch($accio) {
@@ -288,7 +288,7 @@ class MyAPIAdmin extends API
                     $PC = new PromocionsController(); 
 
                     try {
-                        $PC->doUpload($accio, $file, $extensio, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                        $PC->doUpload($accio, $file, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
                     } catch(Exception $e){ return array($e->getMessage(), 500);  };
                     break;        
 

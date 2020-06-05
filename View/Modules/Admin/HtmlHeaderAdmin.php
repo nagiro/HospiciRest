@@ -18,15 +18,19 @@
 
     <script src="https://kit.fontawesome.com/4479587b76.js"></script>
     
-    <!-- CROPPERS -->
-    <script src="https://unpkg.com/vue-advanced-cropper@latest/dist/index.umd.js" ></script>
+    <!-- CROPPERS -->    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha/cropper.min.js" > </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha/cropper.min.css" rel="stylesheet">
+
+    <!-- LODASH JAVASCRIPT UTILITY -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
     
     <link href="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.css" rel="stylesheet">    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>    
     
+    
     <script type="text/javascript" src="/View/ModulesVue/ImageHelperForm.js?<?php echo date('U', time()) ?>"></script>
+    <script type="text/javascript" src="/View/ModulesVue/ImageHelperFormCropper.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/inputHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/selectHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/ckeditorHelperForm.js?<?php echo date('U', time()) ?>"></script>

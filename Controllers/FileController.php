@@ -14,16 +14,11 @@ class FileController {
      * $idS   = Id Site 
      * @Return Retornem el nom de l'arxiu a web o bé false si no s'ha pogut guardar
      * */
-    public function doUpload($modul, $file, $extensio, $tipus, $idElement, $idU, $idS) {
-        // Fem el login, i aconseguim un token a partir del seu usuari                
-         
-        // Extrec el base64 i json values... i deixo només la imatge
-        list($type, $data) = explode(';', $file);
-        list(, $data)      = explode(',', $data);
-        $data = base64_decode($data);        
+    public function doUpload($modul, $file, $tipus, $idElement, $idU, $idS) {
         
         $Dir = "";
         $Url = "";
+        $imageFileType = strtolower(pathinfo($file['name'],PATHINFO_EXTENSION));        
 
         switch($modul) {
             case 'Promocio':    $Dir = IMATGES_DIR_PROMOCIONS; 
@@ -31,11 +26,11 @@ class FileController {
                                 break;
         }
 
-        $File = $idElement.'-'.strtoupper($tipus).'.'.$extensio;
+        $File = $idElement.'-'.strtoupper($tipus).'.'.$imageFileType;
         $Dir  = $Dir . $File;        
 
-        if (!file_exists($Dir)) touch($Dir);         
-        if ( file_put_contents($Dir, $data) ) {
+        if (!file_exists($Dir)) touch($Dir); 
+        if ( move_uploaded_file($file['tmp_name'], $Dir) ) {
             return $File;
         } else {
             throw new Exception("No he pogut guardar l'arxiu {$File}");
