@@ -1,0 +1,5 @@
+
+.detall_requadre_error { margin:2vw; border: 1px solid black; background-color: beige; padding: 2vw; margin-top: 4vw; font-size: 1rem; }
+
+@media screen and (min-width: 900px) and (max-width: 1200px)  {}
+@media screen and (max-width: 899px)  {}

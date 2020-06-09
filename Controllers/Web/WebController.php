@@ -62,23 +62,31 @@ class WebController
         }
         
         $EXTRES["Cicles"] = $this->WebQueries->getCiclesHome($idC, $Datai, $Dataf);                    
-        foreach($EXTRES["Cicles"] as $Row) { $C[$Row["idCicle"]] = $Row["idCicle"]; }                                                                    
-        $EXTRES["Activitats"] = $this->WebQueries->getActivitatsHome(array(), '', '', 1, 1, $C);         
-                            
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
-        if( $EsUnCicle ){ 
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles'));    
-            $EXTRES["Breadcumb"][] =     array('Titol' => $EXTRES['Cicles'][0]['NomActivitat'], "Link" => '/cicles/' . $idC . '/' . $this->aUrl($EXTRES['Cicles'][0]['NomActivitat']));
+        if(sizeof($EXTRES['Cicles']) > 0) {
+            foreach($EXTRES["Cicles"] as $Row) { $C[$Row["idCicle"]] = $Row["idCicle"]; }                                                                    
+            $EXTRES["Activitats"] = $this->WebQueries->getActivitatsHome(array(), '', '', 1, 1, $C);         
+                                
+            $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
+            if( $EsUnCicle ){ 
+                $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles'));    
+                $EXTRES["Breadcumb"][] =     array('Titol' => $EXTRES['Cicles'][0]['NomActivitat'], "Link" => '/cicles/' . $idC . '/' . $this->aUrl($EXTRES['Cicles'][0]['NomActivitat']));
+            } else {
+                $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => array('/cicles/0/' . $this->aUrl('Tots els cicles')));
+            }
+
+            if($idC == 0) {
+                $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', 'Tots els nostres cicles', 'C', 0 );                
+            } else {            
+                $C = $EXTRES['Cicles'][0];
+                $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', $C['NomActivitat'], 'C', $idC );
+            }
         } else {
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => array('/cicles/0/' . $this->aUrl('Tots els cicles')));
+
+            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', 'Tots els nostres cicles', 'C', 0 );                
+            $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible. <br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
+
         }
 
-        if($idC == 0) {
-            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', 'Tots els nostres cicles', 'C', 0 );                
-        } else {            
-            $C = $EXTRES['Cicles'][0];
-            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', $C['NomActivitat'], 'C', $idC );
-        }
         $EXTRES['Menu'] = $this->getMenu();
 
         return $EXTRES;
@@ -195,7 +203,7 @@ class WebController
             if ($F['type'] == 'TAG_VINCULAT') { 
                 $TagsVinculatsArray[] = $F['key'];
                 
-                $F['Text'] = 'Activitats amb l\'etiqueta "' . $CategoriesVinculades[$F['key']] . '"';
+                $F['Text'] = 'Activitats amb l\'etiqueta "' . (isset($CategoriesVinculades[$F['key']]) ? $CategoriesVinculades[$F['key']] : "" ) . '"';
                 $EXTRES["Breadcumb"][] = array('Titol' => $F['Text'], "Link" => "/activitats/tipus/{$F['key']}/" . $this->aUrl($F['Text']) );
                 
             }
@@ -225,40 +233,49 @@ class WebController
 
         $EXTRES["Activitat"] = $this->WebQueries->getActivitatsDetall( $idA );                    
         $EXTRES['Horaris'] = $this->WebQueries->getHorarisActivitatDetall( $idA );                      
-        
-        $Nom = $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'];
-        
-        $idC = $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"];
-        $ArrayCicles = array($idC);
-        if( ! ($idC > 0) ) $ArrayCicles = array();
-        
-        // Si idC == 1, és tots els cicles... no hi ha activitats vinculades
 
-        if(sizeof($EXTRES["Activitat"]) > 0 && $idC > 1)
-                $EXTRES["ActivitatsRelacionades"] = $this->WebQueries->getActivitatsHome( array(),'', '', 1, 1, $ArrayCicles);
-        else    $EXTRES["ActivitatsRelacionades"] = array();
+        if(sizeof($EXTRES['Activitat']) > 0 ) {
         
-                
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
-        
-        $NOM_CICLE = '';
-        if($idC > 1){                        
-
-            $Cicles = $this->WebQueries->getCiclesHome( $idC );   
-            $NOM_CICLE = (empty($Cicles[0]['NomActivitat']))?$Cicles[0]['NomActivitatIntern'] : $Cicles[0]['NomActivitat'];                        
-
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles')); 
-            $EXTRES["Breadcumb"][] =     array('Titol' => $NOM_CICLE, "Link" => '/cicles/' . $idC . '/' . $this->aUrl($NOM_CICLE)); 
+            $Nom = $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'];
             
+            $idC = $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"];
+            $ArrayCicles = array($idC);
+            if( ! ($idC > 0) ) $ArrayCicles = array();
+            
+            // Si idC == 1, és tots els cicles... no hi ha activitats vinculades
+
+            if(sizeof($EXTRES["Activitat"]) > 0 && $idC > 1)
+                    $EXTRES["ActivitatsRelacionades"] = $this->WebQueries->getActivitatsHome( array(),'', '', 1, 1, $ArrayCicles);
+            else    $EXTRES["ActivitatsRelacionades"] = array();
+            
+                    
+            $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
+            
+            $NOM_CICLE = '';
+            if($idC > 1){                        
+
+                $Cicles = $this->WebQueries->getCiclesHome( $idC );   
+                $NOM_CICLE = (empty($Cicles[0]['NomActivitat']))?$Cicles[0]['NomActivitatIntern'] : $Cicles[0]['NomActivitat'];                        
+
+                $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles')); 
+                $EXTRES["Breadcumb"][] =     array('Titol' => $NOM_CICLE, "Link" => '/cicles/' . $idC . '/' . $this->aUrl($NOM_CICLE)); 
+                
+            } else {
+
+                $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
+                
+            }
+
+            $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)); 
+            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                
+
         } else {
 
-            $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
-            
+            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, '', '', 'A', 0 );                
+            $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible. <br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
+
         }
-
-        $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)); 
-
-        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                
+        
         $EXTRES['Menu'] = $this->getMenu();
                 
         return $EXTRES;
@@ -277,30 +294,39 @@ class WebController
         foreach($R as $K => $Node) { 
             $NodeIndex = ($Node['Nodes_idNodes'] == $idN) ? $K : $NodeIndex; 
             if ( $Node['Nodes_idPare'] == $idN ) { $NodeSons[] = $Node; } 
-        }
-        $EXTRES["Pagina"] = $R[$NodeIndex];
-        $EXTRES["Fills"] = $NodeSons;                
-        
-        $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
+        }                
 
-        //Si hem trobat el node, mirem per cada nivell quin és el pare i entrem el breadcumb.
-        $Pares = array($NodeIndex);
-        
-        if( $NodeIndex > -1 ) {
-            for($i = $R[$NodeIndex]['Nodes_Nivell']; $i >= 0; $i--) {
-                foreach($R as $id => $NodeObject) {
-                    $IndexNivellActual = end($Pares);                    
-                    if( $NodeObject['Nodes_idNodes'] == $R[$IndexNivellActual]['Nodes_idPare'] ):
-                        $Pares[] = $id;
-                    endif;
-                }                
+        if($NodeIndex > 0) {
+
+            $EXTRES["Pagina"] = $R[$NodeIndex];
+            $EXTRES["Fills"] = $NodeSons;                
+            
+            $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
+
+            //Si hem trobat el node, mirem per cada nivell quin és el pare i entrem el breadcumb.
+            $Pares = array($NodeIndex);
+            
+            if( $NodeIndex > -1 ) {
+                for($i = $R[$NodeIndex]['Nodes_Nivell']; $i >= 0; $i--) {
+                    foreach($R as $id => $NodeObject) {
+                        $IndexNivellActual = end($Pares);                    
+                        if( $NodeObject['Nodes_idNodes'] == $R[$IndexNivellActual]['Nodes_idPare'] ):
+                            $Pares[] = $id;
+                        endif;
+                    }                
+                }
+            }    
+            
+            $Pares = array_reverse($Pares);
+
+            foreach($Pares as $IndexNode) {
+                $EXTRES["Breadcumb"][] =     array('Titol' => $R[$IndexNode]['Nodes_TitolMenu'], "Link" => '/pagina/' . $R[$IndexNode]['Nodes_idNodes'] . '/' . $this->aUrl($R[$IndexNode]['Nodes_TitolMenu'])); 
             }
-        }    
-        
-        $Pares = array_reverse($Pares);
 
-        foreach($Pares as $IndexNode) {
-            $EXTRES["Breadcumb"][] =     array('Titol' => $R[$IndexNode]['Nodes_TitolMenu'], "Link" => '/pagina/' . $R[$IndexNode]['Nodes_idNodes'] . '/' . $this->aUrl($R[$IndexNode]['Nodes_TitolMenu'])); 
+        } else {
+
+            $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible.<br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
+
         }
         
         $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, '', '', 'A', 0 );                

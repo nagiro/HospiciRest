@@ -52,6 +52,7 @@
     <script  src="/View/ModulesVue/Web/ListNodes/ListNodes.js?<?php echo date('U', time()) ?>"></script>
     <script  src="/View/ModulesVue/Web/NoticiesCarrousel/NoticiesCarrousel.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.js?<?php echo date('U', time()) ?>"></script>    
+    <script  src="/View/ModulesVue/Web/ShowErrors/showErrors.js?<?php echo date('U', time()) ?>"></script>    
     
     
     <link href="/View/ModulesVue/Web/barraSuperior/barraSuperior.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
@@ -63,6 +64,7 @@
     <link href="/View/ModulesVue/Web/ListNodes/ListNodes.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/NoticiesCarrousel/NoticiesCarrousel.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
+    <link href="/View/ModulesVue/Web/ShowErrors/showErrors.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
 
     <link href="/View/ModulesVue/Web/General.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
 

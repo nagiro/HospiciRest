@@ -2,10 +2,10 @@
         #detall_bloc { width: 100%; padding: 2vw; padding-top: 2vw; }
         #detall_franja_titol { text-align: center; width: 100%; }    
         #detall_dates { font-size: 1.5rem; }
-        #detall_requadre_detall { border: 1px solid black; padding: 2vw; margin-top: 4vw; font-size: 1rem }
+        #detall_requadre_detall { border: 1px solid black; padding: 2vw; margin-top: 4vw; font-size: 1rem }        
         #detall_requadre_info { border: 1px solid black; padding: 2vw; margin-top: 2vw; font-size: 1rem; }
-        #detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; }
-        #detall_bloc h2 { font-size: 1.5rem; margin-bottom: 2vw; }
+        #detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; margin-top: 2vw; }
+        #detall_bloc h2 { font-size: 1.5rem; margin-bottom: 1vw; margin-top: 3vw; }
 
     </style>
 
@@ -19,9 +19,11 @@
 
         <banner-carrousel v-if="Loaded" :input-dades="WebStructure.Promocions" :input-menu="WebStructure.Menu" :with-title="false"></banner-carrousel>  
 
-        <breadcumb-div v-if="Loaded" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
+        <breadcumb-div v-if="Loaded && !Errors" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
 
-        <section id="detall_bloc" v-if="WebStructure.Pagina.Nodes_Html.length > 0">
+        <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
+
+        <section id="detall_bloc" v-if="Loaded && !Errors">
             
             <article id="detall_requadre_detall">
                 <div class="text" v-html="WebStructure.Pagina.Nodes_Html">  </div>
@@ -30,7 +32,7 @@
         </section>                
 
         
-        <list-nodes :fills="WebStructure.Fills"></list-nodes>
+        <list-nodes v-if="Loaded && !Errors" :fills="WebStructure.Fills"></list-nodes>
 <!--
         <section id="links_bloc" v-if="WebStructure.Fills.length > 0">
 
@@ -67,11 +69,18 @@
         
             el: '#pagina',        
             data: { 
-                Loaded: true,
-                WebStructure: <?php echo $Data ?>            
+                Loaded: false,
+                WebStructure: <?php echo $Data ?>                            
 
             },            
-            created: function() {},
+            created: function() {
+                if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
+                    this.Errors = true;
+                    this.Loaded = true;
+                } else {
+                    this.Loaded = true;
+                }
+            },
             computed: {},
             methods: {}
         });

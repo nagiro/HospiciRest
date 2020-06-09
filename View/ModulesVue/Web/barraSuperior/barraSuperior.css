@@ -3,6 +3,9 @@
 .barra_superior > a:last-child { border-right: 0px; }
 
 .barra_superior a > img { width: 100%; display: table-cell; }
+ 
+.divFormButlleti { z-index: 10; position: fixed; background-color: #EEEEEE; padding: 5vw; border: 1px solid black; margin: 3vw; width: 73vw;}
+.divFormButlleti label { font-weight: bold; }
 
 
 @media screen and (min-width: 900px) and (max-width: 1200px)  {    

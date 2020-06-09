@@ -132,7 +132,7 @@ class MyAPIWeb extends API
 
                 case 'detall':                    
                     $idA = $this->request['idActivitat'];                    
-                    $EXTRES = $WEB->viewDetall( $idA );                                                            
+                    $EXTRES = $WEB->viewDetall( $idA ); 
                 break;
 
                 case 'pagina': 
@@ -147,11 +147,14 @@ class MyAPIWeb extends API
             }            
 
             // Sempre carreguem el menú
-            $EXTRES["Menu"] = $WEB->getMenu();  
+            $EXTRES["Menu"] = $WEB->getMenu();              
 
             return array($EXTRES, 200);
 
-        } catch (PDOException $e) { return array($e->getMessage(), 500); }
+        } catch (PDOException $e) { return array( $e->getMessage(), 500); 
+        } catch (Exception $e) { return array( $e->getMessage(), 500); 
+        } finally {  }
+
         
     }    
 

@@ -4,7 +4,12 @@ Vue.component('calendar-helper', {
         horaris: Object,
         calendari: Array        // Year -> Month -> Day -> PROPIETATS -> { DIA_SETMANA, DIA }
     },          
-    data: function() { return { valorAutentic: new Date(this.valorDefecte), DiaEscollit: '' }},
+    data: function() { 
+        return { 
+            valorAutentic: new Date(this.valorDefecte), 
+            DiaEscollit: ''            
+        }
+    },
     computed: {},
     watch: {},
     methods: {
@@ -19,10 +24,8 @@ Vue.component('calendar-helper', {
             this.DiaEscollit = $Dia;
             this.$emit('mostra-dia', $Dia);
         },
-        getEstilDia: function(Dia) {
-            console.log(Dia);
-            console.log(this.horaris);
-            
+        getEstilDia: function(Dia) {            
+            return (this.horaris[Dia] && this.horaris[Dia].length > 0 ) ? { "text-weight": "bold" } : { "text-weight": "normal" };
         }
               
     },
@@ -34,8 +37,8 @@ Vue.component('calendar-helper', {
             <tr v-for="Setmanes of Mesos.D">
                 <td class="CalendarHelper_Table_Setmana">{{Setmanes.Setmana}}</td>
                 <td v-for="Dies of Setmanes.D">
-                    <a class="mytooltip" v-if="Dies.Dia > 0" @click="mostraDia(Dies.Propietats.DIA)"> 
-                        <div :style="getEstilDia(Dies.Propietats.Dia)">{{Dies.Dia}}</div>
+                    <a class="mytooltip" v-if="Dies.Dia > 0" @click="mostraDia(Dies.Propietats.DIA)">
+                        <div v-bind:style="getEstilDia(Dies.Propietats.DIA)">{{Dies.Dia}}</div>
                         <div class="mytooltiptext">                            
                             <llistat-activitats-helper :horaris = "horaris" :data-dia = "Dies.Propietats.DIA" :resum="true"></llistat-activitats-helper>
                         </div>

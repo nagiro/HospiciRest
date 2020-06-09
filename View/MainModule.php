@@ -78,7 +78,7 @@ class MainModule {
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
             case 'pagina': 
-                $this->getModuleContent('HtmlHeaderWeb.php');
+                $this->getModuleContent('HtmlHeaderWeb.php');                                
                 $Data = $this->WebController->viewPagina( $url[1] );
                 $this->getModuleContent('Web/pagina.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                

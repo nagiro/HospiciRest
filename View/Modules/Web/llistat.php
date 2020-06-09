@@ -19,13 +19,15 @@
 
         <banner-carrousel v-if="Loaded" :input-dades="WebStructure.Promocions" :input-menu="WebStructure.Menu" :with-title="true"></banner-carrousel> 
 
-        <breadcumb-div v-if="Loaded" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
+        <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
 
-        <filters-div v-if="Loaded"></filters-div>
+        <breadcumb-div v-if="Loaded && !Errors" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
+
+        <filters-div v-if="Loaded && !Errors"></filters-div>
 
         <!-- LLISTAT DE CICLES -->
 
-        <section id="llistat_seccio_cicles" v-if="WebStructure.Cicles">
+        <section id="llistat_seccio_cicles" v-if="Loaded  && !Errors && WebStructure.Cicles">
 
             <div v-for="ActivitatHome of WebStructure.Cicles">
                              
@@ -49,7 +51,7 @@
 
         <!-- LLISTAT D'ACTIVITATS -->
 
-        <section id="llistat_seccio_activitats" v-if="WebStructure.TipusActivitats">
+        <section id="llistat_seccio_activitats" v-if="Loaded && !Errors && WebStructure.TipusActivitats">
                              
             <article class="llistat_franja_titol">
                 <!-- <h1 class="llistat_titol"> {{ WebStructure.FiltresAplicats[0].Text }} </h1> -->
@@ -69,7 +71,7 @@
 
 
         <!-- LLISTAT DE NODES -->
-        <list-nodes v-if="WebStructure.Nodes" :input-titol="'Pàgines amb contingut relacionat'" :fills="WebStructure.Nodes"></list-nodes>
+        <list-nodes v-if="Loaded && !Errors && WebStructure.Nodes" :input-titol="'Pàgines amb contingut relacionat'" :fills="WebStructure.Nodes"></list-nodes>
 
         <div style="margin-bottom: 2vw">&nbsp;</div>
                 
@@ -80,7 +82,8 @@
         
             el: '#llistat',        
             data: { 
-                Loaded: true,
+                Loaded: false,
+                Errors: false,
                 WebStructure: <?php echo $Data ?>,
                 LlistatAMostrar: [],
                 MostraDetall: false,         
@@ -91,6 +94,13 @@
 
             },            
             created: function() {            
+                if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
+                    this.Errors = true;
+                    this.Loaded = true; 
+                } else {
+                    this.Errors = false;
+                    this.Loaded = true; 
+                }
             },
             computed: {},
             methods: {            

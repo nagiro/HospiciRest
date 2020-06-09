@@ -23,7 +23,7 @@
         <img alt="Logo de la Diputació de Girona" src="/WebFiles/Web/img/LogoDiputacioSuperior.png">
     </div>
     <div id="home" class="page">
-  
+
         <barra-superior></barra-superior>
 
         <banner-carrousel v-if="Loaded" :input-dades="WebStructure.Promocions" :input-menu="WebStructure.Menu" :with-title="true"></banner-carrousel>        
@@ -120,7 +120,8 @@
         
             el: '#home',        
             data: { 
-                Loaded: false,            
+                Loaded: false,  
+                FormulariButlleti: false,          
                 WebStructure: {}
             },            
             created: function() {

@@ -135,8 +135,6 @@
     Horaris: {}, 
     Calendari: [],
     DiaEscollit: '',
-
-
     PromocioDetall: {}, 
     Editant: false, 
     textCercador: "",     

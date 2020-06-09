@@ -1,3 +1,6 @@
+// Component basat en --> https://fengyuanchen.github.io/cropperjs/
+// Seguint instruccions de --> https://lobotuerto.com/blog/cropping-images-with-vuejs-and-cropperjs/
+// Usant llibreria javascript --> Lodash (https://lodash.com/)
 
 Vue.component('image-helper-cropper', {
     props: {        
@@ -48,7 +51,7 @@ Vue.component('image-helper-cropper', {
 
             const s = {width: 161, height: 90, minWidth: 200, minHeight: 200, maxWidth: 1096, maxHeight: 1096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
             const m = {width: 161, height: 90, minWidth: 400, minHeight: 400, maxWidth: 2096, maxHeight: 2096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
-            const l = {width: 161, height: 90, minWidth: 800, minHeight: 800, maxWidth: 4096, maxHeight: 4096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
+            const l = {width: 161, height: 90, minWidth: 400, minHeight: 400, maxWidth: 4096, maxHeight: 4096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
             let parametresCropper = {};
 
             if(this.MidaImatge == 's') parametresCropper = s;

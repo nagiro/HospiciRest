@@ -30,7 +30,7 @@ class FileController {
         $Dir  = $Dir . $File;        
 
         if (!file_exists($Dir)) touch($Dir); 
-        if ( move_uploaded_file($file['tmp_name'], $Dir) ) {
+        if ( move_uploaded_file($file['tmp_name'], $Dir) ) {            
             return $File;
         } else {
             throw new Exception("No he pogut guardar l'arxiu {$File}");

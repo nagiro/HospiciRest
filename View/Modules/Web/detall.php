@@ -2,10 +2,10 @@
         #detall_bloc { width: 100%; padding: 2vw; padding-top: 4vw; }
         #detall_franja_titol { text-align: center; width: 100%; display: block; cursor: default; }    
         #detall_dates > p { font-size: 1.5rem; }
-        #detall_requadre_detall { border: 1px solid black; padding: 2vw; margin-top: 4vw; font-size: 1rem }
+        #detall_requadre_detall { border: 1px solid black; padding: 2vw; margin-top: 4vw; font-size: 1rem }        
         #detall_requadre_info { border: 1px solid black; padding: 2vw; margin-top: 2vw; font-size: 1rem; }
-        #detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; }
-        #detall_bloc h2 { font-size: 1.5rem; margin-bottom: 2vw; }
+        #detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; margin-top: 4vw; }
+        #detall_bloc h2 { font-size: 1.5rem; margin-bottom: 1vw; margin-top: 3vw; }
             
         #detall_horaris { display: relative; margin-top: 1.5vw; text-align: center; }
         #detall_horaris > summary { margin-bottom:2vw; }
@@ -22,16 +22,18 @@
 
 </head>
 <body>
-
+    
     <div id="detall" class="page">
   
         <barra-superior></barra-superior>
 
         <banner-carrousel v-if="Loaded" :input-dades="WebStructure.Promocions" :input-menu="WebStructure.Menu" :with-title="false"></banner-carrousel>  
 
-        <breadcumb-div v-if="Loaded" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
+        <breadcumb-div v-if="Loaded && !Errors" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
 
-        <section id="detall_bloc">
+        <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
+
+        <section id="detall_bloc" v-if="Loaded && !Errors">
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallActivitat.ACTIVITATS_TitolMig }} </h1>
                 <time id="detall_dates" v-html="ResumDates()"></time>                
@@ -53,7 +55,7 @@
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
                 <div class="text" v-html="DetallActivitat.ACTIVITATS_DescripcioMig">  </div>
-                <div v-if="DetallActivitat.IsEntrada != 1">
+                <div v-if="DetallActivitat.IsEntrada == 1">
                     <form-inscripcio-simple 
                         :activitat-id="DetallActivitat.ACTIVITATS_ActivitatId" 
                         :cicle-id="DetallActivitat.ACTIVITATS_CiclesCicleId"
@@ -67,7 +69,7 @@
             </article>
         </section>        
 
-        <single-list v-if="Loaded" :input-titol="'ACTIVITATS RELACIONADES'" :input-color="'#F4A261'" :input-dades="WebStructure.ActivitatsRelacionades" :amb-titol="true"></single-list>
+        <single-list v-if="Loaded && !Errors" :input-titol="'ACTIVITATS RELACIONADES'" :input-color="'#F4A261'" :input-dades="WebStructure.ActivitatsRelacionades" :amb-titol="true"></single-list>
 
         <div style="margin-bottom: 2vw">&nbsp;</div>
                 
@@ -91,8 +93,9 @@
         
             el: '#detall',        
             data: { 
-                Loaded: true,
-                WebStructure: <?php echo $Data ?>,
+                Loaded: false,
+                Errors: false,
+                WebStructure: <?php echo $Data ?>,                
                 DetallActivitat: {},
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
@@ -103,7 +106,14 @@
 
             },            
             created: function() {
-                this.DetallActivitat = this.WebStructure.Activitat[0];
+                if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
+                    this.Loaded = true;                
+                    this.Errors = true;                    
+                } else {                    
+                    this.Loaded = true;
+                    this.DetallActivitat = this.WebStructure.Activitat[0];
+                }
+                
             },
             computed: {},
             methods: {            
@@ -231,4 +241,3 @@
     </script>
 
 </body>
-
