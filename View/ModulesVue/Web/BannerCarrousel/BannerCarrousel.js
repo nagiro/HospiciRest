@@ -5,7 +5,7 @@ Vue.component('banner-carrousel', {
         WithTitle: Boolean        
     },          
     data: function() {
-        return { StyleApplyFilter: 'filter: brightness(0.4);', BannerImageID: "bc_banner_image", TextBannerID: 'bc_text_banner', TotesPromocions: [], Boletes: [], PromocioActual: {}, IndexPromocioActual: 0, Menu: [], MenuObert: false }
+        return { TotesPromocions: [], Boletes: [], PromocioActual: {}, IndexPromocioActual: 1, Menu: [], MenuObert: false }
     },    
     computed: {
     },
@@ -15,12 +15,18 @@ Vue.component('banner-carrousel', {
             immediate: true,
             handler(PromocionsArray) {
                 PromocionsArray.forEach((item, index) => {                
+                    item['ImageUrl'] = this.gURLImatge(item);
+                    item['LinkPromocio'] = this.gUrlLink(item);                    
+                    item['BannerImageID'] = this.setImageStyle(item);
+                    item['VisibleBackground'] = this.getBackground(item);
+                    item['TextBannerID'] = 'bc_text_banner';
                     this.TotesPromocions.push(item);
                     this.Boletes.push(index);                                        
-                });      
+                    
+                });                      
                                                
                 this.VesAPromocio( 0 );                                
-                this.gMouCarrousel( 0 );
+                this.gMouCarrousel( 0 );                
                 
             }
         },
@@ -64,29 +70,44 @@ Vue.component('banner-carrousel', {
             }, 5000);
 
         },
+        setImageStyle: function(PromocioActual) {                            
+            
+            PromocioActual.BannerImageID = 'bc_banner_image';
+
+            let cssid = PromocioActual.BannerImageID.split('_');
+            let bannerid = PromocioActual.BannerImageID;
+                        
+            if(this.WithTitle) { return (cssid[cssid.length - 1] != 'o') ? bannerid + '_o' : bannerid ; }
+            else { return (cssid[cssid.length - 1] != 'o') ? bannerid : cssid.pop().join('_'); } 
+
+        },
         gURLImatge: function( PromocioHome ) {
             
             if ( PromocioHome && PromocioHome.PROMOCIONS_IMATGE_L && PromocioHome.PROMOCIONS_IMATGE_L.length > 0) {
                 
-                if(!this.WithTitle) { this.StyleApplyFilter = ''; }
-                else { this.StyleApplyFilter = 'filter: brightness(0.4);'; }
-
                 let UrlArray = PromocioHome.PROMOCIONS_IMATGE_L.split('/');                
 //                UrlArray.splice(0,3);     // Trec el domini del servidor                                           
-                return UrlArray.join('/'); 
+                return UrlArray.join('/');                                 
 
             } else {                
                 return null;                
             }
+
         },
-        NoExisteixImatge: function($event) {                        
-            $event.target.src = '/WebFiles/Web/img/NoImage.jpg';
-            if(this.TotesPromocions.length == 1) {
-                this.BannerImageID = 'bc_banner_image_small';            
-                this.TextBannerID = 'bc_text_banner_small';
+        NoExisteixImatge: function($event, IndexPromoActual) {                        
+            
+            let img = '/WebFiles/Web/img/NoImage.jpg';
+            $event.target.src = img;
+            Vue.set(this.TotesPromocions[IndexPromoActual], 'ImageUrl', img);
+            
+            if(this.TotesPromocions.length == 1) {            
+                Vue.set(this.TotesPromocions[IndexPromoActual], 'BannerImageID', 'bc_banner_image_small');            
+                Vue.set(this.TotesPromocions[IndexPromoActual], 'TextBannerID', 'bc_text_banner_small');
             } else {
-                this.BannerImageID = 'bc_banner_image_no_image';
+                Vue.set(this.TotesPromocions[IndexPromoActual], 'BannerImageID', 'bc_banner_image_no_image');
             }   
+            Vue.set(this.TotesPromocions[IndexPromoActual], 'VisibleBackground', this.getBackground(this.TotesPromocions[IndexPromoActual]));
+            Vue.set(this.TotesPromocions, IndexPromoActual, this.TotesPromocions[IndexPromoActual]);
         },        
         getClassBola: function( indexPromocio ) {
             if(indexPromocio == this.IndexPromocioActual) {
@@ -99,9 +120,8 @@ Vue.component('banner-carrousel', {
             if(nouIndex >= 0) this.IndexPromocioActual = nouIndex;
             this.PromocioActual = (this.TotesPromocions.length >= nouIndex) ? this.TotesPromocions[ this.IndexPromocioActual ] : { 'NoPromocions': true };              
         },
-        IsVisible: function( index ) {
-            if( index != this.IndexPromocioActual ) return 'display: none';
-            else return '';
+        getBackground: function( PromocioIndex ) { 
+            return { 'background-image': 'url(' + PromocioIndex.ImageUrl + ')' };                         
         },
         ClickMenu: function($Obert = null) {           
             
@@ -110,7 +130,7 @@ Vue.component('banner-carrousel', {
             
         },
         gUrlLink: function( PromocioHome ) {
-
+            return (PromocioHome.PROMOCIONS_URL) ? PromocioHome.PROMOCIONS_URL : '#';
         },
         ObreMenu: function( N, IsLink = false ) {            
             if( IsLink ){
@@ -140,7 +160,7 @@ Vue.component('banner-carrousel', {
                     @click="ClickMenu()"                                        
             >
                 <i class="bc_img_menu fas fa-bars"></i>
-                <div class="bc_text_menu">menu</div>
+                <div class="bc_text_menu">menú</div>
             </button>
 
             <div class="bc_menu" v-if="MenuObert">
@@ -155,7 +175,6 @@ Vue.component('banner-carrousel', {
                                 <i :class="IconaEnllac(M0)"></i>&nbsp; {{M0.Node.Nodes_TitolMenu}} 
                             </a>    
                                                         
-
                             <ul class="bc_menu_altres_nivells">
                                 <li v-for=" M1 of M0.Fills" :hidden="!M0.Obert">
                                     <a  :href="ObreMenu(M1, true)" 
@@ -186,18 +205,21 @@ Vue.component('banner-carrousel', {
 
             </div>
                     
-            <a href="/" aria="Enllaç a inici">
+            <a class="bc_img_logo_anchor" href="/" aria="Enllaç a inici">
                 <img src="/WebFiles/Web/img/LogoCCG.jpg" class="bc_img_logo" alt="Logo de la Casa de Cultura" />
-            </a>            
+            </a>           
 
-            <div class="bc_roller" v-for="(PromocioHome, index) of TotesPromocions" :style="IsVisible(index)">
-                
-                <img :style="StyleApplyFilter" :class="BannerImageID" :src="gURLImatge(PromocioHome)" @error="NoExisteixImatge($event)" :alt="PromocioHome.PROMOCIONS_TITOL" />
-                <a href="gUrlLink(PromocioHome)" :class="TextBannerID">
-                    <h1 v-if="WithTitle" class="bc_text_banner_titol"> {{ PromocioHome.PROMOCIONS_TITOL }} </h1>
-                    <h2 v-if="WithTitle" class="bc_text_banner_subtitol"> {{ PromocioHome.PROMOCIONS_SUBTITOL }} </h2>
-                </a>
+            <div class="bc_roller" v-for="(PromocioHome, index) of TotesPromocions">
 
+                <img style="display: none" :src="PromocioHome.ImageUrl" @error="NoExisteixImatge($event, index)" :alt="PromocioHome.PROMOCIONS_TITOL" />
+
+                <div v-if="index == IndexPromocioActual" :style="PromocioHome.VisibleBackground" :class="PromocioHome.BannerImageID">
+                    
+                    <a :href="PromocioHome.LinkPromocio" :class="PromocioHome.TextBannerID">
+                        <h1 v-if="WithTitle" class="bc_text_banner_titol"> {{ PromocioHome.PROMOCIONS_TITOL }} </h1>
+                        <h2 v-if="WithTitle" class="bc_text_banner_subtitol"> {{ PromocioHome.PROMOCIONS_SUBTITOL }} </h2>
+                    </a>
+                </div>
             </div>
                 
             <ul class="bc_grup_paginacio" v-if="TotesPromocions.length > 1">

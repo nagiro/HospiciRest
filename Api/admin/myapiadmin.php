@@ -157,18 +157,18 @@ class MyAPIAdmin extends API
             $paraules = (isset($this->request['q']))?$this->request['q']:'';            
             $DataInicial = (isset($this->request['DataInicial']))   ? $this->request['DataInicial'] : Date('Y-m-d');
 //            $DataFinal = (isset($this->request['DataFinal']))       ? $this->request['DataFinal']: Date( mktime(0,0,0, Date('m') + 1, Date('d'), Date('Y')));            
-//            $idPromocio = (isset($this->request['idPromocio']))     ? $this->request['idPromocio']:0;
+            $idActivitat = (isset($this->request['idA']))     ? $this->request['idA']:0;
 //            $PromocioDetall = (isset($this->request['post']['PromocioDetall'])) ? json_decode($this->request['post']['PromocioDetall'], true):array();
 
             if(isset($this->request['post'])) $accio = $this->request['post']['accio'];
-            
+
             $H = new HorarisController();
             $RET = array();
             
             switch($accio) {
                 case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial); break;        
 //                case 'C':   $RET = $P->getPromocionsActives($this->Auth->idSite); break;        
-//                case 'CU':  $RET = $P->getById($idPromocio); break;        
+                case 'GetActivitat':  $RET = $H->getActivitatById($idActivitat); break;        
 //                case 'A':   $RET = $P->getNewPromocio($this->Auth->idSite); break;
 //                case 'U':   $RET = $P->doUpdate($PromocioDetall); break;        
  //               case 'D':   $RET = $P->doDelete($PromocioDetall); break;        

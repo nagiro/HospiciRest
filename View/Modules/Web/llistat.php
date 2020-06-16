@@ -27,7 +27,7 @@
 
         <!-- LLISTAT DE CICLES -->
 
-        <section id="llistat_seccio_cicles" v-if="Loaded  && !Errors && WebStructure.Cicles">
+        <section id="llistat_seccio_cicles" v-if="Loaded  && !Errors">
 
             <div v-for="ActivitatHome of WebStructure.Cicles">
                              
@@ -47,6 +47,9 @@
 
                 </article>
             </div>
+            <div v-if="WebStructure.Cicles && WebStructure.Cicles.length == 0">
+                <h1>Actualment no hi ha cap cicle per mostrar.</h1>
+            </div>
         </section>                
 
         <!-- LLISTAT D'ACTIVITATS -->
@@ -63,7 +66,7 @@
                                     :amb-titol="false">
                     </single-list>
                 </nav>
-                <h2 v-if="WebStructure.Activitats.length == 0"> No hi ha cap activitat per mostrar. </h2>
+                <h1 v-if="WebStructure.Activitats.length == 0"> No hi ha cap activitat per mostrar. </h1>
 
             </article>
 
@@ -93,13 +96,14 @@
                 Dies: []
 
             },            
-            created: function() {            
+            created: function() {       
+                
                 if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
                     this.Errors = true;
                     this.Loaded = true; 
                 } else {
                     this.Errors = false;
-                    this.Loaded = true; 
+                    this.Loaded = true;                                         
                 }
             },
             computed: {},

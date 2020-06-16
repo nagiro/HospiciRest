@@ -79,25 +79,25 @@ Vue.component('filters-div', {
         DiaSetmana(DiaSetmana) {
             switch (DiaSetmana) {
             case 0:
-                return 'Dg.';
+                return 'Dg';
                 break;
             case 1:
-                return 'Dl.';
+                return 'Dl';
                 break;
             case 2:
-                return 'Dt.';
+                return 'Dt';
                 break;
             case 3:
-                return 'Dc.';
+                return 'Dc';
                 break;
             case 4:
-                return 'Dj.';
+                return 'Dj';
                 break;
             case 5:
-                return 'Dv.';
+                return 'Dv';
                 break;
             case 6:
-                return 'Ds.';
+                return 'Ds';
                 break;
             }
         },

@@ -1,27 +1,38 @@
 
 .bc_section_style { position: relative; padding: 2vw 2vw 0vw 2vw; }
-.bc_carrousel { position: relative; }
+.bc_carrousel { position: relative; /* height: 37.9vw; */ }
 .bc_menu_button { position: absolute; right: -1px; top: -1px; background-color: white; padding: 2vw 2.5vw; border: 0px; z-index:3; }
 .bc_menu_button > .fa-bars { font-size: 3vw; }
 .bc_img_menu { font-size: 3vw; }
-.bc_img_logo { height: 8vw; position: absolute; left: -1px; top: -1px; background-color: white; padding: 1vw; display: block; z-index: 2 }
+.bc_img_logo_anchor { z-index: 3; width: 20vw; height: 8vw; position: absolute; left: -1px; top: -1px; background-color: white; padding: 1vw; display: block; }
+.bc_img_logo_anchor:hover { opacity: 1; }
+.bc_img_logo { z-index:4; width: 100%; height: 100%;  }
 
 .bc_roller {  }
-.bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { z-index:0; width: 100%; height: 37.9vw; display: block; }
-.bc_banner_image_small { height: 35vw; background-color: black; }
+
+.bc_banner_image_o:after { content: ''; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(0,0,0, 0.4); z-index:-1;  }
+.bc_banner_image_o, 
+.bc_banner_image_small_o, 
+.bc_banner_image_no_image_o,
+.bc_banner_image, 
+.bc_banner_image_small, 
+.bc_banner_image_no_image { z-index: 0; width: 100%; height: 37.9vw; display: block; position: relative; background-repeat: none; background-size: cover; }
+
+
+.bc_banner_image_small { height: 30vw; background-color: black; }
 .bc_banner_image_no_image { background-color: black; }
-.bc_text_banner, .bc_text_banner_small  {  z-index: 1;  position: absolute;  color: black;  top: 15vw;  text-align: center;  width: 100%; color: white;}
+.bc_text_banner, .bc_text_banner_small  {  z-index: 3;  position: absolute;  top: 15vw;  text-align: center;  width: 100%;  }
 .bc_text_banner_small { top: 13vw; font-size: 1rem; }
-.bc_text_banner:hover { text-decoration: underline; }
-.bc_text_banner_titol { font-size: 3rem; }
-.bc_text_banner_subtitol {  font-size: 2rem; }
+.bc_text_banner:hover {  }
+.bc_text_banner_titol { font-size: 3rem; color: white; }
+.bc_text_banner_subtitol {  font-size: 2rem; color: white; }
 .bc_grup_paginacio { position: absolute; bottom: 3vw; width: 100%; text-align: center; }
 .paginacio { display: inline-block; padding: 0.5vw; }
 .bc_bola_gris { font-size: 0.8rem; color: grey; }
 .bc_bola_blanca { font-size: 0.8rem; color: white;  }
 
-.bc_menu { font-size: 1.5rem; line-height: 1.6rem; z-index: 4; position: absolute; top: 0vw; right: 0px; left: 0px; background-color: white; padding: 0vw 2vw 2vw 0vw; display: flex;} 
-.bc_close_menu { padding: 2vw 2.5vw; font-size: 3vw; display: block; }
+.bc_menu { z-index: 5; font-size: 1.5rem; line-height: 1.6rem;  position: absolute; top: 0vw; right: 0px; left: 0px; background-color: white; padding: 0vw 2vw 2vw 0vw; display: flex;} 
+.bc_close_menu { padding: 2vw 2.5vw; font-size: 3vw; display: block; cursor:pointer; }
 
 .bc_menu_primer_nivell { display: flex; flex-direction: row; flex-grow: initial; flex-wrap: wrap;     width: 100%; justify-content: space-around; }
 .bc_menu_primer_nivell > li { padding-left: 1vw; }
@@ -35,6 +46,11 @@
 
 @media screen and (min-width: 300px) and (max-width: 1200px) {
   
-.bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { height: 47.8vw; }
+    .bc_banner_image_o, 
+    .bc_banner_image_small_o, 
+    .bc_banner_image_no_image_o,    
+    .bc_banner_image, .bc_banner_image_small, .bc_banner_image_no_image { height: 37.9vw; }
+.bc_text_banner_titol { font-size: 2rem; color: white; }
+.bc_text_banner_subtitol {  font-size: 1rem; color: white; }
 
 }

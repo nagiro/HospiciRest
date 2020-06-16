@@ -1,5 +1,5 @@
-const CONST_url_activitats_img = 'http://www.casadecultura.cat/images/activitats/A-';
-const CONST_url_cicles_img = 'http://www.casadecultura.cat/images/cicles/C-';
+const CONST_url_activitats_img = '/images/activitats/A-';
+const CONST_url_cicles_img = '/images/cicles/C-';
 const CONST_api_web = 'http://localhost:8087/apiweb/';
 
 var normalize = (function() {

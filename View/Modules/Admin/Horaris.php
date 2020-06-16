@@ -27,7 +27,7 @@
       
       <h2 style="margin: 3vw 0vw 2vw 0vw;">Llistat d'activitats</h2>
 
-      <llistat-activitats-helper :horaris = "Horaris" :data-dia = "DiaEscollit" :resum = "false"></llistat-activitats-helper>
+      <llistat-activitats-helper v-on:edita-activitat = "editaActivitat($event)" :horaris = "Horaris" :data-dia = "DiaEscollit" :resum = "false"></llistat-activitats-helper>
 
     </div>
   </div>  
@@ -36,18 +36,18 @@
 
   <div v-if="Editant" class="card border-secondary card-default" style="margin-top:20px;">
     
-    <div class="card-header"><h5>Editant la promoció {{PromocioDetall.PROMOCIONS_PROMOCIO_ID}}</h5></div>  
+    <div class="card-header"><h5>Editant l'activitat {{ActivitatDetall.ACTIVITAT_ActivitatId}}</h5></div>  
     <div class="card-body">    
     
     <div class="table table-striped table-sm">    
     
       <input-helper             
           :titol = "'Nom'"
-          :valor-defecte = "PromocioDetall.PROMOCIONS_NOM"
-          :id = "'PROMOCIONS_NOM'"
-          @onchange = "PromocioDetall.PROMOCIONS_NOM = $event"
+          :valor-defecte = "ActivitatDetall.ACTIVITAT_Nom"
+          :id = "'ACTIVITAT_Nom'"
+          @onchange = "ActivitatDetall.ACTIVITAT_Nom = $event"
         ></input-helper>
-      
+<!--      
         <input-helper             
           :titol = "'Titol'"
           :valor-defecte = "PromocioDetall.PROMOCIONS_TITOL"
@@ -104,7 +104,7 @@
           :titol = "'Imatge gran'"
           @reload = "ReloadImatge($event, 'IMATGE_L')"
         ></image-helper>
-
+-->
         <div class="R">
           <div class="FT">
             <button v-on:click="GuardaPromocio" class="btn btn-success">Guardar</button>
@@ -135,7 +135,7 @@
     Horaris: {}, 
     Calendari: [],
     DiaEscollit: '',
-    PromocioDetall: {}, 
+    ActivitatDetall: {}, 
     Editant: false, 
     textCercador: "",     
     img: '', 
@@ -163,6 +163,11 @@
     },
     mostraDia: function($DiaEscollit) {      
       this.DiaEscollit = $DiaEscollit;
+    },
+    editaActivitat: function($idActivitat) {
+      this.axios.get('/apiadmin/Horaris', { 'params' : { 'accio': 'GetActivitat', 'idA': $idActivitat } } )
+        .then( R => { this.ActivitatDetall = R.data; this.Editant = true; } )
+        .catch( E => { alert(E) } );
     }
 
     

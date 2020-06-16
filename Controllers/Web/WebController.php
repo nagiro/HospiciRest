@@ -83,7 +83,7 @@ class WebController
         } else {
 
             $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CICLES', 'Tots els nostres cicles', 'C', 0 );                
-            $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible. <br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
+            // $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible. <br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
 
         }
 
@@ -290,13 +290,12 @@ class WebController
         $NodeIndex = -1;
         $NodeSons = array();
         
-
-        foreach($R as $K => $Node) { 
+        foreach($R as $K => $Node) {
             $NodeIndex = ($Node['Nodes_idNodes'] == $idN) ? $K : $NodeIndex; 
             if ( $Node['Nodes_idPare'] == $idN ) { $NodeSons[] = $Node; } 
         }                
 
-        if($NodeIndex > 0) {
+        if($NodeIndex >= 0) {
 
             $EXTRES["Pagina"] = $R[$NodeIndex];
             $EXTRES["Fills"] = $NodeSons;                

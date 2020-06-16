@@ -19,9 +19,9 @@ class WebQueries extends BDD {
         $SQL = "SELECT {$N->getSelectFieldsNames()} 
                 FROM {$N->getTableName()} 
                WHERE {$N->getOldFieldNameWithTable('Actiu')} = 1
-                 AND {$N->getOldFieldNameWithTable('idSite')} = 10
+                 AND {$N->getOldFieldNameWithTable('idSite')} = 1
                  AND {$N->getOldFieldNameWithTable('isActiva')} = 1                 
-                 AND {$N->getOldFieldNameWithTable('Nivell')} < 4
+                 AND {$N->getOldFieldNameWithTable('Nivell')} < 5
         ORDER BY {$N->getOldFieldNameWithTable('Ordre')} asc";        
         return $this->runQuery( $SQL , array());
     }    
@@ -257,7 +257,7 @@ class WebQueries extends BDD {
                 $SQL .= " GROUP BY a.Cicles_CicleID ORDER BY Dia asc; ";
                 
                 // var_dump($SQL);
-
+                // echo $SQL;
                 return $SQL;
                 
     }

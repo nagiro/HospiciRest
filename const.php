@@ -16,7 +16,7 @@ const VIEWDIR = BASEDIR . 'View/';
 const VIEWDIRMOD = VIEWDIR . 'Modules/';
 
 const WEBFILESDIR = BASEDIR . 'WebFiles/';
-const WEBFILESURL = 'http://192.168.0.60:8087/WebFiles/';
+const WEBFILESURL = 'WebFiles/';
 
 const IMATGESDIR = WEBFILESDIR . 'Imatges/';
 const IMATGESURL = WEBFILESURL . 'Imatges/';

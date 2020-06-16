@@ -19,7 +19,52 @@ class ActivitatsModel extends BDD {
     }
 
     public function getEmptyObject() {
-        $O = $this->getDefaultObject();        
+        $O = $this->getDefaultObject();      
+        $RET = array('ACTIVITAT' => $O, 'HORARIS' => array());
+    }
+
+    public function getActivitatById($idA) {
+
+        $HM = new HorarisModel();
+        $HEM = new HorarisEspaisModel();
+        $EM = new EspaisModel();
+        $W = ''; $WA = array();        
+
+        $SQL = "
+                Select {$this->getSelectFieldsNames()}, {$HM->getSelectFieldsNames()}, {$EM->getSelectFieldsNames()}
+                from {$this->getTableName()} 
+                LEFT JOIN {$HM->getTableName()} ON ( {$this->getOldFieldNameWithTable('ActivitatId')} = {$HM->getOldFieldNameWithTable('ActivitatId')} )
+                LEFT JOIN {$HEM->getTableName()} ON ( {$HM->getOldFieldNameWithTable('HorariId')} = {$HEM->getOldFieldNameWithTable('HorariId')} )
+                LEFT JOIN {$EM->getTableName()} ON ( {$EM->getOldFieldNameWithTable('EspaiId')} = {$HEM->getOldFieldNameWithTable('EspaiId')} )
+                where    {$this->getOldFieldNameWithTable('ActivitatId')} = :idActivitat                         
+                AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                                
+                AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                                         
+                ORDER BY {$HM->getOldFieldNameWithTable('Dia')} asc
+            ";
+        
+        $Rows = $this->runQuery($SQL, array('idActivitat' => $idA ) );
+        
+        $RET = array();
+        
+        foreach($Rows as $Row) {
+            foreach($Row as $FieldName => $Field ) {
+                
+                if( stripos($FieldName, $this->getNewTableName()) !== false ):
+                    $RET['ACTIVITAT'][ $FieldName ] = $Field;
+                elseif( stripos( $FieldName , $HM->getNewTableName() ) !== false ):
+                    $idH = $Row[ $HM->gnfnwt( 'HorariId' ) ] ;                    
+                    $idE = $Row[ $EM->gnfnwt( 'EspaiId' ) ] ;
+                    if( !isset( $RET['HORARIS'][$idH] ) ) $RET['HORARIS'][$idH] = array( 'HORARI' => array(), 'ESPAIS' => array() );
+                    $RET['HORARIS'][$idH]['HORARI'][$FieldName] = $Field; 
+                elseif( stripos($FieldName, $EM->getNewTableName() ) !== false ):
+                    if( !isset( $RET['HORARIS'][$idH]['ESPAIS'][$idE] ) ) $RET['HORARIS'][$idH]['ESPAIS'][$idE] = array();
+                    $RET['HORARIS'][$idH]['ESPAIS'][$idE][$FieldName] = $Field;                    
+                endif;
+            }
+        }
+    
+        return $RET;
+
     }
 
     public function getLlistatActivitatsCalendari( $idS, $paraules, $DataInicial, $DataFinal ) {    
@@ -50,6 +95,7 @@ class ActivitatsModel extends BDD {
                 AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
                 AND      {$HM->getOldFieldNameWithTable('Dia')} > :DataInicial
                 AND      {$HM->getOldFieldNameWithTable('Dia')} < :DataFinal
+                AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                                         
                          {$W}
                 ORDER BY {$HM->getOldFieldNameWithTable('Dia')} asc
             ";

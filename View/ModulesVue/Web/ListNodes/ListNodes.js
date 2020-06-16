@@ -11,8 +11,8 @@ Vue.component('list-nodes', {
     watch: {},
     methods: {
         getUrlImatge: function(fail = false, idNode, $eventFail) {
-            if(!fail) return "http://www.casadecultura.cat/images/front/" + idNode + "-L.jpg";
-            else event.target.src = "http://www.casadecultura.cat/images/front/71-L.jpg";
+            if(!fail) return "/images/front/" + idNode + "-L.jpg";
+            else event.target.src = "/WebFiles/Web/img/NoImage.jpg";
         },
         getLink: function(Node) {                
             return '/pagina/' + Node.Nodes_idNodes + '/' + normalize(Node.Nodes_TitolMenu);

@@ -22,7 +22,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
 	line-height: 1;
 	color: black;
-	background: white;
+	background: rgba(0,0,0,0.8);
 	font-family: 'Roboto', sans-serif; /* És la Roboto 400 */
 }
 
@@ -50,9 +50,9 @@ blockquote, q {
 }
 
 body a { color: black; }
-body a:hover { color: #666666; text-decoration: underline; }
+body a:hover { color: #666666; opacity: 0.7; text-decoration: none; }
 body a:active { color: #222222; }
-body a:focus { color: #666666; text-decoration: underline; }
+body a:focus { color: #666666; opacity: 1; text-decoration: underline; }
 /* body a:visited { color: #222222; } */
 
 p { font-size: 1rem; margin-bottom: 1vw; line-height: 1.2rem; }

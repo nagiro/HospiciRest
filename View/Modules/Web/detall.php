@@ -14,7 +14,8 @@
         .detall_horaris_dia, .detall_horaris_dia_festa { display: block; width: 1.5vw; padding: 0.5vw 0vw; }
         .detall_horaris_dia_festa { background-color: grey; }
         .detall_horaris_dia_A { text-decoration: underline; font-weight: bold; }
-        .detall_horaris_dia_NA {  }
+        .detall_horaris_dia_A:hover { cursor: pointer; }
+        .detall_horaris_dia_NA { color: rgba(0,0,0,0.2); }
         .cartellLlocHora { padding: 1vw; width: 20vw; background-color: black; color: white; margin: 2vw auto; }
         
         .cal-info-text { margin-top: 2vw; }
@@ -177,25 +178,25 @@
                 DiaSetmana(DiaSetmana) {
                     switch (DiaSetmana) {
                     case 0:
-                        return 'Dg.';
+                        return 'Dg';
                         break;
                     case 1:
-                        return 'Dl.';
+                        return 'Dl';
                         break;
                     case 2:
-                        return 'Dt.';
+                        return 'Dt';
                         break;
                     case 3:
-                        return 'Dc.';
+                        return 'Dc';
                         break;
                     case 4:
-                        return 'Dj.';
+                        return 'Dj';
                         break;
                     case 5:
-                        return 'Dv.';
+                        return 'Dv';
                         break;
                     case 6:
-                        return 'Ds.';
+                        return 'Ds';
                         break;
                     }
                 },

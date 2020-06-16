@@ -68,8 +68,8 @@
   
   /* Calendar Helper */
   .CalendarHelper_Div { display: flex; justify-content: space-around; }   
-  .CalendarHelper_Table_TitolAny, .CalendarHelper_Table_Setmana { background-color: grey; }
-  .CalendarHelper_Table td { padding: 0.5vw; text-align: center; }
+  .CalendarHelper_Table_TitolAny, .CalendarHelper_Table_Setmana { background-color: black; color: white; font-weight:bold; }
+  .CalendarHelper_Table td { padding: 0.5vw; text-align: left; }
 
   /* LlistatActivitatsHelper */
 

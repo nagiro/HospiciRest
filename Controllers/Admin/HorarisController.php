@@ -129,6 +129,19 @@ class HorarisController
                         
         return array('CAL'=>$CAL, 'HORARIS' => $RET);
     }
+
+    public function getActivitatById($idA) {
+        
+        // Si no entro un idA, creo una activitat nova i ho retorno
+        if($idA <= 0) {
+            $OA = $this->ActivitatsModel->getEmptyObject();
+        } else {
+            $OA = $this->ActivitatsModel->getActivitatById($idA);
+        }
+
+        return $OA; 
+    }
+
 /*
     public function getPromocionsActives($idS) {
         $RET = $this->PromocionsModel->getPromocionsActives($idS);        
