@@ -9,6 +9,7 @@ const BASEDIR = "C:\Users\USER\Documents\Code\HospiciRest/";
 const APIDIR = BASEDIR . 'Api/';
 const APIDIRADMIN = APIDIR . 'admin/'; 
 const APIDIRWEB = APIDIR . 'web/'; 
+const AUXDIR = BASEDIR . 'Auxiliars/';
 
 const CONTROLLERSDIR = BASEDIR . 'Controllers/';
 const DATABASEDIR = BASEDIR . 'Database/';

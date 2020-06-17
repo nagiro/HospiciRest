@@ -18,9 +18,7 @@
 
 <body>
 
-    <div id="pagina" class="page">
-
-    <?php echo getPremsa(); ?>
+    <div id="pagina" class="page">    
   
         <barra-superior></barra-superior>
 
@@ -75,27 +73,3 @@
 
 
 </body>
-
-<?php 
-
-function getPremsa() {
-    $conn = ftp_connect('80.34.222.61',30);
-    $login = ftp_login($conn, 'casadecultura', '(ccg@#).');
-    $mode = ftp_pasv($conn, TRUE);
-
-    if ((!$conn) || (!$login) || (!$mode)) {
-        die("FTP connection has failed !");
-     }
-     echo "<br />Login Ok.<br />";
-    
-     $file_list = ftp_nlist($conn, "/Actual");
-    foreach ($file_list as $file)
-    {
-        echo "<br>$file";
-    }
-
-    ftp_close($conn);
-
-}
-
-?>

@@ -297,31 +297,34 @@ class WebController
 
         if($NodeIndex >= 0) {
 
+            /* Carrego els fills d'aquesta pàgina per si n'hi ha més... */
+
             $EXTRES["Pagina"] = $R[$NodeIndex];
             $EXTRES["Fills"] = $NodeSons;                
+                        
+            /* Genero el breadcrumb */
             
-            $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
-
-            //Si hem trobat el node, mirem per cada nivell quin és el pare i entrem el breadcumb.
-            $Pares = array($NodeIndex);
-            
-            if( $NodeIndex > -1 ) {
-                for($i = $R[$NodeIndex]['Nodes_Nivell']; $i >= 0; $i--) {
-                    foreach($R as $id => $NodeObject) {
-                        $IndexNivellActual = end($Pares);                    
-                        if( $NodeObject['Nodes_idNodes'] == $R[$IndexNivellActual]['Nodes_idPare'] ):
-                            $Pares[] = $id;
-                        endif;
-                    }                
-                }
-            }    
-            
+            $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/'));             
+            $Pares = array($NodeIndex);                                 // Pares serà un node que és l'actual                   
+            for($i = $R[$NodeIndex]['Nodes_Nivell']; $i >= 0; $i--) {   // Agafo els nodes des de l'actual fins l'arrel
+                foreach($R as $id => $NodeObject) {                     // Per cada node que trobo el guardo a Pares i això serà el breadcumb.
+                    $IndexNivellActual = end($Pares);
+                    if( $NodeObject['Nodes_idNodes'] == $R[$IndexNivellActual]['Nodes_idPare'] ):
+                        $Pares[] = $id;
+                    endif;
+                }                
+            }                        
             $Pares = array_reverse($Pares);
-
             foreach($Pares as $IndexNode) {
                 $EXTRES["Breadcumb"][] =     array('Titol' => $R[$IndexNode]['Nodes_TitolMenu'], "Link" => '/pagina/' . $R[$IndexNode]['Nodes_idNodes'] . '/' . $this->aUrl($R[$IndexNode]['Nodes_TitolMenu'])); 
             }
 
+            /* SI ÉS UN PHP */
+
+            if($EXTRES["Pagina"]['Nodes_isPhp'] == 1) {
+                $EXTRES["Pagina"]['Nodes_Html'] = $this->get_include_contents( AUXDIR . $EXTRES["Pagina"]['Nodes_Html']); 
+            }
+            
         } else {
 
             $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible.<br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
@@ -332,6 +335,14 @@ class WebController
         $EXTRES['Menu'] = $this->getMenu();
 
         return $EXTRES;
+    }
+
+    function get_include_contents($filename) {         
+        if(is_file($filename)){
+            ob_start();                                
+            include $filename;                        
+            return ob_get_clean();            
+        } else return "Hi ha hagut algun error a aquesta pàgina i no la puc carregar.";
     }
 
     public function viewCalendari( ) {
