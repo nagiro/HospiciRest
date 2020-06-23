@@ -32,13 +32,6 @@ const IMATGES_URL_INSCRIPCIONS = '/WebFiles/Inscripcions/';
 const DOCUMENTSDIR = WEBFILESDIR . 'Documents/';
 const DOCUMENTSURL = WEBFILESURL . 'Documents/';
 
-const LOCAL_URL = "../assets/docs/";
-const LOCAL_EMPRESES_FILES = LOCAL_URL . 'empreses/';
-const LOCAL_USERS_FILES = LOCAL_URL . 'usuaris/';
-const LOCAL_WEB_URL = "/assets/docs/";
-const LOCAL_WEB_EMPRESES_URL = LOCAL_WEB_URL . "empreses/";
-const LOCAL_WEB_USUARIS_URL = LOCAL_WEB_URL . "usuaris/";
-// const SESSION_PATH = "C:\Users\Usuario\Documents\Code\src\BorsaLaboral\php";
 const SESSION_TIME = 900;
 
 const EXCEPTION_CODE_NO_ROW_FIND = 1;
