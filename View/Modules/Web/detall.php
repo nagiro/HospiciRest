@@ -116,6 +116,7 @@
                     this.Loaded = true;
                     this.DetallActivitat = this.WebStructure.Activitat[0];
                     this.DetallCurs = this.WebStructure.Curs;                 
+                    console.log(this.DetallCurs);
                 }
                 
             },

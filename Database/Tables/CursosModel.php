@@ -27,9 +27,9 @@ class CursosModel extends BDD {
         return $OC;
     }
 
-    public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => $idCurs) ); }
-    public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => $ActivitatId) ); }
-    public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => $CicleId) ); }
+    public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => intval($idCurs)) ); }    
+    public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => intval($CicleId)) ); }
+    public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId)) ); }
 
     public function getLlistatCursosCalendari( $idS, $paraules, $DataInicial, $DataFinal, $Estat ) {    
         

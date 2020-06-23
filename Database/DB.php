@@ -142,7 +142,7 @@ class BDD extends PDO {
             
         }
         
-        $RET = $this->runQuery($SQL, $WHERE, !$multiple);
+        $RET = $this->runQuery($SQL, $WHERE, !$multiple);        
         return $RET;        
 
     }
@@ -212,22 +212,24 @@ class BDD extends PDO {
     public function runQuery($Select, $Params, $getOne = false, $consulta = true, $tipus = '') {
                
        if(is_null($this->db)) throw new Exception("No he pogut connectar-me a la base de dades");
-              
-       $dbs = $this->db->prepare($Select);
-       // var_dump($dbs->debugDumpParams());
-              
-       $Affected_Rows = $dbs->execute($Params);                                      
-       if($consulta && $dbs->rowCount() > 0){
-           $RET = $dbs->fetchAll(PDO::FETCH_ASSOC);
-           if($getOne && isset($RET[0])) return $RET[0];
-           else return $RET;
-       } elseif(!$consulta) {
-           if ($Affected_Rows > 0 && $tipus == 'A') return $this->db->lastInsertId();
-           elseif($Affected_Rows == 0 && $tipus == 'A') throw new PDOException("No he pogut inserir la nova fila");
-           elseif($tipus != 'A') return $Affected_Rows;
-       } else {
-           return array();
-       }              
+    
+        $dbs = $this->db->prepare($Select);       
+                
+        $Affected_Rows = $dbs->execute($Params);                                      
+        // var_dump($dbs->debugDumpParams());
+        // var_dump($Params);       
+        if($consulta && $dbs->rowCount() > 0){
+            $RET = $dbs->fetchAll(PDO::FETCH_ASSOC);
+            if($getOne && isset($RET[0])) return $RET[0];
+            else return $RET;
+        } elseif(!$consulta) {
+            if ($Affected_Rows > 0 && $tipus == 'A') return $this->db->lastInsertId();
+            elseif($Affected_Rows == 0 && $tipus == 'A') throw new PDOException("No he pogut inserir la nova fila");
+            elseif($tipus != 'A') return $Affected_Rows;
+        } else {
+            return array();
+        }              
+    
 
     }
 

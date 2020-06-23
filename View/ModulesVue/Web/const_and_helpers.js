@@ -1,6 +1,6 @@
 const CONST_url_activitats_img = '/images/activitats/A-';
 const CONST_url_cicles_img = '/images/cicles/C-';
-const CONST_api_web = 'http://localhost:8087/apiweb/';
+const CONST_api_web = '/apiweb/';
 
 var normalize = (function() {
     var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç.", 

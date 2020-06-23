@@ -161,8 +161,7 @@ class MyAPIWeb extends API
             return array($EXTRES, 200);
 
         } catch (PDOException $e) { return array( $e->getMessage(), 500); 
-        } catch (Exception $e) { return array( $e->getMessage(), 500); 
-        } finally {  }
+        } catch (Exception $e) { return array( $e->getMessage(), 500); } 
 
         
     }    

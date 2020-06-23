@@ -275,13 +275,13 @@ class WebController
 
             /* ENTRADES Si l'activitat disposa d'entrada habilitada, carrego el curs */
             
-            if($EXTRES['Activitat'][0]['ACTIVITATS_IsEntrada'] == 1) {
+            if($EXTRES['Activitat'][0]['ACTIVITATS_IsEntrada'] == "1") {
                 $CM = new CursosModel();
                 $OM = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );
                 $EXTRES['Curs'] = array($OM);                 
             } else {
                 $EXTRES['Curs'] = array();
-            }
+            }            
             
             $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                
 

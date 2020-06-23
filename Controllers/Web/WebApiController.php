@@ -20,6 +20,8 @@ class WebApiController
     const TIPUS_RESGUARD_CODI_BARRES = 'C';        
     const TIPUS_EMAIL_ENTRADA_NUMERADA = 'E';
     const TIPUS_RESGUARD_GENERAL_INSCRIPCIO = 'I';
+    const TIPUS_RESGUARD_MAIL = 'MAIL';
+    const TIPUS_RESGUARD_WEB = 'WEB';
 
 
     public function __construct() {
@@ -40,11 +42,11 @@ class WebApiController
 
     /*
     * $idMatricula: Identificador de la matrícula que entra. 
-    * $Tipus : array() (C) Té codi de barres, (I) Inscripció, (E) Entrada numerada
+    * $Tipus : array() (C) Té codi de barres, (I) Inscripció, (E) Entrada numerada (W) = Web
     **/
-    public function generaResguard( $InscripcioCodificada, $Tipus, $withHeader = true, $withFooter = true ) {
-           
-        $idMatricula = $this->Decrypt($InscripcioCodificada);                
+    public function generaResguard( $InscripcioCodificada, $Tipus = array(SELF::TIPUS_RESGUARD_MAIL), $withHeader = true, $withFooter = true ) {
+              
+        $idMatricula = $this->Decrypt($InscripcioCodificada);                        
 
         // Carrego els models 
 
@@ -55,31 +57,45 @@ class WebApiController
 
         // Carrego els objectes per utilitzar
 
-        $OMatricula = $MatriculesModel->getMatriculaById( $idMatricula );        
+        $OMatricula = $MatriculesModel->getMatriculaById( $idMatricula );                
         $OCurs = $CursosModel->getCursById( $OMatricula['MATRICULES_CursId'] );
         $OUsuari = $UsuarisModel->getUsuariId( $OMatricula['MATRICULES_UsuariId'] );
 
         // $HTML = $OptionsModel->getOption('BODY_DOC_MATR_CAIXER', 1);        
         $Logo = $OptionsModel->getOption('LOGO_URL', 1);        
         
-        $HTML = '';
-        if($withHeader) $HTML = file_get_contents( AUXDIR . 'Inscripcions/headerInscripcio'.$OMatricula['MATRICULES_SiteId'].'.html' );        
-        $HTML .= file_get_contents( AUXDIR . 'Inscripcions/resguardInscripcio'.$OMatricula['MATRICULES_SiteId'].'.html' );        
-        if($withFooter) $HTML .= file_get_contents( AUXDIR . 'Inscripcions/footerInscripcio'.$OMatricula['MATRICULES_SiteId'].'.html' );
+        $HTML = '';        
+        if( in_array(self::TIPUS_RESGUARD_MAIL, $Tipus) ){
 
+            if($withHeader) $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailHeader'.$OMatricula['MATRICULES_SiteId'].'.html' );        
+            $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailBody'.$OMatricula['MATRICULES_SiteId'].'.html' );        
+            if($withFooter) $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailFooter'.$OMatricula['MATRICULES_SiteId'].'.html' );
+
+        } elseif( in_array(self::TIPUS_RESGUARD_WEB, $Tipus) ) {
+
+            if($withHeader) $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Web/headerInscripcio'.$OMatricula['MATRICULES_SiteId'].'.html' );        
+            $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Web/resguardInscripcio'.$OMatricula['MATRICULES_SiteId'].'.html' );        
+            if($withFooter) $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Web/footerInscripcio'.$OMatricula['MATRICULES_SiteId'].'.html' );
+
+        }                        
+        
         //Si la matrícula és d'una activitat, carrego la imatge. 
         $ImatgeMatricula = "";
+        $ImatgeMatricula_XL = "";
         if($OCurs['CURSOS_ActivitatId'] > 0):
             $ImatgeMatricula = IMATGES_URL_BASE . IMATGES_URL_ACTIVITATS . 'A-' . $OCurs['CURSOS_ActivitatId'] . '-L.jpg';
+            $ImatgeMatricula_XL = IMATGES_URL_BASE . IMATGES_URL_ACTIVITATS . 'A-' . $OCurs['CURSOS_ActivitatId'] . '-XL.jpg';
         elseif($OCurs['CURSOS_CicleId'] > 0):
             $ImatgeMatricula = IMATGES_URL_BASE . IMATGES_URL_CICLES . 'C-' . $OCurs['CURSOS_CicleId'] . '-L.jpg';
+            $ImatgeMatricula_XL = IMATGES_URL_BASE . IMATGES_URL_CICLES . 'C-' . $OCurs['CURSOS_CicleId'] . '-XL.jpg';
         else:
-            $ImatgeMatricula = 'CURS';
+            $ImatgeMatricula = 'http://www.casadecultura.cat/WebFiles/Web/img/NoImage.jpg';
+            $ImatgeMatricula_XL = 'http://www.casadecultura.cat/WebFiles/Web/img/NoImage.jpg';            
         endif;        
-
+        
         /* Falta generar el codi de barres de pagament i el QR de la matrícula */
         \PHPQRCode\QRcode::png($InscripcioCodificada, BASEDIR . "/WebFiles/Inscripcions/" . $InscripcioCodificada .'.png', 'L', 4, 2);        
-
+        
         $HTML = str_replace('@@IMATGE@@', $ImatgeMatricula, $HTML);
         $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
         $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
@@ -90,9 +106,10 @@ class WebApiController
         $HTML = str_replace('@@CODI_BARRES_TEXT@@', '', $HTML);
         $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $InscripcioCodificada . '.png', $HTML);
         $HTML = str_replace('@@QR_TEXT@@', $InscripcioCodificada, $HTML);
-                     
-        // $this->SendEmail('albert.johe@gmail.com', 'informatica@casadecultura.cat', 'Prova', $HTML);
-
+        $HTML = str_replace('@@IMATGE_XL@@', $ImatgeMatricula, $HTML);
+                        
+        // $this->SendEmail('albert.johe@gmail.com', 'informatica@casadecultura.cat', 'Prova', $HTML);        
+        
         return $HTML;
         
     }
@@ -102,7 +119,6 @@ class WebApiController
         $OU = array();
         $UM = new UsuarisModel();
         $CM = new CursosModel();
-
         
         $OU = $UM->getUsuariDNI($DNI);
         // Si no hem trobat el DNI, creem l'usuari
@@ -130,19 +146,19 @@ class WebApiController
             else throw new Exception("No he pogut crear l'usuari amb DNI {$DNI}");         
 
         }
-
+        
         // Vinculem l'usuari amb el site si fa falta... 
         $USM = new UsuarisSitesModel();
         $USM->addUsuariASite( $OU[ $UM->gnfnwt('IdUsuari') ], 1 ); 
 
         // Carreguem el curs que toca per fer la matrícula.
         // Si no hi ha el curs que toca o l'activitat el creem a partir del cicle
-        $OC = array();         
+        $OC = array();                 
         if($ActivitatId > 0) { $OC = $CM->getRowActivitatId($ActivitatId); }
         else if($CicleId > 0) { $OC = $CM->getRowCicleId($CicleId); }
-        else throw new Exception("No hi ha cap activitat o cicle on registrar-se");
+        else throw new Exception("No hi ha cap activitat o cicle on registrar-se");        
         if(empty($OC)) throw new Exception("No he trobat cap inscripció activa per l'activitat ({$ActivitatId}) ni el cicle ({$CicleId})");        
-
+        
         //Passem a gestionar la matrícula
         $MM = new MatriculesModel();
 
@@ -153,20 +169,22 @@ class WebApiController
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );
         $Matricules = array();
+        
         if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) throw new Exception('No hi ha prou places disponibles.');
         else {
             for($i = 0; $i < $QuantesEntrades; $i++){
                 $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $OC[$CM->gnfnwt('IdCurs')], $OC[$CM->gnfnwt('SiteId')]);
-                $OM[$MM->gnfnwt("Estat")] = MatriculesModel::ESTAT_RESERVAT;
+                $OM[$MM->gnfnwt("Estat")] = MatriculesModel::ESTAT_RESERVAT;                
                 $id = $MM->doInsert($OM);
+                
                 if( !($id > 0) ) { throw new Exception("Hi ha hagut algun problema guardant la inscripció. Consulti amb la Casa de Cultura al 972.20.20.13"); }
                 else { 
                     $MatriculaId = $this->Encrypt($id);
-                    $Matricules[] = $MatriculaId;                    
+                    $Matricules[] = $MatriculaId;                                                
                 }
             }
 
-            if(sizeof($Matricules) > 0) { $this->EnviaEmailInscripcio($Matricules, array(self::TIPUS_RESGUARD_GENERAL_INSCRIPCIO), $OU[$UM->gnfnwt('Email')]); }
+            if(sizeof($Matricules) > 0) { $this->EnviaEmailInscripcio($Matricules, $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL)); }
         
             return $Matricules;
         
@@ -175,51 +193,85 @@ class WebApiController
 
     public function EnviaEmailInscripcio( $MatriculesArray, $email, $Tipus ) {
         
-        $HTML = "";
+        $HTML = "";        
         foreach($MatriculesArray as $K => $MatriculaId){
-            // Id, WithHeader, WithFooter
-            $HTML .= $this->generaResguard($MatriculaId, $Tipus, ($K == 0), ($K == (sizeof($MatriculesArray)-1)) );
-
+            // Id, WithHeader, WithFooter            
+            $HTML .= $this->generaResguard($MatriculaId, $Tipus, ($K == 0), ($K == (sizeof($MatriculesArray)-1)) );            
         }
-
-        if(sizeof($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
+                
+        if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
         
     }
 
     public function SendEmail($to, $from, $subject, $HTML) {
+        $url = 'https://api.elasticemail.com/v2/email/send';
+
+        try{
+                $post = array('from' => $from,
+                'fromName' => 'Casa de Cultura de Girona',
+                'apikey' => '6c7b2fdd-c15d-4e8d-b61b-d7fbb6d45f46',
+                'subject' => $subject,
+                'to' => $to,
+                'bodyHtml' => $HTML,                
+                'isTransactional' => false);
+                
+                $ch = curl_init();
+                curl_setopt_array($ch, array(
+                    CURLOPT_URL => $url,
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $post,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_HEADER => false,
+                    CURLOPT_SSL_VERIFYPEER => false
+                ));
+                
+                $result=curl_exec ($ch);
+                $RES = json_decode($result, true);
+                curl_close ($ch);
+                
+                if( $RES['success'] === false ){
+                    throw new Exception($result);
+                }                
+                
+        }
+        catch(Exception $ex){
+            return false;
+        }        
+    }
+
+    public function SendEmailPhpMailer($to, $from, $subject, $HTML) {
         
         $mail = new PHPMailer();
+        
+    
+        $mail->IsSMTP();
+        $mail->CharSet = 'UTF-8';
+        $mail->Timeout  =   10;            
+        // $mail->Host       = "email-smtp.eu-central-1.amazonaws.com"; // SMTP server example
+        $mail->Host = "smtp.gmail.com";
+        $mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
+        $mail->SMTPSecure = 'ssl';
+        $mail->SMTPAuth   = true;                  // enable SMTP authentication
+        $mail->Port       = 465;                    // set the SMTP port for the GMAIL server                
+        // $mail->Username   = "AKIAS2ROCN6SN7CJF354"; // SMTP account username example
+        $mail->Username = 'albert.johe@gmail.com';
+        // $mail->Password   = "BEHMBj1kvHrPeJAmYroQ5BAikHQs7i4OpE007aMRxL1W";        // SMTP account password example
+        $mail->Password = 'gmail1981.';
+        
+        $mail->isHTML(true);                                  // Set email format to HTML
+        $mail->addAddress($to);
+        $mail->From = $from;
+        $mail->FromName = "Casa de Cultura de Girona";            
+        $mail->addReplyTo($from);            
+        $mail->setFrom($from);
+        $mail->setAddress = $to;
+        $mail->setFrom = $from;
+        $mail->Subject = $subject;
+        $mail->Body    = $HTML;        
 
-        try {
-            $mail->IsSMTP();
-            $mail->CharSet = 'UTF-8';
-            $mail->Timeout  =   10;
-            $mail->Debugoutput = function($str, $level) {echo "debug level $level; message: $str";};
-            // $mail->Host       = "email-smtp.eu-central-1.amazonaws.com"; // SMTP server example
-            $mail->Host = "smtp.casadecultura.org";
-            $mail->SMTPDebug  = 4;                     // enables SMTP debug information (for testing)
-            $mail->SMTPSecure = 'tls';
-            $mail->SMTPAuth   = true;                  // enable SMTP authentication
-            $mail->Port       = 587;                    // set the SMTP port for the GMAIL server                
-            // $mail->Username   = "AKIAS2ROCN6SN7CJF354"; // SMTP account username example
-            $mail->Username = 'informatica@casadecultura.org';
-            // $mail->Password   = "BEHMBj1kvHrPeJAmYroQ5BAikHQs7i4OpE007aMRxL1W";        // SMTP account password example
-            $mail->Password = '(ccg1@#)';
-            
-            $mail->isHTML(true);                                  // Set email format to HTML
-            $mail->addAddress($to);
-            $mail->setFrom($from);
-            $mail->Subject = $subject;
-            $mail->Body    = $HTML;        
-
-            $mail->send();
-            var_dump($mail->ErrorInfo);
-
-        } catch (PHPMailerException $e) {
-            echo "An error occurred. {$e->errorMessage()}", PHP_EOL; //Catch errors from PHPMailer.
-        } catch (Exception $e) {
-            echo "Email not sent. {$mail->ErrorInfo}", PHP_EOL; //Catch errors from Amazon SES.
-        }    
+        if(!$mail->send()) {
+            var_dump("No s'ha enviat el correu: " . $mail->ErrorInfo);
+        }         
 
     }
 

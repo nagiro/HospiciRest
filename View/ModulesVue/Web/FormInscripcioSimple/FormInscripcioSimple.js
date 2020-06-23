@@ -3,8 +3,8 @@ Vue.component('form-inscripcio-simple', {
     props: {        
         InputColor: String, 
         InputDades: Object,
-        ActivitatId: Number,
-        CicleId: Number,
+        ActivitatId: String,
+        CicleId: String,
         DetallCurs: Object
     },          
     data: function() {
@@ -63,7 +63,7 @@ Vue.component('form-inscripcio-simple', {
                     this.ErrorInscripcio = '<strong>El curs està restringit</strong>. Poseu-vos en contacte amb la Casa de Cultura de Girona per a més informació.';
                     return false; 
                 }
-                if( DataIniciMatricula >= Today ||  DataFiMatricula <= Today ) {
+                if( DataIniciMatricula >= Today &&  DataFiMatricula <= Today ) {
                     this.Pas = 7; 
                     this.ErrorInscripcio = 'Inscripcions obertes del &nbsp;<b>' + DIM + '</b>&nbsp;al&nbsp;<b>' + DFM + '</b>&nbsp;inclosos.';
                     return false; 
