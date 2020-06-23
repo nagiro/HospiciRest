@@ -3,6 +3,7 @@
 require_once VIEWDIR . 'Routes.php';
 require_once CONTROLLERSDIR . 'AuthController.php';
 require_once CONTROLLERSDIR.  '/Web/WebController.php';
+require_once BASEDIR . 'vendor/autoload.php';
 
 class MainModule {
 

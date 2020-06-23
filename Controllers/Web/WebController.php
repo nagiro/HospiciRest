@@ -1,6 +1,7 @@
 <?php 
 
-require_once BASEDIR.'Database/Queries/WebQueries.php';
+require_once DATABASEDIR . 'Queries/WebQueries.php';
+require_once DATABASEDIR . 'Tables/CursosModel.php';
 require_once CONTROLLERSDIR.'FileController.php';
 
 class WebController
@@ -95,7 +96,7 @@ class WebController
 
 
     /**
-        url: UrlArrayParts
+     *   url: UrlArrayParts
     */
     public function getUrlToFilters( $URL ) {
         //Url[0] = 'activitats'
@@ -232,7 +233,7 @@ class WebController
     public function viewDetall( $idA ) {
 
         $EXTRES["Activitat"] = $this->WebQueries->getActivitatsDetall( $idA );                    
-        $EXTRES['Horaris'] = $this->WebQueries->getHorarisActivitatDetall( $idA );                      
+        $EXTRES['Horaris'] = $this->WebQueries->getHorarisActivitatDetall( $idA );                              
 
         if(sizeof($EXTRES['Activitat']) > 0 ) {
         
@@ -240,9 +241,9 @@ class WebController
             
             $idC = $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"];
             $ArrayCicles = array($idC);
-            if( ! ($idC > 0) ) $ArrayCicles = array();
+            if( ! ($idC > 0) ) $ArrayCicles = array();            
             
-            // Si idC == 1, és tots els cicles... no hi ha activitats vinculades
+            /* ACTIVITATS RELACIONADES Si entro a consultar un cicle concret, carrego les activitats relacionades */
 
             if(sizeof($EXTRES["Activitat"]) > 0 && $idC > 1)
                     $EXTRES["ActivitatsRelacionades"] = $this->WebQueries->getActivitatsHome( array(),'', '', 1, 1, $ArrayCicles);
@@ -252,6 +253,9 @@ class WebController
             $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
             
             $NOM_CICLE = '';
+            
+            /* BREADCUMB Si hem escollit un cicle carrego el següent breadcumb */
+            
             if($idC > 1){                        
 
                 $Cicles = $this->WebQueries->getCiclesHome( $idC );   
@@ -262,14 +266,28 @@ class WebController
                 
             } else {
 
+                /* BREADCUMB Si volem veure tots els cicles */
+
                 $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
                 
             }
-
             $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)); 
+
+            /* ENTRADES Si l'activitat disposa d'entrada habilitada, carrego el curs */
+            
+            if($EXTRES['Activitat'][0]['ACTIVITATS_IsEntrada'] == 1) {
+                $CM = new CursosModel();
+                $OM = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );
+                $EXTRES['Curs'] = array($OM);                 
+            } else {
+                $EXTRES['Curs'] = array();
+            }
+            
             $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                
 
         } else {
+
+            /* La pàgina no és visible perquè no he trobat l'activitat o cicle */
 
             $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, '', '', 'A', 0 );                
             $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible. <br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');

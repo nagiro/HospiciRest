@@ -106,6 +106,45 @@ class ActivitatsModel extends BDD {
         
     }
 
+    public function genXML(){
+/*
+        $this->setLayout(null);
+        $this->setTemplate(null);
+        $LOH = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,false);
+                    
+        //Creem l'objecte XML
+        $i = 1;  
+        $document = "<document>\n";                    
+        foreach($LOH as $OH):
+                                                        
+            $OA = $OH->getActivitats();
+            $LE = $OH->getArrayEspais();
+                                                                                                            
+            $document .= "<caixa>\n";
+            $document .= "  <data_inicial>".$OA->getPrimerHorari()->getDia('Y-m-d')."</data_inicial>\n";
+            $document .= "  <data_fi>".$OA->getUltimHorari()->getDia('Y-m-d')."</data_fi>\n";
+            $document .= "  <tipus_activitat>".$OA->getNomTipusActivitat()."</tipus_activitat>\n";
+            $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>\n";
+            $document .= "  <tipologia>".$OA->getCategories()."</tipologia>\n";
+            $document .= "  <importancia>".$OA->getImportancia()."</importancia>\n";                        
+            $document .= "  <titol>".$OA->getTmig()."</titol>\n";
+            $document .= "  <text>".strip_tags(html_entity_decode($OA->getDmig()))."</text>\n";
+            $document .= "  <url>".$this->getController()->genUrl('@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() , true )."</url>\n";
+            $document .= "  <hora_inici>".$OH->getHorainici("H.i")."</hora_inici>\n";
+            $document .= "  <hora_fi>".$OH->getHorafi("H.i")."</hora_fi>\n";
+            $document .= "  <espais>".implode(",",$LE)."</espais>\n";
+            $document .= "  <organitzador>".html_entity_decode( $OA->getOrganitzador() )."</organitzador>\n";
+            $document .= "  <info_practica>".strip_tags( html_entity_decode( $OA->getInfopractica() ) )."</info_practica>\n";
+            $document .= "  <url_img_s>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-M.jpg</url_img_s>\n";
+            $document .= "  <url_img_m>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-L.jpg</url_img_m>\n";
+            $document .= "  <url_img_l>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-XL.jpg</url_img_l>\n";                                                
+            $document .= "</caixa>\n";                                                                                                
+                                                                                                                                    
+        endforeach;            
+        $document .= "</document>\n";                  
+*/
+    }
+
 }
 
 ?>

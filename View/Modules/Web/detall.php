@@ -55,11 +55,12 @@
             </div>
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
-                <div class="text" v-html="DetallActivitat.ACTIVITATS_DescripcioMig">  </div>
-                <div v-if="DetallActivitat.IsEntrada == 1">
+                <div class="text" v-html="DetallActivitat.ACTIVITATS_DescripcioMig">  </div>                
+                <div v-if="DetallCurs.length == 1">
                     <form-inscripcio-simple 
                         :activitat-id="DetallActivitat.ACTIVITATS_ActivitatId" 
                         :cicle-id="DetallActivitat.ACTIVITATS_CiclesCicleId"
+                        :detall-curs="DetallCurs[0]"
                     >
                     </form-inscripcio-simple>
                 </div>
@@ -97,7 +98,8 @@
                 Loaded: false,
                 Errors: false,
                 WebStructure: <?php echo $Data ?>,                
-                DetallActivitat: {},
+                DetallActivitat: {},    //Objecte activitat
+                DetallCurs: {},         //Objecte inscripció                
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
                 Anys: [], 
@@ -113,11 +115,12 @@
                 } else {                    
                     this.Loaded = true;
                     this.DetallActivitat = this.WebStructure.Activitat[0];
+                    this.DetallCurs = this.WebStructure.Curs;                 
                 }
                 
             },
             computed: {},
-            methods: {            
+            methods: {                                                            
                 veureDetallHoraris: function() {
                     this.MostraDetall = !this.MostraDetall;                
                 },

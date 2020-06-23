@@ -4,7 +4,8 @@ Vue.component('form-inscripcio-simple', {
         InputColor: String, 
         InputDades: Object,
         ActivitatId: Number,
-        CicleId: Number
+        CicleId: Number,
+        DetallCurs: Object
     },          
     data: function() {
         return {    ActivitatHome: {}, 
@@ -30,14 +31,46 @@ Vue.component('form-inscripcio-simple', {
                     classAnyNaixement: 'form-control',
                     MatriculesArray: Array,
                     ErrorInscripcio: '',
-                    ConfirmoAssistencia: false
+                    ConfirmoAssistencia: false                    
                 }
     },    
     computed: {
     },
     watch: {              
     },
+    /*
+    * Pas 0 = Inici
+    * Pas 1 = No he trobat el DNI i demano dades extres per crear usuari.
+    * Pas 2 = He trobat el DNI i passo a demanar quantes entrades
+    * Pas 3 = No existeix.
+    * Pas 4 = Demano quantes entrades vull i finalitzo.
+    * Pas 5 = Finalitzada correctament, mostro resguards. 
+    * Pas 6 = Hi ha hagut error fent la inscripció
+    * Pas 7 = Error previ en condicions del curs ( data inici matrícula, restringit, etc. )
+    */
     methods: {
+        PucMatricular: function(DetallCurs) {
+            
+            if( DetallCurs && DetallCurs.CURSOS_VisibleWeb) {
+                //Existeix un curs on matricular-se
+                const DataIniciMatricula = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'Javascript');   // Funció const_and_helpers.js                
+                const DIM = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'TDMA');   // Funció const_and_helpers.js                                
+                const DataFiMatricula = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'Javascript');   // Funció const_and_helpers.js                
+                const DFM = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'TDMA');   // Funció const_and_helpers.js                
+                const Today = new Date();
+                if( DetallCurs.CURSOS_IsRestringit == 1) { 
+                    this.Pas = 7; 
+                    this.ErrorInscripcio = '<strong>El curs està restringit</strong>. Poseu-vos en contacte amb la Casa de Cultura de Girona per a més informació.';
+                    return false; 
+                }
+                if( DataIniciMatricula >= Today ||  DataFiMatricula <= Today ) {
+                    this.Pas = 7; 
+                    this.ErrorInscripcio = 'Inscripcions obertes del &nbsp;<b>' + DIM + '</b>&nbsp;al&nbsp;<b>' + DFM + '</b>&nbsp;inclosos.';
+                    return false; 
+                } 
+                return true;                
+            }
+        },
         dnikeymonitor: function($event) {
             
             if( ValidaDNI(this.DNI) ) {
@@ -112,13 +145,16 @@ Vue.component('form-inscripcio-simple', {
     },
     template: `            
 
-    <form class="formulari-inscripcio">
+    <form class="formulari-inscripcio">    
         <h2>Inscriu-te a l'activitat!</h2>
+
+        <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
+        </div>
 
         <div v-if="Pas == 5" class="row alert alert-success Pas5"> 
             <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
             <ul>
-                <li v-for="M of MatriculesArray"><a href="/link/descarrega">Matrícula {{M}}</a></li>
+                <li v-for="(M, index) of MatriculesArray"><a target="_NEW" :href="'/apiweb/GeneraResguard?i=' + M">Inscripció {{index + 1}}</a></li>
             </ul>            
         </div>
 
@@ -189,7 +225,7 @@ Vue.component('form-inscripcio-simple', {
                 <small id="AnyNaixementHelp" class="form-text text-muted">Opcional: El seu any de naixement.</small>
             </div>                        
         </div>        
-        <div>
+        <div v-if="Pas == 4 || Pas == 2">
 
             <div class="row">
             

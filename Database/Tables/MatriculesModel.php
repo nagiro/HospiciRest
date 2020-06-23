@@ -55,6 +55,10 @@ class MatriculesModel extends BDD {
         return $this->_doInsert($ObjecteMatricula);        
     }
 
+    public function getMatriculaById($idMatricula) {
+        return $this->_getRowWhere( array( $this->gofnwt('IdMatricula') => $idMatricula ) );        
+    }
+
     public function getUsuariHasMatricula($idC, $idU) {
         $W = array();
         $W[ $this->gofnwt('CursId') ] = $idC;

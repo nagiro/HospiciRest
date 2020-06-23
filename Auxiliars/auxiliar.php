@@ -40,18 +40,37 @@ foreach($files1 as $f2) {
 
 }
 
- // ini_set('display_errors', 1);
- // ini_set('display_startup_errors', 1);
- // error_reporting(E_ALL);
 
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+error_reporting(0);
+
+echo '<ul class="nav nav-tabs" id="myTab" role="tablist">';
+foreach($HTML as $year => $HtmlMonth):    
+    echo '  <li class="nav-item">
+                <a class="nav-link" id="A'.$year.'-tab" data-toggle="tab" href="#A'.$year.'" role="tab" aria-controls="A'.$year.'" aria-selected="true">'.$year.'</a>
+            </li>';
+endforeach;
+echo '</ul>';
+
+echo '<div class="tab-content" id="myTabContent">';
 foreach($HTML as $year => $HtmlMonth) {    
+    
+    echo '<div class="tab-pane fade" id="A'.$year.'" role="tabpanel" aria-labelledby="A'.$year.'-tab">';
+
     foreach($HtmlMonth as $month => $HtmlDay){
+
         echo '<h2>'.Mesos($month).' '.$year.'</h2><ul>';
+
         foreach($HtmlDay as $day => $HtmlHour) {
             foreach($HtmlHour as $hour => $File) {
                 $dom = new DOMDocument();
-                $dom->loadHTML(file_get_contents($URL.'/'.$File));                    
-                $text = $dom->getElementsByTagName("h3")->item(0)->textContent;
+                $text = "";
+                if( $dom->loadHTML(file_get_contents($URL.'/'.$File)) ):
+                    $Tag = $dom->getElementsByTagName("h3");                    
+                    $Item = $Tag->item(0);                    
+                    $text = $Item->textContent;
+                endif;
                 
                 echo "
                 <li>
@@ -61,6 +80,10 @@ foreach($HTML as $year => $HtmlMonth) {
         }
         echo '</ul>';
     }    
+    echo '</div>';
 }
+echo '</div>';
+
+error_reporting(E_ALL);
 
 ?>

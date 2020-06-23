@@ -24,8 +24,10 @@ const IMATGESURL = WEBFILESURL . 'Imatges/';
 const IMATGES_DIR_PROMOCIONS = IMATGESDIR . 'promocions/';
 const IMATGES_URL_PROMOCIONS = IMATGESURL . 'promocions/';
 
-const IMATGES_URL_ACTIVITATS = 'http://www.casadecultura.cat/images/activitats/';
-const IMATGES_URL_CICLES = 'http://www.casadecultura.cat/images/cicles/';
+const IMATGES_URL_BASE = 'http://www.casadecultura.cat'; 
+const IMATGES_URL_ACTIVITATS = '/images/activitats/';
+const IMATGES_URL_CICLES = '/images/cicles/';
+const IMATGES_URL_INSCRIPCIONS = '/WebFiles/Inscripcions/';
 
 const DOCUMENTSDIR = WEBFILESDIR . 'Documents/';
 const DOCUMENTSURL = WEBFILESURL . 'Documents/';

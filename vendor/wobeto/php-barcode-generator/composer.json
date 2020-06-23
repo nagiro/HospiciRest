@@ -1,0 +1,26 @@
+{
+    "name": "wobeto/php-barcode-generator",
+    "type": "library",
+    "description": "Based inpicqer/php-barcode-generator, but compatible with php 5.3.3. An easy to use, non-bloated, barcode generator in PHP. Creates SVG, PNG, JPG and HTML images from the most used 1D barcode standards.",
+    "keywords": [ "php", "barcode", "barcode generator", "EAN", "EAN13", "UPC", "Code39", "Code128", "Code93", "Standard 2 of 5", "MSI", "POSTNET", "KIX", "KIXCODE", "CODABAR", "PHARMA", "Code11", "SVG", "PNG", "HTML", "JPG", "JPEG" ],
+    "homepage": "http://github.com/fernandowobeto/php-barcode-generator",
+    "license": "LGPLv3",
+    "authors": [
+        {
+            "name": "Fernando Wobeto",
+            "email": "contato@fernandowobeto.com",
+            "homepage": "http://www.fernandowobeto.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wobeto\\Barcode\\": "src"
+        }
+    }
+}

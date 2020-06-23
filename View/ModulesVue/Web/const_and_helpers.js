@@ -28,8 +28,7 @@ var normalize = (function() {
 // Objecte data el retorna la funció ConvertirData(Data, 'Object')
 function DiaSetmana( ObjecteData ){
     var dias=["diumenge", "dilluns", "dimarts", "dimecres", "dijous", "divendres", "dissabte"];
-    var dt = new Date(ObjecteData.any, (ObjecteData.mes - 1), ObjecteData.dia, 12, 00,00);
-    console.log(ObjecteData, dt);
+    var dt = new Date(ObjecteData.any, (ObjecteData.mes - 1), ObjecteData.dia, 12, 00,00);    
     return dias[dt.getUTCDay()];
 };
 
@@ -43,6 +42,7 @@ function MesNom( ObjecteData , $NomesMes = false){
     else RespostaMesos = mesos[(parseInt(ObjecteData.mes) - 1)];
     return RespostaMesos;
 };
+
 
 function ConvertirData( DataBDD, ReturnType = 'A' ) {
     const DataArray = DataBDD.split('-');
@@ -59,6 +59,8 @@ function ConvertirData( DataBDD, ReturnType = 'A' ) {
         return Dia;
     } else if(ReturnType == 'Object') {
         return {'dia': Dia, 'mes': Mes, 'any': Any };
+    } else if(ReturnType == 'Javascript') {
+        return new Date(Any, (Mes - 1), Dia, 0, 0, 0);
     }
 
 

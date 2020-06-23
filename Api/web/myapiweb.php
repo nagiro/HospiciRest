@@ -37,6 +37,15 @@ class MyAPIWeb extends API
         
     }
 
+    protected function GeneraResguard() {
+        $WAPI = new WebApiController();
+        $InscripcioCodificada = (isset($_GET['i'])) ? $_GET['i'] : '';
+        $HTML = $WAPI->generaResguard($InscripcioCodificada);
+
+        // Retornem 0 perquè ensenyem l'HTML tal qual va. 
+        return array($HTML, '0');
+    }
+
 
     protected function ExisteixDNI() {
         
@@ -64,7 +73,7 @@ class MyAPIWeb extends API
   ["files"]=> array(0) {}
 }
 
-    */
+    */    
 
     protected function AltaUsuariSimple() {
         
@@ -88,7 +97,7 @@ class MyAPIWeb extends API
         try {
             $Matricules = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
-        
+              
         return array( array('matricules' => $Matricules, 'error' => '' ), 200 );
 
     }

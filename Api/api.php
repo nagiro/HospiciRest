@@ -108,16 +108,25 @@ abstract class API
         try {
             if (method_exists($this, $this->endpoint)) {
                 $RES = $this->{$this->endpoint}($this->args);
-                return $this->_response($RES[0], $RES[1]);
+                if($RES[1] == 0) {
+                    return $this->_responseRawHtml($RES[0]);
+                } else { return $this->_response($RES[0], $RES[1]); }
             }
             return $this->_response("No Endpoint: $this->endpoint", 404);
         } catch(Exception $e) { return $this->_response( $e->getMessage(), 500); }
     }
 
     private function _response($data, $status = 200) {
-        header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
+        header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));        
         return json_encode($data, JSON_NUMERIC_CHECK);
     }
+
+    private function _responseRawHtml($data) {
+        header_remove();
+        header('Content-type: text/html');
+        header("HTTP/1.1 200 " . $this->_requestStatus(200));        
+        return $data;
+    }    
 
     private function _cleanInputs($data) {
         $clean_input = Array();
