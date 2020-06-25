@@ -78,3 +78,7 @@ ALTER TABLE `matricules`
 
 ALTER TABLE `usuaris`
 	ADD COLUMN `Genere` CHAR(1) NULL DEFAULT 'A' COMMENT 'Genere' COLLATE 'utf8_general_ci' AFTER `Email`;	
+
+
+ALTER TABLE `matricules` ADD COLUMN `GrupMatricules` INT(11) NULL DEFAULT NULL COMMENT 'GrupMatricules' AFTER `rebut`;
+ALTER TABLE `matricules` CHANGE COLUMN `GrupMatricules` `GrupMatricules` INT(11) NULL DEFAULT NULL COMMENT 'GrupMatricules (Indica quina és la matrícula inicial del grup i totes tenen el mateix codi)' AFTER `rebut`;

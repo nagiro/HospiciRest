@@ -32,8 +32,8 @@ class MatriculesModel extends BDD {
 
     public function __construct() {        
               
-        $OldFields = array('idMatricules', 'Usuaris_UsuariID', 'Cursos_idCursos', 'Estat','Comentari', 'DataInscripcio', 'data_baixa', 'Pagat', 'tReduccio', 'tPagament', 'site_id', 'actiu', 'tpv_operacio', 'tpv_order', 'idDadesBancaries', 'tutor_dni','tutor_nom', 'Data_pagament', 'rebut');
-        $NewFields = array('IdMatricula', 'UsuariId', 'CursId', 'Estat','Comentari', 'DataInscripcio', 'DataBaixa', 'Pagat', 'TipusReduccio', 'TipusPagament', 'SiteId', 'Actiu', 'TpvOperacio', 'TpvOrder', 'DadesBancariesId', 'TutorDni','TutorNom', 'DataPagament', 'Rebut');
+        $OldFields = array('idMatricules', 'Usuaris_UsuariID', 'Cursos_idCursos', 'Estat','Comentari', 'DataInscripcio', 'data_baixa', 'Pagat', 'tReduccio', 'tPagament', 'site_id', 'actiu', 'tpv_operacio', 'tpv_order', 'idDadesBancaries', 'tutor_dni','tutor_nom', 'Data_pagament', 'rebut', 'GrupMatricules');
+        $NewFields = array('IdMatricula', 'UsuariId', 'CursId', 'Estat','Comentari', 'DataInscripcio', 'DataBaixa', 'Pagat', 'TipusReduccio', 'TipusPagament', 'SiteId', 'Actiu', 'TpvOperacio', 'TpvOrder', 'DadesBancariesId', 'TutorDni','TutorNom', 'DataPagament', 'Rebut', 'GrupMatricules');
         parent::__construct("matricules", "MATRICULES", $OldFields, $NewFields );
 
     }
@@ -50,9 +50,42 @@ class MatriculesModel extends BDD {
         $O[$this->gnfnwt('SiteId')] = $SiteId; 
         return $O;
     }
-
+    
     public function doInsert($ObjecteMatricula) {
         return $this->_doInsert($ObjecteMatricula);        
+    }
+
+    /**
+     * A partir d'un ID de matrícjula, retorna les que tenen el mateix GRUPMATRICULES que ella
+     * idMatricula: Number
+     */
+    public function getMatriculesVinculades($idMatricula, $ReturnOnlyId = true ) {
+        
+        $RETURN = array();
+
+        // Carrego la primera matrícula. 
+        $OM = $this->getMatriculaById($idMatricula);
+
+        if(!empty($OM)) {
+            $idGrupMatricules = $OM[ $this->gnfnwt('GrupMatricules') ];            
+            $Matricules_GrupMatricules = $this->_getRowWhere( array( $this->gofnwt('GrupMatricules') => $idGrupMatricules ), true );        
+            foreach($Matricules_GrupMatricules as $M) {                
+                if($ReturnOnlyId) $RETURN[] = $this->getId($M);
+                else $RETURN[] = $M;                
+            }
+        }
+        
+        return $RETURN;        
+
+    }
+
+    /**
+     * Retorna un IDmatricula
+     * OM: Object Matrícula
+     */
+    public function getId($OM) {        
+        if( isset( $OM[ $this->gnfnwt('IdMatricula') ] ) ) return $OM[ $this->gnfnwt('IdMatricula') ]; 
+        else throw new Exception('No hi ha cap codi de matrícula'); 
     }
 
     public function getMatriculaById($idMatricula) {
@@ -73,6 +106,15 @@ class MatriculesModel extends BDD {
         $W[ $this->gofnwt('Estat') ] = array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT, self::ESTAT_EN_ESPERA);
         $W[ $this->gofnwt('Actiu') ] = 1;        
         return sizeof($this->_getRowWhere( $W , true ));
+    }
+    
+    public function setGrupMatricula($OM, $idMatricula) {
+        $OM[$this->gnfnwt('GrupMatricules')] = $idMatricula;
+        return $OM;
+    }
+
+    public function updateMatricula($OM) {                
+        $this->_doUpdate($OM, array('IdMatricula'));
     }
 }
 

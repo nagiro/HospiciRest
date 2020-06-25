@@ -153,9 +153,7 @@ Vue.component('form-inscripcio-simple', {
 
         <div v-if="Pas == 5" class="row alert alert-success Pas5"> 
             <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
-            <ul>
-                <li v-for="(M, index) of MatriculesArray"><a target="_NEW" :href="'/apiweb/GeneraResguard?i=' + M">Inscripció {{index + 1}}</a></li>
-            </ul>            
+            <p><a target="_NEW" :href="'/apiweb/GeneraResguard?i=' + MatriculesArray[0] + '&g='">Baixa't la inscripció</a></p>            
         </div>
 
         <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 

@@ -168,37 +168,68 @@ class WebApiController
 
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );
-        $Matricules = array();
+        $Matricules = array(); $idMatriculaGrup = 0;
         
         if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) throw new Exception('No hi ha prou places disponibles.');
         else {
             for($i = 0; $i < $QuantesEntrades; $i++){
                 $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $OC[$CM->gnfnwt('IdCurs')], $OC[$CM->gnfnwt('SiteId')]);
-                $OM[$MM->gnfnwt("Estat")] = MatriculesModel::ESTAT_RESERVAT;                
+                $OM[ $MM->gnfnwt("Estat") ] = MatriculesModel::ESTAT_RESERVAT;                                
                 $id = $MM->doInsert($OM);
+                $OM[ $MM->gnfnwt('IdMatricula') ] = $id;                
                 
                 if( !($id > 0) ) { throw new Exception("Hi ha hagut algun problema guardant la inscripció. Consulti amb la Casa de Cultura al 972.20.20.13"); }
                 else { 
+                    if($i == 0) { $idMatriculaGrup = $id; }                    
                     $MatriculaId = $this->Encrypt($id);
-                    $Matricules[] = $MatriculaId;                                                
+                    $Matricules[] = $MatriculaId;                                           
+                    
+                    //Fem update de la matrícula amb el grup que toqui. 
+                    $MM->updateMatricula( $MM->setGrupMatricula($OM, $idMatriculaGrup) );     
                 }
             }
 
-            if(sizeof($Matricules) > 0) { $this->EnviaEmailInscripcio($Matricules, $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL)); }
+            if(sizeof($Matricules) > 0) { $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL)); }
         
             return $Matricules;
         
         }
     }
 
-    public function EnviaEmailInscripcio( $MatriculesArray, $email, $Tipus ) {
+
+    /**
+     * Funció que genera un resguard amb una o més matrícules dins a partir d'una matrícula del grup
+     * $MatriculesArray = array(EncryptedIdMatricula1, EncryptedIdMatricula2)
+     * $Tipus = TipusDeResguard (self::TIPUS___)
+     * */
+    public function generaInscripcio($Encrypted_IdMatricula) {
         
+        $MM = new MatriculesModel();
+        $idMatricula = $this->Decrypt($Encrypted_IdMatricula);
+        $MatriculesArray = $MM->getMatriculesVinculades($idMatricula, true);        
+
         $HTML = "";        
-        foreach($MatriculesArray as $K => $MatriculaId){
+        foreach($MatriculesArray as $K => $MatriculaId){            
             // Id, WithHeader, WithFooter            
-            $HTML .= $this->generaResguard($MatriculaId, $Tipus, ($K == 0), ($K == (sizeof($MatriculesArray)-1)) );            
+            $HTML .= $this->generaResguard( $this->Encrypt( $MatriculaId ) , 
+                                            array(self::TIPUS_RESGUARD_MAIL), 
+                                            ($K == 0), 
+                                            ($K == (sizeof($MatriculesArray)-1)) 
+                                        );            
         }
-                
+
+        return $HTML;
+
+    }
+
+    /**
+     * $Encrypted_IdMatricula: Enviem el codi d'una de les matrícules del grup. 
+     * $Email: El correu on s'enviarà.
+     * $Tipus: Tipus d'inscripció que apareix
+     */
+    public function EnviaEmailInscripcio( $Encrypted_IdMatricula, $email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ) ) {
+                        
+        $HTML = $this->generaInscripcio( $Encrypted_IdMatricula, $Tipus);
         if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
         
     }
@@ -276,7 +307,7 @@ class WebApiController
     }
 
     private function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).' )); }
-    private function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).' ); }
+    private function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).'); }
     
 }
 

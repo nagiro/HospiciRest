@@ -165,7 +165,10 @@ class BDD extends PDO {
         return $this->runQuery($SQL, array_merge($VALUES_VAL), false, false, 'A');
     }
 
-
+    /**
+     * NFWTAV: Objecte[NewFieldNameWithTable] => Value
+     * WhereArray: NewFieldName => Value
+     */
     public function _doUpdate($NFWTAV, $WhereArray) {
         //Carreguem els nous valors a guardar
         $VALUES = array();
