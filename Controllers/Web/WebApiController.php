@@ -121,6 +121,7 @@ class WebApiController
         $CM = new CursosModel();
         
         $OU = $UM->getUsuariDNI($DNI);
+        
         // Si no hem trobat el DNI, creem l'usuari
         if(sizeof($OU) == 0) {
             
@@ -140,7 +141,7 @@ class WebApiController
             $OU[$UM->gnfnwt('Poblacio')] = 1; // Posem 1 perquè és constraint
             $OU[$UM->gnfnwt('Habilitat')] = 1;             
             
-            // Inserim l'usuari nou
+            // Inserim l'usuari nou i el recarreguem de la base de dades per garantir que s'ha creat.
             $id = $UM->doInsert($OU);            
             if($id > 0) $OU = $UM->getUsuariId($id);
             else throw new Exception("No he pogut crear l'usuari amb DNI {$DNI}");         
@@ -152,7 +153,7 @@ class WebApiController
         $USM->addUsuariASite( $OU[ $UM->gnfnwt('IdUsuari') ], 1 ); 
 
         // Carreguem el curs que toca per fer la matrícula.
-        // Si no hi ha el curs que toca o l'activitat el creem a partir del cicle
+        // Informem que no existeix si no està creat.        
         $OC = array();                 
         if($ActivitatId > 0) { $OC = $CM->getRowActivitatId($ActivitatId); }
         else if($CicleId > 0) { $OC = $CM->getRowCicleId($CicleId); }
@@ -165,22 +166,29 @@ class WebApiController
         //Mirem si l'usuari ja té alguna matrícula en aquest curs
         if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
             throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
-
+        
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );
+        if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) 
+            throw new Exception('No hi ha prou places disponibles.');
+
         $Matricules = array(); $idMatriculaGrup = 0;
-        
-        if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) throw new Exception('No hi ha prou places disponibles.');
-        else {
+                
+        if($QuantesEntrades > 0) {
+
             for($i = 0; $i < $QuantesEntrades; $i++){
+            
+                // Per cada inscripció, creo un objecte matrícula i marco com a reservat
                 $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $OC[$CM->gnfnwt('IdCurs')], $OC[$CM->gnfnwt('SiteId')]);
                 $OM[ $MM->gnfnwt("Estat") ] = MatriculesModel::ESTAT_RESERVAT;                                
                 $id = $MM->doInsert($OM);
                 $OM[ $MM->gnfnwt('IdMatricula') ] = $id;                
                 
-                if( !($id > 0) ) { throw new Exception("Hi ha hagut algun problema guardant la inscripció. Consulti amb la Casa de Cultura al 972.20.20.13"); }
+                if( !($id > 0) ) { throw new Exception("Hi ha hagut algun problema guardant la inscripció. Consulti amb la Casa de Cultura al 972.20.20.13"); }                
                 else { 
+
                     if($i == 0) { $idMatriculaGrup = $id; }                    
+
                     $MatriculaId = $this->Encrypt($id);
                     $Matricules[] = $MatriculaId;                                           
                     
@@ -193,6 +201,8 @@ class WebApiController
         
             return $Matricules;
         
+        } else {
+            throw new Exception("Has d'escollir com a mínim una inscripció");
         }
     }
 
