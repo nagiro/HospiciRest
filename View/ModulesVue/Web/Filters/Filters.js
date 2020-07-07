@@ -158,7 +158,7 @@ Vue.component('filters-div', {
             if(typeof Tipus == 'object') {
                 return '/activitats/tipus/' + Tipus[0] + '/' + normalize(Tipus[1]);
             } else if(typeof Dia == 'number') {
-                return '/activitats/data/' + this.AnyNumero + '-' + this.MesNumero + '-' + Dia ;
+                return '/activitats/data/' + this.AnyNumero + '-' + (this.MesNumero + 1) + '-' + Dia ;
             }            
         }
     },
