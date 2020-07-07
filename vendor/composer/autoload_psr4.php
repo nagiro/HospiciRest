@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Wobeto\\Barcode\\' => array($vendorDir . '/wobeto/php-barcode-generator/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Picqer\\Barcode\\' => array($vendorDir . '/picqer/php-barcode-generator/src'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Mpdf\\' => array($vendorDir . '/mpdf/mpdf/src'),
 );

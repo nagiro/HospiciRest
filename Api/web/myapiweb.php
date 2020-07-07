@@ -42,21 +42,32 @@ class MyAPIWeb extends API
         $InscripcioCodificada = (isset($_GET['i'])) ? $_GET['i'] : '';
         $isGrup = (isset($_GET['g']));
         $testMail = (isset($_GET['m']));
-        
-        if($isGrup) { 
-            $HTML = $WAPI->generaInscripcio($InscripcioCodificada);
-        } else {
-            $HTML = $WAPI->generaResguard($InscripcioCodificada);
-        }
+        $UrlDesti = (isset($_GET['u'])) ? base64_decode($_GET['u']) : 'https://www.casadecultura.cat';
 
-        if($testMail) {
-            $WAPI->EnviaEmailInscripcio( $InscripcioCodificada, 'albert.johe@gmail.com' );
-        }
+        if($isGrup) { $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti ); }
+        if($testMail) { $WAPI->EnviaEmailInscripcio( $InscripcioCodificada, 'albert.johe@gmail.com' ); }
 
         // Retornem 0 perquè ensenyem l'HTML tal qual va. 
         return array($HTML, '0');
     }
 
+
+    /**
+     * Funció que es crida des del TPV per validar el pagament
+     */
+    protected function getTpv() {
+        $WAPI = new WebApiController();
+        $WAPI->getTpv($_REQUEST, false);
+    }
+
+    /**
+     * Funció que es crida des del TPV com a URL de OK i imprimeix l'entrada
+     */
+    protected function getTpvOk() {
+        $WAPI = new WebApiController();
+        $HTML = $WAPI->getTpv($_REQUEST, true);
+        return array($HTML, '0');
+    }    
 
     protected function ExisteixDNI() {
         
@@ -68,24 +79,9 @@ class MyAPIWeb extends API
 
     }    
 
-    /*
-
-    array(2) {
-  ["post"]=>
-  array(7) {
-    ["DNI"]=> string(9) "40359575A"
-    ["Nom"]=> string(0) ""
-    ["Cog1"]=> string(0) ""
-    ["Cog2"]=> string(0) ""
-    ["Email"]=> string(0) ""
-    ["Telefon"]=> string(0) ""
-    ["QuantesEntrades"]=> string(1) "1"
-  }
-  ["files"]=> array(0) {}
-}
-
-    */    
-
+    /**
+     * Funció que realitza la inscripció d'usuaris a través del web. 
+     */
     protected function AltaUsuariSimple() {
         
         //Agafo el DNI, Nom, Email i Telèfon... de contrasenya poso un número aleatori. 
@@ -104,12 +100,16 @@ class MyAPIWeb extends API
         $ActivitatId = isset($this->request['post']['ActivitatId']) ? $this->request['post']['ActivitatId'] : 0;
         $CicleId = isset($this->request['post']['CicleId']) ? $this->request['post']['CicleId'] : 0;        
 
+        $TipusPagament = isset($this->request['post']['TipusPagament']) ? $this->request['post']['TipusPagament'] : 0;        
+
+        $UrlDesti = isset($this->request['post']['UrlDesti']) ? $this->request['post']['UrlDesti'] : 0;        
+
         $WAPI = new WebApiController();
         try {
-            $Matricules = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId);
+            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
               
-        return array( array('matricules' => $Matricules, 'error' => '' ), 200 );
+        return array( array('AltaUsuari' => $RET, 'error' => '' ), 200 );
 
     }
 

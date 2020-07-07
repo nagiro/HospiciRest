@@ -61,6 +61,7 @@
                         :activitat-id="DetallActivitat.ACTIVITATS_ActivitatId" 
                         :cicle-id="DetallActivitat.ACTIVITATS_CiclesCicleId"
                         :detall-curs="DetallCurs[0]"
+                        :url-actual = "UrlActual"
                     >
                     </form-inscripcio-simple>
                 </div>
@@ -105,7 +106,8 @@
                 Anys: [], 
                 MesosAny: [],
                 Dies: [],
-                DiesMes: []
+                DiesMes: [],
+                UrlActual: ''         //Url actual de la finestra
 
             },            
             created: function() {
@@ -116,7 +118,7 @@
                     this.Loaded = true;
                     this.DetallActivitat = this.WebStructure.Activitat[0];
                     this.DetallCurs = this.WebStructure.Curs;                 
-                    console.log(this.DetallCurs);
+                    this.UrlActual = window.location.href;                    
                 }
                 
             },

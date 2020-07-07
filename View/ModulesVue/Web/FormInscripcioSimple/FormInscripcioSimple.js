@@ -5,7 +5,8 @@ Vue.component('form-inscripcio-simple', {
         InputDades: Object,
         ActivitatId: String,
         CicleId: String,
-        DetallCurs: Object
+        DetallCurs: Object,
+        UrlActual: String        
     },          
     data: function() {
         return {    ActivitatHome: {}, 
@@ -19,6 +20,7 @@ Vue.component('form-inscripcio-simple', {
                     Genere: '',
                     AnyNaixement: '',
                     QuantesEntrades: 1,
+                    TipusPagament: CONST_PAGAMENT_CAP,                         
                     Pas: 0, 
                     classDNI: 'form-control', 
                     classNom: 'form-control',
@@ -31,10 +33,36 @@ Vue.component('form-inscripcio-simple', {
                     classAnyNaixement: 'form-control',
                     MatriculesArray: Array,
                     ErrorInscripcio: '',
-                    ConfirmoAssistencia: false                    
+                    ConfirmoAssistencia: false,
+                    TPV: {}
                 }
     },    
     computed: {
+        genUrlInscripcio: function() {
+            return '/apiweb/GeneraResguard?i=' + this.MatriculesArray[0] + '&g=&u=' + btoa(this.UrlActual); 
+        },
+        getOptions: function() {
+            let TipusPagaments = this.DetallCurs.CURSOS_PagamentExtern.split('@');            
+            let ReturnPagaments = [];
+            
+            if(TipusPagaments.length > 1) {
+                ReturnPagaments.push({"id": CONST_PAGAMENT_CAP, "text": "-- ESCULL MODALITAT --"});
+                this.TipusPagament = CONST_PAGAMENT_CAP;
+            } else {
+                this.TipusPagament = TipusPagaments[0];
+            }
+
+            for(let T of TipusPagaments) {                
+                if(T == CONST_PAGAMENT_METALIC) ReturnPagaments.push({"id": CONST_PAGAMENT_METALIC, "text": "Metàl·lic"});
+                if(T == CONST_PAGAMENT_TARGETA) ReturnPagaments.push({"id": CONST_PAGAMENT_TARGETA, "text": "Targeta"});
+                
+                if(T == CONST_PAGAMENT_CODI_DE_BARRES) ReturnPagaments.push({"id": CONST_PAGAMENT_CODI_DE_BARRES, "text": "Codi de barres"});
+                if(T == CONST_PAGAMENT_RESERVA) ReturnPagaments.push({"id": CONST_PAGAMENT_RESERVA, "text": "Reserva (Gratuït)"});
+                if(T == CONST_PAGAMENT_LLISTA_ESPERA) ReturnPagaments.push({"id": CONST_PAGAMENT_LLISTA_ESPERA, "text": "Posar en llista d'espera (Gratuït)"});
+            }
+                        
+            return ReturnPagaments;
+        }
     },
     watch: {              
     },
@@ -47,6 +75,7 @@ Vue.component('form-inscripcio-simple', {
     * Pas 5 = Finalitzada correctament, mostro resguards. 
     * Pas 6 = Hi ha hagut error fent la inscripció
     * Pas 7 = Error previ en condicions del curs ( data inici matrícula, restringit, etc. )
+    * Pas 8 = Pagament amb TPV
     */
     methods: {
         PucMatricular: function(DetallCurs) {
@@ -58,12 +87,13 @@ Vue.component('form-inscripcio-simple', {
                 const DataFiMatricula = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'Javascript');   // Funció const_and_helpers.js                
                 const DFM = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'TDMA');   // Funció const_and_helpers.js                
                 const Today = new Date();
+
                 if( DetallCurs.CURSOS_IsRestringit == 1) { 
                     this.Pas = 7; 
                     this.ErrorInscripcio = '<strong>El curs està restringit</strong>. Poseu-vos en contacte amb la Casa de Cultura de Girona per a més informació.';
                     return false; 
                 }
-                if( DataIniciMatricula >= Today &&  DataFiMatricula <= Today ) {
+                if( !( DataIniciMatricula <= Today && DataFiMatricula >= Today ) ) {
                     this.Pas = 7; 
                     this.ErrorInscripcio = 'Inscripcions obertes del &nbsp;<b>' + DIM + '</b>&nbsp;al&nbsp;<b>' + DFM + '</b>&nbsp;inclosos.';
                     return false; 
@@ -125,13 +155,21 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('AnyNaixement', this.AnyNaixement);
             $FD.append('QuantesEntrades', this.QuantesEntrades);
             $FD.append('ActivitatId', this.ActivitatId);
-            $FD.append('CicleId', this.CicleId);
+            $FD.append('CicleId', this.CicleId);     
+            $FD.append('TipusPagament', this.TipusPagament);       
+            $FD.append('UrlDesti', this.UrlActual);
             
             axios.post( CONST_api_web + '/AltaUsuariSimple', $FD ).then( X => {
-                if(X.data.matricules.length > 0) {
-                    //Mostro el link per baixar-se el resguard d'inscripcions
-                    this.Pas = 5; // Finalitzada.                     
-                    this.MatriculesArray = X.data.matricules;
+                if(X.data.AltaUsuari && X.data.AltaUsuari.MATRICULES.length > 0) {
+                    // Si el pagament és amb targeta, anem a la nova web per a fer el pagament
+                    if(X.data.AltaUsuari.TPV) {
+                        Object.keys( X.data.AltaUsuari.TPV ).forEach((K) => Vue.set(this.TPV, K, X.data.AltaUsuari.TPV[K]));                        
+                        this.Pas = 8; // Fem pagament amb TPV
+                    } else {
+                        //Mostro el link per baixar-se el resguard d'inscripcions
+                        this.Pas = 5; // Finalitzada.                     
+                        this.MatriculesArray = X.data.AltaUsuari.MATRICULES;   //{[Matricules, ?TPV]}
+                    }                    
                     
                 } else {
                     //Mostro l'error.
@@ -145,110 +183,129 @@ Vue.component('form-inscripcio-simple', {
     },
     template: `            
 
-    <form class="formulari-inscripcio">    
-        <h2>Inscriu-te a l'activitat!</h2>
+    <div>
+        <form class="formulari-inscripcio">    
+            <h2>Inscriu-te a l'activitat!</h2>
 
-        <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
-        </div>
-
-        <div v-if="Pas == 5" class="row alert alert-success Pas5"> 
-            <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
-            <p><a target="_NEW" :href="'/apiweb/GeneraResguard?i=' + MatriculesArray[0] + '&g='">Baixa't la inscripció</a></p>            
-        </div>
-
-        <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 
-            <p>Hi ha hagut el següent error fent la seva inscripció. Pot consultar amb nosaltres trucant al 972.20.20.13 (Ext 3).</p>
-            <p><b>{{ErrorInscripcio}}</b>                            </p>
-        </div>
-
-        <div class="row" v-if="Pas == 0">
-            <div class="col">
-                <label for="DNI">DNI/NIE</label>
-                <input type="text" :class="classDNI" id="DNI" v-on:keyup="dnikeymonitor" v-model="DNI" aria-describedby="DNI" placeholder="Escriu el DNI/NIE..." /> 
-                <small id="DNIHelp" class="form-text text-muted">Entri el seu DNI per apuntar-se. </small>                
-            </div>            
-        </div>
-        
-        <div v-if="Pas == 2" class="row alert alert-success"> Hem trobat el seu DNI a la nostra base de dades. <br />Pot seguir amb la inscripció! </div>
-        
-        <div v-if="Pas == 1" class="row alert alert-warning"> No hem trobat el seu DNI a la nostra base de dades. <br />Si és tant amable, ens hauria d'informar del seu nom, telèfon i email per si hem de posar-nos en conacte amb vostè per a poder seguir amb la inscripció. </div>
-        
-        <div class="row" v-if="Pas == 1 || Pas == 4">                                                
-            <div class="col">
-                <label for="NomComplet">Nom</label>
-                <input type="text" :class="classNom" v-on:blur="keymonitor" v-model="Nom" id="NomComplet" aria-describedby="Nom complet" placeholder="Escriu el nom..." /> 
-                <small id="NomCompletHelp" class="form-text text-muted">Entri el seu nom complet.</small>                
+            <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
             </div>
-            <div class="col">
-                <label for="Cog1">Primer cognom</label>
-                <input type="text" :class="classCog1" v-on:blur="keymonitor" v-model="Cog1" id="Cog1" aria-describedby="Primer cognom" placeholder="" /> 
-                <small id="Cog1Help" class="form-text text-muted">Entri el seu primer cognom.</small>                
-            </div>            
-            <div class="col">
-                <label for="Cog2">Segon cognom</label>
-                <input type="text" :class="classCog2" v-on:blur="keymonitor" v-model="Cog2" id="Cog2" aria-describedby="Segon cognom" placeholder="" /> 
-                <small id="Cog2Help" class="form-text text-muted">Entri el seu segon cognom, si en té.</small>                
-            </div>                        
-        </div>
-        <div class="row" v-if="Pas == 1 || Pas == 4">                                                
-            <div class="col">
-                <label for="telefon">Mòbil</label>
-                <input type="text" :class="classTelefon" v-on:blur="keymonitor" v-model="Telefon" id="telefon" placeholder="">
-                <small id="TelefonHelp" class="form-text text-muted">Entri el seu telèfon de contacte.</small>
-            </div>
-            <div class="col">
-                <label for="Email">Correu electrònic</label>
-                <input type="text" :class="classEmail" v-on:blur="keymonitor" v-model="Email" id="telefon" placeholder="">
-                <small id="EmailHelp" class="form-text text-muted">Entri el seu correu electrònic.</small>
-            </div>            
-        </div>
-        <div class="row" v-if="Pas == 1 || Pas == 4">                                                
-            <div class="col">
-                <label for="municipi">Municipi</label>
-                <input type="text" :class="classMunicipi" v-on:blur="keymonitor" v-model="Municipi" id="municipi" placeholder="">
-                <small id="MunicipiHelp" class="form-text text-muted">Opcional: El seu municipi de residència.</small>
-            </div>
-            <div class="col">
-                <label for="genere">Gènere</label>
-                <select :class="classGenere" v-on:change="keymonitor" v-model="Genere" id="genere">
-                    <option value="M">Masculí</option>
-                    <option value="F">Femení</option>
-                    <option value="A">Altres</option>
-                </select>                
-                <small id="GenereHelp" class="form-text text-muted">Opcional: El seu gènere.</small>
-            </div>            
-            <div class="col">
-                <label for="anynaixement">Any de naixement</label>
-                <input type="text" :class="classAnyNaixement" v-on:blur="keymonitor" v-model="AnyNaixement" id="anynaixement" placeholder="">
-                <small id="AnyNaixementHelp" class="form-text text-muted">Opcional: El seu any de naixement.</small>
-            </div>                        
-        </div>        
-        <div v-if="Pas == 4 || Pas == 2">
 
-            <div class="row">
-            
+            <div v-if="Pas == 5" class="row alert alert-success Pas5"> 
+                <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
+                <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>            
+            </div>
+
+            <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 
+                <p>Hi ha hagut el següent error fent la seva inscripció. Pot consultar amb nosaltres trucant al 972.20.20.13 (Ext 3).</p>
+                <p><b>{{ErrorInscripcio}}</b>                            </p>                
+                <p> <a href="./">Torna a carregar la pàgina.</a></p>
+            </div>
+
+            <div class="row" v-if="Pas == 0">
                 <div class="col">
-                    <label for="QuantesEntrades">Quantes places reserves</label>
-                    <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="QuantesEntrades" id="QuantesEntrades">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>                                        
+                    <label for="DNI">DNI/NIE</label>
+                    <input type="text" :class="classDNI" id="DNI" v-on:keyup="dnikeymonitor" v-model="DNI" aria-describedby="DNI" placeholder="Escriu el DNI/NIE..." /> 
+                    <small id="DNIHelp" class="form-text text-muted">Entri el seu DNI per apuntar-se. </small>                
                 </div>            
+            </div>
             
+            <div v-if="Pas == 2" class="row alert alert-success"> Hem trobat el seu DNI a la nostra base de dades. <br />Pot seguir amb la inscripció! </div>
+            
+            <div v-if="Pas == 1" class="row alert alert-warning"> No hem trobat el seu DNI a la nostra base de dades. <br />Si és tant amable, ens hauria d'informar del seu nom, telèfon i email per si hem de posar-nos en conacte amb vostè per a poder seguir amb la inscripció. </div>
+            
+            <div class="row" v-if="Pas == 1 || Pas == 4">                                                
+                <div class="col">
+                    <label for="NomComplet">Nom</label>
+                    <input type="text" :class="classNom" v-on:blur="keymonitor" v-model="Nom" id="NomComplet" aria-describedby="Nom complet" placeholder="Escriu el nom..." /> 
+                    <small id="NomCompletHelp" class="form-text text-muted">Entri el seu nom complet.</small>                
+                </div>
+                <div class="col">
+                    <label for="Cog1">Primer cognom</label>
+                    <input type="text" :class="classCog1" v-on:blur="keymonitor" v-model="Cog1" id="Cog1" aria-describedby="Primer cognom" placeholder="" /> 
+                    <small id="Cog1Help" class="form-text text-muted">Entri el seu primer cognom.</small>                
+                </div>            
+                <div class="col">
+                    <label for="Cog2">Segon cognom</label>
+                    <input type="text" :class="classCog2" v-on:blur="keymonitor" v-model="Cog2" id="Cog2" aria-describedby="Segon cognom" placeholder="" /> 
+                    <small id="Cog2Help" class="form-text text-muted">Entri el seu segon cognom, si en té.</small>                
+                </div>                        
+            </div>
+            <div class="row" v-if="Pas == 1 || Pas == 4">                                                
+                <div class="col">
+                    <label for="telefon">Mòbil</label>
+                    <input type="text" :class="classTelefon" v-on:blur="keymonitor" v-model="Telefon" id="telefon" placeholder="">
+                    <small id="TelefonHelp" class="form-text text-muted">Entri el seu telèfon de contacte.</small>
+                </div>
+                <div class="col">
+                    <label for="Email">Correu electrònic</label>
+                    <input type="text" :class="classEmail" v-on:blur="keymonitor" v-model="Email" id="telefon" placeholder="">
+                    <small id="EmailHelp" class="form-text text-muted">Entri el seu correu electrònic.</small>
+                </div>            
+            </div>
+            <div class="row" v-if="Pas == 1 || Pas == 4">                                                
+                <div class="col">
+                    <label for="municipi">Municipi</label>
+                    <input type="text" :class="classMunicipi" v-on:blur="keymonitor" v-model="Municipi" id="municipi" placeholder="">
+                    <small id="MunicipiHelp" class="form-text text-muted">Opcional: El seu municipi de residència.</small>
+                </div>
+                <div class="col">
+                    <label for="genere">Gènere</label>
+                    <select :class="classGenere" v-on:change="keymonitor" v-model="Genere" id="genere">
+                        <option value="M">Masculí</option>
+                        <option value="F">Femení</option>
+                        <option value="A">Altres</option>
+                    </select>                
+                    <small id="GenereHelp" class="form-text text-muted">Opcional: El seu gènere.</small>
+                </div>            
+                <div class="col">
+                    <label for="anynaixement">Any de naixement</label>
+                    <input type="text" :class="classAnyNaixement" v-on:blur="keymonitor" v-model="AnyNaixement" id="anynaixement" placeholder="">
+                    <small id="AnyNaixementHelp" class="form-text text-muted">Opcional: El seu any de naixement.</small>
+                </div>                        
+            </div>        
+            <div v-if="Pas == 4 || Pas == 2">
+
+                <div class="row">
+                
+                    <div class="col">
+                        <label for="QuantesEntrades">Quantes places reserves</label>
+                        <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="QuantesEntrades" id="QuantesEntrades">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>                                        
+                    </div>            
+                    
+                    <div class="col" v-if="true || DetallCurs.CURSOS_Preu == 0">
+                        <label for="TipusPagament">Tipus pagament</label>
+                        <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="TipusPagament" id="TipusPagament">
+                            <option v-for="O in getOptions" :value="O.id">{{O.text}}</option>
+                        </select>                                        
+                    </div>
+                
+                </div>
+
+                <div class="form-check">
+                    <input :disabled="!(Pas == 2 || Pas == 4)" type="checkbox" class="form-check-input" v-model="ConfirmoAssistencia" id="Assistire">
+                    <label class="form-check-label" for="Assistire">Confirmo que <b>assistiré a l'acte</b> o que <b>avisaré</b>, a la Casa de Cultura, en cas de no poder-ho fer.</label>
+                </div>
+                
+                <button :disabled="!ConfirmoAssistencia" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
+                <small id="EmailHelp" class="form-text text-muted">Nomes podrà prèmer el botó si ha omplert totes les dades necessàries.</small>
             </div>
 
-            <div class="form-check">
-                <input :disabled="!(Pas == 2 || Pas == 4)" type="checkbox" class="form-check-input" v-model="ConfirmoAssistencia" id="Assistire">
-                <label class="form-check-label" for="Assistire">Confirmo que <b>assistiré a l'acte</b> o que <b>avisaré</b>, a la Casa de Cultura, en cas de no poder-ho fer.</label>
-            </div>
-            
-            <button :disabled="!ConfirmoAssistencia" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
-            <small id="EmailHelp" class="form-text text-muted">Nomes podrà prèmer el botó si ha omplert totes les dades necessàries.</small>
-        </div>
-    </form>
+        </form>
+        
+        <form class="formulari-inscripcio" v-if="Pas == 8" name="frm" :action="TPV.url" method="POST" target="_blank">
+            <input type="hidden" name="Ds_SignatureVersion" :value="TPV.version" /></br>
+            <input type="hidden" name="Ds_MerchantParameters" :value="TPV.params"/></br>
+            <input type="hidden" name="Ds_Signature" :value="TPV.signature" /></br>
+            <button type="submit" class="btn btn-primary"> Fes el pagament </button>
+        </form>    
+
+    </div>
 
 `
 });

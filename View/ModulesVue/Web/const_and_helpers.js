@@ -2,6 +2,18 @@ const CONST_url_activitats_img = '/images/activitats/A-';
 const CONST_url_cicles_img = '/images/cicles/C-';
 const CONST_api_web = '/apiweb/';
 
+// Matricules
+
+const CONST_PAGAMENT_CAP = '0';
+const CONST_PAGAMENT_METALIC = '21';
+const CONST_PAGAMENT_TARGETA= '20';
+const CONST_PAGAMENT_TELEFON = '23';
+const CONST_PAGAMENT_TRANSFERENCIA = '24'; 
+const CONST_PAGAMENT_DOMICILIACIO = '33';
+const CONST_PAGAMENT_CODI_DE_BARRES = '34';
+const CONST_PAGAMENT_RESERVA = '35';
+const CONST_PAGAMENT_LLISTA_ESPERA = '36';      
+
 var normalize = (function() {
     var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç.", 
         to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc_",

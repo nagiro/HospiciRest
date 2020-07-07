@@ -43,6 +43,7 @@ class UsuarisModel extends BDD {
     public function getNomCompletFields() {
         return "CONCAT({$this->getOldFieldNameWithTable('Cog1')},' ',{$this->getOldFieldNameWithTable('Cog2')},', ',{$this->getOldFieldNameWithTable('Nom')}) as USUARIS_NomComplet";
     }    
+    public function getEmail($OU) { return $OU[$this->gnfnwt('Email')]; }
 
     public function getUsuariRow($W) { return $this->_getRowWhere($W); }
     public function getUsuariId($Id) { return $this->_getRowWhere( array($this->gofnwt('IdUsuari') => $Id) ); }                

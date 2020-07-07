@@ -24,7 +24,8 @@ const IMATGESURL = WEBFILESURL . 'Imatges/';
 const IMATGES_DIR_PROMOCIONS = IMATGESDIR . 'promocions/';
 const IMATGES_URL_PROMOCIONS = IMATGESURL . 'promocions/';
 
-const IMATGES_URL_BASE = 'http://www.casadecultura.cat'; 
+// const IMATGES_URL_BASE = 'http://www.casadecultura.cat'; 
+const IMATGES_URL_BASE = 'http://localhost:8087'; 
 const IMATGES_URL_ACTIVITATS = '/images/activitats/';
 const IMATGES_URL_CICLES = '/images/cicles/';
 const IMATGES_URL_INSCRIPCIONS = '/WebFiles/Inscripcions/';

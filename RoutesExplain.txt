@@ -1,0 +1,21 @@
+
+# Procés matrícula
+
+http://www.casadecultura.cat/webapi/NovaInscripcioSimple 	// Funció per fer alta d'un usuari. Va amb javascript FormInscripcioSimple
+http://www.casadecultura.cat/webapi/generaPeticioTPV 		// Funció que genera la crida TPV a punt per clicar el botó.
+http://www.casadecultura.cat/webapi/getTpv 					// Funció de validació pagament TPV ( cridada per TPV )
+
+# Generador inscripcions
+
+http://www.casadecultura.cat/webapi/generaResguard			// A partir d'una inscripció codificada genera un resguard i retorna HTML
+http://www.casadecultura.cat/webapi/generaInscripcio  		// A partir d'una matrícula, busca matrícules vinculades i genera una inscripció conjunta en HTML
+
+# Indica si un DNI existeix o no
+
+http://www.casadecultura.cat/webapi/ExisteixDNI?DNI			// Diu si un DNI existeix o no
+
+
+public function EnviaEmailInscripcio( $Encrypted_IdMatricula, $email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti )
+public function generaInscripcio($Encrypted_IdMatricula, $UrlDesti, $ArrayTipusInscripcio = array(self::TIPUS_RESGUARD_MAIL)) {
+public function generaPeticioTPV( $idMatriculaGrup, $import = 0, $idS = 1, $UrlDesti = 'https://www.casadecultura.cat') {        	
+public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti) {                

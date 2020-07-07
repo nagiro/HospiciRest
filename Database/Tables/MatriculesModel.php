@@ -21,6 +21,7 @@ class MatriculesModel extends BDD {
     const REDUCCIO_GRATUIT          = '24';
     const REDUCCIO_ESPECIAL         = '28';
     
+    const PAGAMENT_CAP              = '0';
     const PAGAMENT_METALIC          = '21';
     const PAGAMENT_TARGETA          = '20';
     const PAGAMENT_TELEFON          = '23';
@@ -37,6 +38,52 @@ class MatriculesModel extends BDD {
         parent::__construct("matricules", "MATRICULES", $OldFields, $NewFields );
 
     }
+
+    /**
+     * Quan entra un pagament determinat, en quin estat es posa la matrícula
+     * $OM: Objecte Matrícula
+     * Pagament: Tipus de pagament escollit
+     * @return OM: Objecte Matrícula
+     */
+    public function setEstatFromPagament($OM, $Pagament) {
+        if($Pagament == self::PAGAMENT_TARGETA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES;
+        if($Pagament == self::PAGAMENT_METALIC) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_I_PAGAT;
+        if($Pagament == self::PAGAMENT_CODI_DE_BARRES) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT;
+        if($Pagament == self::PAGAMENT_RESERVA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT;
+        if($Pagament == self::PAGAMENT_LLISTA_ESPERA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_ESPERA;
+        return $OM;
+    }
+
+    /**
+     * Retorna un text de l'estat de la matrícula
+     */
+    public function getEstatString($OM) {
+        switch($OM[$this->gnfnwt('Estat')]) {
+            case self::ESTAT_ACCEPTAT_PAGAT: return 'Acceptat i pagat'; break;
+            case self::ESTAT_ACCEPTAT_NO_PAGAT: return 'Acceptat i no pagat'; break;
+            case self::ESTAT_RESERVAT: return 'Reservat'; break;
+            case self::ESTAT_EN_ESPERA: return 'En espera'; break;
+            case self::ESTAT_ERROR: return 'Error'; break;
+            case self::ESTAT_BAIXA: return 'Baixa'; break;
+            case self::ESTAT_EN_PROCES: return 'En procès de pagament'; break;
+            case self::ESTAT_DEVOLUCIO: return 'Devolució'; break;
+            default: return 'n/d'; break;
+        }
+    }    
+
+    /**
+     * Aplico el preu que requereix la matrícula
+     * $OM: Objecte Matrícula
+     * Preu: Preu base del curs
+     * @return OM: Objecte Matrícula
+     */
+    public function setPreuMatricula($OM, $Preu) {
+        
+        //Falta posar el tema descomptes
+        $OM[$this->gnfnwt('Pagat')] = $Preu;
+
+        return $OM; 
+    }    
 
     public function getEmptyObject($UsuariId, $CursId, $SiteId) {
         $O = $this->getDefaultObject();   
@@ -115,6 +162,12 @@ class MatriculesModel extends BDD {
 
     public function updateMatricula($OM) {                
         $this->_doUpdate($OM, array('IdMatricula'));
+    }
+
+    public function getUserEmail($OM) {
+        $MM = new UsuarisModel();
+        $OU = $MM->getUsuariId( $OM[$this->gnfnwt('UsuariId')] );
+        return $MM->getEmail($OU);
     }
 }
 

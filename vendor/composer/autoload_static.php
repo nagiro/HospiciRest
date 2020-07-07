@@ -18,6 +18,7 @@ class ComposerStaticInit8eb63f9db88b5fcf876e98312481e738
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Picqer\\Barcode\\' => 15,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
@@ -34,6 +35,10 @@ class ComposerStaticInit8eb63f9db88b5fcf876e98312481e738
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Picqer\\Barcode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/picqer/php-barcode-generator/src',
         ),
         'PHPMailer\\PHPMailer\\' => 
         array (
