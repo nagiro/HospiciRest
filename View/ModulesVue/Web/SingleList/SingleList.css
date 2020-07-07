@@ -3,9 +3,10 @@
 .SingleList_requadre { width: 100%; overflow: auto; position: relative; min-height: 25vw; }  
 .SingleList_titol_box { position: relative; }
 .SingleList_titol_box > a {  background-color: white; padding: 1vw; font-size: 2rem; display: block; width: fit-content; width: -moz-fit-content; padding-left: 0px; }    
-.SingleList_quadricula { display: flex; flex-wrap: wrap; justify-content: space-between; padding: 1vw 1vw 0vw 1vw; }
+.SingleList_quadricula { display: flex; flex-wrap: wrap; justify-content: flex-start; padding: 1vw 1vw 0vw 1vw; }
 .SingleList_NoHiHaActivitatText { font-size: 1.2rem;    padding: 10px;    font-weight: normal;  }
-.SingleList_Imatge { margin-bottom: 1vw; }
+.SingleList_Imatge { margin-bottom: 1vw; margin-right: 0.8vw }
+.SingleList_Image:last-child { margin-right: 0vw; }
 
 .SingleList_fletxa-enrrera, .SingleList_fletxa-enrrera-disabled { cursor: pointer; width: 6vw; height: 6vw; background-image: url(/WebFiles/Web/img/FletxaEnrrera.png); background-size: cover; position: absolute; top: 50%; left: 0px; }
 .SingleList_fletxa-endavant, .SingleList_fletxa-endavant-disabled { cursor: pointer; width: 6vw; height: 6vw; background-image: url(/WebFiles/Web/img/FletxaEndavant.png); background-size: cover; position: absolute; top: 50%; right: 0px; }
