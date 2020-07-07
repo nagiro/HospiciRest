@@ -1,5 +1,28 @@
 RewriteEngine On
 
+# Estem fent manteniment de la pàgina
+
+RewriteCond %{REQUEST_URI} ^/manteniment$
+RewriteCond %{REMOTE_ADDR} !^93.176.159.14
+RewriteRule $ /manteniment.html [R=302,L]
+
+# Quan entri a la intranet per aquesta adreça he de redirigir a la nova web.
+# Si entrem per hospici, fem això  
+
+RewriteCond %{REQUEST_URI} ^/gestio(.*)
+RewriteRule ^(.*) https://intranet.casadecultura.cat/gestio%1 [R=302,NC,L]
+
+# Temes hospici pels pagaments 
+
+RewriteCond %{REQUEST_URI} ^/usuaris/matricula/get(.*)$
+RewriteRule ^(.*)$ http://intranet.casadecultura.cat/usuaris/matricula/get%1 [R=302,NC,L]
+
+RewriteCond %{REQUEST_URI} ^/ajax/entrades/doPagamentTPV(.*)$
+RewriteRule ^(.*)$ http://intranet.casadecultura.cat/ajax/entrades/doPagamentTPV%1 [R=302,NC,L]
+
+
+# Dades que treballem a la nova web actual
+
 RewriteCond %{REQUEST_URI} \..+$
 RewriteCond %{REQUEST_URI} !\.html$
 RewriteRule .* - [L]
