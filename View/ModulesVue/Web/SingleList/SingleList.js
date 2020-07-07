@@ -30,7 +30,7 @@ Vue.component('single-list', {
         }  
     },
     methods: {
-        gElementsPerPagina: function() { return (this.AmbTitol) ? 3 : 1000; },
+        gElementsPerPagina: function() { return (this.AmbTitol) ? 3 : 3; },
         gQuantesActivitatsHaTrobat: function() {
             return (this.InputDades) ? this.InputDades.length : 0;
         },
@@ -78,7 +78,10 @@ Vue.component('single-list', {
           SectionStyle: function() {
               if(this.AmbTitol) return 'SingleList_section_style'
               else return 'SingleList_section_style_list';
-          }
+          },
+        MostroBloc(PagActual) {
+            return ((this.AmbTitol && this.PaginaActual == PagActual) || (!this.AmbTitol))
+        }
     },
     template: `        
 
@@ -95,8 +98,10 @@ Vue.component('single-list', {
             </article>
         
             <nav class="SingleList_quadricula" v-if="!gQuantesActivitatsHaTrobat == 0">
-                <div v-for="ActivitatHome of DadesFiltrades" class="SingleList_Imatge">
-                    <single-image :InputColor="InputColor" :InputDades="ActivitatHome"></single-image>
+                <div v-for="(LlistatActivitatsHome, PagActual) of TotesDadesPaginades" class="SingleList_ImatgeBlock" v-if="MostroBloc(PagActual)">
+                    <div v-for="ActivitatHome of LlistatActivitatsHome" class="SingleList_Imatge">
+                        <single-image :InputColor="InputColor" :InputDades="ActivitatHome"></single-image>
+                    </div>
                 </div>
             </nav>
         
