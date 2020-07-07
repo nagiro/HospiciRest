@@ -75,7 +75,7 @@ Vue.component('single-image', {
     <!-- REQUADRE VERTICAL -->
     
     <a :href="getUrl( ActivitatHome )" class="SingleImage_requadre_imatge" >
-        <div class="SingleImage_tag" v-if="ActivitatHome.CategoriaVinculada == '0'" > <!-- :style="getTagStyle( ActivitatHome )" -->
+        <div class="SingleImage_tag" v-if="ActivitatHome.CategoriaVinculada != '0'" > <!-- :style="getTagStyle( ActivitatHome )" -->
             <i class="fas fa-bookmark"></i>
             <img :src="gUrlImatgeCategoriaVinculadaBlanca( ActivitatHome )" alt="Tag de categoria" />
         </div>
