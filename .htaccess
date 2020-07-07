@@ -2,9 +2,9 @@ RewriteEngine On
 
 # Estem fent manteniment de la pàgina
 
-RewriteCond %{REQUEST_URI} ^/manteniment$
-RewriteCond %{REMOTE_ADDR} !^93.176.159.14
-RewriteRule $ /manteniment.html [R=302,L]
+# RewriteCond %{REQUEST_URI} ^/manteniment$
+# RewriteCond %{REMOTE_ADDR} !^93.176.159.14
+# RewriteRule $ /manteniment.html [R=302,L]
 
 # Quan entri a la intranet per aquesta adreça he de redirigir a la nova web.
 # Si entrem per hospici, fem això  
