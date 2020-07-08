@@ -55,6 +55,9 @@
             </div>
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
+                <p v-if="DetallActivitat.ACTIVITATS_Pdf.length > 0">
+                    [<a :href="DetallActivitat.ACTIVITATS_Pdf">Baixa't el pdf</a>]
+                </p>
                 <div class="text" v-html="DetallActivitat.ACTIVITATS_DescripcioMig">  </div>                
                 <div v-if="DetallCurs.length == 1">
                     <form-inscripcio-simple 

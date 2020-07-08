@@ -42,7 +42,7 @@ class WebController
     }
 
     public function viewCicles($idC) {
-        //Si passo un cicle > 1, mostro les activitats d'aquest cicle. 
+        // Si passo un cicle > 1, mostro les activitats d'aquest cicle. 
         //  Altrament, mostro només els cicles actius         
         $C = array();
         $EsUnCicle = false;
@@ -232,14 +232,20 @@ class WebController
 
     public function viewDetall( $idA ) {
 
-        $EXTRES["Activitat"] = $this->WebQueries->getActivitatsDetall( $idA );                    
-        $EXTRES['Horaris'] = $this->WebQueries->getHorarisActivitatDetall( $idA );                              
+        $EXTRES["Activitat"]    = $this->WebQueries->getActivitatsDetall( $idA );
+        $EXTRES['Horaris']      = $this->WebQueries->getHorarisActivitatDetall( $idA );
 
-        if(sizeof($EXTRES['Activitat']) > 0 ) {
+        if( sizeof($EXTRES['Activitat']) > 0 ) {
         
-            $Nom = $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'];
-            
+            $Nom = $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'];            
             $idC = $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"];
+
+            // Miro si té un pdf associat
+            $PDF = IMATGES_URL_ACTIVITATS . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" ;
+            $PDF_EXIST = is_file( OLD_BASEDIR_IMG_ACT . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" );
+            if( $PDF_EXIST ) $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = $PDF;
+            else $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = "";
+
             $ArrayCicles = array($idC);
             if( ! ($idC > 0) ) $ArrayCicles = array();            
             
@@ -248,8 +254,7 @@ class WebController
             if(sizeof($EXTRES["Activitat"]) > 0 && $idC > 1)
                     $EXTRES["ActivitatsRelacionades"] = $this->WebQueries->getActivitatsHome( array(),'', '', 1, 1, $ArrayCicles);
             else    $EXTRES["ActivitatsRelacionades"] = array();
-            
-                    
+                                
             $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
             
             $NOM_CICLE = '';
@@ -273,7 +278,7 @@ class WebController
             }
             $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)); 
 
-            /* ENTRADES Carrego el curs si està habilitat */            
+            /* ENTRADES Carrego el curs si està habilitat */
             $CM = new CursosModel();
             $OM = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );            
             if(!empty($OM)) $EXTRES['Curs'] = array($OM);                                         
