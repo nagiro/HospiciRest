@@ -56,7 +56,7 @@
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
                 <p v-if="DetallActivitat.ACTIVITATS_Pdf.length > 0">
-                    [<a :href="DetallActivitat.ACTIVITATS_Pdf" target="_NEW">Baixa't el pdf</a>]
+                    [<a :href="DetallActivitat.ACTIVITATS_Pdf" target="_NEW">{{NomEnllacPDF}}</a>]
                 </p>
                 <div class="text" v-html="DetallActivitat.ACTIVITATS_DescripcioMig">  </div>                
                 <div v-if="DetallCurs.length == 1">
@@ -125,11 +125,22 @@
                 }
                 
             },
-            computed: {},
+            computed: {
+                NomEnllacPDF: function() {
+                    
+                    for(C of this.DetallActivitat.ACTIVITATS_Categories.split("@")) {
+                        switch(C) {
+                            case '56': return " Descarrega el programa de mà "; break;
+                            case '46': return " Descarrega el catàleg "; break;
+                            default: return " Descarrega el pdf "; break;
+                        }
+                    }
+                }
+            },
             methods: {                                                            
                 veureDetallHoraris: function() {
                     this.MostraDetall = !this.MostraDetall;                
-                },
+                },                
                 CreaCalendari: function() {
 
                 },
