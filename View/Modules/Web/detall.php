@@ -127,14 +127,15 @@
             },
             computed: {
                 NomEnllacPDF: function() {
-                    
+                    let Ret = " Descarrega el pdf ";
                     for(C of this.DetallActivitat.ACTIVITATS_Categories.split("@")) {
+                        console.log(C);
                         switch(C) {
-                            case '56': return " Descarrega el programa de mà "; break;
-                            case '46': return " Descarrega el catàleg "; break;
-                            default: return " Descarrega el pdf "; break;
+                            case '56': Ret = " Descarrega el programa de mà "; break;
+                            case '46': Ret = " Descarrega el catàleg "; break;                            
                         }
                     }
+                    return Ret;
                 }
             },
             methods: {                                                            
