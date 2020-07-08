@@ -23,8 +23,10 @@ const WEBFILESURL = 'WebFiles/';
 
 const IMATGESDIR = WEBFILESDIR . 'Imatges/';
 const IMATGESURL = WEBFILESURL . 'Imatges/';
-const IMATGES_DIR_PROMOCIONS = IMATGESDIR . 'promocions/';
-const IMATGES_URL_PROMOCIONS = IMATGESURL . 'promocions/';
+const IMATGES_DIR_PROMOCIONS = IMATGESDIR . 'Promocions/';
+const IMATGES_URL_PROMOCIONS = IMATGESURL . 'Promocions/';
+const IMATGES_DIR_NODES = IMATGESDIR . 'Nodes/';
+const IMATGES_URL_NODES = IMATGESURL . 'Nodes/';
 
 // const IMATGES_URL_BASE = 'http://www.casadecultura.cat'; 
 const IMATGES_URL_BASE = 'http://localhost:8087'; 

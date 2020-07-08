@@ -1,6 +1,7 @@
 const CONST_url_activitats_img = '/images/activitats/A-';
 const CONST_url_cicles_img = '/images/cicles/C-';
 const CONST_api_web = '/apiweb/';
+const CONST_url_front_img = '/WebFiles/Imatges/Nodes/';
 
 // Matricules
 

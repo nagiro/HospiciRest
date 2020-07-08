@@ -11,7 +11,7 @@ Vue.component('list-nodes', {
     watch: {},
     methods: {
         getUrlImatge: function(fail = false, idNode, $eventFail) {
-            if(!fail) return "/images/front/" + idNode + "-L.jpg";
+            if(!fail) return CONST_url_front_img + idNode + "-L.jpg";
             else event.target.src = "/WebFiles/Web/img/NoImage.jpg";
         },
         getLink: function(Node) {                
