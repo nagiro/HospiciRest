@@ -4,7 +4,7 @@
 const PDOString = "mysql:host=127.0.0.1;dbname=intranet;charset=utf8";
 const Username = 'root';
 const Password = '';
-const BASEDIR = "C:\Users\USER\Documents\Code\HospiciRest/";
+const BASEDIR = "C:\Users\Usuario\Documents\Code\HospiciRest/";
 
 const APIDIR = BASEDIR . 'Api/';
 const APIDIRADMIN = APIDIR . 'admin/'; 
