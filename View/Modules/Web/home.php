@@ -77,9 +77,9 @@
         <div id="home_requadres">            
             <nav id="home_requadres_nav">
                 <a class="home_requadres_nav_a" href="/pagina/168/cursos" style="background-color: #A0C3CB"> <span>Cursos</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/140/tramits-i-espais" style="background-color: #B06A17"> <span>Tràmits i espais</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/139/municipis-i-escoles" style="background-color: #E8D131"> <span>Municipis i escoles</span> </a>
-                <a class="home_requadres_nav_a" href="/pagina/169/estem-oberts" style="background-color: #9A7EB1"> <span>Estem oberts!</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/141/reserva-d-espais" style="background-color: #B06A17"> <span>Reserva d'espais</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/200/escoles" style="background-color: #E8D131"> <span>Programes<br/>per a escoles</span> </a>
+                <a class="home_requadres_nav_a" href="/pagina/199/municipis" style="background-color: #9A7EB1"> <span>Recursos<br />per a muncipis</span> </a>
                 <a class="home_requadres_nav_a" href="/pagina/137/la-casa" style="background-color: #9FB86B"> <span>La casa</span> </a>
             </nav>
         </div>        
