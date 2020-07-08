@@ -129,11 +129,12 @@
                 NomEnllacPDF: function() {
                     let Ret = " Descarrega el pdf ";
                     for(C of this.DetallActivitat.ACTIVITATS_Categories.split("@")) {
-                        console.log(C);
+
                         switch(C) {
                             case '56': Ret = " Descarrega el programa de mà "; break;
                             case '46': Ret = " Descarrega el catàleg "; break;                            
                         }
+                        
                     }
                     return Ret;
                 }
