@@ -67,20 +67,18 @@ class HorarisController
         for($mes = intval($DiA[1]); ($mes <= intval($DfA[1]) && $any <= $DfA[0]); $mes++ ) {
             if($mes == 13) { $any++; $mes = 1; }
             $DiesAlMes = cal_days_in_month( CAL_GREGORIAN, $mes, $any );    
-            $Dia1DeLaSetmana = date('w', mktime(0,0,0, $mes, 1, $any));             //Busquem la data que volem consultar
+            $Dia1DeLaSetmana = date('w', mktime(0,0,0, $mes, 1, $any));             //Busquem quin dia de la setmana és
             $Dia1DeLaSetmana = ($Dia1DeLaSetmana == 0) ? 7 : $Dia1DeLaSetmana;      // Si és diumenge, li assignem el dia 7
             $Dia1DeLaSetmana = 2 - $Dia1DeLaSetmana;                                // Resto 2 perquè em quadri. Quedarà negatiu perquè hi ha el primer dia de la setmana que és del mes anterior 
 
             for($dia = $Dia1DeLaSetmana; $dia <= $DiesAlMes; $dia++) {              // Des del primre dia de la setmnaa fins a fi de mes
                 
                 //Si el primer dia no és 1 ( dilluns ) omplim els que faltin.                 
-
                 $time = mktime(0,0,0, $mes, ( $dia < 1 ) ? 1 : $dia, $any);         //Si és un dia del mes anterior, hi deixo l'1... però no el mostraré
-                $IndexMes = $any.$mes;                
+                $IndexMes = $any . '-' . str_pad( $mes, 2, 0, STR_PAD_LEFT ). '-01';    //Posem aqeust format per després poder tracatr-ho amb vuejs
                 $IndexSetmana = date('W', $time);
                 $IndexDia = $dia;
-                $DiaSetmana = date('w', $time );
-                
+                $DiaSetmana = date('w', $time );                
 
                 if(!isset($CAL[ $IndexMes ])) $CAL[ $IndexMes ] = array();
                 if(!isset($CAL[ $IndexMes ][ $IndexSetmana ])) $CAL[$IndexMes][ $IndexSetmana ] = array();
@@ -101,7 +99,7 @@ class HorarisController
                 }
                 $ArrayMes[] = array('Setmana' => $IndexSetmana, 'D' => $ArraySetmana);
             }            
-            $CALA[] = array('AnyMes' => $IndexMes, 'D' => $ArrayMes);
+            $CALA[] = array('DataAnyMes' => $IndexMes,  'D' => $ArrayMes);
         }        
         
         return $CALA;

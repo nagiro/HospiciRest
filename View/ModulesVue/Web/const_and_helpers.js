@@ -37,6 +37,10 @@ var normalize = (function() {
     
     })();
 
+function EsCapDeSetmana( ObjecteData ) {
+    const dt = new Date(ObjecteData.any, (ObjecteData.mes - 1), ObjecteData.dia, 12, 00,00);    
+    return ( dt.getDay() == 6 || dt.getDay() == 0 );
+}
 
 // Objecte data el retorna la funció ConvertirData(Data, 'Object')
 function DiaSetmana( ObjecteData ){

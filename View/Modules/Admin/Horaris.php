@@ -27,7 +27,7 @@
       
       <h2 style="margin: 3vw 0vw 2vw 0vw;">Llistat d'activitats</h2>
 
-      <llistat-activitats-helper v-on:edita-activitat = "editaActivitat($event)" :horaris = "Horaris" :data-dia = "DiaEscollit" :resum = "false"></llistat-activitats-helper>
+      <llistat-activitats-helper @edita_activitat = "editaActivitat($event)" :horaris = "Horaris" :data-dia = "DiaEscollit" :resum = "false"></llistat-activitats-helper>
 
     </div>
   </div>  
@@ -41,12 +41,15 @@
     
     <div class="table table-striped table-sm">    
     
-      <input-helper             
-          :titol = "'Nom'"
-          :valor-defecte = "ActivitatDetall.ACTIVITAT_Nom"
-          :id = "'ACTIVITAT_Nom'"
-          @onchange = "ActivitatDetall.ACTIVITAT_Nom = $event"
-        ></input-helper>
+      <input-helper :titol = "'Nom'" :valor-defecte = "ActivitatDetall.ACTIVITAT_Nom" :id = "'ACTIVITAT_Nom'" @onchange = "ActivitatDetall.ACTIVITAT_Nom = $event"></input-helper>
+      <select-helper             
+          :titol = "'Activa?'"
+          :valor-defecte = "PromocioDetall.PROMOCIONS_IS_ACTIVA"
+          :id = "'PROMOCIONS_IS_ACTIVA'"
+          :options = "OptionsActiuNoActiu"
+          @onchange = "PromocioDetall.PROMOCIONS_IS_ACTIVA = $event"
+        ></select-helper>
+      <input-helper :titol = "'Nom'" :valor-defecte = "ActivitatDetall.ACTIVITAT_Nom" :id = "'ACTIVITAT_Nom'" @onchange = "ActivitatDetall.ACTIVITAT_Nom = $event"></input-helper>
 <!--      
         <input-helper             
           :titol = "'Titol'"
@@ -134,8 +137,10 @@
   data: { 
     Horaris: {}, 
     Calendari: [],
+    idSite: 1,
     DiaEscollit: '',
     ActivitatDetall: {}, 
+    FormulariActivitat: [],
     Editant: false, 
     textCercador: "",     
     img: '', 
@@ -165,8 +170,8 @@
       this.DiaEscollit = $DiaEscollit;
     },
     editaActivitat: function($idActivitat) {
-      this.axios.get('/apiadmin/Horaris', { 'params' : { 'accio': 'GetActivitat', 'idA': $idActivitat } } )
-        .then( R => { this.ActivitatDetall = R.data; this.Editant = true; } )
+      this.axios.get('/apiadmin/Horaris', { 'params' : { 'accio': 'GetEditActivitat', 'idA': $idActivitat, 'idS': this.idSite } } )
+        .then( R => { this.FormulariActivitat = R.data; this.Editant = true; } )
         .catch( E => { alert(E) } );
     }
 

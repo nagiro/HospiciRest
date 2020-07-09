@@ -142,7 +142,7 @@ class BDD extends PDO {
             
         }
         
-        $RET = $this->runQuery($SQL, $WHERE, !$multiple);        
+        $RET = $this->runQuery($SQL, $WHERE, !$multiple);                
         return $RET;        
 
     }

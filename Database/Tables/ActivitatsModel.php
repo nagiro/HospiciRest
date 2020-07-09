@@ -3,6 +3,8 @@
 require_once BASEDIR."Database/Tables/HorarisModel.php";
 require_once BASEDIR."Database/Tables/HorarisEspaisModel.php";
 require_once BASEDIR."Database/Tables/EspaisModel.php";
+require_once BASEDIR."Database/Tables/CiclesModel.php";
+require_once BASEDIR."Database/FormulariClass.php";
 
 require_once BASEDIR."Database/DB.php";
 
@@ -18,8 +20,9 @@ class ActivitatsModel extends BDD {
 
     }
 
-    public function getEmptyObject() {
+    public function getEmptyObject($idS) {
         $O = $this->getDefaultObject();      
+        $O[$this->gnfnwt('SiteId')] = $idS;
         $RET = array('ACTIVITAT' => $O, 'HORARIS' => array());
     }
 
@@ -143,6 +146,32 @@ class ActivitatsModel extends BDD {
         endforeach;            
         $document .= "</document>\n";                  
 */
+    }
+
+    /**
+     * idActivitat = 0 per defecte, si no hi ha activitat
+     * $idSite = Lloc on pertany l'activitat
+     * */
+    function Form($idActivitat, $idSite) {
+        
+        $OA = $this->getEmptyObject($idSite);
+        if($idActivitat > 0) $OA = $this->getActivitatById($idActivitat);
+
+        $CM = new CiclesModel();
+        
+        $RET = array();
+        $RET[] = new FormulariClass("Nom", FormulariClass::CONST_INPUT_HELPER, "", $this->gnfnwt('Nom'));
+        $F = new FormulariClass("Cicle vinculat", FormulariClass::CONST_SELECT_HELPER, "1", $this->gnfnwt('CiclesCicleId'));
+        $F->setOptions($CM->getCiclesActiusSelect($idSite));
+        $RET[] = $F;
+        $RET[] = new FormulariClass("Tipus activitat", FormulariClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('TipusActivitatId'));
+
+        foreach($RET as $K => $R):
+            $RET[] = $R->getArrayObject();
+        endforeach;
+
+        return $RET;
+        
     }
 
 }

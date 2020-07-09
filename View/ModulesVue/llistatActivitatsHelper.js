@@ -17,7 +17,7 @@ Vue.component('llistat-activitats-helper', {
             A.sort( ( X, Y ) => { let O = X[Camp] > Y[Camp]; return O ? 1 : -1; });            
         },
         editaActivitat: function($idActivitat) {            
-            this.$emit('edita-activitat', $idActivitat);
+            this.$emit('edita_activitat', $idActivitat);
         },
     },
     filters: {
@@ -46,7 +46,7 @@ Vue.component('llistat-activitats-helper', {
                 </tr>    
                 <tr style="margin-top: 1vw;">
                     <td colspan="4" style="width: 100%">                    
-                        <b><a href="#" @click="editaActivitat(Activitat.ACTIVITATS_ActivitatId)">{{Activitat.ACTIVITATS_Nom}}</a></b> <span style="font-size: 0.6rem; color: gray;">{{Activitat.ACTIVITATS_Organitzador}}</span>
+                        <b><a href="#" @click.prevent="editaActivitat(Activitat.ACTIVITATS_ActivitatId)">{{Activitat.ACTIVITATS_Nom}}</a></b> <span style="font-size: 0.6rem; color: gray;">{{Activitat.ACTIVITATS_Organitzador}}</span>
                     </td>
                 </tr>
                 <tr>

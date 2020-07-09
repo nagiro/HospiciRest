@@ -39,6 +39,12 @@ class MyAPIAdmin extends API
 
     }
 
+    protected function Prova() {
+        $AM = new ActivitatsModel();
+        var_dump($AM->Form(0, 1));
+        die;
+    }
+
     protected function Sites() {
         
         $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
@@ -158,6 +164,7 @@ class MyAPIAdmin extends API
             $DataInicial = (isset($this->request['DataInicial']))   ? $this->request['DataInicial'] : Date('Y-m-d');
 //            $DataFinal = (isset($this->request['DataFinal']))       ? $this->request['DataFinal']: Date( mktime(0,0,0, Date('m') + 1, Date('d'), Date('Y')));            
             $idActivitat = (isset($this->request['idA']))     ? $this->request['idA']:0;
+            $idSite = (isset($this->request['idS']))     ? $this->request['idS']:0;
 //            $PromocioDetall = (isset($this->request['post']['PromocioDetall'])) ? json_decode($this->request['post']['PromocioDetall'], true):array();
 
             if(isset($this->request['post'])) $accio = $this->request['post']['accio'];
@@ -168,7 +175,10 @@ class MyAPIAdmin extends API
             switch($accio) {
                 case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial); break;        
 //                case 'C':   $RET = $P->getPromocionsActives($this->Auth->idSite); break;        
-                case 'GetActivitat':  $RET = $H->getActivitatById($idActivitat); break;        
+                case 'GetEditActivitat':  
+                    $AM = new ActivitatsModel();
+                    $RET = $AM->Form($idActivitat, 1);                     
+                break;        
 //                case 'A':   $RET = $P->getNewPromocio($this->Auth->idSite); break;
 //                case 'U':   $RET = $P->doUpdate($PromocioDetall); break;        
  //               case 'D':   $RET = $P->doDelete($PromocioDetall); break;        
