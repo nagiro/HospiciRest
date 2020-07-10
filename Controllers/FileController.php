@@ -19,19 +19,26 @@ class FileController {
         $Dir = "";
         $Url = "";
         $imageFileType = strtolower(pathinfo($file['name'],PATHINFO_EXTENSION));        
+        $File = '';
 
         switch($modul) {
-            case 'Promocio':    $Dir = IMATGES_DIR_PROMOCIONS; 
-                                $Url = IMATGES_URL_PROMOCIONS;
+            case 'Promocio':    $Dir = IMATGES_DIR_PROMOCIONS;                                 
+                                $File = $idElement.'-'.strtoupper($tipus).'.'.$imageFileType;        
+                                $Dir  = $Dir . $File;        
+                                $Url  = IMATGES_URL_PROMOCIONS . $File;
+                                $NameToSave = $File;
                                 break;
-        }
-
-        $File = $idElement.'-'.strtoupper($tipus).'.'.$imageFileType;
-        $Dir  = $Dir . $File;        
+            case 'Activitat':   $Dir = IMATGES_DIR_ACTIVITATS_NW;                                
+                                $File = 'A-'.$idElement.'-'.strtoupper($tipus).'.jpg';                                
+                                $Dir  = $Dir . $File;        
+                                $Url  = IMATGES_URL_ACTIVITATS_NW . $File;
+                                $NameToSave = $File;                                
+                                break;
+        }                        
 
         if (!file_exists($Dir)) touch($Dir); 
         if ( move_uploaded_file($file['tmp_name'], $Dir) ) {            
-            return $File;
+            return array('Filename' => $NameToSave, 'Url' => $Url);
         } else {
             throw new Exception("No he pogut guardar l'arxiu {$File}");
         }

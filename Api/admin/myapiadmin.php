@@ -177,7 +177,7 @@ class MyAPIAdmin extends API
 //                case 'C':   $RET = $P->getPromocionsActives($this->Auth->idSite); break;        
                 case 'GetEditActivitat':  
                     $AM = new ActivitatsModel();
-                    $RET = $AM->Form($idActivitat, 1);                     
+                    $RET = $AM->Formulari($idActivitat, 1);                                   
                 break;        
 //                case 'A':   $RET = $P->getNewPromocio($this->Auth->idSite); break;
 //                case 'U':   $RET = $P->doUpdate($PromocioDetall); break;        
@@ -294,11 +294,19 @@ class MyAPIAdmin extends API
             $RET = array();                        
             
             switch($accio) {
+                case 'Activitat':                     
+                    $HorarisController = new HorarisController(); 
+
+                    try {
+                        $RET = $HorarisController->doUpload($accio, $file, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                    } catch(Exception $e){ return array($e->getMessage(), 500);  };
+                    break;        
+
                 case 'Promocio':                     
                     $PC = new PromocionsController(); 
 
                     try {
-                        $PC->doUpload($accio, $file, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                        $RET = $PC->doUpload($accio, $file, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
                     } catch(Exception $e){ return array($e->getMessage(), 500);  };
                     break;        
 
@@ -307,7 +315,7 @@ class MyAPIAdmin extends API
                     $PC = new PromocionsController();                     
                     try {
                         // Aquí Tipus és la mida de la imatge 's', 'm', 'l'
-                        $PC->doUploadDelete($tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                        $RET = $PC->doUploadDelete($tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
                     } catch(Exception $e){ return array($e->getMessage(), 500);  };
                     break;        
             }

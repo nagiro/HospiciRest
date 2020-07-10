@@ -29,7 +29,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>    
     
     
-    <script  src="/View/ModulesVue/Web/const_and_helpers.js?<?php echo date('U', time()) ?>"></script>
+    <script  src="/View/ModulesVue/Web/const_and_helpers.js?<?php echo date('U', time()) ?>"></script>    
     <script type="text/javascript" src="/View/ModulesVue/ImageHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/ImageHelperFormCropper.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/inputHelperForm.js?<?php echo date('U', time()) ?>"></script>
@@ -38,6 +38,7 @@
     <script type="text/javascript" src="/View/ModulesVue/datepickerHelperForm.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/calendarHelper.js?<?php echo date('U', time()) ?>"></script>
     <script type="text/javascript" src="/View/ModulesVue/llistatActivitatsHelper.js?<?php echo date('U', time()) ?>"></script>
+    <script type="text/javascript" src="/View/ModulesVue/Admin/FormHelper.js?<?php echo date('U', time()) ?>"></script>
     
     <link rel="stylesheet" href="/View/Styles/General.css?<?php echo date('U', time()) ?>">    
 

@@ -5,7 +5,8 @@ const PDOString = "mysql:host=127.0.0.1;dbname=intranet;charset=utf8";
 const Username = 'root';
 const Password = '';
 const BASEDIR = "C:\Users\Usuario\Documents\Code\HospiciRest/";
-const OLD_BASEDIR_IMG_ACT = "/var/www/hospici_cultural/web/images/activitats/";
+//const OLD_BASEDIR_IMG_ACT = "/var/www/hospici_cultural/web/images/activitats/";
+const OLD_BASEDIR_IMG_ACT = "C:\Users\Usuario\Documents\Code\HospiciRest\WebFiles\Imatges\Activitats/";
 
 
 const APIDIR = BASEDIR . 'Api/';
@@ -19,12 +20,14 @@ const VIEWDIR = BASEDIR . 'View/';
 const VIEWDIRMOD = VIEWDIR . 'Modules/';
 
 const WEBFILESDIR = BASEDIR . 'WebFiles/';
-const WEBFILESURL = 'WebFiles/';
+const WEBFILESURL = '/WebFiles/';
 
 const IMATGESDIR = WEBFILESDIR . 'Imatges/';
 const IMATGESURL = WEBFILESURL . 'Imatges/';
 const IMATGES_DIR_PROMOCIONS = IMATGESDIR . 'Promocions/';
 const IMATGES_URL_PROMOCIONS = IMATGESURL . 'Promocions/';
+const IMATGES_DIR_ACTIVITATS_NW = IMATGESDIR . 'Activitats/';
+const IMATGES_URL_ACTIVITATS_NW = IMATGESURL . 'Activitats/';
 const IMATGES_DIR_NODES = IMATGESDIR . 'Nodes/';
 const IMATGES_URL_NODES = IMATGESURL . 'Nodes/';
 

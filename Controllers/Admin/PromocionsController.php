@@ -18,15 +18,17 @@ class PromocionsController
         $tipus = strtoupper($tipus);
         
         try {
-            $FileName = $FC->doUpload($modul, $file, $tipus, $idElement, $idU, $idS);                                
+            $UploadResp = $FC->doUpload($modul, $file, $tipus, $idElement, $idU, $idS);                                
         } catch (Exception $e) { throw $e; } //Propaguem l'excepció
 
         //Carrego la promoció        
         $Promocio = $this->PromocionsModel->getById($idElement);
         
-        //Guardo que la imatge en qüestió està entrada
-        $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.$tipus)] = $FileName;
+        //Guardo que la imatge en qüestió està entrada        
+        $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.$tipus)] = $UploadResp['Filename'];
         $this->PromocionsModel->doUpdate($Promocio);     
+
+        return $UploadResp;
 
     }
 
@@ -42,7 +44,7 @@ class PromocionsController
         if($tipus == 's' || $tipus == 'l' || $tipus == 'm'){
             $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.strtoupper($tipus))] = '';
             $this->PromocionsModel->doUpdate($Promocio);     
-        }
+        }        
 
     }
 

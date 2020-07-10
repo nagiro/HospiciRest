@@ -40,74 +40,12 @@
     <div class="card-body">    
     
     <div class="table table-striped table-sm">    
-    
-      <input-helper :titol = "'Nom'" :valor-defecte = "ActivitatDetall.ACTIVITAT_Nom" :id = "'ACTIVITAT_Nom'" @onchange = "ActivitatDetall.ACTIVITAT_Nom = $event"></input-helper>
-      <select-helper             
-          :titol = "'Activa?'"
-          :valor-defecte = "PromocioDetall.PROMOCIONS_IS_ACTIVA"
-          :id = "'PROMOCIONS_IS_ACTIVA'"
-          :options = "OptionsActiuNoActiu"
-          @onchange = "PromocioDetall.PROMOCIONS_IS_ACTIVA = $event"
-        ></select-helper>
-      <input-helper :titol = "'Nom'" :valor-defecte = "ActivitatDetall.ACTIVITAT_Nom" :id = "'ACTIVITAT_Nom'" @onchange = "ActivitatDetall.ACTIVITAT_Nom = $event"></input-helper>
-<!--      
-        <input-helper             
-          :titol = "'Titol'"
-          :valor-defecte = "PromocioDetall.PROMOCIONS_TITOL"
-          :id = "'PROMOCIONS_TITOL'"
-          @onchange = "PromocioDetall.PROMOCIONS_TITOL = $event"
-        ></input-helper>
 
-        <input-helper             
-          :titol = "'Subtítol'"
-          :valor-defecte = "PromocioDetall.PROMOCIONS_SUBTITOL"
-          :id = "'PROMOCIONS_SUBTITOL'"
-          @onchange = "PromocioDetall.PROMOCIONS_SUBTITOL = $event"
-        ></input-helper>
+      <div v-for="FA of FormulariActivitat">    
+        <form-helper :formulari = "FA"></form-helper>        
+      </div>
 
-        <select-helper             
-          :titol = "'Activa?'"
-          :valor-defecte = "PromocioDetall.PROMOCIONS_IS_ACTIVA"
-          :id = "'PROMOCIONS_IS_ACTIVA'"
-          :options = "OptionsActiuNoActiu"
-          @onchange = "PromocioDetall.PROMOCIONS_IS_ACTIVA = $event"
-        ></select-helper>
-
-        <input-helper             
-          :titol = "'Url'"
-          :valor-defecte = "PromocioDetall.PROMOCIONS_URL"
-          :id = "'PROMOCIONS_URL'"
-          @onchange = "PromocioDetall.PROMOCIONS_URL = $event"
-        ></input-helper>
-
-        <image-helper 
-          :accio-esborra = "'Promocio_Delete'"
-          :accio-guarda="'Promocio'"
-          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
-          :mida-imatge = "'s'"
-          :url-a-mostrar = "getUrlImatge('s')"            
-          :titol = "'Imatge petita'"
-          @reload = "ReloadImatge($event, 'IMATGE_S')"
-        ></image-helper>
-        <image-helper 
-          :accio-esborra = "'Promocio_Delete'"
-          :accio-guarda="'Promocio'"
-          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
-          :mida-imatge = "'m'"
-          :url-a-mostrar = "getUrlImatge('m')"            
-          :titol = "'Imatge mitjana'"
-          @reload = "ReloadImatge($event, 'IMATGE_M')"
-        ></image-helper>
-        <image-helper 
-          :accio-esborra = "'Promocio_Delete'"
-          :accio-guarda="'Promocio'"
-          :id-element = "this.PromocioDetall.PROMOCIONS_PROMOCIO_ID"
-          :mida-imatge = "'l'"
-          :url-a-mostrar = "getUrlImatge('l')"            
-          :titol = "'Imatge gran'"
-          @reload = "ReloadImatge($event, 'IMATGE_L')"
-        ></image-helper>
--->
+<!--
         <div class="R">
           <div class="FT">
             <button v-on:click="GuardaPromocio" class="btn btn-success">Guardar</button>
@@ -117,8 +55,9 @@
             <button v-on:click="CancelaEdicio" class="btn btn-info">Tornar</button>
           </div>
         </div>          
-
+-->
       </div>
+
   
     </div>
   </div>
@@ -171,7 +110,7 @@
     },
     editaActivitat: function($idActivitat) {
       this.axios.get('/apiadmin/Horaris', { 'params' : { 'accio': 'GetEditActivitat', 'idA': $idActivitat, 'idS': this.idSite } } )
-        .then( R => { this.FormulariActivitat = R.data; this.Editant = true; } )
+        .then( R => { this.FormulariActivitat = R.data; console.log(this.FormulariActivitat); this.Editant = true; } )
         .catch( E => { alert(E) } );
     }
 

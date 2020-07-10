@@ -22,6 +22,8 @@ class CiclesModel extends BDD {
         return $OC;
     }    
         
+    public function getCicleById($idCicle) { return $this->_getRowWhere( array( $this->gofnwt('IdCicle') => intval($idCicle)) ); }    
+
     public function getCiclesActiusSelect($idS) {
         $Options = array();
         foreach($this->getCiclesActius($idS) as $OC):
@@ -31,7 +33,12 @@ class CiclesModel extends BDD {
     }
 
     public function getCiclesActius($SiteId) { 
-        return $this->_getRowWhere( array( $this->gofnwt('SiteId') => intval($SiteId), $this->gofnwt('Extingit') => 0 ), true ); 
+        return $this->_getRowWhere( 
+            array( 
+                $this->gofnwt('SiteId') => intval($SiteId), 
+                $this->gofnwt('Extingit') => 0,
+                $this->gofnwt('Actiu') => 1
+            ), true ); 
     }
     
 }

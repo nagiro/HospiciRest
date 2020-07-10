@@ -2,6 +2,8 @@
 // Seguint instruccions de --> https://lobotuerto.com/blog/cropping-images-with-vuejs-and-cropperjs/
 // Usant llibreria javascript --> Lodash (https://lodash.com/)
 
+// const { stringify } = require("querystring");
+
 Vue.component('image-helper-cropper', {
     props: {        
         titol: String,
@@ -9,7 +11,10 @@ Vue.component('image-helper-cropper', {
         AccioEsborra: String, //Promocio_Delete
         AccioGuarda: String, //Promocio
         IdElement: Number,  
-        MidaImatge: String        
+        MidaImatge: String, 
+        // ReloadUrl: string,
+        // ReloadParams: string,
+
     },          
     data: function() { 
         return { 
@@ -19,22 +24,29 @@ Vue.component('image-helper-cropper', {
             debouncedUpdatePreview: _.debounce(this.UpdatePreview, 257),
             MostraModal: 'display: none;',                                     
             ImageData: {},
+            MostraUrlImatge: ''
         }
     },
-    created: function() {},
+    created: function() {
+        this.MostraUrlImatge = this.UrlAMostrar;
+    },
     computed: {        
         getUrlAMostrar: function() {
-            return (this.UrlAMostrar);
+            return (this.MostraUrlImatge);
         }
 
     },
     watch: {},
     methods: {
 
-        MostraUrl: function() {            
-            return (this.UrlAMostrar.length > 0)
+        MostraUrl: function() {                    
+            return (this.MostraUrlImatge.length > 0)
         },        
-        
+
+        ReloadImatge() {
+            this.$forceUpdate();
+        },
+
         EsborraImatge() {
             let formData = new FormData();      
             formData.append( 'accio'    , this.AccioEsborra );            
@@ -42,8 +54,9 @@ Vue.component('image-helper-cropper', {
             formData.append( 'Tipus'    , this.MidaImatge );                  
             
             this.axios.post('/apiadmin/Upload', formData )
-                      .then( R => { this.MostraModal = 'display: none'; this.$emit('reload', this.IdElement); } )
-                      .catch( E => { alert(E); } );              
+                      .then( R => { this.MostraModal = 'display: none'; 
+                      this.MostraUrlImatge = '';
+                    } ).catch( E => { alert(E); } );              
             
           },
 
@@ -66,9 +79,11 @@ Vue.component('image-helper-cropper', {
                 formData.append( 'idElement', this.IdElement    );                
     
                 this.axios.post('/apiadmin/Upload', formData    )
-                          .then( R => { this.MostraModal = 'display: none'; this.$emit('reload', this.IdElement); } )
-                          .catch( E => { alert(E); } );      
-
+                          .then( R => { 
+                                this.MostraModal = 'display: none'; 
+                                this.$emit('update', R.data.Filename);
+                                this.MostraUrlImatge = R.data.Url;                        
+                            } ).catch( E => { alert(E); } );      
               });
 
           },
@@ -125,7 +140,7 @@ Vue.component('image-helper-cropper', {
                 <div class="custom-file">
                                 
                     <div style="height: 50px" v-if="MostraUrl()">
-                        <img :src="UrlAMostrar" style="height: 50px">
+                        <img :src="MostraUrlImatge" style="height: 50px">
                         <i @click="EsborraImatge()" class="withHand fas fa-trash-alt"></i>
                     </div>                         
                     <div v-else>

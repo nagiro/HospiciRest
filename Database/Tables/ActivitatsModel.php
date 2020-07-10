@@ -4,6 +4,7 @@ require_once BASEDIR."Database/Tables/HorarisModel.php";
 require_once BASEDIR."Database/Tables/HorarisEspaisModel.php";
 require_once BASEDIR."Database/Tables/EspaisModel.php";
 require_once BASEDIR."Database/Tables/CiclesModel.php";
+require_once BASEDIR."Database/Tables/TipusActivitatsModel.php";
 require_once BASEDIR."Database/FormulariClass.php";
 
 require_once BASEDIR."Database/DB.php";
@@ -14,8 +15,8 @@ class ActivitatsModel extends BDD {
 
     public function __construct() {
 
-        $OldFields = array("actiu", "ActivitatID", "Categories", "Cicles_CicleID", "dComplet",           "dCurt",           "Definiciohoraris", "Descripcio", "dMig",           "Estat", "Imatge", "InfoPractica",       "isEntrada", "isImportant", "Nom", "Organitzador", "PDF", "Places", "Preu", "PreuReduit", "Publicable", "PublicaWEB",    "Responsable", "site_id", "tComplet",     "tCurt",     "TipusActivitat_idTipusActivitat", "tipusEnviament", "tMig");
-        $NewFields = array("Actiu", "ActivitatId", "Categories", "CiclesCicleId" , "DescripcioCompleta", "DescripcioCurta", "DefinicioHoraris", "Descripcio", "DescripcioMig",  "Estat", "Imatge", "InformacioPractica", "IsEntrada", "IsImportant", "Nom", "Organitzador", "Pdf", "Places", "Preu", "PreuReduit", "Publicable", "PublicableWeb", "Responsable", "SiteId",  "TitolComplet", "TitolComplet", "TipusActivitatId",                "TipusEnviament", "TitolMig");
+        $OldFields = array("actiu", "ActivitatID", "Categories", "Cicles_CicleID", "dComplet",           "dCurt",           "Definiciohoraris", "Descripcio", "dMig",           "Estat", "Imatge", "InfoPractica",       "isEntrada", "isImportant", "Nom", "Organitzador", "PDF", "Places", "Preu", "PreuReduit", "Publicable", "PublicaWEB",    "Responsable", "site_id", "tComplet",     "tCurt",     "TipusActivitat_idTipusActivitat", "tipusEnviament", "tMig", "ImatgeS", "ImatgeM", "ImatgeL");
+        $NewFields = array("Actiu", "ActivitatId", "Categories", "CiclesCicleId" , "DescripcioCompleta", "DescripcioCurta", "DefinicioHoraris", "Descripcio", "DescripcioMig",  "Estat", "Imatge", "InformacioPractica", "IsEntrada", "IsImportant", "Nom", "Organitzador", "Pdf", "Places", "Preu", "PreuReduit", "Publicable", "PublicableWeb", "Responsable", "SiteId",  "TitolComplet", "TitolCurt", "TipusActivitatId",                "TipusEnviament", "TitolMig", "ImatgeS", "ImatgeM", "ImatgeL");
         parent::__construct("activitats", "ACTIVITATS", $OldFields, $NewFields );
 
     }
@@ -63,6 +64,7 @@ class ActivitatsModel extends BDD {
                     if( !isset( $RET['HORARIS'][$idH]['ESPAIS'][$idE] ) ) $RET['HORARIS'][$idH]['ESPAIS'][$idE] = array();
                     $RET['HORARIS'][$idH]['ESPAIS'][$idE][$FieldName] = $Field;                    
                 endif;
+
             }
         }
     
@@ -152,27 +154,95 @@ class ActivitatsModel extends BDD {
      * idActivitat = 0 per defecte, si no hi ha activitat
      * $idSite = Lloc on pertany l'activitat
      * */
-    function Form($idActivitat, $idSite) {
+    function Formulari($idActivitat, $idSite) {
         
-        $OA = $this->getEmptyObject($idSite);
-        if($idActivitat > 0) $OA = $this->getActivitatById($idActivitat);
-
         $CM = new CiclesModel();
+        $TM = new TipusActivitatsModel();
         
-        $RET = array();
-        $RET[] = new FormulariClass("Nom", FormulariClass::CONST_INPUT_HELPER, "", $this->gnfnwt('Nom'));
-        $F = new FormulariClass("Cicle vinculat", FormulariClass::CONST_SELECT_HELPER, "1", $this->gnfnwt('CiclesCicleId'));
-        $F->setOptions($CM->getCiclesActiusSelect($idSite));
-        $RET[] = $F;
-        $RET[] = new FormulariClass("Tipus activitat", FormulariClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('TipusActivitatId'));
+        $ObjecteActivitatsHoraris = $this->getEmptyObject($idSite);        
+        if($idActivitat > 0) {
+            $ObjecteActivitatsHoraris = $this->getActivitatById($idActivitat);           
+            $OA = $ObjecteActivitatsHoraris['ACTIVITAT'];
 
+            $OC = $CM->getCicleById( $OA[$this->gnfnwt('CiclesCicleId')] );
+            $OptionCicleActual = new OptionClass($OA[$this->gnfnwt('CiclesCicleId')], $OC[$CM->gnfnwt('Nom')]);
+
+            $OT = $TM->getTipusById( $OA[$this->gnfnwt('TipusActivitatId')] );
+            $OptionTipusActivitatActual = new OptionClass($OT[$TM->gnfnwt('IdTipusActivitat')], $OT[$TM->gnfnwt('Nom')]);
+        }                                
+
+        $RET = array();
+        $id = $this->gnfnwt('Nom'); 
+        $RET[$id] = new FormulariClass("Nom", FormulariClass::CONST_INPUT_HELPER, "", $id, $OA, array());
+
+        $id = $this->gnfnwt('CiclesCicleId');
+        $RET[$id] = new FormulariClass("Cicle vinculat", FormulariClass::CONST_SELECT_HELPER, "1", $id, $OA, array());
+        $RET[$id]->setOptions( $CM->getCiclesActiusSelect($idSite), $OptionCicleActual );
+        
+        $id = $this->gnfnwt('TipusActivitatId');
+        $RET[$id] = new FormulariClass("Tipus activitat", FormulariClass::CONST_SELECT_HELPER, "0", $id, $OA, array());
+        $RET[$id]->setOptions( $TM->getTipusActivitatsSelect($idSite), $OptionTipusActivitatActual );
+
+        $id = $this->gnfnwt('Preu');
+        $RET[$id] = new FormulariClass("Preu", FormulariClass::CONST_INPUT_HELPER, "", $id, $OA, array());
+/*
+        $id = $this->gnfnwt('Estat');
+        $RET[$id] = new FormulariClass("Preu", FormulariClass::CONST_INPUT_HELPER, "", $id, $OA, array());
+*/
+        
+        $id = $this->gnfnwt('Imatge');
+        $RET[$id.'s'] = new FormulariClass("Imatge", FormulariClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
+        $RET[$id.'s']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
+                                $this->getUrlByMida($OA, 'S'), 
+                                's', 
+                                'Activitat', 
+                                'Activitat_Delete' );
+
+        $id = $this->gnfnwt('Imatge');
+        $RET[$id.'m'] = new FormulariClass("Imatge", FormulariClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
+        $RET[$id.'m']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
+                                $this->getUrlByMida($OA, 'M'), 
+                                'M', 
+                                'Activitat', 
+                                'Activitat_Delete' );
+        
+        $id = $this->gnfnwt('Imatge');
+        $RET[$id.'l'] = new FormulariClass("Imatge", FormulariClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
+        $RET[$id.'l']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
+                                $this->getUrlByMida($OA, 'L'), 
+                                'L', 
+                                'Activitat', 
+                                'Activitat_Delete' );                                
+                                                        
+
+        $T = array();
         foreach($RET as $K => $R):
-            $RET[] = $R->getArrayObject();
+            $T[] = $R->getArrayObject();
         endforeach;
 
-        return $RET;
+        return $T;
         
     }
+
+    public function getUrlByMida($OA, $mida) {        
+        $Img = $OA[ $this->gnfnwt('Imatge') ];
+        if(strlen($Img) > 0) {
+            $ImgParts = explode(".", $Img);        
+            return $ImgParts[0].$mida.'.jpg';
+        } else {
+            return '';
+        }
+    }
+
+    public function doUpdate($ActivitatDetall) {        
+        return $this->_doUpdate($ActivitatDetall, array('ActivitatId'));        
+    }
+
+    public function doDelete($ActivitatDetall) {                
+        $ActivitatDetall[$this->getNewFieldNameWithTable('Actiu')] = 0;        
+        return $this->doUpdate($ActivitatDetall);        
+    }
+
 
 }
 

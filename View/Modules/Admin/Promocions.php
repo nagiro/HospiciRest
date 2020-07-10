@@ -90,8 +90,8 @@
           :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
           :mida-imatge = "'s'"
           :url-a-mostrar = "getUrlImatge('s')"            
-          :titol = "'Imatge petita'"
-          @reload = "ReloadImatge($event, 'IMATGE_S')"
+          :titol = "'Imatge petita'"          
+          @update = "PromocioDetall.PROMOCIONS_IMATGE_S = $event"          
         ></image-helper-cropper>
         <image-helper-cropper
           :accio-esborra = "'Promocio_Delete'"
@@ -99,8 +99,8 @@
           :id-element = "PromocioDetall.PROMOCIONS_PROMOCIO_ID"
           :mida-imatge = "'m'"
           :url-a-mostrar = "getUrlImatge('m')"            
-          :titol = "'Imatge mitjana'"
-          @reload = "ReloadImatge($event, 'IMATGE_M')"
+          :titol = "'Imatge mitjana'"          
+          @update = "PromocioDetall.PROMOCIONS_IMATGE_M = $event"          
           ></image-helper-cropper>
           <image-helper-cropper
           :accio-esborra = "'Promocio_Delete'"
@@ -109,7 +109,7 @@
           :mida-imatge = "'l'"
           :url-a-mostrar = "getUrlImatge('l')"            
           :titol = "'Imatge gran'"
-          @reload = "ReloadImatge($event, 'IMATGE_L')"
+          @update = "PromocioDetall.PROMOCIONS_IMATGE_L = $event"          
           ></image-helper-cropper>
 
         <div class="R">
@@ -207,14 +207,6 @@
                 .then(  R => { this.PromocioDetall = R.data; this.Editant = true; } )
                 .catch( E => { alert(E); } );      
 
-    },
-
-    ReloadImatge: function(idPromocio, ImatgeTipus) {      
-
-      this.axios.get('/apiadmin/Promocions', { params: { 'accio': 'CU', 'idPromocio': idPromocio }} )
-                .then(  R => { this.PromocioDetall = R.data; this.Editant = true; } )
-                .catch( E => { alert(E); } );      
-      
     },
 
     CancelaEdicio: function() { this.Editant = false; this.PromocioDetall = {}; },

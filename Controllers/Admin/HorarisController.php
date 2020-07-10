@@ -15,47 +15,28 @@ class HorarisController
         $this->ActivitatsModel = new ActivitatsModel();        
 
     }
-/*
-    public function doUpload($modul, $file, $extensio, $tipus, $idElement, $idU, $idS){
+
+    public function doUpload($modul, $file, $tipus, $idElement, $idU, $idS){
 
         $FC = new FileController();                
         $WebUrl = "";
         $tipus = strtoupper($tipus);
         
         try {
-            $FileName = $FC->doUpload($modul, $file, $extensio, $tipus, $idElement, $idU, $idS);                                
+            $UploadResp = $FC->doUpload($modul, $file, $tipus, $idElement, $idU, $idS);                                
         } catch (Exception $e) { throw $e; } //Propaguem l'excepció
 
-        //Carrego la promoció        
-        $Promocio = $this->PromocionsModel->getById($idElement);
+        //Carrego l'activitat
+        $ObjecteActivitatHoraris = $this->ActivitatsModel->getActivitatById($idElement);
+        $OA = $ObjecteActivitatHoraris['ACTIVITAT'];        
         
-        //Guardo que la imatge en qüestió està entrada
-        $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.$tipus)] = $FileName;
-        $this->PromocionsModel->doUpdate($Promocio);     
+        //Guardo que la imatge en qüestió està entrada                     
+        $OA[$this->ActivitatsModel->gnfnwt('Imatge'.$tipus)] = $UploadResp['Url'];                
+        $this->ActivitatsModel->doUpdate($OA);     
+
+        return $UploadResp;
 
     }
-
-    /**
-     * $tipus és la mida de la imatge 's', m, l
-     *  */
-/*    
-    public function doUploadDelete($tipus, $idElement, $idU, $idS){
-                                
-        //Carrego la promoció        
-        $Promocio = $this->PromocionsModel->getById($idElement);
-        
-        //Indico la nova URL de la imatge
-        if($tipus == 's' || $tipus == 'l' || $tipus == 'm'){
-            $Promocio[$this->PromocionsModel->getNewFieldNameWithTable('IMATGE_'.strtoupper($tipus))] = '';
-            $this->PromocionsModel->doUpdate($Promocio);     
-        }
-
-    }
-
-    public function getById($idPromocio = 0) {        
-        return $this->PromocionsModel->getById($idPromocio);                
-    }
-*/        
 
     public function GeneroCalendari($Di, $Df) {
         // 0 => Year, 1 => Month , 2 => Day
