@@ -157,41 +157,39 @@ class MyAPIAdmin extends API
     protected function Horaris() {
         
         $RET = "";                
-//        if($this->Auth->isAuthenticated()) {            
+        if($this->Auth->isAuthenticated()) {            
         
             $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
             $paraules = (isset($this->request['q']))?$this->request['q']:'';            
             $DataInicial = (isset($this->request['DataInicial']))   ? $this->request['DataInicial'] : Date('Y-m-d');
-//            $DataFinal = (isset($this->request['DataFinal']))       ? $this->request['DataFinal']: Date( mktime(0,0,0, Date('m') + 1, Date('d'), Date('Y')));            
             $idActivitat = (isset($this->request['idA']))     ? $this->request['idA']:0;
             $idSite = (isset($this->request['idS']))     ? $this->request['idS']:0;
-//            $PromocioDetall = (isset($this->request['post']['PromocioDetall'])) ? json_decode($this->request['post']['PromocioDetall'], true):array();
+            $ActivitatDetall = (isset($this->request['post']['ActivitatDetall'])) ? json_decode($this->request['post']['ActivitatDetall'], true):array();
 
             if(isset($this->request['post'])) $accio = $this->request['post']['accio'];
 
-            $H = new HorarisController();
+            $H = new HorarisController();                        
             $RET = array();
             
             switch($accio) {
                 case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial); break;        
-//                case 'C':   $RET = $P->getPromocionsActives($this->Auth->idSite); break;        
                 case 'GetEditActivitat':  
                     $AM = new ActivitatsModel();
                     $RET = $AM->Formulari($idActivitat, 1);                                   
                 break;        
 //                case 'A':   $RET = $P->getNewPromocio($this->Auth->idSite); break;
-//                case 'U':   $RET = $P->doUpdate($PromocioDetall); break;        
- //               case 'D':   $RET = $P->doDelete($PromocioDetall); break;        
+                case 'UA':   $RET = $H->doUpdateActivitat($ActivitatDetall); break;        
+                case 'DA':   $RET = $H->doDeleteActivitat($ActivitatDetall); break;        
 //                case 'UO':  $RET = $P->doOrderChange( $this->request['post']['Promocions']); break;                
             }
 
             return array($RET, 200);
 
-//        } else { 
+        } else { 
             
-//            return array(array("No estàs autenticat."), 500); 
+            return array(array("No estàs autenticat."), 500); 
 
-//        }         
+        }         
         
     }
     
@@ -301,6 +299,14 @@ class MyAPIAdmin extends API
                         $RET = $HorarisController->doUpload($accio, $file, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
                     } catch(Exception $e){ return array($e->getMessage(), 500);  };
                     break;        
+                
+                case 'Activitat_Delete':                     
+                        $HorarisController = new HorarisController(); 
+    
+                        try {
+                            $RET = $HorarisController->doUploadDelete($accio, $file, $tipus, $idElement, $this->Auth->idUsuari, $this->Auth->idSite);
+                        } catch(Exception $e){ return array($e->getMessage(), 500);  };
+                        break;                            
 
                 case 'Promocio':                     
                     $PC = new PromocionsController(); 

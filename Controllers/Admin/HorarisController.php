@@ -30,13 +30,32 @@ class HorarisController
         $ObjecteActivitatHoraris = $this->ActivitatsModel->getActivitatById($idElement);
         $OA = $ObjecteActivitatHoraris['ACTIVITAT'];        
         
-        //Guardo que la imatge en qüestió està entrada                     
-        $OA[$this->ActivitatsModel->gnfnwt('Imatge'.$tipus)] = $UploadResp['Url'];                
+        //Guardo que la imatge en qüestió està entrada                             
+        if($tipus != 'PDF') $OA[$this->ActivitatsModel->gnfnwt('Imatge'.$tipus)] = $UploadResp['Url'];                
+        else $OA[$this->ActivitatsModel->gnfnwt('Pdf')] = $UploadResp['Url'];                
+        
         $this->ActivitatsModel->doUpdate($OA);     
 
         return $UploadResp;
 
     }
+
+    public function doUploadDelete($tipus, $idElement, $idU, $idS){
+                                
+        //Carrego la promoció        
+        $Activitat = $this->ActivitatsModel->getById($idElement);
+        
+        //Indico la nova URL de la imatge
+        if($tipus == 's' || $tipus == 'l' || $tipus == 'm'){
+            $Activitat[$this->ActivitatsModel->getNewFieldNameWithTable('IMATGE_'.strtoupper($tipus))] = '';
+            $this->ActivitatsModel->doUpdate($Activitat);     
+        } elseif($tipus == 'PDF') {
+            $Activitat[$this->ActivitatsModel->getNewFieldNameWithTable('Pdf')] = '';
+            $this->ActivitatsModel->doUpdate($Activitat);     
+        }
+
+    }
+
 
     public function GeneroCalendari($Di, $Df) {
         // 0 => Year, 1 => Month , 2 => Day
@@ -142,16 +161,16 @@ class HorarisController
         }
         
     }
+*/
 
-    public function doUpdate($PromocionsModel) {
-        return $this->PromocionsModel->doUpdate($PromocionsModel);        
+    public function doUpdateActivitat($ActivitatModel) {
+        return $this->ActivitatsModel->doUpdate($ActivitatModel);        
     }
     
-    public function doDelete($PromocionsModel) {
-        return $this->PromocionsModel->doDelete($PromocionsModel);        
+    public function doDeleteActivitat($ActivitatModel) {
+        return $this->ActivitatsModel->doDelete($ActivitatModel);        
     }
 
-    */
  }
 
  ?>

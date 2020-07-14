@@ -29,7 +29,8 @@ class FileController {
                                 $NameToSave = $File;
                                 break;
             case 'Activitat':   $Dir = IMATGES_DIR_ACTIVITATS_NW;                                
-                                $File = 'A-'.$idElement.'-'.strtoupper($tipus).'.jpg';                                
+                                if($tipus != 'PDF') $File = 'A-'.$idElement.'-'.strtoupper($tipus).'.jpg';                                
+                                else $File = 'A-'.$idElement.'.pdf';
                                 $Dir  = $Dir . $File;        
                                 $Url  = IMATGES_URL_ACTIVITATS_NW . $File;
                                 $NameToSave = $File;                                

@@ -171,56 +171,87 @@ class ActivitatsModel extends BDD {
             $OptionTipusActivitatActual = new OptionClass($OT[$TM->gnfnwt('IdTipusActivitat')], $OT[$TM->gnfnwt('Nom')]);
         }                                
 
-        $RET = array();
-        $id = $this->gnfnwt('Nom'); 
-        $RET[$id] = new FormulariClass("Nom", FormulariClass::CONST_INPUT_HELPER, "", $id, $OA, array());
+        // Els camps Preu, PreuReduit, Publicable, tipusEnviament, places, isImportant, DefinicioHoraris Estat no s'utilitzen        
 
-        $id = $this->gnfnwt('CiclesCicleId');
-        $RET[$id] = new FormulariClass("Cicle vinculat", FormulariClass::CONST_SELECT_HELPER, "1", $id, $OA, array());
-        $RET[$id]->setOptions( $CM->getCiclesActiusSelect($idSite), $OptionCicleActual );
+        $FormGeneral = new FormulariClass();
+        $FormGeneral->setModelObject($OA);                
+                
+        $FormGeneral->addItem( new FormItemClass("Nom", FormItemClass::CONST_INPUT_HELPER, "", $this->gnfnwt('Nom'), $OA, array()) );                
         
-        $id = $this->gnfnwt('TipusActivitatId');
-        $RET[$id] = new FormulariClass("Tipus activitat", FormulariClass::CONST_SELECT_HELPER, "0", $id, $OA, array());
-        $RET[$id]->setOptions( $TM->getTipusActivitatsSelect($idSite), $OptionTipusActivitatActual );
-
-        $id = $this->gnfnwt('Preu');
-        $RET[$id] = new FormulariClass("Preu", FormulariClass::CONST_INPUT_HELPER, "", $id, $OA, array());
+        $I = new FormItemClass("Cicle vinculat", FormItemClass::CONST_SELECT_HELPER, "1", $this->gnfnwt('CiclesCicleId'), $OA, array());
+        $I->setOptions( $CM->getCiclesActiusSelect($idSite), $OptionCicleActual );
+        $FormGeneral->addItem( $I );
+                
+        $I = new FormItemClass("Tipus activitat", FormItemClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('TipusActivitatId'), $OA, array());
+        $I->setOptions( $TM->getTipusActivitatsSelect($idSite), $OptionTipusActivitatActual );
+        $FormGeneral->addItem( $I );
+        
+        $I = new FormItemClass("Visible web?", FormItemClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('PublicableWeb'), $OA, array());
+        $I->setOptionsSiNo();
+        $FormGeneral->addItem( $I );
 /*
-        $id = $this->gnfnwt('Estat');
-        $RET[$id] = new FormulariClass("Preu", FormulariClass::CONST_INPUT_HELPER, "", $id, $OA, array());
+        $id = $this->gnfnwt('Categories');
+        $RET[$FID][$id] = new FormItemClass("Tags relatius", FormItemClass::CONST_MULTIPLE_SELECT_HELPER, "", $id, $OA, array());
+        $RET[$FID][$id]->setOptions(); //Falta acabar
 */
         
+        $I = new FormItemClass("Té inscripció?", FormItemClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('IsEntrada'), $OA, array());
+        $I->setOptionsSiNo();
+        $FormGeneral->addItem( $I );
+
+        $RET["FormGeneral"] = $FormGeneral->toArray();
+
+        
+        /************************************** FORMULARI 2 *********************************************************/
+
+        $FormDescripcio = new FormulariClass();
+        $FormDescripcio->setModelObject($OA);                
+        
+        $FormDescripcio->addItem( new FormItemClass("Titol curt", FormItemClass::CONST_INPUT_HELPER , "", $this->gnfnwt('TitolCurt'), $OA, array()) );                
+        $FormDescripcio->addItem( new FormItemClass("Descripció curta", FormItemClass::CONST_TEXTAREA_HELPER , "", $this->gnfnwt('DescripcioCurta'), $OA, array()) );                
+
+        $FormDescripcio->addItem( new FormItemClass("Titol web", FormItemClass::CONST_INPUT_HELPER , "", $this->gnfnwt('TitolMig'), $OA, array()) );                
+        $FormDescripcio->addItem( new FormItemClass("Descripció web", FormItemClass::CONST_TEXTAREA_HELPER , "", $this->gnfnwt('DescripcioMig'), $OA, array()) );                
+
+        $FormDescripcio->addItem( new FormItemClass("Titol complet", FormItemClass::CONST_INPUT_HELPER , "", $this->gnfnwt('TitolComplet'), $OA, array()) );                
+        $FormDescripcio->addItem( new FormItemClass("Descripció completa", FormItemClass::CONST_TEXTAREA_HELPER , "", $this->gnfnwt('DescripcioCompleta'), $OA, array()) );                
+                
+        $I = new FormItemClass("Imatge S", FormItemClass::CONST_IMATGE_HELPER, "", $this->gnfnwt('ImatgeS'), $OA, array());
+        $I->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], $this->getUrlByMida($OA, 'S'), 's', 'Activitat', 'Activitat_Delete' );
+        $FormDescripcio->addItem( $I );
+
+        $I = new FormItemClass("Imatge M", FormItemClass::CONST_IMATGE_HELPER, "", $this->gnfnwt('ImatgeM'), $OA, array());
+        $I->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], $this->getUrlByMida($OA, 'M'), 'm', 'Activitat', 'Activitat_Delete' );
+        $FormDescripcio->addItem( $I );
+
+        $I = new FormItemClass("Imatge L", FormItemClass::CONST_IMATGE_HELPER, "", $this->gnfnwt('ImatgeL'), $OA, array());
+        $I->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], $this->getUrlByMida($OA, 'L'), 'l', 'Activitat', 'Activitat_Delete' );
+        $FormDescripcio->addItem( $I );
+        
+        $I = new FormItemClass("Pdf", FormItemClass::CONST_UPLOAD_HELPER, "", $this->gnfnwt('Pdf'), $OA, array());
+        $I->setUpload(    $OA[ $this->gnfnwt('ActivitatId') ], $OA[ $this->gnfnwt('Pdf') ], 'Activitat', 'Activitat_Delete' );
+        $FormDescripcio->addItem( $I );                
+                                                      
+        $RET["FormDescripcio"] = $FormDescripcio->toArray();
+    
+        /************************************** FORMULARI 3 *********************************************************/
+/*        
+        $FID = 'F3';
+        $RET[$FID] = array();
         $id = $this->gnfnwt('Imatge');
-        $RET[$id.'s'] = new FormulariClass("Imatge", FormulariClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
-        $RET[$id.'s']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
+        $RET[$FID][$id.'s'] = new FormItemClass("Imatge", FormItemClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
+        $RET[$FID][$id.'s']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
                                 $this->getUrlByMida($OA, 'S'), 
                                 's', 
                                 'Activitat', 
                                 'Activitat_Delete' );
 
-        $id = $this->gnfnwt('Imatge');
-        $RET[$id.'m'] = new FormulariClass("Imatge", FormulariClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
-        $RET[$id.'m']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
-                                $this->getUrlByMida($OA, 'M'), 
-                                'M', 
-                                'Activitat', 
-                                'Activitat_Delete' );
-        
-        $id = $this->gnfnwt('Imatge');
-        $RET[$id.'l'] = new FormulariClass("Imatge", FormulariClass::CONST_IMATGE_HELPER, "", $id, $OA, array());
-        $RET[$id.'l']->setImage(    $OA[ $this->gnfnwt('ActivitatId') ], 
-                                $this->getUrlByMida($OA, 'L'), 
-                                'L', 
-                                'Activitat', 
-                                'Activitat_Delete' );                                
-                                                        
 
-        $T = array();
-        foreach($RET as $K => $R):
-            $T[] = $R->getArrayObject();
-        endforeach;
 
-        return $T;
+
+        /************************************** FI FORMULARI 2 *********************************************************/
+
+        return $RET;
         
     }
 
