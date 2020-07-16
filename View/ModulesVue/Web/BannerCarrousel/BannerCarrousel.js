@@ -163,7 +163,7 @@ Vue.component('banner-carrousel', {
                 <div class="bc_text_menu">menú</div>
             </button>
 
-            <div class="bc_menu" v-if="MenuObert">
+            <div class="bc_menu" v-show="MenuObert">
 
                 <div class="bc_menu_text">
                     <ul class="bc_menu_primer_nivell">
@@ -213,7 +213,7 @@ Vue.component('banner-carrousel', {
 
                 <img style="display: none" :src="PromocioHome.ImageUrl" @error="NoExisteixImatge($event, index)" :alt="PromocioHome.PROMOCIONS_TITOL" />
 
-                <div v-if="index == IndexPromocioActual" :style="PromocioHome.VisibleBackground" :class="PromocioHome.BannerImageID">
+                <div v-show="index == IndexPromocioActual" :style="PromocioHome.VisibleBackground" :class="PromocioHome.BannerImageID">
                     
                     <a :href="PromocioHome.LinkPromocio" :class="PromocioHome.TextBannerID">
                         <h1 v-if="WithTitle" class="bc_text_banner_titol"> {{ PromocioHome.PROMOCIONS_TITOL }} </h1>
@@ -222,7 +222,7 @@ Vue.component('banner-carrousel', {
                 </div>
             </div>
                 
-            <ul class="bc_grup_paginacio" v-if="TotesPromocions.length > 1">
+            <ul class="bc_grup_paginacio" v-show="TotesPromocions.length > 1">
                 <li class="paginacio" v-for="(P, index) of TotesPromocions" >
                     <i :class="getClassBola(index)"></i>
                 </li>

@@ -75,14 +75,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/View/Styles/General.css?<?php echo date('U', time()) ?>">    
 
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->
 
     <script src='https://unpkg.com/v-calendar@next'></script>
 
     <script>
         window.Vue.use(VuejsDialog.main.default)        
-        window.Vue.use(CKEditor);        
+        // window.Vue.use(CKEditor); 
     </script>
 
 <!--    <script src="/View/Scripts/cropper.js"></script>

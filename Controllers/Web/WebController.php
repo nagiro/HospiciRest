@@ -10,6 +10,7 @@ class WebController
     public $WebQueries; 
     public $DataAvui;
     public $DataFi;
+    public $DataFiAct;
 
     public function __construct() {
         $this->WebQueries = new WebQueries();
@@ -18,7 +19,8 @@ class WebController
 
     public function setNewDate($DataAvui) {
         $this->DataAvui = $DataAvui;
-        $this->DataFi = date('Y-m-d', strtotime($this->DataAvui." +4 month"));                
+        $this->DataFi = date('Y-m-d', strtotime($this->DataAvui." +6 month"));                
+        $this->DataFiAct = date('Y-m-d', strtotime($this->DataAvui." +2 month"));                
     }
 
     public function validateDate($Date) {
@@ -33,7 +35,7 @@ class WebController
         $E["Musica"] =              $this->WebQueries->getActivitatsHome(array(56), $this->DataAvui, $this->DataFi, 1);
         $E["Petita"] =              $this->WebQueries->getActivitatsHome(array(59), $this->DataAvui, $this->DataFi, 1);
         $E["Cicles"] =              $this->WebQueries->getCiclesHome(0, $this->DataAvui, $this->DataFi);
-        $E["ProperesActivitats"] =  $this->WebQueries->getActivitatsHome(array(), $this->DataAvui, $this->DataFi, 1);
+        $E["ProperesActivitats"] =  $this->WebQueries->getActivitatsHome(array(), $this->DataAvui, $this->DataFiAct, 1);
         $E["Noticies"] =            $this->WebQueries->getNoticiesHome(1, $this->DataAvui);
         $E["Promocions"] =          $this->WebQueries->getPromocions();   
         $E["Breadcumb"] =           array(array('Titol'=>'Inici', "Link"=> '/')); 
