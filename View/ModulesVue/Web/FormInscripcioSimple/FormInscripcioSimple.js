@@ -97,9 +97,9 @@ Vue.component('form-inscripcio-simple', {
                     this.Pas = 7; 
                     this.ErrorInscripcio = 'Inscripcions obertes del &nbsp;<b>' + DIM + '</b>&nbsp;al&nbsp;<b>' + DFM + '</b>&nbsp;inclosos.';
                     return false; 
-                } 
+                }                 
                 return true;                
-            }
+            } 
         },
         dnikeymonitor: function($event) {
             
@@ -183,7 +183,7 @@ Vue.component('form-inscripcio-simple', {
     },
     template: `            
 
-    <div>
+    <div v-if="DetallCurs.CURSOS_VisibleWeb == 1">
         <form class="formulari-inscripcio">    
             <h2>Inscriu-te a l'activitat!</h2>
 

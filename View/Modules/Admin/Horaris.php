@@ -67,7 +67,7 @@
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
           <!-- AQUÍ COMENÇA EL FORMULARI GENERAL -->
-          {{FormulariActivitat.ModelObject}}
+          
           <div class="table table-striped table-sm">    
 
             <div v-for="FA of FormulariActivitat.FormFields">    
