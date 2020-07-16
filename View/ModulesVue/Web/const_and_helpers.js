@@ -87,7 +87,7 @@ function ConvertirHora( HoraBDD , ReturnType = 'THM' ) {
     const HoraArray = HoraBDD.split(':');
 
     if( ReturnType == 'THM' ){
-        return HoraArray[0] + ':' + HoraArray[1];
+        return HoraArray[0] + '.' + HoraArray[1];
     }
 }
 
@@ -145,7 +145,7 @@ function ResumDates(Horaris){
     if($PrimerDia == $UltimDia ) { ResumDates = 'El ' + DiaSetmanaNom + ' ' + PrimerDiaO.dia + ' ' + MesNom(PrimerDiaO) + ' de ' + PrimerDiaO.any }
     else { ResumDates = 'Del ' + PrimerDiaO.dia + ' de ' + MesNom(PrimerDiaO) + ' ' + PrimerDiaO.any + ' al ' + UltimDiaO.dia + ' ' + MesNom(UltimDiaO) + ' de ' + UltimDiaO.any  }
     
-    ResumDates = '<p>' + ResumDates + '</p><p>' + ConvertirHora($HoraInici) + ' - ' + $Espai + '</p>'; 
+    ResumDates = '<p>' + ResumDates + '</p><p>' + ConvertirHora($HoraInici) + ' h - ' + $Espai + '</p>'; 
     
     return ResumDates;
 }

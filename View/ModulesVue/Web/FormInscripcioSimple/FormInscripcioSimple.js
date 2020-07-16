@@ -78,6 +78,11 @@ Vue.component('form-inscripcio-simple', {
     * Pas 8 = Pagament amb TPV
     */
     methods: {
+        EtiquetaTitol: function(DetallCurs) {            
+            if( DetallCurs.CURSOS_Categoria == '29' && DetallCurs.CURSOS_PagamentExtern.includes( CONST_PAGAMENT_TARGETA ) ) return 'Compra una entrada';
+            else if( DetallCurs.CURSOS_Categoria == '29' && !DetallCurs.CURSOS_PagamentExtern.includes( CONST_PAGAMENT_TARGETA ) ) return 'Reserva una entrada';
+            else return 'Inscriu-te a l\'activitat';
+        },
         PucMatricular: function(DetallCurs) {
             
             if( DetallCurs && DetallCurs.CURSOS_VisibleWeb) {
@@ -185,7 +190,7 @@ Vue.component('form-inscripcio-simple', {
 
     <div v-if="DetallCurs.CURSOS_VisibleWeb == 1">
         <form class="formulari-inscripcio">    
-            <h2>Inscriu-te a l'activitat!</h2>
+            <h2>{{EtiquetaTitol(DetallCurs)}}</h2>
 
             <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
             </div>
