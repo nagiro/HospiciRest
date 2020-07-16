@@ -24,7 +24,12 @@
 
     <!-- LODASH JAVASCRIPT UTILITY -->
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+
+    <!-- Multiselect -->
+    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     
+    <!-- Dialog -->
     <link href="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.css" rel="stylesheet">    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>    
     
@@ -49,8 +54,9 @@
     <script src='https://unpkg.com/v-calendar@next'></script>
 
     <script>
-        window.Vue.use(VuejsDialog.main.default)        
-        window.Vue.use(CKEditor);        
+        window.Vue.use(VuejsDialog.main.default);  
+        window.Vue.use(CKEditor);      
+        window.Vue.use(window.VueMultiselect.default);        
     </script>
 
 <!--    <script src="/View/Scripts/cropper.js"></script>

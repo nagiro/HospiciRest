@@ -1,7 +1,7 @@
 <?php
 
 require_once APIDIR . 'api.php';
-require_once CONTROLLERSDIR . 'ControllersAdminLoader.php';
+require_once CONTROLLERSDIR . 'AuthController.php';
 
 class NoAuthException extends Exception {
     
@@ -46,6 +46,8 @@ class MyAPIAdmin extends API
     }
 
     protected function Sites() {
+
+        require_once CONTROLLERSDIR . 'Admin/SitesController.php';
         
         $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
         
@@ -79,6 +81,8 @@ class MyAPIAdmin extends API
 
     protected function Promocions() {
         
+        require_once CONTROLLERSDIR . 'Admin/PromocionsController.php';
+
         if($this->Auth->isAuthenticated()) {            
             $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
             $paraules = (isset($this->request['q']))?$this->request['q']:'';
@@ -113,6 +117,8 @@ class MyAPIAdmin extends API
 
     protected function Taulell() {
         
+        require_once CONTROLLERSDIR . 'Admin/TaulellController.php';
+
         if($this->Auth->isAuthenticated()) {            
             $accio = (isset($this->request['accio'])) ? $this->request['accio']: ''; 
             $paraules = (isset($this->request['q']))?$this->request['q']:'';            
@@ -156,6 +162,8 @@ class MyAPIAdmin extends API
 
     protected function Horaris() {
         
+        require_once CONTROLLERSDIR . 'Admin/HorarisController.php';
+
         $RET = "";                
         if($this->Auth->isAuthenticated()) {            
         
@@ -173,6 +181,13 @@ class MyAPIAdmin extends API
             
             switch($accio) {
                 case 'L':   $RET = $H->getLlistaHoraris($this->Auth->idSite, $paraules, $DataInicial); break;        
+                
+                // Edita activitat
+                case 'EA': 
+                    $AM = new ActivitatsModel();
+                    $RET = $AM->Formulari($idActivitat, 1);                                   
+                break;
+                
                 case 'GetEditActivitat':  
                     $AM = new ActivitatsModel();
                     $RET = $AM->Formulari($idActivitat, 1);                                   
@@ -199,7 +214,9 @@ class MyAPIAdmin extends API
      * @Params AuthToken
     */     
     protected function Menus() {
-                                    
+                     
+        require_once CONTROLLERSDIR . 'Admin/MenusController.php';
+
         if($this->Auth->isAuthenticated()) {
 
             $accio = $this->request['accio'];                    
@@ -222,7 +239,9 @@ class MyAPIAdmin extends API
      * @Params AuthToken
     */     
     protected function Avui() {
-                                     
+                      
+        require_once CONTROLLERSDIR . 'Admin/AvuiController.php';
+
         if($this->Auth->isAuthenticated()) {
 
             $accio = $this->request['accio'];                    
@@ -308,7 +327,10 @@ class MyAPIAdmin extends API
                         } catch(Exception $e){ return array($e->getMessage(), 500);  };
                         break;                            
 
-                case 'Promocio':                     
+                case 'Promocio': 
+                    
+                    require_once CONTROLLERSDIR . 'Admin/PromocionsController.php';
+                    
                     $PC = new PromocionsController(); 
 
                     try {
@@ -318,6 +340,8 @@ class MyAPIAdmin extends API
 
                 case 'Promocio_Delete': 
                                                                 
+                    require_once CONTROLLERSDIR . 'Admin/PromocionsController.php';
+
                     $PC = new PromocionsController();                     
                     try {
                         // Aquí Tipus és la mida de la imatge 's', 'm', 'l'

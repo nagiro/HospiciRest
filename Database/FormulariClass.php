@@ -86,8 +86,12 @@ class FormItemClass {
 
     public function setOptions($Options, $OptionActual) {
         // Trec si existeix l'opció actual i després l'afegeixo. Si no existeix només l'afegeixo
-        foreach($Options as $K => $O) if ($O->id == $OptionActual->id) unset($Options[$K]);
-        $this->Options = array_merge(array($OptionActual), $Options);        
+        if(is_array($OptionActual) && sizeof($OptionActual) > 0) {
+            foreach($Options as $K => $O) if ($O->id == $OptionActual->id) unset($Options[$K]);
+            $this->Options = array_merge(array($OptionActual), $Options);        
+        } else {
+            $this->Options = $Options;        
+        }
     }
 
     public function setOptionsSiNo() {

@@ -5,6 +5,7 @@ require_once BASEDIR."Database/Tables/HorarisEspaisModel.php";
 require_once BASEDIR."Database/Tables/EspaisModel.php";
 require_once BASEDIR."Database/Tables/CiclesModel.php";
 require_once BASEDIR."Database/Tables/TipusActivitatsModel.php";
+require_once BASEDIR."Database/Tables/TipusModel.php";
 require_once BASEDIR."Database/FormulariClass.php";
 
 require_once BASEDIR."Database/DB.php";
@@ -158,6 +159,7 @@ class ActivitatsModel extends BDD {
         
         $CM = new CiclesModel();
         $TM = new TipusActivitatsModel();
+        $TiM = new TipusModel();
         
         $ObjecteActivitatsHoraris = $this->getEmptyObject($idSite);        
         if($idActivitat > 0) {
@@ -168,7 +170,8 @@ class ActivitatsModel extends BDD {
             $OptionCicleActual = new OptionClass($OA[$this->gnfnwt('CiclesCicleId')], $OC[$CM->gnfnwt('Nom')]);
 
             $OT = $TM->getTipusById( $OA[$this->gnfnwt('TipusActivitatId')] );
-            $OptionTipusActivitatActual = new OptionClass($OT[$TM->gnfnwt('IdTipusActivitat')], $OT[$TM->gnfnwt('Nom')]);
+            $OptionTipusActivitatActual = new OptionClass($OT[$TM->gnfnwt('IdTipusActivitat')], $OT[$TM->gnfnwt('Nom')]);            
+
         }                                
 
         // Els camps Preu, PreuReduit, Publicable, tipusEnviament, places, isImportant, DefinicioHoraris Estat no s'utilitzen        
@@ -189,11 +192,10 @@ class ActivitatsModel extends BDD {
         $I = new FormItemClass("Visible web?", FormItemClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('PublicableWeb'), $OA, array());
         $I->setOptionsSiNo();
         $FormGeneral->addItem( $I );
-/*
-        $id = $this->gnfnwt('Categories');
-        $RET[$FID][$id] = new FormItemClass("Tags relatius", FormItemClass::CONST_MULTIPLE_SELECT_HELPER, "", $id, $OA, array());
-        $RET[$FID][$id]->setOptions(); //Falta acabar
-*/
+                
+        $I = new FormItemClass("Tags relatius", FormItemClass::CONST_MULTIPLE_SELECT_HELPER, "", $this->gnfnwt('Categories'), $OA, array());
+        $I->setOptions( $TiM->getTipusSelect('class_activitat', $idSite), array() ); 
+        $FormGeneral->addItem($I);        
         
         $I = new FormItemClass("Té inscripció?", FormItemClass::CONST_SELECT_HELPER, "0", $this->gnfnwt('IsEntrada'), $OA, array());
         $I->setOptionsSiNo();

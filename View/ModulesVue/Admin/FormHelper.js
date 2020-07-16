@@ -2,17 +2,42 @@
 Vue.component('form-helper', {
     props: {        
         Formulari: Object       // Entra un objecte tipus FormulariClass.php        
-    },          
+    },
+    components: {
+      Multiselect: window.VueMultiselect.default
+    },         
     data: function() { 
         return { 
-            
+            multiselectvalue: []
         }
     },
+    created: function() {
+        if( this.Formulari.Tipus == 'multiple-select-helper' ) {
+            let V = this.Formulari.ValorDefecte.toString();            
+            if(V.length > 0){
+                if(V.includes('@')) {                    
+                    V.split('@').forEach(E => {                      
+                        let OptionSelected = this.Formulari.Options.find( Option => Option.id == E );  
+                        this.multiselectvalue.push( OptionSelected );                        
+                    });
+                } else {                    
+                    let OptionSelected = this.Formulari.Options.find( Option => Option.id == V );  
+                    this.multiselectvalue.push( OptionSelected );                        
+                }
+            }                                                
+        }             
+    },  
     computed: {},
     watch: {},
     methods: {
         onchange: function($event) {
-            this.$emit('onchange', $event);
+            
+            if( this.Formulari.Tipus == 'multiple-select-helper' ) {
+                let R = $event.map( X => { return X.id }).join('@');                                                
+                this.$emit('onchange', R);
+            } else {
+                this.$emit('onchange', $event);
+            }
         }
     },
     template: `        
@@ -52,6 +77,28 @@ Vue.component('form-helper', {
             :titol = "Formulari.Titol"
             @update = "onchange($event)"
         ></image-helper-cropper>
+        
+        <div class="R" v-else-if="Formulari.Tipus == 'multiple-select-helper'">
+            <div class="FT"> {{Formulari.Titol}} </div>
+            <div class="FI"> 
+
+                <multiselect                    
+                    :options="Formulari.Options"                                    
+                    :multiple="true"
+                    :searchable="true"
+                    :close-on-select="false"
+                    :clear-on-select="false"
+                    :limit="10"
+                    v-model="multiselectvalue"            
+                    @input="onchange($event)"
+                    name="Formulari.Id"
+                    label="nom"
+                    key="id"
+                    track-by="id" 
+                ></multiselect>
+
+            </div>
+        </div>
 
         <upload-helper
             v-else-if="Formulari.Tipus == 'upload-helper'"

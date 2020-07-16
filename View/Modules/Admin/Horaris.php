@@ -16,7 +16,13 @@
     </div>
   </div>
 
+
+
+
   <!-- LLISTAT D'ACTIVITATS I CALENDARI -->
+
+
+
 
   <div v-if="!Editant" class="card border-secondary card-default" style="margin-top:20px;">
     
@@ -31,6 +37,13 @@
 
     </div>
   </div>  
+
+
+
+
+<!-- FI LLISTAT D'ACTIVITATS I CALENDARI -->
+
+
 
   <!-- EDICIÓ DE L'ACTIVITAT -->
 
@@ -54,7 +67,7 @@
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
           <!-- AQUÍ COMENÇA EL FORMULARI GENERAL -->
-          
+          {{FormulariActivitat.ModelObject}}
           <div class="table table-striped table-sm">    
 
             <div v-for="FA of FormulariActivitat.FormFields">    
@@ -129,14 +142,10 @@
 
         </div>
       </div>
-
-
-
-
   
     </div>
   </div>
-
+  
 </div>
 
 
@@ -186,6 +195,7 @@
       this.DiaEscollit = $DiaEscollit;
     },
     editaActivitat: function($idActivitat) {
+            
       this.axios.get('/apiadmin/Horaris', { 'params' : { 'accio': 'GetEditActivitat', 'idA': $idActivitat, 'idS': this.idSite } } )
         .then( R => { 
           this.FormulariActivitat = R.data.FormGeneral; 
