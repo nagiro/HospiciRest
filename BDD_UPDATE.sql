@@ -81,9 +81,9 @@ ALTER TABLE `usuaris`
 ALTER TABLE `matricules` ADD COLUMN `GrupMatricules` INT(11) NULL DEFAULT NULL COMMENT 'GrupMatricules' AFTER `rebut`;
 ALTER TABLE `matricules` CHANGE COLUMN `GrupMatricules` `GrupMatricules` INT(11) NULL DEFAULT NULL COMMENT 'GrupMatricules (Indica quina és la matrícula inicial del grup i totes tenen el mateix codi)' AFTER `rebut`;
 
-/** PASSAT ***/
-
 ALTER TABLE `activitats`
 	ADD COLUMN `ImatgeS` VARCHAR(200) NULL DEFAULT NULL AFTER `Definiciohoraris`,
 	ADD COLUMN `ImatgeM` VARCHAR(200) NULL DEFAULT NULL AFTER `ImatgeS`,
 	ADD COLUMN `ImatgeL` VARCHAR(200) NULL DEFAULT NULL AFTER `ImatgeM`;
+
+/** PASSAT ***/

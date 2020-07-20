@@ -28,8 +28,8 @@ class MyAPIWeb extends API
         session_start();
         
         //Comprovem si el token que ha arribat és vàlid o no.
-        $this->Auth = new AuthController();                                      
-        $this->Auth->TokenDecode($_SESSION['AuthToken']);                
+        $this->Auth = new AuthController();                                             
+//        $this->Auth->TokenDecode($_SESSION['AuthToken']);                
 
         try {
             $this->dbh = new BDD("","",array(),array());            

@@ -359,8 +359,8 @@ class WebApiController
         $MM = new MatriculesModel();
 
         //Mirem si l'usuari ja té alguna matrícula en aquest curs
-//        if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
-//            throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
+        if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
+            throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
         
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );
