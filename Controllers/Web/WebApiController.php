@@ -144,38 +144,30 @@ class WebApiController
  
         // Se crea Objeto
         $miObj = new RedsysAPI;
-        $OM = new OptionsModel();        
-            
-        // Valores de entrada
-        $fuc = $OM->getOption("TPV_C_Ds_Merchant_MerchantCode", $idS);        
-        $terminal = "1";
-        $moneda = "978";
-        $trans = "0";
-        $url= $OM->getOption("TPV_C_ENT_URL", $idS);                
+        $OM = new OptionsModel();                
+        $TPV = json_decode($OM->getOption("TPV_C_PARAMS", $idS), true);                                                                 
         
-        // Carreguem les URL de retorn
-        $urlOKKO = $OM->getOption("TPV_C_WEB_Merchant_MerchantURL", $idS);        
-        
+        // Calculem l'ID i l'import 
         $id = $idMatriculaGrup;
         $amount = $import * 100;                
         
         // Se Rellenan los campos
-        $miObj->setParameter("DS_MERCHANT_AMOUNT",$amount);
-        $miObj->setParameter("DS_MERCHANT_ORDER",strval($id));
-        $miObj->setParameter("DS_MERCHANT_MERCHANTCODE",$fuc);
-        $miObj->setParameter("DS_MERCHANT_CURRENCY",$moneda);
-        $miObj->setParameter("DS_MERCHANT_TRANSACTIONTYPE",$trans);
-        $miObj->setParameter("DS_MERCHANT_TERMINAL",$terminal);
-        $miObj->setParameter("DS_MERCHANT_MERCHANTURL",$url);
-        $miObj->setParameter("DS_MERCHANT_URLOK",$urlOKKO);		
-        $miObj->setParameter("DS_MERCHANT_URLKO",$urlOKKO);
-        $miObj->setParameter("DS_MERCHANT_MERCHANTDATA", base64_encode($UrlDesti));
-        $miObj->setParameter("DS_MERCHANT_PRODUCTDESCRIPTION", 'Inscripció');    
+        $miObj->setParameter("DS_MERCHANT_AMOUNT",          $amount);
+        $miObj->setParameter("DS_MERCHANT_ORDER",           strval($id));
+        $miObj->setParameter("DS_MERCHANT_MERCHANTCODE",    $TPV['DS_MERCHANT_MERCHANTCODE']);
+        $miObj->setParameter("DS_MERCHANT_CURRENCY",        $TPV['DS_MERCHANT_CURRENCY']);
+        $miObj->setParameter("DS_MERCHANT_TRANSACTIONTYPE", $TPV['DS_MERCHANT_TRANSACTIONTYPE']);
+        $miObj->setParameter("DS_MERCHANT_TERMINAL",        $TPV['DS_MERCHANT_TERMINAL']);
+        $miObj->setParameter("DS_MERCHANT_MERCHANTURL",     $TPV['DS_MERCHANT_MERCHANTURL']);
+        $miObj->setParameter("DS_MERCHANT_URLOK",           $TPV['DS_MERCHANT_URLOK']);		
+        $miObj->setParameter("DS_MERCHANT_URLKO",           $TPV['DS_MERCHANT_URLKO']);
+        $miObj->setParameter("DS_MERCHANT_MERCHANTDATA",    base64_encode($UrlDesti));
+        $miObj->setParameter("DS_MERCHANT_PRODUCTDESCRIPTION", 'Inscripció / Entrada');    
 
         //Datos de configuración
-        $kc = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7';//Clave recuperada de CANALES                
-        $TPV['url'] = $url;
-        $TPV['version'] = "HMAC_SHA256_V1";        
+        $kc = $TPV['CLAU_RECUPERACIO_CANALS'];//Clave recuperada de CANALES                
+        $TPV['url'] = $TPV['URL'];
+        $TPV['version'] = $TPV['VERSIO'];        
         $TPV['params'] = $miObj->createMerchantParameters();
         $TPV['signature'] = $miObj->createMerchantSignature($kc);        
 
@@ -184,10 +176,14 @@ class WebApiController
 
     /**
      * Funció que crida el TPV virtualment per pagar la factura i que si hi entres posteriorment, et redirigeix cap a l'activitat en qüestió
+     * La Clau de recuperació de canals, sempre ha de ser igual al SITE 1. 
      */
     public function getTpv($Request, $AnemAOKUrl) {
         
         $miObj = new RedsysAPI;
+        $OM = new OptionsModel();                
+        $TPV = json_decode($OM->getOption("TPV_C_PARAMS", 1), true);
+        
         $version = $Request["Ds_SignatureVersion"];
         $datos = $Request["Ds_MerchantParameters"];
         $signatureRecibida = $Request["Ds_Signature"];
@@ -196,7 +192,7 @@ class WebApiController
         $D = json_decode($decodec, true);                
         $UrlDesti = base64_decode($D['Ds_MerchantData']);
         
-        $kc = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'; //Clave recuperada de CANALES
+        $kc = $TPV['CLAU_RECUPERACIO_CANALS']; //Clave recuperada de CANALES
         $firma = $miObj->createMerchantSignatureNotif($kc,$datos);	        
         
         // Tenim resposta i és correcta
@@ -359,8 +355,8 @@ class WebApiController
         $MM = new MatriculesModel();
 
         //Mirem si l'usuari ja té alguna matrícula en aquest curs
-        if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
-            throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
+//        if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
+//            throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
         
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );

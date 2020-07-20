@@ -91,7 +91,7 @@ class MatriculesModel extends BDD {
         $O[$this->gnfnwt('CursId')] = $CursId; 
         $O[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES; // Estats 
         $O[$this->gnfnwt('DataInscripcio')] = date('Y-m-d H:i', time());        
-        $O[$this->gnfnwt('TipusReduccio')] = REDUCCIO_CAP; 
+        $O[$this->gnfnwt('TipusReduccio')] = self::REDUCCIO_CAP; 
         $O[$this->gnfnwt('Pagat')] = 0; 
         $O[$this->gnfnwt('TipusPagament')] = self::PAGAMENT_RESERVA; 
         $O[$this->gnfnwt('SiteId')] = $SiteId; 
