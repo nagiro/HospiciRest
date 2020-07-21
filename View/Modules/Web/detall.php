@@ -63,7 +63,8 @@
                     <form-inscripcio-simple 
                         :activitat-id="DetallActivitat.ACTIVITATS_ActivitatId" 
                         :cicle-id="DetallActivitat.ACTIVITATS_CiclesCicleId"
-                        :detall-curs="DetallCurs[0]"
+                        :detall-curs = "DetallCurs[0]"
+                        :detall-descomptes = "DetallDescomptes"
                         :url-actual = "UrlActual"
                     >
                     </form-inscripcio-simple>
@@ -104,6 +105,7 @@
                 WebStructure: <?php echo $Data ?>,                
                 DetallActivitat: {},    //Objecte activitat
                 DetallCurs: {},         //Objecte inscripció                
+                DetallDescomptes: {},
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
                 Anys: [], 
@@ -120,7 +122,8 @@
                 } else {                    
                     this.Loaded = true;
                     this.DetallActivitat = this.WebStructure.Activitat[0];
-                    this.DetallCurs = this.WebStructure.Curs;                 
+                    this.DetallCurs = this.WebStructure.Curs;    
+                    this.DetallDescomptes = this.WebStructure.Descomptes;            
                     this.UrlActual = window.location.href;                    
                 }
                 

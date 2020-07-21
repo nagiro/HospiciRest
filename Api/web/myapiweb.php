@@ -44,7 +44,7 @@ class MyAPIWeb extends API
         $testMail = (isset($_GET['m']));
         $UrlDesti = (isset($_GET['u'])) ? base64_decode($_GET['u']) : 'https://www.casadecultura.cat';
 
-        if($isGrup) { $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti ); }
+        if($isGrup) { $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); }
         if($testMail) { $WAPI->EnviaEmailInscripcio( $InscripcioCodificada, 'albert.johe@gmail.com' ); }
 
         // Retornem 0 perquè ensenyem l'HTML tal qual va. 
@@ -101,12 +101,13 @@ class MyAPIWeb extends API
         $CicleId = isset($this->request['post']['CicleId']) ? $this->request['post']['CicleId'] : 0;        
 
         $TipusPagament = isset($this->request['post']['TipusPagament']) ? $this->request['post']['TipusPagament'] : 0;        
+        $DescompteAplicat = isset($this->request['post']['DescompteAplicat']) ? $this->request['post']['DescompteAplicat'] : -1;
 
         $UrlDesti = isset($this->request['post']['UrlDesti']) ? $this->request['post']['UrlDesti'] : 0;        
 
         $WAPI = new WebApiController();
         try {
-            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti);
+            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
               
         return array( array('AltaUsuari' => $RET, 'error' => '' ), 200 );

@@ -282,8 +282,11 @@ class WebController
 
             /* ENTRADES Carrego el curs si està habilitat */
             $CM = new CursosModel();
-            $OM = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );            
-            if(!empty($OM)) $EXTRES['Curs'] = array($OM);                                         
+            $OM = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );
+            if(!empty($OM)) { 
+                $EXTRES['Curs'] = array($OM);                                         
+                $EXTRES['Descomptes'] = $CM->getDescomptes($OM);
+            }
             else $EXTRES['Curs'] = array();                                         
             
             $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                

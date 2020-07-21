@@ -102,6 +102,16 @@ class MatriculesModel extends BDD {
         return $this->_doInsert($ObjecteMatricula);        
     }
 
+
+    public function getIdMatriculaGrup($idMatricula) {
+                        
+        $OM = $this->getMatriculaById($idMatricula);
+        if(!empty($OM)) { return $OM[ $this->gnfnwt('GrupMatricules') ]; }
+        else throw new Exception('No he trobat la matrícula grup de : ' . $idMatricula);
+                
+    }
+
+
     /**
      * A partir d'un ID de matrícjula, retorna les que tenen el mateix GRUPMATRICULES que ella
      * idMatricula: Number
@@ -169,6 +179,19 @@ class MatriculesModel extends BDD {
         $OU = $MM->getUsuariId( $OM[$this->gnfnwt('UsuariId')] );
         return $MM->getEmail($OU);
     }
+
+
+    public function getDescompteString($MatriculaObject) {        
+        require_once BASEDIR."Database/Tables/DescomptesModel.php";
+        $DM = new DescomptesModel();
+
+        $DetallDescompteAplicat = $DM->getDescompteById( $MatriculaObject[$this->gnfnwt('TipusReduccio')] );
+        return $DetallDescompteAplicat[$DM->gnfnwt('Nom')];
+        
+    }
+
+
+
 }
 
 ?>

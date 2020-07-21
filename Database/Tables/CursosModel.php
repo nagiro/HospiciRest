@@ -31,6 +31,29 @@ class CursosModel extends BDD {
     public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => intval($CicleId)) ); }
     public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId)) ); }
 
+
+    public function getDescomptes($CursObject) {
+        require_once BASEDIR."Database/Tables/DescomptesModel.php";
+        $DM = new DescomptesModel();
+        $CursBuit = $DM->getEmptyObject($CursObject[$this->gnfnwt('SiteId')]);
+        $Descomptes = array( $CursBuit );
+        return array_merge( $Descomptes , $DM->getDescomptesByCurs($CursObject[$this->gnfnwt('IdCurs')]) );        
+    }    
+
+    public function getPreuAplicantDescompte($CursObject, $idDescompte) {        
+        require_once BASEDIR."Database/Tables/DescomptesModel.php";
+        $DM = new DescomptesModel();
+
+        $DetallDescompteAplicat = $DM->getDescompteById($idDescompte);
+        $PreuCurs = $CursObject[$this->gnfnwt('Preu')];
+        
+        if( $DetallDescompteAplicat[$DM->gnfnwt('Percentatge')] > 0 ) $PreuCurs = round( $PreuCurs - ($PreuCurs * $DetallDescompteAplicat[$DM->gnfnwt('Percentatge')] / 100), 2); 
+        elseif( $DetallDescompteAplicat[$DM->gnfnwt('Preu')] > 0 ) $PreuCurs = $DetallDescompteAplicat[$DM->gnfnwt('Preu')]; 
+
+        return $PreuCurs;
+    }
+
+
     public function getLlistatCursosCalendari( $idS, $paraules, $DataInicial, $DataFinal, $Estat ) {    
         
 

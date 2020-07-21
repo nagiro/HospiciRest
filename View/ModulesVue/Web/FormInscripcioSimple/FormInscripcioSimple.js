@@ -6,6 +6,7 @@ Vue.component('form-inscripcio-simple', {
         ActivitatId: String,
         CicleId: String,
         DetallCurs: Object,
+        DetallDescomptes: Array,
         UrlActual: String        
     },          
     data: function() {
@@ -20,6 +21,7 @@ Vue.component('form-inscripcio-simple', {
                     Genere: '',
                     AnyNaixement: '',
                     QuantesEntrades: 1,
+                    DescompteAplicat: -1,
                     TipusPagament: CONST_PAGAMENT_CAP,                         
                     Pas: 0, 
                     classDNI: 'form-control', 
@@ -163,6 +165,7 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('CicleId', this.CicleId);     
             $FD.append('TipusPagament', this.TipusPagament);       
             $FD.append('UrlDesti', this.UrlActual);
+            $FD.append('DescompteAplicat', this.DescompteAplicat);
             
             axios.post( CONST_api_web + '/AltaUsuariSimple', $FD ).then( X => {
                 if(X.data.AltaUsuari && X.data.AltaUsuari.MATRICULES.length > 0) {
@@ -287,6 +290,13 @@ Vue.component('form-inscripcio-simple', {
                         <label for="TipusPagament">Tipus pagament</label>
                         <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="TipusPagament" id="TipusPagament">
                             <option v-for="O in getOptions" :value="O.id">{{O.text}}</option>
+                        </select>                                        
+                    </div>
+
+                    <div class="col" v-if="DetallDescomptes.length > 0">
+                        <label for="TipusPagament">Descompte</label>
+                        <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="DescompteAplicat" id="DescompteAplicat">
+                            <option v-for="O in DetallDescomptes" :value="O.DESCOMPTES_IdDescompte">{{O.DESCOMPTES_Nom}}</option>
                         </select>                                        
                     </div>
                 

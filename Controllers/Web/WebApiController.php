@@ -60,10 +60,10 @@ class WebApiController
         $CursosModel = new CursosModel();
         $UsuarisModel = new UsuarisModel();
 
-        /* Carrego els objectes a utilitzar... sempre serà activitat només d'una activitat, agafo la primera matrícula i avall */
-        $idMatricula = $this->Decrypt( $InscripcioCodificada );
-        $MatriculesVinculades = $MatriculesModel->getMatriculesVinculades($idMatricula, true);                
-        
+        /* Carrego els objectes a utilitzar... sempre serà activitat només d'una activitat, agafo la primera matrícula i avall */        
+        $idMatricula = $MatriculesModel->getIdMatriculaGrup( $this->Decrypt( $InscripcioCodificada ) );
+        $MatriculesVinculades = $MatriculesModel->getMatriculesVinculades( $idMatricula , true );                
+                
         $OMatricula = $MatriculesModel->getMatriculaById( $idMatricula );        
         $OCurs = $CursosModel->getCursById( $OMatricula['MATRICULES_CursId'] );
         $OUsuari = $UsuarisModel->getUsuariId( $OMatricula['MATRICULES_UsuariId'] );        
@@ -92,27 +92,17 @@ class WebApiController
         endif;        
         
         $HTML = str_replace('@@IMATGE@@', $ImatgeMatricula, $HTML);        
-
-        // Si hi ha pagament amb codi de barres i estem agafant el header, el calculem i l'inserim.
-        if( MatriculesModel::PAGAMENT_CODI_DE_BARRES == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {
-            $CB = $this->generaCodiBarres( $idMatricula, $Import, $idS );
-            $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: block;', $HTML);
-            $HTML = str_replace('@@URL_CODI_BARRES@@', $CB['URL'], $HTML);
-            $HTML = str_replace('@@CODI_BARRES@@',  $CB['CODI'], $HTML);
-        } else {
-            $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: none;', $HTML);
-        }        
         
         /*********************** BODY *********************************/
+        
+        $Import_total_a_pagar = 0;
 
-        foreach($MatriculesVinculades as $InscripcioCodificada) {
-
-            $idMatricula = $this->Decrypt($InscripcioCodificada);                                    
+        foreach($MatriculesVinculades as $NumeroInscripcio) {            
                         
             $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailBody'.$OMatricula['MATRICULES_SiteId'].'.html' );
                                                 
             // Genero el QR de la matrícula
-            \PHPQRCode\QRcode::png($InscripcioCodificada, BASEDIR . "/WebFiles/Inscripcions/" . $InscripcioCodificada .'.png', 'L', 4, 2);
+            \PHPQRCode\QRcode::png($NumeroInscripcio, BASEDIR . "/WebFiles/Inscripcions/" . $NumeroInscripcio .'.png', 'L', 4, 2);
             
             $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
             $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
@@ -120,14 +110,46 @@ class WebApiController
             $HTML = str_replace('@@LOCALITAT@@', '----', $HTML);
             $HTML = str_replace('@@USUARI@@', $OUsuari['USUARIS_Dni'] . ' - ' . $OUsuari['USUARIS_Nom'].' '.$OUsuari['USUARIS_Cog1'].' '.$OUsuari['USUARIS_Cog2'], $HTML);            
             $HTML = str_replace('@@ESTAT@@', $MatriculesModel->getEstatString($OMatricula), $HTML);
-            $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $InscripcioCodificada . '.png', $HTML);
-            $HTML = str_replace('@@QR_TEXT@@', $InscripcioCodificada, $HTML);            
+            $HTML = str_replace('@@IMPORT@@', $OMatricula[$MatriculesModel->gnfnwt('Pagat')], $HTML);
+            $HTML = str_replace('@@DESCOMPTE@@', $MatriculesModel->getDescompteString($OMatricula), $HTML);
+            $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png', $HTML);
+            $HTML = str_replace('@@QR_TEXT@@', $NumeroInscripcio, $HTML);            
+
+            $Import_total_a_pagar += $OMatricula[$MatriculesModel->gnfnwt('Pagat')];
                   
         }
+    
+        /************************ PAGAMENT CODI DE BARRES AL HEADER *********************************/
         
-        // Carregp el footer
+        if( MatriculesModel::PAGAMENT_CODI_DE_BARRES == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {
+            $CB = $this->generaCodiBarres( $idMatricula, $Import, $idS );
+            $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: block;', $HTML);
+            $HTML = str_replace('@@URL_CODI_BARRES@@', $CB['URL'], $HTML);
+            $HTML = str_replace('@@CODI_BARRES@@',  $CB['CODI'], $HTML);
+            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+        } else {
+            $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: none;', $HTML);
+            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+        }        
+
+
+        /************************ PAGAMENT AMB TARGETA AL HEADER *********************************/
+
+        if( MatriculesModel::PAGAMENT_TARGETA == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {            
+            $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: block;', $HTML);                        
+            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+        } else {
+            $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: none;', $HTML);
+            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+        }        
+        
+        /******************************* FOOTER *******************************/
+
         $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailFooter'.$OMatricula['MATRICULES_SiteId'].'.html' );
         $HTML = str_replace('@@URL_DESTI@@', $UrlDesti, $HTML);
+
+
+
         
         return $HTML;
         
@@ -219,7 +241,7 @@ class WebApiController
             } else {
                 
                 // isOKUrl == true -> Mostrem les inscripcions i a les inscripcions i posem un enllaç cap a la pàgina d'origen $_SESSION["TPV_UrlDesti"] = $UrlDesti;                
-                return $this->generaResguard( $this->Encrypt( $D['Ds_Order'] ), $UrlDesti, array(self::TIPUS_RESGUARD_MAIL) );
+                return $this->generaResguard( $this->Encrypt( $D['Ds_Order'] ), $UrlDesti, 0 );
 
             }
         } else {
@@ -302,7 +324,7 @@ class WebApiController
     /**
      * $Origen: web, hospici
      */
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti) {                
+    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat) {                
         
         $OU = array();
         $UM = new UsuarisModel();
@@ -376,10 +398,18 @@ class WebApiController
                 //Marquem l'estat de la matrícula. Si és pagament amb targeta, posem en procès. Els altres, reservat
                 $OM = $MM->setEstatFromPagament($OM, $TipusPagament);
 
-                // Posem el preu amb descompte ( quan estigui )
-                $OM = $MM->setPreuMatricula($OM, $OC[$CM->gnfnwt('Preu')]);
-                $Import += $OC[$CM->gnfnwt('Preu')];
-                
+                // Si hi ha descompte, l'apliquem. 
+                $PreuPagat = $OC[$CM->gnfnwt('Preu')];
+                if($DescompteAplicat > -1) {                                        
+                    $PreuPagat = $CM->getPreuAplicantDescompte($OC, $DescompteAplicat);                    
+                    $OM[$MM->gnfnwt('TipusReduccio')] = $DescompteAplicat;
+                }
+                 
+                // Guardem l'import a la matrícula i el tipus de pagament
+                $OM = $MM->setPreuMatricula($OM, $PreuPagat);
+                $Import += $PreuPagat;
+                $OM[$MM->gnfnwt('TipusPagament')] = $TipusPagament;
+                                                            
                 //Guardem la matrícula
                 $id = $MM->doInsert($OM);
                 $OM[ $MM->gnfnwt('IdMatricula') ] = $id;                                
@@ -443,7 +473,7 @@ class WebApiController
      */
     public function EnviaEmailInscripcio( $Encrypted_IdMatricula, $email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti ) {
                         
-        $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, $Tipus);
+        $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);
         
         if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
         
