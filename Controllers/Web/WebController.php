@@ -282,7 +282,7 @@ class WebController
             
             if($idCicle > 1){                        
 
-                $Cicles = $this->WebQueries->getCiclesHome( $idC );   
+                $Cicles = $this->WebQueries->getCiclesHome( $idCicle );   
                 $NOM_CICLE = (empty($Cicles[0]['NomActivitat']))?$Cicles[0]['NomActivitatIntern'] : $Cicles[0]['NomActivitat'];                        
 
                 $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles')); 
