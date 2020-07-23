@@ -286,7 +286,7 @@ class WebController
                 $NOM_CICLE = (empty($Cicles[0]['NomActivitat']))?$Cicles[0]['NomActivitatIntern'] : $Cicles[0]['NomActivitat'];                        
 
                 $EXTRES["Breadcumb"][] =     array('Titol' => 'Tots els cicles', "Link" => '/cicles/0/' . $this->aUrl('Tots els cicles')); 
-                $EXTRES["Breadcumb"][] =     array('Titol' => $NOM_CICLE, "Link" => '/cicles/' . $idC . '/' . $this->aUrl($NOM_CICLE)); 
+                $EXTRES["Breadcumb"][] =     array('Titol' => $NOM_CICLE, "Link" => '/cicles/' . $idCicle . '/' . $this->aUrl($NOM_CICLE)); 
                 
             } else {
 
