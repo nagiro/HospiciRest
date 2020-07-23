@@ -102,12 +102,14 @@ class MyAPIWeb extends API
 
         $TipusPagament = isset($this->request['post']['TipusPagament']) ? $this->request['post']['TipusPagament'] : 0;        
         $DescompteAplicat = isset($this->request['post']['DescompteAplicat']) ? $this->request['post']['DescompteAplicat'] : -1;
+        
+        $Localitats = isset($this->request['post']['Localitats']) ? json_decode($this->request['post']['Localitats'], true) : array();
 
         $UrlDesti = isset($this->request['post']['UrlDesti']) ? $this->request['post']['UrlDesti'] : 0;        
 
         $WAPI = new WebApiController();
         try {
-            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat);
+            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
               
         return array( array('AltaUsuari' => $RET, 'error' => '' ), 200 );

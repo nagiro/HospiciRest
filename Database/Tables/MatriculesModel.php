@@ -33,8 +33,8 @@ class MatriculesModel extends BDD {
 
     public function __construct() {        
               
-        $OldFields = array('idMatricules', 'Usuaris_UsuariID', 'Cursos_idCursos', 'Estat','Comentari', 'DataInscripcio', 'data_baixa', 'Pagat', 'tReduccio', 'tPagament', 'site_id', 'actiu', 'tpv_operacio', 'tpv_order', 'idDadesBancaries', 'tutor_dni','tutor_nom', 'Data_pagament', 'rebut', 'GrupMatricules');
-        $NewFields = array('IdMatricula', 'UsuariId', 'CursId', 'Estat','Comentari', 'DataInscripcio', 'DataBaixa', 'Pagat', 'TipusReduccio', 'TipusPagament', 'SiteId', 'Actiu', 'TpvOperacio', 'TpvOrder', 'DadesBancariesId', 'TutorDni','TutorNom', 'DataPagament', 'Rebut', 'GrupMatricules');
+        $OldFields = array('idMatricules', 'Usuaris_UsuariID', 'Cursos_idCursos', 'Estat','Comentari', 'DataInscripcio', 'data_baixa', 'Pagat', 'tReduccio', 'tPagament', 'site_id', 'actiu', 'tpv_operacio', 'tpv_order', 'idDadesBancaries', 'tutor_dni','tutor_nom', 'Data_pagament', 'rebut', 'GrupMatricules', 'Fila', 'Seient');
+        $NewFields = array('IdMatricula', 'UsuariId', 'CursId', 'Estat','Comentari', 'DataInscripcio', 'DataBaixa', 'Pagat', 'TipusReduccio', 'TipusPagament', 'SiteId', 'Actiu', 'TpvOperacio', 'TpvOrder', 'DadesBancariesId', 'TutorDni','TutorNom', 'DataPagament', 'Rebut', 'GrupMatricules', 'Fila', 'Seient');
         parent::__construct("matricules", "MATRICULES", $OldFields, $NewFields );
 
     }
@@ -47,7 +47,7 @@ class MatriculesModel extends BDD {
      */
     public function setEstatFromPagament($OM, $Pagament) {
         if($Pagament == self::PAGAMENT_TARGETA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES;
-        if($Pagament == self::PAGAMENT_METALIC) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_I_PAGAT;
+        if($Pagament == self::PAGAMENT_METALIC) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT;
         if($Pagament == self::PAGAMENT_CODI_DE_BARRES) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT;
         if($Pagament == self::PAGAMENT_RESERVA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT;
         if($Pagament == self::PAGAMENT_LLISTA_ESPERA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_ESPERA;
@@ -149,6 +149,15 @@ class MatriculesModel extends BDD {
         return $this->_getRowWhere( array( $this->gofnwt('IdMatricula') => $idMatricula ) );        
     }
 
+    public function getMatriculesByCurs($idCurs) {
+        return $this->_getRowWhere( 
+            array( 
+                $this->gofnwt('CursId') => $idCurs,
+                $this->gofnwt('Actiu') => 1,
+                $this->gofnwt('Estat') => array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT)
+            ) , true );        
+    }
+
     public function getUsuariHasMatricula($idC, $idU) {
         $W = array();
         $W[ $this->gofnwt('CursId') ] = $idC;
@@ -189,6 +198,51 @@ class MatriculesModel extends BDD {
         return $DetallDescompteAplicat[$DM->gnfnwt('Nom')];
         
     }
+
+    public function setLocalitat($ObjecteMatricula, $ArrayLocalitatFilaColumna) {
+        $ObjecteMatricula[$this->gnfnwt('Fila')] = $ArrayLocalitatFilaColumna[0];
+        $ObjecteMatricula[$this->gnfnwt('Seient')] = $ArrayLocalitatFilaColumna[1];
+        return $ObjecteMatricula;
+    }
+
+    public function getLocalitatArray($ObjecteMatricula) {
+        return array( $ObjecteMatricula[$this->gnfnwt('Fila')], $ObjecteMatricula[$this->gnfnwt('Seient')] );
+    }
+    public function getLocalitatString($ObjecteMatricula) {
+        return "Fila: " . $ObjecteMatricula[$this->gnfnwt('Fila')]. " | Seient: " . $ObjecteMatricula[$this->gnfnwt('Seient')];
+    }
+
+
+        /**
+    * $Localitats = array (fila, seient)
+    **/
+    public function hasSeientsSonLliures($Localitats, $idCurs) {
+        
+        if( sizeof($Localitats) > 0 ) {
+            $W = array();
+            foreach($Localitats as $L) {
+                $W[] = "({$this->gofnwt('Fila')} = {$L[0]} AND {$this->gofnwt('Seient')} = {$L[1]})";
+            }
+
+            $SQL = "
+                Select count(*)
+                from {$this->getTableName()}             
+                where 
+                        {$this->getOldFieldNameWithTable('CursId')} = {$idCurs}
+                AND     {$this->getOldFieldNameWithTable('Actiu')} = 1         
+                AND  " . implode(" OR ", $W);                                                
+
+            $QuantsNiHa = $this->runQuery($SQL, array());
+                
+            return ($QuantsNiHa[0]['count(*)'] == 0);
+        } else {
+            return true;
+        }
+
+
+    }
+
+
 
 
 

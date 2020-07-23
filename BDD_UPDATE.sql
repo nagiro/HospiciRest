@@ -87,3 +87,13 @@ ALTER TABLE `activitats`
 	ADD COLUMN `ImatgeL` VARCHAR(200) NULL DEFAULT NULL AFTER `ImatgeM`;
 
 /** PASSAT ***/
+
+ALTER TABLE `cursos`
+	ADD COLUMN `Teatre` VARCHAR(10) NULL DEFAULT NULL COMMENT 'Teatre' COLLATE 'utf8_general_ci' AFTER `DadesExtres`;
+
+ TABLE `matricules`
+	ADD COLUMN `Fila` SMALLINT NULL DEFAULT NULL COMMENT 'Fila' AFTER `GrupMatricules`,
+	ADD COLUMN `Seient` SMALLINT NULL DEFAULT NULL COMMENT 'Seient' AFTER `Fila`;
+
+
+const TEATRES = AUXDIR . 'Teatres/';

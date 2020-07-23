@@ -65,6 +65,8 @@
                         :cicle-id="DetallActivitat.ACTIVITATS_CiclesCicleId"
                         :detall-curs = "DetallCurs[0]"
                         :detall-descomptes = "DetallDescomptes"
+                        :detall-teatre = "DetallTeatre"
+                        :seients-ocupats = "SeientsOcupats"
                         :url-actual = "UrlActual"
                     >
                     </form-inscripcio-simple>
@@ -106,6 +108,8 @@
                 DetallActivitat: {},    //Objecte activitat
                 DetallCurs: {},         //Objecte inscripció                
                 DetallDescomptes: {},
+                DetallTeatre: {},
+                SeientsOcupats: [],
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
                 Anys: [], 
@@ -124,6 +128,8 @@
                     this.DetallActivitat = this.WebStructure.Activitat[0];
                     this.DetallCurs = this.WebStructure.Curs;    
                     this.DetallDescomptes = this.WebStructure.Descomptes;            
+                    this.DetallTeatre = this.WebStructure.Teatre;                                        
+                    this.SeientsOcupats = this.WebStructure.SeientsOcupats;
                     this.UrlActual = window.location.href;                    
                 }
                 

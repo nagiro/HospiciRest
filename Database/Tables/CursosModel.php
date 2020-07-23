@@ -8,8 +8,8 @@ class CursosModel extends BDD {
 
     public function __construct() {
         
-        $OldFields = array('idCursos', 'TitolCurs', 'isActiu', 'Places',  'Codi', 'Descripcio','Preu', 'Horaris' ,'Categoria', 'OrdreSortida', 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWEB', 'site_id', 'actiu', 'cicle_id', 'activitat_id' ,'PDF', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'isRestringit' ,'DadesExtres');
-        $NewFields = array("IdCurs", "TitolCurs", "IsActiu", "Places" , "Codi", "Descripcio", "Preu", "Horaris", "Categoria",  "OrdreSortida", 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWeb', 'SiteId', 'Actiu', 'CicleId', 'ActivitatId' ,'Pdf', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'IsRestringit' ,'DadesExtres');        
+        $OldFields = array('idCursos', 'TitolCurs', 'isActiu', 'Places',  'Codi', 'Descripcio','Preu', 'Horaris' ,'Categoria', 'OrdreSortida', 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWEB', 'site_id', 'actiu', 'cicle_id', 'activitat_id' ,'PDF', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'isRestringit' ,'DadesExtres', 'Teatre');
+        $NewFields = array("IdCurs", "TitolCurs", "IsActiu", "Places" , "Codi", "Descripcio", "Preu", "Horaris", "Categoria",  "OrdreSortida", 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWeb', 'SiteId', 'Actiu', 'CicleId', 'ActivitatId' ,'Pdf', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'IsRestringit' ,'DadesExtres', 'Teatre');        
         parent::__construct("cursos", "CURSOS", $OldFields, $NewFields );
 
     }
@@ -27,6 +27,7 @@ class CursosModel extends BDD {
         return $OC;
     }
 
+    public function getCursId($OC) { return $OC[$this->gnfnwt('IdCurs')]; }
     public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => intval($idCurs)) ); }    
     public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => intval($CicleId)) ); }
     public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId)) ); }
@@ -87,6 +88,34 @@ class CursosModel extends BDD {
                 
         return $this->runQuery($SQL, array_merge( $SQLW , $WA ) );
         
+    }
+
+    public function getSeientsOcupats($ObjecteCurs) {
+        require_once BASEDIR."Database/Tables/MatriculesModel.php";
+        $RET = array();
+        $MM = new MatriculesModel();
+        foreach($MM->getMatriculesByCurs($ObjecteCurs[$this->gnfnwt('IdCurs')]) as $MatriculaObject) {
+            $RET[] = $MM->getLocalitatArray($MatriculaObject);
+        }
+
+        return $RET;
+        
+    }
+
+    public function hasEscullLocalitats($CursObject) {
+        return (strlen($CursObject[$this->gnfnwt('Teatre')]) > 0);
+    }    
+
+    /**
+    * Funció que carrega el teatre escollit pel curs en qüestió
+    **/
+    public function getTeatre( $CursObject ) {
+        if( strlen($CursObject[$this->gnfnwt('Teatre')]) > 0 ){
+            $TeatreJson = file_get_contents( TEATRES . $CursObject[$this->gnfnwt('SiteId')] . '-' . $CursObject[$this->gnfnwt('Teatre')] . '.json' );
+            return json_decode($TeatreJson, true);        
+        } else {
+            return array('Seients'=> array());
+        }
     }
 
 }

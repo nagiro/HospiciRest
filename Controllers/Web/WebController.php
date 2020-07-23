@@ -282,10 +282,12 @@ class WebController
 
             /* ENTRADES Carrego el curs si està habilitat */
             $CM = new CursosModel();
-            $OM = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );
-            if(!empty($OM)) { 
-                $EXTRES['Curs'] = array($OM);                                         
-                $EXTRES['Descomptes'] = $CM->getDescomptes($OM);
+            $CursObject = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );
+            if(!empty($CursObject)) { 
+                $EXTRES['Curs'] = array($CursObject);                                         
+                $EXTRES['Descomptes'] = $CM->getDescomptes($CursObject);
+                $EXTRES['Teatre'] = $CM->getTeatre($CursObject);
+                $EXTRES['SeientsOcupats'] = $CM->getSeientsOcupats($CursObject);
             }
             else $EXTRES['Curs'] = array();                                         
             

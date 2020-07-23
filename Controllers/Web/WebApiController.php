@@ -62,7 +62,7 @@ class WebApiController
 
         /* Carrego els objectes a utilitzar... sempre serà activitat només d'una activitat, agafo la primera matrícula i avall */        
         $idMatricula = $MatriculesModel->getIdMatriculaGrup( $this->Decrypt( $InscripcioCodificada ) );
-        $MatriculesVinculades = $MatriculesModel->getMatriculesVinculades( $idMatricula , true );                
+        $MatriculesVinculades = $MatriculesModel->getMatriculesVinculades( $idMatricula , false );                
                 
         $OMatricula = $MatriculesModel->getMatriculaById( $idMatricula );        
         $OCurs = $CursosModel->getCursById( $OMatricula['MATRICULES_CursId'] );
@@ -97,17 +97,24 @@ class WebApiController
         
         $Import_total_a_pagar = 0;
 
-        foreach($MatriculesVinculades as $NumeroInscripcio) {            
+        foreach($MatriculesVinculades as $MatriculaVinculadaObjecte) {            
                         
+            $OMatricula = $MatriculaVinculadaObjecte;
+            $NumeroInscripcio = $OMatricula[$MatriculesModel->gnfnwt('IdMatricula')];
+
             $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailBody'.$OMatricula['MATRICULES_SiteId'].'.html' );
                                                 
             // Genero el QR de la matrícula
             \PHPQRCode\QRcode::png($NumeroInscripcio, BASEDIR . "/WebFiles/Inscripcions/" . $NumeroInscripcio .'.png', 'L', 4, 2);
+
+            // Busco la localitat si existeix
+            $LocalitatText = '-----';
+            if($CursosModel->hasEscullLocalitats($OCurs)) { $LocalitatText = $MatriculesModel->getLocalitatString($OMatricula); }
             
             $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
             $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
             $HTML = str_replace('@@LLOC@@', 'Casa de Cultura de Girona', $HTML);
-            $HTML = str_replace('@@LOCALITAT@@', '----', $HTML);
+            $HTML = str_replace('@@LOCALITAT@@', $LocalitatText, $HTML);
             $HTML = str_replace('@@USUARI@@', $OUsuari['USUARIS_Dni'] . ' - ' . $OUsuari['USUARIS_Nom'].' '.$OUsuari['USUARIS_Cog1'].' '.$OUsuari['USUARIS_Cog2'], $HTML);            
             $HTML = str_replace('@@ESTAT@@', $MatriculesModel->getEstatString($OMatricula), $HTML);
             $HTML = str_replace('@@IMPORT@@', $OMatricula[$MatriculesModel->gnfnwt('Pagat')], $HTML);
@@ -324,7 +331,7 @@ class WebApiController
     /**
      * $Origen: web, hospici
      */
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat) {                
+    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats) {                
         
         $OU = array();
         $UM = new UsuarisModel();
@@ -377,9 +384,14 @@ class WebApiController
         $MM = new MatriculesModel();
 
         //Mirem si l'usuari ja té alguna matrícula en aquest curs
-//        if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
-//            throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
+        // if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
+        //    throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
         
+        // Marquem les entrades escollides comptant les localitats
+        if( sizeof($Localitats) > 0 ) {
+            $QuantesEntrades = sizeof($Localitats);
+        } 
+
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );
         if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) 
@@ -390,6 +402,10 @@ class WebApiController
                 
         if($QuantesEntrades > 0) {
 
+            // Si són localitats, mirem que no estiguin ocupades per algú actualment
+            if( ! $MM->hasSeientsSonLliures($Localitats, $CM->getCursId($OC) ) ) throw new Exception('Hi ha hagut algun conflicte guardant les localitats. Torna-ho a provar.');
+
+            // Guardem les inscripcions
             for($i = 0; $i < $QuantesEntrades; $i++){
             
                 // Per cada inscripció, creo un objecte matrícula i marco com a reservat
@@ -401,7 +417,7 @@ class WebApiController
                 // Si hi ha descompte, l'apliquem. 
                 $PreuPagat = $OC[$CM->gnfnwt('Preu')];
                 if($DescompteAplicat > -1) {                                        
-                    $PreuPagat = $CM->getPreuAplicantDescompte($OC, $DescompteAplicat);                    
+                    $PreuPagat = $CM->getPreuAplicantDescompte($OC, $DescompteAplicat);
                     $OM[$MM->gnfnwt('TipusReduccio')] = $DescompteAplicat;
                 }
                  
@@ -409,6 +425,11 @@ class WebApiController
                 $OM = $MM->setPreuMatricula($OM, $PreuPagat);
                 $Import += $PreuPagat;
                 $OM[$MM->gnfnwt('TipusPagament')] = $TipusPagament;
+
+                // Si és amb localitats, guardo les localitats
+                if ( $CM->hasEscullLocalitats($OC) ) {
+                    $OM = $MM->setLocalitat($OM, $Localitats[$i] );                    
+                }
                                                             
                 //Guardem la matrícula
                 $id = $MM->doInsert($OM);

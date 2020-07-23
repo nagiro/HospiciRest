@@ -7,6 +7,8 @@ Vue.component('form-inscripcio-simple', {
         CicleId: String,
         DetallCurs: Object,
         DetallDescomptes: Array,
+        DetallTeatre: Object,
+        SeientsOcupats: Array,
         UrlActual: String        
     },          
     data: function() {
@@ -22,6 +24,7 @@ Vue.component('form-inscripcio-simple', {
                     AnyNaixement: '',
                     QuantesEntrades: 1,
                     DescompteAplicat: -1,
+                    Localitats: [],
                     TipusPagament: CONST_PAGAMENT_CAP,                         
                     Pas: 0, 
                     classDNI: 'form-control', 
@@ -149,6 +152,58 @@ Vue.component('form-inscripcio-simple', {
                 this.Pas = 1;
             }
         },
+        setLocalitat: function(fila, seient) {
+                                    
+            const IndexEscollits = this.Localitats.findIndex( X => X[0] == fila && X[1] == seient);
+            const ExisteixAJaComprats = (this.SeientsOcupats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
+
+            // Si en tinc 5 i el que he escollit no existeix al llistat, no puc agafar-ne més. 
+            if(this.Localitats.length == 5 && IndexEscollits < 0 ) alert('Ho sento però només pots escollir 5 localitats.');
+            else {
+                // Si l'element ja existeix, el trec. Si no existeix i no existeix als ja comprats per altres persones, l'afegeixo
+                if(IndexEscollits > -1) this.Localitats.splice(IndexEscollits, 1);
+                else if( !ExisteixAJaComprats ) this.Localitats.push([fila, seient]);            
+            }            
+        },
+        getColorLocalitat: function(fila, seient, Estil) {
+            
+            let Estil2 = {}; Object.assign( Estil2, Estil)
+            const ExisteixAEscollits = (this.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
+            const ExisteixAJaComprats = (this.SeientsOcupats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
+            if ( ExisteixAEscollits ) {
+                Estil2["color"] = "Red";
+            } else if (ExisteixAJaComprats ) {
+                Estil2["color"] = "Blue";
+            } else { 
+                Estil2["color"] = "Black";
+            }
+            
+            return Estil2;
+        },
+        getPreu: function() {
+            
+            let Preu = this.DetallCurs.CURSOS_Preu
+
+            // Mirem si hem escollit descompte
+            if( this.DescompteAplicat > 0 ) {
+                let ObjecteDescompteAplicat = this.DetallDescomptes.find( X => X.DESCOMPTES_IdDescompte == this.DescompteAplicat );
+                if(ObjecteDescompteAplicat.DESCOMPTES_Percentatge > 0) Preu = Preu - (Preu * ObjecteDescompteAplicat.DESCOMPTES_Percentatge / 100 );
+                else Preu = ObjecteDescompteAplicat.DESCOMPTES_Preu;
+            }
+
+            if( this.DetallTeatre.Seients.length > 0 ) Preu = Preu * this.Localitats.length;
+            else Preu = Preu * this.QuantesEntrades;
+
+            return Preu;
+            
+        },
+        NoPucSeguir: function() {
+            return (   ! this.ConfirmoAssistencia 
+                    || ( this.TipusPagament == 0 ) 
+                    || ( this.Localitats.length == 0 && this.DetallTeatre.Seients.length > 0 )
+                    || ( this.QuantesEntrades == 0 && this.DetallTeatre.Seients.length == 0 )
+                    );
+        },
         doInscripcio: function() {
             $FD = new FormData();
             $FD.append('DNI', this.DNI);
@@ -166,6 +221,7 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('TipusPagament', this.TipusPagament);       
             $FD.append('UrlDesti', this.UrlActual);
             $FD.append('DescompteAplicat', this.DescompteAplicat);
+            $FD.append('Localitats', JSON.stringify(this.Localitats));
             
             axios.post( CONST_api_web + '/AltaUsuariSimple', $FD ).then( X => {
                 if(X.data.AltaUsuari && X.data.AltaUsuari.MATRICULES.length > 0) {
@@ -271,11 +327,25 @@ Vue.component('form-inscripcio-simple', {
                     <small id="AnyNaixementHelp" class="form-text text-muted">Opcional: El seu any de naixement.</small>
                 </div>                        
             </div>        
+            
+            
             <div v-if="Pas == 4 || Pas == 2">
 
+                <div v-if="DetallTeatre.Seients.length > 0" class="row" style="display: flex; flex-direction: column; ">                   
+                    <div v-for="Fila of DetallTeatre.Seients" style="display: flex; flex-wrap: nowrap;">
+                        <div style="" v-for=" Seient of Fila ">
+                            <div v-if="Seient.tipus == 'text'" :style="DetallTeatre.Estils[Seient.Estil]"> <h1>{{Seient.text}}</h1> </div>                            
+                            <div v-if="Seient.tipus == 'fila'" :style="DetallTeatre.Estils[Seient.Estil]"> <h4>{{Seient.text}}</h4> </div>
+                            <div v-if="Seient.tipus == 'loc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil] )"> 
+                                <a class="withHand" @click="setLocalitat(Seient.fila, Seient.seient)"><i class="fas fa-chair"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
                 <div class="row">
                 
-                    <div class="col">
+                    <div class="col" v-if="DetallTeatre.Seients.length == 0">
                         <label for="QuantesEntrades">Quantes places reserves</label>
                         <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="QuantesEntrades" id="QuantesEntrades">
                             <option value="1">1</option>
@@ -302,12 +372,18 @@ Vue.component('form-inscripcio-simple', {
                 
                 </div>
 
+                <div class="row">
+                    <div class="col">
+                        <span style="font-size: 1.5rem; font-weight: bold;">Preu final: {{getPreu()}} €</span>
+                    </div>
+                </div>
+
                 <div class="form-check">
                     <input :disabled="!(Pas == 2 || Pas == 4)" type="checkbox" class="form-check-input" v-model="ConfirmoAssistencia" id="Assistire">
                     <label class="form-check-label" for="Assistire">Confirmo que <b>assistiré a l'acte</b> o que <b>avisaré</b>, a la Casa de Cultura, en cas de no poder-ho fer.</label>
                 </div>
                 
-                <button :disabled="!ConfirmoAssistencia" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
+                <button :disabled="NoPucSeguir()" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
                 <small id="EmailHelp" class="form-text text-muted">Nomes podrà prèmer el botó si ha omplert totes les dades necessàries.</small>
             </div>
 
