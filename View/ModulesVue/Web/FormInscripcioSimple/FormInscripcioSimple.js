@@ -5,6 +5,7 @@ Vue.component('form-inscripcio-simple', {
         InputDades: Object,
         ActivitatId: String,
         CicleId: String,
+        CursId: String,
         DetallCurs: Object,
         DetallDescomptes: Array,
         DetallTeatre: Object,
@@ -218,6 +219,7 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('QuantesEntrades', this.QuantesEntrades);
             $FD.append('ActivitatId', this.ActivitatId);
             $FD.append('CicleId', this.CicleId);     
+            $FD.append('CursId', this.CursId);     
             $FD.append('TipusPagament', this.TipusPagament);       
             $FD.append('UrlDesti', this.UrlActual);
             $FD.append('DescompteAplicat', this.DescompteAplicat);
@@ -363,7 +365,7 @@ Vue.component('form-inscripcio-simple', {
                         </select>                                        
                     </div>
 
-                    <div class="col" v-if="DetallDescomptes.length > 0">
+                    <div class="col" v-if="DetallDescomptes.length > 1">
                         <label for="TipusPagament">Descompte</label>
                         <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="DescompteAplicat" id="DescompteAplicat">
                             <option v-for="O in DetallDescomptes" :value="O.DESCOMPTES_IdDescompte">{{O.DESCOMPTES_Nom}}</option>

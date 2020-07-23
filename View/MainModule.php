@@ -58,9 +58,15 @@ class MainModule {
                 $this->getModuleContent('Web/home.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            case 'inscripcio':
+                $this->getModuleContent('HtmlHeaderWeb.php');
+                $Data = $this->WebController->viewDetall( 0 , $url[1] );
+                $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
+                $this->getModuleContent('HtmlFooterWeb.php');                
+            break;
             case 'detall':
                 $this->getModuleContent('HtmlHeaderWeb.php');
-                $Data = $this->WebController->viewDetall($url[1]);
+                $Data = $this->WebController->viewDetall( $url[1] , 0 );
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;

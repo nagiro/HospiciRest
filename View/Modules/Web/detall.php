@@ -34,7 +34,7 @@
 
         <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
 
-        <section id="detall_bloc" v-if="Loaded && !Errors">
+        <section id="detall_bloc" v-if="Loaded && !Errors && DetallActivitat">
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallActivitat.ACTIVITATS_TitolMig }} </h1>
                 <time id="detall_dates" v-html="ResumDates()"></time>                
@@ -59,11 +59,13 @@
                     [<a :href="DetallActivitat.ACTIVITATS_Pdf" target="_NEW">{{NomEnllacPDF}}</a>]
                 </p>
                 <div class="text" v-html="DetallActivitat.ACTIVITATS_DescripcioMig">  </div>                
-                <div v-if="DetallCurs.length == 1">
+                
+                <div v-if="DetallCurs">
                     <form-inscripcio-simple 
                         :activitat-id="DetallActivitat.ACTIVITATS_ActivitatId" 
                         :cicle-id="DetallActivitat.ACTIVITATS_CiclesCicleId"
-                        :detall-curs = "DetallCurs[0]"
+                        :curs-id = "'0'"
+                        :detall-curs = "DetallCurs"
                         :detall-descomptes = "DetallDescomptes"
                         :detall-teatre = "DetallTeatre"
                         :seients-ocupats = "SeientsOcupats"
@@ -78,7 +80,37 @@
             </article>
         </section>        
 
-        <single-list v-if="Loaded && !Errors" :input-titol="'ACTIVITATS RELACIONADES'" :input-color="'#F4A261'" :input-dades="WebStructure.ActivitatsRelacionades" :amb-titol="true"></single-list>
+
+        <!-- INSCRIPCIÓ -->
+        <section id="detall_bloc" v-if="Loaded && !Errors && !DetallActivitat">
+            <div id="detall_franja_titol">
+                <h1 id="detall_titol"> {{ DetallCurs.CURSOS_TitolCurs }} </h1>                                
+                <h2>{{ DetallCurs.CURSOS_Horaris }}</h2>
+            </div>
+            <article id="detall_requadre_detall">            
+                <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
+                <p v-if="DetallCurs.CURSOS_Pdf.length > 0">
+                    [<a :href="DetallCurs.CURSOS_Pdf" target="_NEW">{{NomEnllacPDFCurs}}</a>]
+                </p>
+                <div class="text" v-html="DetallCurs.CURSOS_Descripcio">  </div>                
+                <div v-if="DetallCurs">
+                    <form-inscripcio-simple 
+                        :activitat-id="'0'" 
+                        :cicle-id="'0'"
+                        :curs-id = "DetallCurs.CURSOS_IdCurs"
+                        :detall-curs = "DetallCurs"
+                        :detall-descomptes = "DetallDescomptes"
+                        :detall-teatre = "DetallTeatre"
+                        :seients-ocupats = "SeientsOcupats"
+                        :url-actual = "UrlActual"
+                    >
+                    </form-inscripcio-simple>
+                </div>
+            </article>
+            
+        </section>        
+
+        <single-list v-if="Loaded && !Errors && DetallActivitat" :input-titol="'ACTIVITATS RELACIONADES'" :input-color="'#F4A261'" :input-dades="WebStructure.ActivitatsRelacionades" :amb-titol="true"></single-list>
 
         <div style="margin-bottom: 2vw">&nbsp;</div>
                 
@@ -124,9 +156,9 @@
                     this.Loaded = true;                
                     this.Errors = true;                    
                 } else {                    
-                    this.Loaded = true;
-                    this.DetallActivitat = this.WebStructure.Activitat[0];
-                    this.DetallCurs = this.WebStructure.Curs;    
+                    this.Loaded = true;                    
+                    this.DetallActivitat = (this.WebStructure.Activitat.length > 0) ? this.WebStructure.Activitat[0] : null                     
+                    this.DetallCurs = (this.WebStructure.Curs.length > 0) ? this.WebStructure.Curs[0] : null;    
                     this.DetallDescomptes = this.WebStructure.Descomptes;            
                     this.DetallTeatre = this.WebStructure.Teatre;                                        
                     this.SeientsOcupats = this.WebStructure.SeientsOcupats;
@@ -136,8 +168,22 @@
             },
             computed: {
                 NomEnllacPDF: function() {
+                    if(this.DetallActivitat) {
+                        let Ret = " Descarrega el pdf ";
+                        for(C of this.DetallActivitat.ACTIVITATS_Categories.split("@")) {
+
+                            switch(C) {
+                                case '56': Ret = " Descarrega el programa de mà "; break;
+                                case '46': Ret = " Descarrega el catàleg "; break;                            
+                            }
+                            
+                        }
+                        return Ret;
+                    }
+                },
+                NomEnllacPDFCurs: function() {
                     let Ret = " Descarrega el pdf ";
-                    for(C of this.DetallActivitat.ACTIVITATS_Categories.split("@")) {
+                    for(C of this.DetallCurs.CURSOS_Categoria) {
 
                         switch(C) {
                             case '56': Ret = " Descarrega el programa de mà "; break;
@@ -146,7 +192,7 @@
                         
                     }
                     return Ret;
-                }
+                }                
             },
             methods: {                                                            
                 veureDetallHoraris: function() {

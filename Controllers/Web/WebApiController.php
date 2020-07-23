@@ -331,7 +331,7 @@ class WebApiController
     /**
      * $Origen: web, hospici
      */
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats) {                
+    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats) {                
         
         $OU = array();
         $UM = new UsuarisModel();
@@ -377,8 +377,9 @@ class WebApiController
         $OC = array();                 
         if($ActivitatId > 0) { $OC = $CM->getRowActivitatId($ActivitatId); }
         else if($CicleId > 0) { $OC = $CM->getRowCicleId($CicleId); }
+        else if($CursId > 0) { $OC = $CM->getCursById($CursId); }
         else throw new Exception("No hi ha cap activitat o cicle on registrar-se");        
-        if(empty($OC)) throw new Exception("No he trobat cap inscripció activa per l'activitat ({$ActivitatId}) ni el cicle ({$CicleId})");        
+        if(empty($OC)) throw new Exception("No he trobat cap inscripció activa per l'activitat ({$ActivitatId}) ni el cicle ({$CicleId}) ni el curs ({$CursId})");        
                         
         //Passem a gestionar la matrícula
         $MM = new MatriculesModel();

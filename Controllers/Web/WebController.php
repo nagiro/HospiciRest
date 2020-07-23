@@ -232,28 +232,45 @@ class WebController
         return $EXTRES;
     }
 
-    public function viewDetall( $idA ) {
-
-        $EXTRES["Activitat"]    = $this->WebQueries->getActivitatsDetall( $idA );
-        $EXTRES['Horaris']      = $this->WebQueries->getHorarisActivitatDetall( $idA );
-
-        if( sizeof($EXTRES['Activitat']) > 0 ) {
+    /**
+    * Pot ser el detall d'una activitat o d'un curs
+    */    
+    public function viewDetall( $idA , $idCurs ) {
         
-            $Nom = $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'];            
-            $idC = $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"];
+        $EXTRES = array('Activitat' => array(), 'Curs' => array());
+        $IsCurs = $idCurs > 0;
+        $IsAct = $idA > 0;
+
+        if( $IsAct ) $EXTRES["Activitat"]     = $this->WebQueries->getActivitatsDetall( $idA );
+        elseif( $IsCurs > 0 ) $EXTRES["Curs"] = $this->WebQueries->getCursDetall( $idCurs );
+                
+        $EXTRES['Horaris'] = ($IsAct) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
+
+        if( sizeof($EXTRES['Activitat']) > 0 || sizeof($EXTRES['Curs']) > 0 ) {
+        
+            $Nom = ( $IsAct ) ? $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'] : $EXTRES['Curs']['CURSOS_TitolCurs'];
+            $idCicle = ( $IsAct ) ? $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"] : 0;
 
             // Miro si té un pdf associat
-            $PDF = IMATGES_URL_ACTIVITATS . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" ;
-            $PDF_EXIST = is_file( OLD_BASEDIR_IMG_ACT . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" );
-            if( $PDF_EXIST ) $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = $PDF;
-            else $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = "";
+            if( $IsAct ) {
+                $PDF = IMATGES_URL_ACTIVITATS . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" ;
+                $PDF_EXIST = is_file( OLD_BASEDIR_IMG_ACT . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" );
+                if( $PDF_EXIST ) $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = $PDF;
+                else $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = "";
+            } else if ( $IsCurs ) {
+                $PDF = IMATGES_URL_CURSOS . "C-{$EXTRES['Curs']["CURSOS_IdCurs"]}-PDF.pdf" ;
+                $PDF_EXIST = is_file( OLD_BASEDIR_IMG_CUR . "C-{$EXTRES['Curs']["CURSOS_IdCurs"]}-PDF.pdf" );
+                if( $PDF_EXIST ) $EXTRES["Curs"]["CURSOS_Pdf"] = $PDF;
+                else $EXTRES["Curs"]["CURSOS_Pdf"] = "";
+            }
 
-            $ArrayCicles = array($idC);
-            if( ! ($idC > 0) ) $ArrayCicles = array();            
+            
+            $ArrayCicles = array($idCicle);
+            if( ! ($idCicle > 0) ) $ArrayCicles = array();            
             
             /* ACTIVITATS RELACIONADES Si entro a consultar un cicle concret, carrego les activitats relacionades */
 
-            if(sizeof($EXTRES["Activitat"]) > 0 && $idC > 1)
+            if(sizeof($EXTRES["Activitat"]) > 0 && $idCicle > 1)
                     $EXTRES["ActivitatsRelacionades"] = $this->WebQueries->getActivitatsHome( array(),'', '', 1, 1, $ArrayCicles);
             else    $EXTRES["ActivitatsRelacionades"] = array();
                                 
@@ -263,7 +280,7 @@ class WebController
             
             /* BREADCUMB Si hem escollit un cicle carrego el següent breadcumb */
             
-            if($idC > 1){                        
+            if($idCicle > 1){                        
 
                 $Cicles = $this->WebQueries->getCiclesHome( $idC );   
                 $NOM_CICLE = (empty($Cicles[0]['NomActivitat']))?$Cicles[0]['NomActivitatIntern'] : $Cicles[0]['NomActivitat'];                        
@@ -275,14 +292,14 @@ class WebController
 
                 /* BREADCUMB Si volem veure tots els cicles */
 
-                $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
+                if ( $IsAct ) $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
                 
             }
-            $EXTRES["Breadcumb"][] =     array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)); 
+            $EXTRES["Breadcumb"][] = ( $IsAct ) ? array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)) :  array('Titol' => $Nom, "Link" => '/inscripcio/' . $idCurs . '/' . $this->aUrl($Nom));
 
             /* ENTRADES Carrego el curs si està habilitat */
-            $CM = new CursosModel();
-            $CursObject = $CM->getRowActivitatId( $EXTRES['Activitat'][0]['ACTIVITATS_ActivitatId'] );
+            $CM = new CursosModel();            
+            $CursObject = ( $IsAct ) ? $CM->getRowActivitatId( $idA ) : $EXTRES['Curs'];
             if(!empty($CursObject)) { 
                 $EXTRES['Curs'] = array($CursObject);                                         
                 $EXTRES['Descomptes'] = $CM->getDescomptes($CursObject);
@@ -291,7 +308,7 @@ class WebController
             }
             else $EXTRES['Curs'] = array();                                         
             
-            $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA );                
+            $EXTRES['Promocions'] = ( $IsAct ) ? $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA ) :  $this->WebQueries->getPromocions(true, $Nom, '', 'A', $idCurs );                                
 
         } else {
 

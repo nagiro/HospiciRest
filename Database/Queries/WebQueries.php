@@ -35,6 +35,11 @@ class WebQueries extends BDD {
         return $this->runQuery( $this->getSQLHorarisActivitatDetall( $idA ) , array());
     }
 
+    public function getCursDetall($idC) {
+        $CursosModel = new CursosModel();
+        return $CursosModel->getCursById($idC);
+    }
+
     public function getActivitatsDetall( $idA ) {        
         return $this->runQuery( $this->getSQLActivitatsDetall( $idA ) , array());
     }

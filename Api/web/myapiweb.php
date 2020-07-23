@@ -99,6 +99,7 @@ class MyAPIWeb extends API
         $QuantesEntrades = isset($this->request['post']['QuantesEntrades']) ? $this->request['post']['QuantesEntrades'] : '';        
         $ActivitatId = isset($this->request['post']['ActivitatId']) ? $this->request['post']['ActivitatId'] : 0;
         $CicleId = isset($this->request['post']['CicleId']) ? $this->request['post']['CicleId'] : 0;        
+        $CursId = isset($this->request['post']['CursId']) ? $this->request['post']['CursId'] : 0;        
 
         $TipusPagament = isset($this->request['post']['TipusPagament']) ? $this->request['post']['TipusPagament'] : 0;        
         $DescompteAplicat = isset($this->request['post']['DescompteAplicat']) ? $this->request['post']['DescompteAplicat'] : -1;
@@ -109,7 +110,7 @@ class MyAPIWeb extends API
 
         $WAPI = new WebApiController();
         try {
-            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats);
+            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
               
         return array( array('AltaUsuari' => $RET, 'error' => '' ), 200 );
@@ -154,8 +155,13 @@ class MyAPIWeb extends API
                 break;
 
                 case 'detall':                    
-                    $idA = $this->request['idActivitat'];                    
-                    $EXTRES = $WEB->viewDetall( $idA ); 
+                    $idA = $this->request['idActivitat'];
+                    $EXTRES = $WEB->viewDetall( $idA , 0 ); 
+                break;
+
+                case 'inscripcio':                    
+                    $idC = $this->request['idCurs'];
+                    $EXTRES = $WEB->viewDetall( 0 , $idC ); 
                 break;
 
                 case 'pagina': 

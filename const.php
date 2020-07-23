@@ -7,6 +7,7 @@ const Password = '';
 const BASEDIR = "C:\Users\User\Documents\Code\HospiciRest/";
 //const OLD_BASEDIR_IMG_ACT = "/var/www/hospici_cultural/web/images/activitats/";
 const OLD_BASEDIR_IMG_ACT = "C:\Users\User\Documents\Code\HospiciRest\WebFiles\Imatges\Activitats/";
+const OLD_BASEDIR_IMG_CUR = "C:\Users\User\Documents\Code\HospiciRest\WebFiles\Imatges\Cursos/";
 
 
 const APIDIR = BASEDIR . 'Api/';
@@ -31,6 +32,8 @@ const IMATGES_DIR_ACTIVITATS_NW = IMATGESDIR . 'Activitats/';
 const IMATGES_URL_ACTIVITATS_NW = IMATGESURL . 'Activitats/';
 const IMATGES_DIR_NODES = IMATGESDIR . 'Nodes/';
 const IMATGES_URL_NODES = IMATGESURL . 'Nodes/';
+const IMATGES_DIR_CURSOS = IMATGESDIR . 'Cursos/';
+const IMATGES_URL_CURSOS = IMATGESURL . 'Cursos/';
 
 // const IMATGES_URL_BASE = 'http://www.casadecultura.cat'; 
 const IMATGES_URL_BASE = 'http://localhost:8087'; 
