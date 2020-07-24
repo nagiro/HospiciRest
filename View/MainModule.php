@@ -21,8 +21,8 @@ class MainModule {
         
         // Carrego el controlador d'autenticitat i login
         $this->Auth = new AuthController();
-        if( isset( $_SESSION['AuthToken'] ) ) $this->Auth->TokenDecode($_SESSION['AuthToken']);
-        else $this->Auth->TokenDecode( 0 );
+        //if( isset( $_SESSION['AuthToken'] ) ) $this->Auth->TokenDecode($_SESSION['AuthToken']);
+        //else $this->Auth->TokenDecode( 0 );
 
         $this->WebController = new WebController();
 
@@ -59,14 +59,19 @@ class MainModule {
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
             case 'inscripcio':
-                $this->getModuleContent('HtmlHeaderWeb.php');
-                $Data = $this->WebController->viewDetall( 0 , $url[1] );
+                $this->getModuleContent('HtmlHeaderWeb.php');                
+                // $T = $this->Auth->EncodeToken(1, 1, 1);
+                $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
+                $this->Auth->DecodeToken($Token);
+                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token );                
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
             case 'detall':
                 $this->getModuleContent('HtmlHeaderWeb.php');
-                $Data = $this->WebController->viewDetall( $url[1] , 0 );
+                $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : ''; 
+                $this->Auth->DecodeToken($Token);
+                $Data = $this->WebController->viewDetall( $url[1] , 0 , $this->Auth->getSiteIdIfAdmin(), $Token );
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;

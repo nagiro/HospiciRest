@@ -29,10 +29,14 @@ class AuthController {
         return ($this->idUsuari > 0 && $this->idSite > 0);        
     }
 
+    public function getSiteIdIfAdmin() {
+        return ( $this->isAdmin ) ? $this->idSite : 0;
+    }
+
     public function getToken() {
         return $this->TokenLiteral;
     }    
-
+/*
     public function TokenDecode($Token) {        
         $this->TokenLiteral = $Token;
         $this->TokenArray = array();
@@ -54,9 +58,10 @@ class AuthController {
                 } else return false;
             } else return false;
         } else return false;
-                
+  
     }
-
+*/                  
+/*
     public function TokenEncode($idU, $idS, $isAdmin) {        
         $Token[0] = base64_encode(json_encode(array('typ' => 'JWT', 'alg' => 'HS256')));
         $Token[1] = base64_encode(json_encode(array('idUser'=> $idU, 'idSite' => $idS, 'isAdmin' => $isAdmin )));
@@ -64,6 +69,23 @@ class AuthController {
         $this->TokenLiteral = implode('.', $Token);
         $this->TokenDecode($this->TokenLiteral);
     }
+*/
+    public function DecodeToken($Token) {
+        $Text = json_decode($this->Decrypt($Token), true);
+        $this->idUsuari = $Text['idUsuari'];
+        $this->isAdmin = $Text['isAdmin'];
+        $this->idSite = $Text['idSite'];        
+    }
+
+    public function EncodeToken($idUsuari, $idSite, $isAdmin) {
+        $Text = json_encode(array('idUsuari' => $idUsuari, 'idSite' => $idSite, 'isAdmin' => $isAdmin ));
+        $Text = $this->Encrypt($Text);
+        return $Text;
+    }
+
+    public function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
+    public function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
+
 }
 
 

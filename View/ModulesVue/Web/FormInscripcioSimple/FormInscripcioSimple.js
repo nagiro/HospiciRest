@@ -10,7 +10,8 @@ Vue.component('form-inscripcio-simple', {
         DetallDescomptes: Array,
         DetallTeatre: Object,
         SeientsOcupats: Array,
-        UrlActual: String        
+        UrlActual: String, 
+        Token: Object // Site, token     
     },          
     data: function() {
         return {    ActivitatHome: {}, 
@@ -40,15 +41,16 @@ Vue.component('form-inscripcio-simple', {
                     MatriculesArray: Array,
                     ErrorInscripcio: '',
                     ConfirmoAssistencia: false,
-                    TPV: {}
+                    TPV: {},
+                    isAdmin: (this.Token[0] == this.DetallCurs.CURSOS_SiteId)
                 }
     },    
     computed: {
         genUrlInscripcio: function() {
             return '/apiweb/GeneraResguard?i=' + this.MatriculesArray[0] + '&g=&u=' + btoa(this.UrlActual); 
         },
-        getOptions: function() {
-            let TipusPagaments = this.DetallCurs.CURSOS_PagamentExtern.split('@');            
+        getOptions: function() {                        
+            let TipusPagaments = (this.isAdmin) ? this.DetallCurs.CURSOS_PagamentIntern.split('@') : this.DetallCurs.CURSOS_PagamentExtern.split('@');            
             let ReturnPagaments = [];
             
             if(TipusPagaments.length > 1) {
@@ -224,6 +226,7 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('UrlDesti', this.UrlActual);
             $FD.append('DescompteAplicat', this.DescompteAplicat);
             $FD.append('Localitats', JSON.stringify(this.Localitats));
+            $FD.append('Token', JSON.stringify(this.Token));
             
             axios.post( CONST_api_web + '/AltaUsuariSimple', $FD ).then( X => {
                 if(X.data.AltaUsuari && X.data.AltaUsuari.MATRICULES.length > 0) {

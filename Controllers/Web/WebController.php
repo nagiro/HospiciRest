@@ -234,15 +234,20 @@ class WebController
 
     /**
     * Pot ser el detall d'una activitat o d'un curs
+    * SiteIdAdminAuth: És el site passat pel token que ha d'encaixar amb el de l'activitat en qüestió
     */    
-    public function viewDetall( $idA , $idCurs ) {
-        
-        $EXTRES = array('Activitat' => array(), 'Curs' => array());
+    public function viewDetall( $idA , $idCurs, $SiteIdAdminAuth, $Token ) {        
+
+        $EXTRES = array('Activitat' => array(), 'Curs' => array(), 'Token' => array($SiteIdAdminAuth, $Token) );
         $IsCurs = $idCurs > 0;
         $IsAct = $idA > 0;
+        $isAdmin = false;
 
         if( $IsAct ) $EXTRES["Activitat"]     = $this->WebQueries->getActivitatsDetall( $idA );
-        elseif( $IsCurs > 0 ) $EXTRES["Curs"] = $this->WebQueries->getCursDetall( $idCurs );
+        elseif( $IsCurs > 0 ) $EXTRES["Curs"] = $this->WebQueries->getCursDetall( $idCurs );        
+
+        if( $IsAct ) $isAdmin = ($EXTRES["Activitat"][0]['ACTIVITATS_SiteId'] == $SiteIdAdminAuth);
+        elseif( $IsCurs > 0 ) $isAdmin = ($EXTRES["Curs"]['CURSOS_SiteId'] == $SiteIdAdminAuth);
                 
         $EXTRES['Horaris'] = ($IsAct) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
 
@@ -302,7 +307,7 @@ class WebController
             $CursObject = ( $IsAct ) ? $CM->getRowActivitatId( $idA ) : $EXTRES['Curs'];
             if(!empty($CursObject)) { 
                 $EXTRES['Curs'] = array($CursObject);                                         
-                $EXTRES['Descomptes'] = $CM->getDescomptes($CursObject);
+                $EXTRES['Descomptes'] = $CM->getDescomptes($CursObject, $isAdmin);
                 $EXTRES['Teatre'] = $CM->getTeatre($CursObject);
                 $EXTRES['SeientsOcupats'] = $CM->getSeientsOcupats($CursObject);
             }

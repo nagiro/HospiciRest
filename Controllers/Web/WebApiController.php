@@ -331,7 +331,7 @@ class WebApiController
     /**
      * $Origen: web, hospici
      */
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats) {                
+    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token) {                
         
         $OU = array();
         $UM = new UsuarisModel();
@@ -380,6 +380,14 @@ class WebApiController
         else if($CursId > 0) { $OC = $CM->getCursById($CursId); }
         else throw new Exception("No hi ha cap activitat o cicle on registrar-se");        
         if(empty($OC)) throw new Exception("No he trobat cap inscripció activa per l'activitat ({$ActivitatId}) ni el cicle ({$CicleId}) ni el curs ({$CursId})");        
+
+        // Validem que passi el token... si no el superem, sortim.
+        if( sizeof($Token) == 2 && strlen($Token[1]) > 0 ) {
+            require_once CONTROLLERSDIR.'AuthController.php';
+            $Auth = new AuthController();
+            $Auth->DecodeToken($Token[1]);
+            if( $Auth->getSiteIdIfAdmin() != $OC[$CM->gnfnwt('SiteId')] || $Auth->getSiteIdIfAdmin() == 0) throw new Exception("Hi ha hagut algun problema autenticant. Torna a provar-ho.");
+        }
                         
         //Passem a gestionar la matrícula
         $MM = new MatriculesModel();

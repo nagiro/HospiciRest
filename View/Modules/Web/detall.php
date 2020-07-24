@@ -70,6 +70,7 @@
                         :detall-teatre = "DetallTeatre"
                         :seients-ocupats = "SeientsOcupats"
                         :url-actual = "UrlActual"
+                        :token = "Token"                        
                     >
                     </form-inscripcio-simple>
                 </div>
@@ -103,6 +104,7 @@
                         :detall-teatre = "DetallTeatre"
                         :seients-ocupats = "SeientsOcupats"
                         :url-actual = "UrlActual"
+                        :token = "Token"                        
                     >
                     </form-inscripcio-simple>
                 </div>
@@ -162,7 +164,8 @@
                     this.DetallDescomptes = this.WebStructure.Descomptes;            
                     this.DetallTeatre = this.WebStructure.Teatre;                                        
                     this.SeientsOcupats = this.WebStructure.SeientsOcupats;
-                    this.UrlActual = window.location.href;                    
+                    this.UrlActual = window.location.href;  
+                    this.Token = this.WebStructure.Token;                                          
                 }
                 
             },
