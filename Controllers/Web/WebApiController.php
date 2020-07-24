@@ -472,30 +472,6 @@ class WebApiController
         }
     }
 
-
-    /**
-     * Funció que genera un resguard amb una o més matrícules dins a partir d'una matrícula del grup
-     * $MatriculesArray = array(EncryptedIdMatricula1, EncryptedIdMatricula2)
-     * $Tipus = TipusDeResguard (self::TIPUS___)
-     * */
-/*    public function generaInscripcio($Encrypted_IdMatricula, $UrlDesti, $ArrayTipusInscripcio = array(self::TIPUS_RESGUARD_MAIL)) {
-        
-        $MM = new MatriculesModel();
-        $idMatricula = $this->Decrypt($Encrypted_IdMatricula);
-        $MatriculesArray = $MM->getMatriculesVinculades($idMatricula, true);        
-                
-        // Id, WithHeader, WithFooter            
-        $HTML .= $this->generaResguard( $this->Encrypt( $MatriculaId ) , 
-                                        $ArrayTipusInscripcio, 
-                                        ($K == 0), 
-                                        ($K == (sizeof($MatriculesArray)-1)),
-                                        $UrlDesti 
-                                    );                    
-        
-        return $HTML;
-
-    }
-*/
     /**
      * $Encrypted_IdMatricula: Enviem el codi d'una de les matrícules del grup. 
      * $Email: El correu on s'enviarà.
