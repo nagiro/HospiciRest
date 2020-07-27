@@ -7,10 +7,6 @@ require_once DATABASEDIR.'Tables/OptionsModel.php';
 require_once BASEDIR . 'vendor/autoload.php';
 require_once AUXDIR . 'Redsys/apiRedsys.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 class WebApiController
 {
 
@@ -419,7 +415,7 @@ class WebApiController
             for($i = 0; $i < $QuantesEntrades; $i++){
             
                 // Per cada inscripció, creo un objecte matrícula i marco com a reservat
-                $OM = $MM->getEmptyObject($OU[$CM->gnfnwt('IdUsuari')], $idCurs, $idSite);
+                $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $idCurs, $idSite);
                 
                 //Marquem l'estat de la matrícula. Si és pagament amb targeta, posem en procès. Els altres, reservat
                 $OM = $MM->setEstatFromPagament($OM, $TipusPagament);
@@ -522,42 +518,6 @@ class WebApiController
         catch(Exception $ex){
             return false;
         }        
-    }
-
-    public function SendEmailPhpMailer($to, $from, $subject, $HTML) {
-        
-        $mail = new PHPMailer();
-        
-    
-        $mail->IsSMTP();
-        $mail->CharSet = 'UTF-8';
-        $mail->Timeout  =   10;            
-        // $mail->Host       = "email-smtp.eu-central-1.amazonaws.com"; // SMTP server example
-        $mail->Host = "smtp.gmail.com";
-        $mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
-        $mail->SMTPSecure = 'ssl';
-        $mail->SMTPAuth   = true;                  // enable SMTP authentication
-        $mail->Port       = 465;                    // set the SMTP port for the GMAIL server                
-        // $mail->Username   = "AKIAS2ROCN6SN7CJF354"; // SMTP account username example
-        $mail->Username = 'albert.johe@gmail.com';
-        // $mail->Password   = "BEHMBj1kvHrPeJAmYroQ5BAikHQs7i4OpE007aMRxL1W";        // SMTP account password example
-        $mail->Password = 'gmail1981.';
-        
-        $mail->isHTML(true);                                  // Set email format to HTML
-        $mail->addAddress($to);
-        $mail->From = $from;
-        $mail->FromName = "Casa de Cultura de Girona";            
-        $mail->addReplyTo($from);            
-        $mail->setFrom($from);
-        $mail->setAddress = $to;
-        $mail->setFrom = $from;
-        $mail->Subject = $subject;
-        $mail->Body    = $HTML;        
-
-        if(!$mail->send()) {
-            var_dump("No s'ha enviat el correu: " . $mail->ErrorInfo);
-        }         
-
     }
 
     private function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
