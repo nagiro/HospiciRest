@@ -100,6 +100,7 @@ Vue.component('form-inscripcio-simple', {
                 const DataFiMatricula = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'Javascript');   // Funció const_and_helpers.js                
                 const DFM = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'TDMA');   // Funció const_and_helpers.js                
                 const Today = new Date();
+                Today.setHours(0,0,0,0);
 
                 if( DetallCurs.CURSOS_IsRestringit == 1) { 
                     this.Pas = 7; 
