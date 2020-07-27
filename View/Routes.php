@@ -16,7 +16,8 @@ class Router {
         'activitats',
         'cicles', 
         'pagina',
-        'inscripcio'
+        'inscripcio',
+        'inscripcions'
     );
 
     public function __construct($SERVER) {

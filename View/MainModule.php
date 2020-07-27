@@ -67,6 +67,14 @@ class MainModule {
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            case 'inscripcions':
+                $this->getModuleContent('HtmlHeaderWeb.php');                                
+                $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
+                $this->Auth->DecodeToken($Token);
+                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token );
+                $this->getModuleContent('Web/inscripcions_sites.php', json_encode($Data) ); 
+                $this->getModuleContent('HtmlFooterWeb.php');                
+            break;            
             case 'detall':
                 $this->getModuleContent('HtmlHeaderWeb.php');
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : ''; 

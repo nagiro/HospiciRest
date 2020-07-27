@@ -155,8 +155,6 @@ class WebApiController
         $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailFooter'.$OMatricula['MATRICULES_SiteId'].'.html' );
         $HTML = str_replace('@@URL_DESTI@@', $UrlDesti, $HTML);
 
-
-
         
         return $HTML;
         
@@ -381,12 +379,15 @@ class WebApiController
         else throw new Exception("No hi ha cap activitat o cicle on registrar-se");        
         if(empty($OC)) throw new Exception("No he trobat cap inscripció activa per l'activitat ({$ActivitatId}) ni el cicle ({$CicleId}) ni el curs ({$CursId})");        
 
+        $idSite = $OC[$CM->gnfnwt('SiteId')];
+        $idCurs = $OC[$CM->gnfnwt('IdCurs')];
+
         // Validem que passi el token... si no el superem, sortim.
         if( sizeof($Token) == 2 && strlen($Token[1]) > 0 ) {
             require_once CONTROLLERSDIR.'AuthController.php';
             $Auth = new AuthController();
             $Auth->DecodeToken($Token[1]);
-            if( $Auth->getSiteIdIfAdmin() != $OC[$CM->gnfnwt('SiteId')] || $Auth->getSiteIdIfAdmin() == 0) throw new Exception("Hi ha hagut algun problema autenticant. Torna a provar-ho.");
+            if( $Auth->getSiteIdIfAdmin() != $idSite || $Auth->getSiteIdIfAdmin() == 0) throw new Exception("Hi ha hagut algun problema autenticant. Torna a provar-ho.");
         }
                         
         //Passem a gestionar la matrícula
@@ -402,7 +403,7 @@ class WebApiController
         } 
 
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
-        $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $OC[$CM->gnfnwt('IdCurs')] );
+        $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $idCurs );
         if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) 
             throw new Exception('No hi ha prou places disponibles.');
 
@@ -418,7 +419,7 @@ class WebApiController
             for($i = 0; $i < $QuantesEntrades; $i++){
             
                 // Per cada inscripció, creo un objecte matrícula i marco com a reservat
-                $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $OC[$CM->gnfnwt('IdCurs')], $OC[$CM->gnfnwt('SiteId')]);
+                $OM = $MM->getEmptyObject($OU[$CM->gnfnwt('IdUsuari')], $idCurs, $idSite);
                 
                 //Marquem l'estat de la matrícula. Si és pagament amb targeta, posem en procès. Els altres, reservat
                 $OM = $MM->setEstatFromPagament($OM, $TipusPagament);
@@ -460,7 +461,7 @@ class WebApiController
 
             $RET['MATRICULES'] = $Matricules;
             if($TipusPagament == MatriculesModel::PAGAMENT_TARGETA) {                
-                $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $OC[$CM->gnfnwt('SiteId')], $UrlDesti);
+                $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $idSite, $UrlDesti);
             } else {                
                 if(sizeof($Matricules) > 0) { $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL), $UrlDesti); }
             }
