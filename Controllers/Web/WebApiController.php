@@ -46,9 +46,9 @@ class WebApiController
     **/
     public function generaResguard( $InscripcioCodificada, $UrlDesti = 'https://www.casadecultura.cat', $Preu = 0 ) {
         
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
+        // ini_set('display_errors', 1);
+        // ini_set('display_startup_errors', 1);
+        // error_reporting(E_ALL);
 
         // Carrego els models 
         $OptionsModel = new OptionsModel();
@@ -69,89 +69,100 @@ class WebApiController
         $idS = $OMatricula[$MatriculesModel->gnfnwt('SiteId')];
 
         $HTML = '';
-
-
-        /*********************** HEADER *********************************/
-
-        $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailHeader'.$OMatricula['MATRICULES_SiteId'].'.html' );        
         
-        $HTML = str_replace('@@LOGO@@', $OptionsModel->getOption('LOGO_URL', 1), $HTML);
-        
-        //Si la matrícula és d'una activitat, carrego la imatge. 
-        $ImatgeMatricula = "";        
-        if($OCurs['CURSOS_ActivitatId'] > 0):
-            $ImatgeMatricula = IMATGES_URL_BASE . IMATGES_URL_ACTIVITATS . 'A-' . $OCurs['CURSOS_ActivitatId'] . '-L.jpg';            
-        elseif($OCurs['CURSOS_CicleId'] > 0):
-            $ImatgeMatricula = IMATGES_URL_BASE . IMATGES_URL_CICLES . 'C-' . $OCurs['CURSOS_CicleId'] . '-L.jpg';            
-        else:
-            $ImatgeMatricula = 'http://www.casadecultura.cat/WebFiles/Web/img/NoImage.jpg';            
-        endif;        
-        
-        $HTML = str_replace('@@IMATGE@@', $ImatgeMatricula, $HTML);        
-        
-        /*********************** BODY *********************************/
-        
-        $Import_total_a_pagar = 0;
 
-        foreach($MatriculesVinculades as $MatriculaVinculadaObjecte) {            
-                        
-            $OMatricula = $MatriculaVinculadaObjecte;
-            $NumeroInscripcio = $OMatricula[$MatriculesModel->gnfnwt('IdMatricula')];
+        /* Si la matrícula està en procés de pagament...no podem imprimir les entrades */
+        if( ! $MatriculesModel->IsMatriculaCorrectaPerImprimirResguard($OMatricula)) {
 
-            $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailBody'.$OMatricula['MATRICULES_SiteId'].'.html' );
-                                                
-            // Genero el QR de la matrícula
-            \PHPQRCode\QRcode::png($NumeroInscripcio, BASEDIR . "/WebFiles/Inscripcions/" . $NumeroInscripcio .'.png', 'L', 4, 2);
+            $HTML = file_get_contents( AUXDIR . "Inscripcions/Mail/{$idS}/MailError.html" );                    
 
-            // Busco la localitat si existeix
-            $LocalitatText = '-----';
-            if($CursosModel->hasEscullLocalitats($OCurs)) { $LocalitatText = $MatriculesModel->getLocalitatString($OMatricula); }
+        } else {
+
+            /*********************** HEADER *********************************/
+
+            $HTML .= file_get_contents( AUXDIR . "Inscripcions/Mail/{$idS}/MailHeader.html" );                    
+
+            //Si la matrícula és d'una activitat, carrego la imatge. 
+            $ImatgeMatricula = "";        
+            if($OCurs['CURSOS_ActivitatId'] > 0):
+                $ImatgeMatricula = IMATGES_URL_BASE . IMATGES_URL_ACTIVITATS . 'A-' . $OCurs['CURSOS_ActivitatId'] . '-L.jpg';            
+            elseif($OCurs['CURSOS_CicleId'] > 0):
+                $ImatgeMatricula = IMATGES_URL_BASE . IMATGES_URL_CICLES . 'C-' . $OCurs['CURSOS_CicleId'] . '-L.jpg';            
+            else:
+                $ImatgeMatricula = 'http://www.casadecultura.cat/WebFiles/Web/img/NoImage.jpg';            
+            endif;        
+
+            $HTML = str_replace('@@IMATGE@@', $ImatgeMatricula, $HTML);        
+
+            /*********************** BODY *********************************/
+
+            $Import_total_a_pagar = 0;
+
+            foreach($MatriculesVinculades as $MatriculaVinculadaObjecte) {            
+                            
+                $OMatricula = $MatriculaVinculadaObjecte;
+                $NumeroInscripcio = $OMatricula[$MatriculesModel->gnfnwt('IdMatricula')];
+
+                $HTML .= file_get_contents( AUXDIR . "Inscripcions/Mail/{$idS}/MailBody.html" );
+                                                    
+                // Genero el QR de la matrícula
+                \PHPQRCode\QRcode::png($NumeroInscripcio, BASEDIR . "/WebFiles/Inscripcions/" . $NumeroInscripcio .'.png', 'L', 4, 2);
+
+                // Busco la localitat si existeix
+                $LocalitatText = '-----';
+                if($CursosModel->hasEscullLocalitats($OCurs)) { $LocalitatText = $MatriculesModel->getLocalitatString($OMatricula); }
+                
+                $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
+                $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
+                $HTML = str_replace('@@LLOC@@', 'Casa de Cultura de Girona', $HTML);
+                $HTML = str_replace('@@LOCALITAT@@', $LocalitatText, $HTML);
+                $HTML = str_replace('@@USUARI@@', $OUsuari['USUARIS_Dni'] . ' - ' . $OUsuari['USUARIS_Nom'].' '.$OUsuari['USUARIS_Cog1'].' '.$OUsuari['USUARIS_Cog2'], $HTML);            
+                $HTML = str_replace('@@ESTAT@@', $MatriculesModel->getEstatString($OMatricula), $HTML);
+                $HTML = str_replace('@@IMPORT@@', $OMatricula[$MatriculesModel->gnfnwt('Pagat')], $HTML);
+                $HTML = str_replace('@@DESCOMPTE@@', $MatriculesModel->getDescompteString($OMatricula), $HTML);
+                $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png', $HTML);
+                $HTML = str_replace('@@QR_TEXT@@', $NumeroInscripcio, $HTML);            
+
+                $Import_total_a_pagar += $OMatricula[$MatriculesModel->gnfnwt('Pagat')];
+                    
+            }
+                
+
+            /************************ PAGAMENT CODI DE BARRES AL HEADER *********************************/
+
+            if( MatriculesModel::PAGAMENT_CODI_DE_BARRES == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {
+                $CB = $this->generaCodiBarres( $idMatricula, $Import, $idS );
+                $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: block;', $HTML);
+                $HTML = str_replace('@@URL_CODI_BARRES@@', $CB['URL'], $HTML);
+                $HTML = str_replace('@@CODI_BARRES@@',  $CB['CODI'], $HTML);
+                $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+            } else {
+                $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: none;', $HTML);
+                $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+            }        
+
+
+            /************************ PAGAMENT AMB TARGETA AL HEADER *********************************/
+
+            if( MatriculesModel::PAGAMENT_TARGETA == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {            
+                $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: block;', $HTML);                        
+                $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+            } else {
+                $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: none;', $HTML);
+                $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
+            }        
+
+            /******************************* FOOTER *******************************/
+
+            $HTML .= file_get_contents( AUXDIR . "Inscripcions/Mail/{$idS}/MailFooter.html" );
             
-            $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
-            $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
-            $HTML = str_replace('@@LLOC@@', 'Casa de Cultura de Girona', $HTML);
-            $HTML = str_replace('@@LOCALITAT@@', $LocalitatText, $HTML);
-            $HTML = str_replace('@@USUARI@@', $OUsuari['USUARIS_Dni'] . ' - ' . $OUsuari['USUARIS_Nom'].' '.$OUsuari['USUARIS_Cog1'].' '.$OUsuari['USUARIS_Cog2'], $HTML);            
-            $HTML = str_replace('@@ESTAT@@', $MatriculesModel->getEstatString($OMatricula), $HTML);
-            $HTML = str_replace('@@IMPORT@@', $OMatricula[$MatriculesModel->gnfnwt('Pagat')], $HTML);
-            $HTML = str_replace('@@DESCOMPTE@@', $MatriculesModel->getDescompteString($OMatricula), $HTML);
-            $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png', $HTML);
-            $HTML = str_replace('@@QR_TEXT@@', $NumeroInscripcio, $HTML);            
-
-            $Import_total_a_pagar += $OMatricula[$MatriculesModel->gnfnwt('Pagat')];
-                  
+            
+        
         }
-    
-        /************************ PAGAMENT CODI DE BARRES AL HEADER *********************************/
-        
-        if( MatriculesModel::PAGAMENT_CODI_DE_BARRES == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {
-            $CB = $this->generaCodiBarres( $idMatricula, $Import, $idS );
-            $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: block;', $HTML);
-            $HTML = str_replace('@@URL_CODI_BARRES@@', $CB['URL'], $HTML);
-            $HTML = str_replace('@@CODI_BARRES@@',  $CB['CODI'], $HTML);
-            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
-        } else {
-            $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: none;', $HTML);
-            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
-        }        
 
-
-        /************************ PAGAMENT AMB TARGETA AL HEADER *********************************/
-
-        if( MatriculesModel::PAGAMENT_TARGETA == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {            
-            $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: block;', $HTML);                        
-            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
-        } else {
-            $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: none;', $HTML);
-            $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
-        }        
-        
-        /******************************* FOOTER *******************************/
-
-        $HTML .= file_get_contents( AUXDIR . 'Inscripcions/Mail/MailFooter'.$OMatricula['MATRICULES_SiteId'].'.html' );
+        $HTML = str_replace('@@LOGO@@', $OptionsModel->getOption('LOGO_URL', $idS), $HTML);
         $HTML = str_replace('@@URL_DESTI@@', $UrlDesti, $HTML);
-
-        
+                
         return $HTML;
         
     }
@@ -184,6 +195,8 @@ class WebApiController
         $miObj->setParameter("DS_MERCHANT_MERCHANTURL",     $TPV['DS_MERCHANT_MERCHANTURL']);
         $miObj->setParameter("DS_MERCHANT_URLOK",           $TPV['DS_MERCHANT_URLOK']);		
         $miObj->setParameter("DS_MERCHANT_URLKO",           $TPV['DS_MERCHANT_URLKO']);
+        $miObj->setParameter("DS_MERCHANT_NAME",            $TPV['DS_MERCHANT_NAME']);
+        $miObj->setParameter("DS_PRODUCT_DESCRIPTION",      $TPV['DS_PRODUCT_DESCRIPTION']);
         $miObj->setParameter("DS_MERCHANT_MERCHANTDATA",    base64_encode($UrlDesti));
         $miObj->setParameter("DS_MERCHANT_PRODUCTDESCRIPTION", 'Inscripció / Entrada');    
 
@@ -359,10 +372,6 @@ class WebApiController
 
         }
         
-        // Vinculem l'usuari amb el site si fa falta... 
-        $USM = new UsuarisSitesModel();
-        $USM->addUsuariASite( $OU[ $UM->gnfnwt('IdUsuari') ], 1 ); 
-
         // Validem si el TipusPagament és correcte
         if($TipusPagament == MatriculesModel::PAGAMENT_CAP) throw new Exception("No heu escollit cap tipus de pagament.");
 
@@ -376,7 +385,11 @@ class WebApiController
         if(empty($OC)) throw new Exception("No he trobat cap inscripció activa per l'activitat ({$ActivitatId}) ni el cicle ({$CicleId}) ni el curs ({$CursId})");        
 
         $idSite = $OC[$CM->gnfnwt('SiteId')];
-        $idCurs = $OC[$CM->gnfnwt('IdCurs')];
+        $idCurs = $OC[$CM->gnfnwt('IdCurs')];        
+
+        // Vinculem l'usuari amb el site si fa falta... 
+        $USM = new UsuarisSitesModel();
+        $USM->addUsuariASite( $OU[ $UM->gnfnwt('IdUsuari') ], $idSite ); 
 
         // Validem que passi el token... si no el superem, sortim.
         if( sizeof($Token) == 2 && strlen($Token[1]) > 0 ) {
@@ -400,7 +413,7 @@ class WebApiController
 
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $idCurs );
-        if(($QuantesMatricules + $QuantesEntrades) >= $OC[$CM->gnfnwt('Places')]) 
+        if(($QuantesMatricules + $QuantesEntrades) > $OC[$CM->gnfnwt('Places')]) 
             throw new Exception('No hi ha prou places disponibles.');
 
         $Matricules = array(); $MatriculesId = array(); $idMatriculaGrup = 0;

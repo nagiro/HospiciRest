@@ -6,6 +6,7 @@
         #detall_requadre_info { border: 1px solid black; padding: 2vw; margin-top: 2vw; font-size: 1rem; }
         #detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; margin-top: 4vw; }
         #detall_bloc h2 { font-size: 1.5rem; margin-bottom: 1vw; margin-top: 3vw; }
+        #detall_bloc h3 { font-size: 1.3rem; margin-bottom: 1vw; margin-top: 3vw; }
             
         #detall_horaris { display: relative; margin-top: 1.5vw; text-align: center; }
         #detall_horaris > summary { margin-bottom:2vw; }
@@ -19,6 +20,9 @@
         .cartellLlocHora { padding: 1vw; width: 20vw; background-color: black; color: white; margin: 2vw auto; }
         
         .cal-info-text { margin-top: 2vw; }
+
+        .detall_imatge_entitat {}
+
     </style>
 
 </head>
@@ -26,7 +30,7 @@
     
     <div id="detall" class="page">
           
-        Breadcumb, ha de mostrar, altres cursos de l'entitat i llestos.         
+        <!-- Possible, puc afegir que es mostrin altres cursos de l'entitat. -->        
 
         <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
             
@@ -34,7 +38,9 @@
         <section id="detall_bloc" v-if="Loaded && !Errors && !DetallActivitat">
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallCurs.CURSOS_TitolCurs }} </h1>                                
-                <h2>{{ DetallCurs.CURSOS_Horaris }}</h2>
+                <h2>Organitzat per {{ SiteNom }}</h2>
+                <h3>{{ DetallCurs.CURSOS_Horaris }}</h3>
+                
             </div>
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
@@ -60,7 +66,7 @@
             
         </section>        
 
-        Aquí hi va el llistat amb altres cursos disponibles per l'entitat
+        <!-- Aquí hi va el llistat amb altres cursos disponibles per l'entitat -->
         <!-- <single-list v-if="Loaded && !Errors && DetallActivitat" :input-titol="'ACTIVITATS RELACIONADES'" :input-color="'#F4A261'" :input-dades="WebStructure.ActivitatsRelacionades" :amb-titol="true"></single-list> -->
 
         <div style="margin-bottom: 2vw">&nbsp;</div>
@@ -80,6 +86,7 @@
                 DetallCurs: {},         //Objecte inscripció                
                 DetallDescomptes: {},
                 DetallTeatre: {},
+                SiteNom: {},
                 SeientsOcupats: [],
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
@@ -100,6 +107,7 @@
                     this.DetallCurs = (this.WebStructure.Curs.length > 0) ? this.WebStructure.Curs[0] : null;    
                     this.DetallDescomptes = this.WebStructure.Descomptes;            
                     this.DetallTeatre = this.WebStructure.Teatre;                                        
+                    this.SiteNom = this.WebStructure.SiteNom;
                     this.SeientsOcupats = this.WebStructure.SeientsOcupats;
                     this.UrlActual = window.location.href;  
                     this.Token = this.WebStructure.Token;                                          

@@ -63,15 +63,15 @@ class MainModule {
                 // $T = $this->Auth->EncodeToken(1, 1, 1);
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
                 $this->Auth->DecodeToken($Token);
-                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token );                
+                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token, false );                
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
             case 'inscripcions':
                 $this->getModuleContent('HtmlHeaderWeb.php');                                
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
-                $this->Auth->DecodeToken($Token);
-                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token );
+                $this->Auth->DecodeToken($Token);                
+                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token, true );                                
                 $this->getModuleContent('Web/inscripcions_sites.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;            
@@ -79,7 +79,7 @@ class MainModule {
                 $this->getModuleContent('HtmlHeaderWeb.php');
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : ''; 
                 $this->Auth->DecodeToken($Token);
-                $Data = $this->WebController->viewDetall( $url[1] , 0 , $this->Auth->getSiteIdIfAdmin(), $Token );
+                $Data = $this->WebController->viewDetall( $url[1] , 0 , $this->Auth->getSiteIdIfAdmin(), $Token, false );
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;

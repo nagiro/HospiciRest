@@ -236,7 +236,7 @@ class WebController
     * Pot ser el detall d'una activitat o d'un curs
     * SiteIdAdminAuth: És el site passat pel token que ha d'encaixar amb el de l'activitat en qüestió
     */    
-    public function viewDetall( $idA , $idCurs, $SiteIdAdminAuth, $Token ) {        
+    public function viewDetall( $idA , $idCurs, $SiteIdAdminAuth, $Token, $isSiteExtern ) {        
 
         $EXTRES = array('Activitat' => array(), 'Curs' => array(), 'Token' => array($SiteIdAdminAuth, $Token) );
         $IsCurs = $idCurs > 0;
@@ -248,7 +248,7 @@ class WebController
 
         if( $IsAct ) $isAdmin = ($EXTRES["Activitat"][0]['ACTIVITATS_SiteId'] == $SiteIdAdminAuth);
         elseif( $IsCurs > 0 ) $isAdmin = ($EXTRES["Curs"]['CURSOS_SiteId'] == $SiteIdAdminAuth);
-                
+                        
         $EXTRES['Horaris'] = ($IsAct) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
 
         if( sizeof($EXTRES['Activitat']) > 0 || sizeof($EXTRES['Curs']) > 0 ) {
@@ -303,13 +303,19 @@ class WebController
             $EXTRES["Breadcumb"][] = ( $IsAct ) ? array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)) :  array('Titol' => $Nom, "Link" => '/inscripcio/' . $idCurs . '/' . $this->aUrl($Nom));
 
             /* ENTRADES Carrego el curs si està habilitat */
-            $CM = new CursosModel();            
+            $CM = new CursosModel();                        
             $CursObject = ( $IsAct ) ? $CM->getRowActivitatId( $idA ) : $EXTRES['Curs'];
             if(!empty($CursObject)) { 
-                $EXTRES['Curs'] = array($CursObject);                                         
+                $EXTRES['Curs'] = array($CursObject);
                 $EXTRES['Descomptes'] = $CM->getDescomptes($CursObject, $isAdmin);
                 $EXTRES['Teatre'] = $CM->getTeatre($CursObject);
                 $EXTRES['SeientsOcupats'] = $CM->getSeientsOcupats($CursObject);
+                if($isSiteExtern) {
+                    require_once DATABASEDIR . 'Tables/SitesModel.php';
+                    $SM = new SitesModel();
+                    $EXTRES['SiteNom'] = $SM->loadNom($CursObject[$CM->gnfnwt('SiteId')]);                    
+                }
+                
             }
             else $EXTRES['Curs'] = array();                                         
             

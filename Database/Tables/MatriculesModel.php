@@ -13,14 +13,14 @@ class MatriculesModel extends BDD {
     const ESTAT_BAIXA               = "9";
     const ESTAT_EN_PROCES           = "25";
     const ESTAT_DEVOLUCIO           = '11';
-        
+/*        
     const REDUCCIO_CAP              = '16';
     const REDUCCIO_MENOR_25_ANYS    = '18';
     const REDUCCIO_JUBILAT          = '17';
     const REDUCCIO_ATURAT           = '19';
     const REDUCCIO_GRATUIT          = '24';
     const REDUCCIO_ESPECIAL         = '28';
-    
+  */  
     const PAGAMENT_CAP              = '0';
     const PAGAMENT_METALIC          = '21';
     const PAGAMENT_TARGETA          = '20';
@@ -91,7 +91,7 @@ class MatriculesModel extends BDD {
         $O[$this->gnfnwt('CursId')] = $CursId; 
         $O[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES; // Estats 
         $O[$this->gnfnwt('DataInscripcio')] = date('Y-m-d H:i', time());        
-        $O[$this->gnfnwt('TipusReduccio')] = self::REDUCCIO_CAP; 
+        $O[$this->gnfnwt('TipusReduccio')] = -1; 
         $O[$this->gnfnwt('Pagat')] = 0; 
         $O[$this->gnfnwt('TipusPagament')] = self::PAGAMENT_RESERVA; 
         $O[$this->gnfnwt('SiteId')] = $SiteId; 
@@ -102,6 +102,13 @@ class MatriculesModel extends BDD {
         return $this->_doInsert($ObjecteMatricula);        
     }
 
+    public function IsMatriculaCorrectaPerImprimirResguard($ObjecteMatricula) {
+    
+        return (    $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_ACCEPTAT_PAGAT
+                ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_ACCEPTAT_NO_PAGAT
+                ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_RESERVAT
+            );
+    }
 
     public function getIdMatriculaGrup($idMatricula) {
                         
@@ -194,8 +201,12 @@ class MatriculesModel extends BDD {
         require_once BASEDIR."Database/Tables/DescomptesModel.php";
         $DM = new DescomptesModel();
 
-        $DetallDescompteAplicat = $DM->getDescompteById( $MatriculaObject[$this->gnfnwt('TipusReduccio')] );
-        return $DetallDescompteAplicat[$DM->gnfnwt('Nom')];
+        if( $MatriculaObject[$this->gnfnwt('TipusReduccio')] > -1) {
+            $DetallDescompteAplicat = $DM->getDescompteById( $MatriculaObject[$this->gnfnwt('TipusReduccio')] );
+            return $DetallDescompteAplicat[$DM->gnfnwt('Nom')];
+        } else {
+            return 'Cap';
+        }
         
     }
 

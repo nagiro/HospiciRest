@@ -157,8 +157,8 @@ class MyAPIWeb extends API
                 break;
 
                 case 'detall':                    
-                    $idA = $this->request['idActivitat'];
-                    $EXTRES = $WEB->viewDetall( $idA , 0 ); 
+                    /* $idA = $this->request['idActivitat']; */
+                    /* $EXTRES = $WEB->viewDetall( $idA , 0 );  */
                 break;
 
                 case 'inscripcio':                    

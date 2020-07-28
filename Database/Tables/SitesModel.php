@@ -25,6 +25,12 @@ class SitesModel extends BDD {
         
     }
 
+    public function loadNom($IdSite) {
+        $OS = $this->getById($IdSite);
+        if(empty($OS)) return "n/d";
+        else return $OS[$this->gnfnwt('Nom')];
+    }
+
     public function getById($SiteId = 0) {
         return $this->runQuery("Select ".$this->getSelectFieldsNames().
                         " from ".$this->getTableName().
