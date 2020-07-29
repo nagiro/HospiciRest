@@ -24,14 +24,12 @@ class MyAPIAdmin extends API
 
     public function __construct($request, $origin) {
         
-        parent::__construct($request);
-        session_start();
+        parent::__construct($request);        
         
         //Comprovem si el token que ha arribat és vàlid o no.        
         $this->Auth = new AuthController();        
-        if(isset($_SESSION['AuthToken'])) { 
-            $this->Auth->DecodeToken($_SESSION['AuthToken']);
-        }                
+        $this->Auth->DecodeToken();
+        
         
         try {
             $this->dbh = new BDD("","",array(),array());            
@@ -279,18 +277,12 @@ class MyAPIAdmin extends API
         switch($accio) {
             
             //Aquí hi entrem quan no hi ha token, però
-            case 'A':   $RET = $this->Auth->doLogin($Login, $Password, $IdSite);                         
-                        $AuthToken = "0";
-                        if(sizeof($RET) > 0) {                            
-                            $this->Auth->EncodeToken($RET[0]['USUARIS_IdUsuari'], $IdSite, true );
-                            $_SESSION['AuthToken'] = $this->Auth->getToken();
-                            return array(array('usuari'=>$RET[0]), 200);
-                        } 
-                        else {                                                         
-                            $_SESSION['AuthToken'] = 0;                            
-                            return array("No he trobat l'usuari", 500);
-                        }
-                        break;                    
+            case 'A':   
+                if( $this->Auth->doLogin($Login, $Password, $IdSite) )
+                        return array('', 200);
+                else    return array("No he trobat l'usuari", 500);
+            break;                    
+
         }
 
         return array($RET, 200);

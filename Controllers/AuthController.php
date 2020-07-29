@@ -11,17 +11,37 @@ class AuthController {
     public $isAdmin;
 
     public function __construct() {        
+        session_start();
         $this->UM = new UsuarisModel();
-        $this->TokenLiteral = 0;
+        $this->TokenLiteral = '';
         $this->TokenArray = array();
         $this->idUsuari = 0;
         $this->idSite = 0;
         $this->isAdmin = false;
     }
 
+    public function hasSessionToken() {
+        return (isset($_SESSION['AuthToken']));
+    }
+
     public function doLogin($login, $password, $idS) {
+        
         // Fem el login, i aconseguim un token a partir del seu usuari                
-        return $this->UM->doLogin($login, $password, $idS);
+        $RET = $this->UM->doLogin($login, $password, $idS);
+        if(sizeof($RET) > 0) {
+
+            $this->EncodeToken($RET[0]['USUARIS_IdUsuari'], $idS, true );
+            return true;
+
+        } else {
+
+            $this->idUsuari = 0;
+            $this->idSite = 0;
+            $this->isAdmin = 0;
+            $this->TokenLiteral = 0;
+            return false;
+
+        }        
     }    
 
     public function isAuthenticated() {        
@@ -40,25 +60,39 @@ class AuthController {
      * $Token: String encryptat que s'ha creat amb EncodeToken
      * Si és 0, no hi ha token i per tant, reinicialitzem
     */    
-    public function DecodeToken($Token) {
+    public function DecodeToken($Token = '') {
         
-        if(strlen($Token) == 0) $Token = $this->TokenLiteral;
-        if($Token != '0') {
+        // Mirem quin token carreguem. 
+        if(strlen($Token) == 0)
+            if(strlen($this->TokenLiteral) > 0) $Token = $this->TokenLiteral;
+            elseif( $this->hasSessionToken() ) $Token = $_SESSION['AuthToken'];
+            else $Token = '';
+        else $Token = $Token;
+        
+        if(strlen($Token) > 0) {
+
             $Text = json_decode($this->Decrypt($Token), true);
             $this->idUsuari = $Text['idUsuari'];
             $this->isAdmin = $Text['isAdmin'];
             $this->idSite = $Text['idSite'];        
+
         } else {
+
             $this->idUsuari = 0;
             $this->isAdmin = 0;
             $this->idSite = 0;        
+
         }        
     }
 
     public function EncodeToken($idUsuari, $idSite, $isAdmin) {
         $Text = json_encode(array('idUsuari' => $idUsuari, 'idSite' => $idSite, 'isAdmin' => $isAdmin ));
         $Text = $this->Encrypt($Text);
+        
         $this->TokenLiteral = $Text;
+
+        $_SESSION['AuthToken'] = $this->TokenLiteral;
+
         return $Text;
     }
 
