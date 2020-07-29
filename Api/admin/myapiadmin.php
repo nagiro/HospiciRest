@@ -30,7 +30,7 @@ class MyAPIAdmin extends API
         //Comprovem si el token que ha arribat és vàlid o no.        
         $this->Auth = new AuthController();        
         if(isset($_SESSION['AuthToken'])) { 
-            $this->Auth->TokenDecode($_SESSION['AuthToken']);
+            $this->Auth->DecodeToken($_SESSION['AuthToken']);
         }                
         
         try {
@@ -282,7 +282,7 @@ class MyAPIAdmin extends API
             case 'A':   $RET = $this->Auth->doLogin($Login, $Password, $IdSite);                         
                         $AuthToken = "0";
                         if(sizeof($RET) > 0) {                            
-                            $this->Auth->TokenEncode($RET[0]['USUARIS_IdUsuari'], $IdSite, true );
+                            $this->Auth->EncodeToken($RET[0]['USUARIS_IdUsuari'], $IdSite, true );
                             $_SESSION['AuthToken'] = $this->Auth->getToken();
                             return array(array('usuari'=>$RET[0]), 200);
                         } 

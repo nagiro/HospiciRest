@@ -5,8 +5,7 @@ require_once BASEDIR.'/Database/Tables/UsuarisModel.php';
 class AuthController {
 
     public $UsuarisModel; 
-    public $TokenLiteral;
-    public $TokenArray;
+    public $TokenLiteral;    
     public $idUsuari; 
     public $idSite; 
     public $isAdmin;
@@ -37,16 +36,29 @@ class AuthController {
         return $this->TokenLiteral;
     }    
 
+    /**
+     * $Token: String encryptat que s'ha creat amb EncodeToken
+     * Si és 0, no hi ha token i per tant, reinicialitzem
+    */    
     public function DecodeToken($Token) {
-        $Text = json_decode($this->Decrypt($Token), true);
-        $this->idUsuari = $Text['idUsuari'];
-        $this->isAdmin = $Text['isAdmin'];
-        $this->idSite = $Text['idSite'];        
+        
+        if(strlen($Token) == 0) $Token = $this->TokenLiteral;
+        if($Token != '0') {
+            $Text = json_decode($this->Decrypt($Token), true);
+            $this->idUsuari = $Text['idUsuari'];
+            $this->isAdmin = $Text['isAdmin'];
+            $this->idSite = $Text['idSite'];        
+        } else {
+            $this->idUsuari = 0;
+            $this->isAdmin = 0;
+            $this->idSite = 0;        
+        }        
     }
 
     public function EncodeToken($idUsuari, $idSite, $isAdmin) {
         $Text = json_encode(array('idUsuari' => $idUsuari, 'idSite' => $idSite, 'isAdmin' => $isAdmin ));
         $Text = $this->Encrypt($Text);
+        $this->TokenLiteral = $Text;
         return $Text;
     }
 

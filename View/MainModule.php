@@ -21,8 +21,8 @@ class MainModule {
         
         // Carrego el controlador d'autenticitat i login
         $this->Auth = new AuthController();
-        //if( isset( $_SESSION['AuthToken'] ) ) $this->Auth->TokenDecode($_SESSION['AuthToken']);
-        //else $this->Auth->TokenDecode( 0 );
+        if( isset( $_SESSION['AuthToken'] ) ) $this->Auth->DecodeToken($_SESSION['AuthToken']);
+        else $this->Auth->DecodeToken( 0 );
 
         $this->WebController = new WebController();
 
