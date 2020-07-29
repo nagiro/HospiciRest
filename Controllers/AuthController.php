@@ -67,11 +67,16 @@ class AuthController {
             if(strlen($this->TokenLiteral) > 0) $Token = $this->TokenLiteral;
             elseif( $this->hasSessionToken() ) $Token = $_SESSION['AuthToken'];
             else $Token = '';
-        else $Token = $Token;
+        else { 
+            $Token = $Token; 
+            $this->TokenLiteral = $Token;
+            $_SESSION['AuthToken'] = $Token;
+        }
         
-        if(strlen($Token) > 0) {
+        $Text = json_decode($this->Decrypt($Token), true);            
 
-            $Text = json_decode($this->Decrypt($Token), true);
+        if( ! is_null($Text)) {
+            
             $this->idUsuari = $Text['idUsuari'];
             $this->isAdmin = $Text['isAdmin'];
             $this->idSite = $Text['idSite'];        

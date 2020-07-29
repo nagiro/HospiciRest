@@ -10,7 +10,7 @@ class MainModule {
     public $Router; 
     public $Auth;
     public $WebController;
-    public $Html; 
+    public $Html;     
 
     public function __construct() {
         
@@ -18,8 +18,9 @@ class MainModule {
         $this->Router = new Router($_SERVER);
         
         // Carrego el controlador d'autenticitat i miro si tenim algun token
+        $AuthToken = (isset($_GET['AuthToken'])) ? $_GET['AuthToken'] : '';
         $this->Auth = new AuthController();
-        $this->Auth->DecodeToken();
+        $this->Auth->DecodeToken($AuthToken);
         
 
         $this->WebController = new WebController();
