@@ -32,7 +32,7 @@
           
         <!-- Possible, puc afegir que es mostrin altres cursos de l'entitat. -->        
 
-        <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
+        <show-errors style="padding-top:2vw;" v-if="Errors" :errors="WebStructure.Errors"></show-errors>
             
         <!-- INSCRIPCIÓ -->
         <section id="detall_bloc" v-if="Loaded && !Errors && !DetallActivitat">

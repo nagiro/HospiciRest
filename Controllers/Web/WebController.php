@@ -244,14 +244,14 @@ class WebController
         $isAdmin = false;
 
         if( $IsAct ) $EXTRES["Activitat"]     = $this->WebQueries->getActivitatsDetall( $idA );
-        elseif( $IsCurs > 0 ) $EXTRES["Curs"] = $this->WebQueries->getCursDetall( $idCurs );        
+        elseif( $IsCurs > 0 ) $EXTRES["Curs"] = $this->WebQueries->getCursDetall( $idCurs );                
+        
+        if( !empty($EXTRES["Curs"]) || !empty($EXTRES['Activitat']) ) {
 
-        if( $IsAct ) $isAdmin = ($EXTRES["Activitat"][0]['ACTIVITATS_SiteId'] == $SiteIdAdminAuth);
-        elseif( $IsCurs > 0 ) $isAdmin = ($EXTRES["Curs"]['CURSOS_SiteId'] == $SiteIdAdminAuth);
+            if( $IsAct ) $isAdmin = ($EXTRES["Activitat"][0]['ACTIVITATS_SiteId'] == $SiteIdAdminAuth);
+            elseif( $IsCurs > 0 ) $isAdmin = ($EXTRES["Curs"]['CURSOS_SiteId'] == $SiteIdAdminAuth);
                         
-        $EXTRES['Horaris'] = ($IsAct) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
-
-        if( sizeof($EXTRES['Activitat']) > 0 || sizeof($EXTRES['Curs']) > 0 ) {
+            $EXTRES['Horaris'] = ($IsAct) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
         
             $Nom = ( $IsAct ) ? $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'] : $EXTRES['Curs']['CURSOS_TitolCurs'];
             $idCicle = ( $IsAct ) ? $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"] : 0;
@@ -279,7 +279,7 @@ class WebController
                     $EXTRES["ActivitatsRelacionades"] = $this->WebQueries->getActivitatsHome( array(),'', '', 1, 1, $ArrayCicles);
             else    $EXTRES["ActivitatsRelacionades"] = array();
                                 
-            $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
+            if( ! $isSiteExtern ) $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 
             
             $NOM_CICLE = '';
             
@@ -326,7 +326,7 @@ class WebController
             /* La pàgina no és visible perquè no he trobat l'activitat o cicle */
 
             $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, '', '', 'A', 0 );                
-            $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible. <br />Si vols pots tornar a l\'inici clicant <a href="/">aquí</a>');
+            $EXTRES['Errors'] = array('La pàgina on accedeixes no existeix o no és visible.');
 
         }
         
