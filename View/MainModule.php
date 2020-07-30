@@ -10,19 +10,18 @@ class MainModule {
     public $Router; 
     public $Auth;
     public $WebController;
-    public $Html; 
+    public $Html;     
 
     public function __construct() {
-
-        session_start();
-
+        
         // Carrego l'enrutador que tracti la URL entrada
         $this->Router = new Router($_SERVER);
         
-        // Carrego el controlador d'autenticitat i login
+        // Carrego el controlador d'autenticitat i miro si tenim algun token
+        $AuthToken = (isset($_GET['AuthToken'])) ? $_GET['AuthToken'] : '';
         $this->Auth = new AuthController();
-        //if( isset( $_SESSION['AuthToken'] ) ) $this->Auth->TokenDecode($_SESSION['AuthToken']);
-        //else $this->Auth->TokenDecode( 0 );
+        $this->Auth->DecodeToken($AuthToken);
+        
 
         $this->WebController = new WebController();
 
