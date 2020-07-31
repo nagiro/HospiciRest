@@ -68,6 +68,7 @@
                         :detall-curs = "DetallCurs"
                         :detall-descomptes = "DetallDescomptes"
                         :detall-teatre = "DetallTeatre"
+                        :detall-site = "DetallSite"
                         :seients-ocupats = "SeientsOcupats"
                         :url-actual = "UrlActual"
                         :token = "Token"                        
@@ -143,6 +144,7 @@
                 DetallCurs: {},         //Objecte inscripció                
                 DetallDescomptes: {},
                 DetallTeatre: {},
+                DetallSite: {},
                 SeientsOcupats: [],
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
@@ -164,6 +166,7 @@
                     this.DetallDescomptes = this.WebStructure.Descomptes;            
                     this.DetallTeatre = this.WebStructure.Teatre;                                        
                     this.SeientsOcupats = this.WebStructure.SeientsOcupats;
+                    this.DetallSite = this.WebStructure.Site;
                     this.UrlActual = window.location.href;  
                     this.Token = this.WebStructure.Token;                                          
                 }

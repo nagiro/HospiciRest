@@ -113,12 +113,19 @@ class CursosModel extends BDD {
 
     public function getSeientsOcupats($ObjecteCurs) {
         require_once BASEDIR."Database/Tables/MatriculesModel.php";
-        $RET = array();
+        $RET = array('QuantesMatricules' => 0, 'Localitats' => array());
         $MM = new MatriculesModel();
-        foreach($MM->getMatriculesByCurs($ObjecteCurs[$this->gnfnwt('IdCurs')]) as $MatriculaObject) {
-            $RET[] = $MM->getLocalitatArray($MatriculaObject);
+        
+        if(strlen($ObjecteCurs[$this->gnfnwt('Teatre')]) > 0) {
+            $MatriculesLocalitats = $MM->getMatriculesByCurs( $this->getCursId($ObjecteCurs));
+            $RET['QuantesMatricules'] = sizeof($MatriculesLocalitats);
+            foreach($MatriculesLocalitats as $MatriculesObject) {
+                $RET['Localitats'] = $MM->getLocalitatArray($MatriculaObject);
+            }            
+        } else {
+            $RET['QuantesMatricules'] = $MM->getQuantesMatriculesHiHa( $this->getCursid($ObjecteCurs));
         }
-
+                
         return $RET;
         
     }
@@ -137,6 +144,10 @@ class CursosModel extends BDD {
         } else {
             return array('Seients'=> array());
         }
+    }
+
+    public function potMatricularSegonsRestriccio($DNI, $idCurs) {
+        return false;
     }
 
 }

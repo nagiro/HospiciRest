@@ -9,6 +9,7 @@ Vue.component('form-inscripcio-simple', {
         DetallCurs: Object,
         DetallDescomptes: Array,
         DetallTeatre: Object,
+        DetallSite: Object,
         SeientsOcupats: Array,
         UrlActual: String, 
         Token: Object // Site, token     
@@ -28,6 +29,8 @@ Vue.component('form-inscripcio-simple', {
                     DescompteAplicat: -1,
                     Localitats: [],
                     TipusPagament: CONST_PAGAMENT_CAP,                         
+                    PlacesLliures: 0,
+                    LlistaEsperaActiu: false,
                     Pas: 0, 
                     classDNI: 'form-control', 
                     classNom: 'form-control',
@@ -53,21 +56,28 @@ Vue.component('form-inscripcio-simple', {
             let TipusPagaments = (this.isAdmin) ? this.DetallCurs.CURSOS_PagamentIntern.split('@') : this.DetallCurs.CURSOS_PagamentExtern.split('@');            
             let ReturnPagaments = [];
             
-            if(TipusPagaments.length > 1) {
-                ReturnPagaments.push({"id": CONST_PAGAMENT_CAP, "text": "-- ESCULL MODALITAT --"});
-                this.TipusPagament = CONST_PAGAMENT_CAP;
+            if( this.LlistaEsperaActiu ) {
+                ReturnPagaments.push({'id': CONST_PAGAMENT_LLISTA_ESPERA, 'text': "Posar en llista d'espera" });
+                this.TipusPagament = CONST_PAGAMENT_LLISTA_ESPERA;
             } else {
-                this.TipusPagament = TipusPagaments[0];
-            }
+             
+                if(TipusPagaments.length > 1) {
+                    ReturnPagaments.push({"id": CONST_PAGAMENT_CAP, "text": "-- ESCULL MODALITAT --"});
+                    this.TipusPagament = CONST_PAGAMENT_CAP;
+                } else {
+                    this.TipusPagament = TipusPagaments[0];
+                }
+    
+                for(let T of TipusPagaments) {                
+                    if(T == CONST_PAGAMENT_METALIC) ReturnPagaments.push({"id": CONST_PAGAMENT_METALIC, "text": "Metàl·lic"});
+                    if(T == CONST_PAGAMENT_TARGETA) ReturnPagaments.push({"id": CONST_PAGAMENT_TARGETA, "text": "Targeta"});
+                    
+                    if(T == CONST_PAGAMENT_CODI_DE_BARRES) ReturnPagaments.push({"id": CONST_PAGAMENT_CODI_DE_BARRES, "text": "Codi de barres"});
+                    if(T == CONST_PAGAMENT_RESERVA) ReturnPagaments.push({"id": CONST_PAGAMENT_RESERVA, "text": "Reserva (Gratuït)"});
+                    if(T == CONST_PAGAMENT_LLISTA_ESPERA && this.PlacesLliures <= 0) ReturnPagaments.push({"id": CONST_PAGAMENT_LLISTA_ESPERA, "text": "Posar en llista d'espera (Gratuït)"});                    
+                }                
 
-            for(let T of TipusPagaments) {                
-                if(T == CONST_PAGAMENT_METALIC) ReturnPagaments.push({"id": CONST_PAGAMENT_METALIC, "text": "Metàl·lic"});
-                if(T == CONST_PAGAMENT_TARGETA) ReturnPagaments.push({"id": CONST_PAGAMENT_TARGETA, "text": "Targeta"});
-                
-                if(T == CONST_PAGAMENT_CODI_DE_BARRES) ReturnPagaments.push({"id": CONST_PAGAMENT_CODI_DE_BARRES, "text": "Codi de barres"});
-                if(T == CONST_PAGAMENT_RESERVA) ReturnPagaments.push({"id": CONST_PAGAMENT_RESERVA, "text": "Reserva (Gratuït)"});
-                if(T == CONST_PAGAMENT_LLISTA_ESPERA) ReturnPagaments.push({"id": CONST_PAGAMENT_LLISTA_ESPERA, "text": "Posar en llista d'espera (Gratuït)"});
-            }
+            }            
                         
             return ReturnPagaments;
         }
@@ -91,38 +101,67 @@ Vue.component('form-inscripcio-simple', {
             else if( DetallCurs.CURSOS_Categoria == '29' && !DetallCurs.CURSOS_PagamentExtern.includes( CONST_PAGAMENT_TARGETA ) ) return 'Reserva una entrada';
             else return 'Inscriu-te a l\'activitat';
         },
-        PucMatricular: function(DetallCurs) {
-            
-            if( DetallCurs && DetallCurs.CURSOS_VisibleWeb) {
-                //Existeix un curs on matricular-se
-                const DataIniciMatricula = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'Javascript');   // Funció const_and_helpers.js                
-                const DIM = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'TDMA');   // Funció const_and_helpers.js                                
-                const DataFiMatricula = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'Javascript');   // Funció const_and_helpers.js                
-                const DFM = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'TDMA');   // Funció const_and_helpers.js                
-                const Today = new Date();
-                Today.setHours(0,0,0,0);
-
-                if( DetallCurs.CURSOS_IsRestringit == 1) { 
-                    this.Pas = 7; 
-                    this.ErrorInscripcio = '<strong>El curs està restringit</strong>. Poseu-vos en contacte amb la Casa de Cultura de Girona per a més informació.';
-                    return false; 
-                }
-                if( !( DataIniciMatricula <= Today && DataFiMatricula >= Today ) ) {
-                    this.Pas = 7; 
-                    this.ErrorInscripcio = 'Inscripcions obertes del &nbsp;<b>' + DIM + '</b>&nbsp;al&nbsp;<b>' + DFM + '</b>&nbsp;inclosos.';
-                    return false; 
-                }                 
-                return true;                
-            } 
+        PoseuEnContacteString: function() {
+            return '<br /> Poseu-vos en contacte amb ' + this.DetallSite.SITES_Nom + ' al telèfon ' + this.DetallSite.SITES_Telefon + ' o per correu electrònic a ' + this.DetallSite.SITES_Email + ' per a tenir més informació.';
         },
+        PucMatricular: function(DetallCurs) {
+          
+            // Treballem les places lliures i la llista d'espera                   
+            this.PlacesLliures = DetallCurs.CURSOS_Places - this.SeientsOcupats.QuantesMatricules;                                       
+            this.TeLlistaEsperaActiu = ( 0 <=  DetallCurs.CURSOS_PagamentExtern.split("@").findIndex( X => ( X == 36 ) ) );                   
+            if( this.PlacesLliures <= 0 && !this.TeLlistaEsperaActiu ) {
+                this.Pas = 7;
+                this.ErrorInscripcio = '<strong>Aquest curs no disposa de places lliures.</strong>' + this.PoseuEnContacteString();
+                return false;
+            } else if( this.PlacesLliures <= 0 && this.TeLlistaEsperaActiu ) {
+                this.LlistaEsperaActiu = true;                                       
+            }
+                    
+            if(this.isAdmin) return true;
+            else {               
+                if( DetallCurs && DetallCurs.CURSOS_VisibleWeb) {
+                    //Existeix un curs on matricular-se
+                    const DataIniciMatricula = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'Javascript');   // Funció const_and_helpers.js               
+                    const DIM = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'TDMA');   // Funció const_and_helpers.js                               
+                    const DataFiMatricula = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'Javascript');   // Funció const_and_helpers.js               
+                    const DFM = ConvertirData(DetallCurs.CURSOS_DataFiMatricula, 'TDMA');   // Funció const_and_helpers.js               
+                    const Today = new Date();
+                    Today.setHours(0,0,0,0);
+  
+                    if( !( DataIniciMatricula <= Today && DataFiMatricula >= Today ) ) {
+                        this.Pas = 7;
+                        this.ErrorInscripcio = 'Inscripcions obertes del &nbsp;<b>' + DIM + '</b>&nbsp;al&nbsp;<b>' + DFM + '</b>&nbsp;inclosos.';
+                        return false;
+                    }                
+  
+                    // Si només té matrícula presencial donem error
+                    if( 0 <=  DetallCurs.CURSOS_PagamentExtern.split("@").findIndex( X => ( X == 37 ) )) {
+                        this.Pas = 7;
+                        this.ErrorInscripcio = '<strong>Aquest curs només disposa de matrícula presencial.</strong>' + this.PoseuEnContacteString();
+                        return false;
+                    }
+    
+                    return true;               
+                }
+            }
+        },
+        getQuantesPlacesOptions: function() {           
+            if( this.PlacesLliures < 11 && this.PlacesLliures > 0 ) return Array.from(Array(this.PlacesLliures), (_, i) => i + 1);
+            else return Array.from(Array(10), (_, i) => i + 1);
+        }, 
         dnikeymonitor: function($event) {
             
             if( ValidaDNI(this.DNI) ) {
                 this.classDNI = 'form-control is-valid';
-                axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI}}).then( X => {
-                    if(X.data.ExisteixDNI) {
-                        this.Pas = 2;
-                    } else {                    
+                axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {
+                    if(X.data.ExisteixDNI) {                        
+                        if( X.data.PotMatricularCursRestringit || this.isAdmin ) {
+                            this.Pas = 2;
+                        } else {                                                         
+                            this.Pas = 7; 
+                            this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong>' + this.PoseuEnContacteString();                            
+                        }
+                    } else {                               
                         this.Pas = 1;
                     }
                 }).catch( E => { alert(E); });
@@ -159,7 +198,7 @@ Vue.component('form-inscripcio-simple', {
         setLocalitat: function(fila, seient) {
                                     
             const IndexEscollits = this.Localitats.findIndex( X => X[0] == fila && X[1] == seient);
-            const ExisteixAJaComprats = (this.SeientsOcupats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
+            const ExisteixAJaComprats = (this.SeientsOcupats.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
 
             // Si en tinc 5 i el que he escollit no existeix al llistat, no puc agafar-ne més. 
             if(this.Localitats.length == 5 && IndexEscollits < 0 ) alert('Ho sento però només pots escollir 5 localitats.');
@@ -173,7 +212,7 @@ Vue.component('form-inscripcio-simple', {
             
             let Estil2 = {}; Object.assign( Estil2, Estil)
             const ExisteixAEscollits = (this.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
-            const ExisteixAJaComprats = (this.SeientsOcupats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
+            const ExisteixAJaComprats = (this.SeientsOcupats.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
             if ( ExisteixAEscollits ) {
                 Estil2["color"] = "Red";
             } else if (ExisteixAJaComprats ) {
@@ -187,6 +226,9 @@ Vue.component('form-inscripcio-simple', {
         getPreu: function() {
             
             let Preu = this.DetallCurs.CURSOS_Preu
+
+            // Si tenim la llista d'espera activa, retornem 0
+            if( this.LlistaEsperaActiu ) return 0;
 
             // Mirem si hem escollit descompte
             if( this.DescompteAplicat > 0 ) {
@@ -254,11 +296,10 @@ Vue.component('form-inscripcio-simple', {
     template: `            
 
     <div v-if="DetallCurs.CURSOS_VisibleWeb == 1">
-        <form class="formulari-inscripcio">    
-                    
-            <div class="row alert alert-info" v-if="isAdmin">Estàs accedint com administrador.</div>
+        <form class="formulari-inscripcio">                        
 
             <h2>{{EtiquetaTitol(DetallCurs)}}</h2>
+            <div class="row alert alert-info" v-if="isAdmin">Estàs accedint com administrador.</div>
 
             <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
             </div>
@@ -282,8 +323,9 @@ Vue.component('form-inscripcio-simple', {
                 </div>            
             </div>
             
-            <div v-if="Pas == 2" class="row alert alert-success"> Hem trobat el seu DNI a la nostra base de dades. <br />Pot seguir amb la inscripció! </div>
-            
+            <div v-if="Pas == 2 && !LlistaEsperaActiu" class="row alert alert-success"> Hem trobat el seu DNI a la nostra base de dades. <br />Pot seguir amb la inscripció! </div>
+            <div v-if="Pas == 2 && LlistaEsperaActiu" class="row alert alert-danger"> L'activitat ja no disposa de places lliures. Tot i això, si ho desitja pot posar-se en llista d'espera i l'avisarem si torna a haver-n'hi. </div>
+             
             <div v-if="Pas == 1" class="row alert alert-warning"> No hem trobat el seu DNI a la nostra base de dades. <br />Si és tant amable, ens hauria d'informar del seu nom, telèfon i email per si hem de posar-nos en conacte amb vostè per a poder seguir amb la inscripció. </div>
             
             <div class="row" v-if="Pas == 1 || Pas == 4">                                                
@@ -355,13 +397,9 @@ Vue.component('form-inscripcio-simple', {
                 <div class="row">
                 
                     <div class="col" v-if="DetallTeatre.Seients.length == 0">
-                        <label for="QuantesEntrades">Quantes places reserves</label>
+                        <label for="QuantesEntrades">Quantes places</label>
                         <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="QuantesEntrades" id="QuantesEntrades">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option v-for="Q of getQuantesPlacesOptions()" :value="Q">{{Q}}</option>
                         </select>                                        
                     </div>            
                     
@@ -372,7 +410,7 @@ Vue.component('form-inscripcio-simple', {
                         </select>                                        
                     </div>
 
-                    <div class="col" v-if="DetallDescomptes.length > 1">
+                    <div class="col" v-if="DetallDescomptes.length > 1 && LlistaEsperaActiu == 0">
                         <label for="TipusPagament">Descompte</label>
                         <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="DescompteAplicat" id="DescompteAplicat">
                             <option v-for="O in DetallDescomptes" :value="O.DESCOMPTES_IdDescompte">{{O.DESCOMPTES_Nom}}</option>
@@ -392,8 +430,12 @@ Vue.component('form-inscripcio-simple', {
                     <label class="form-check-label" for="Assistire">Confirmo que <b>assistiré a l'acte</b> o que <b>avisaré</b>, a la Casa de Cultura, en cas de no poder-ho fer.</label>
                 </div>
                 
-                <button :disabled="NoPucSeguir()" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
-                <small id="EmailHelp" class="form-text text-muted">Nomes podrà prèmer el botó si ha omplert totes les dades necessàries.</small>
+                <button v-if="LlistaEsperaActiu" :disabled="NoPucSeguir()" type="submit" class="btn btn-danger" @click.prevent="doInscripcio()">Posa'm en espera</button>
+                <small v-if="LlistaEsperaActiu"  id="EmailHelp" class="form-text text-muted">Vostè ha quedat en llista d'espera. Si, en un futur hi ha places disponibles, ens posarem en contacte amb vostè.</small>
+  
+                <button v-if="!LlistaEsperaActiu"  :disabled="NoPucSeguir()" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
+                <small  v-if="!LlistaEsperaActiu" id="EmailHelp" class="form-text text-muted">Nomes podrà prèmer el botó si ha omplert totes les dades necessàries.</small>
+ 
             </div>
 
         </form>

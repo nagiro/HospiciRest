@@ -42,10 +42,10 @@
         <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos">
 
             <div id="detall_imatge_entitat">                
-                <img :src="Site.SITES_LogoUrl" />
+                <img :src="DetallSite.SITES_LogoUrl" />
             </div>
 
-            <h1>{{Site.SITES_Nom}}</h1>            
+            <h1>{{DetallSite.SITES_Nom}}</h1>            
 
             <table id="Taula_Llistat_Cursos">
                 <tr>
@@ -72,7 +72,7 @@
         <section class="detall_bloc" v-if="Loaded && !Errors && DetallCurs">            
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallCurs.CURSOS_TitolCurs }} </h1>                                
-                <h2>Organitzat per {{ SiteNom }}</h2>
+                <h2>Organitzat per {{ DetallSite.SITES_Nom }}</h2>
                 <h3>{{ DetallCurs.CURSOS_Horaris }}</h3>
                 
             </div>
@@ -90,6 +90,7 @@
                         :detall-curs = "DetallCurs"
                         :detall-descomptes = "DetallDescomptes"
                         :detall-teatre = "DetallTeatre"
+                        :detall-site = "DetallSite"
                         :seients-ocupats = "SeientsOcupats"
                         :url-actual = "UrlActual"
                         :token = "Token"                        
@@ -120,9 +121,8 @@
                 DetallCurs: null,         //Objecte inscripció                
                 DetallDescomptes: {},
                 DetallTeatre: {},
-                LlistatCursos: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                
-                Site: {},
-                SiteNom: {},
+                DetallSite: {},
+                LlistatCursos: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
                 SeientsOcupats: [],
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
@@ -149,15 +149,15 @@
                     if(this.WebStructure.Curs && this.WebStructure.Curs.length > 0) {
                         this.DetallCurs = this.WebStructure.Curs[0];    
                         this.DetallDescomptes = this.WebStructure.Descomptes;            
-                        this.DetallTeatre = this.WebStructure.Teatre;                                        
-                        this.SiteNom = this.WebStructure.SiteNom;
+                        this.DetallTeatre = this.WebStructure.Teatre;                                                                
                         this.SeientsOcupats = this.WebStructure.SeientsOcupats;
+                        this.DetallSite = this.WebStructure.Site;
                     }
                     
                     //Paràmetre usat per llistar cursos
                     if(this.WebStructure.LlistatCursos) {
-                        this.LlistatCursos = this.WebStructure.LlistatCursos;
-                        this.Site = this.WebStructure.Site;
+                        this.LlistatCursos = this.WebStructure.LlistatCursos;                        
+                        this.DetallSite = this.WebStructure.Site;                        
                     }                    
                                      
                     this.UrlActual = window.location.href;  

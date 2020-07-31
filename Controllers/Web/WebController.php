@@ -306,10 +306,16 @@ class WebController
             $CM = new CursosModel();                        
             $CursObject = ( $IsAct ) ? $CM->getRowActivitatId( $idA ) : $EXTRES['Curs'];
             if(!empty($CursObject)) { 
+
+                require_once DATABASEDIR . 'Tables/SitesModel.php';
+                $SM = new SitesModel();
+
                 $EXTRES['Curs'] = array($CursObject);
                 $EXTRES['Descomptes'] = $CM->getDescomptes($CursObject, $isAdmin);
                 $EXTRES['Teatre'] = $CM->getTeatre($CursObject);
                 $EXTRES['SeientsOcupats'] = $CM->getSeientsOcupats($CursObject);
+                $EXTRES['Site'] = $SM->getById( $CursObject[$CM->gnfnwt('SiteId')]);
+                
                 if($isSiteExtern) {
                     require_once DATABASEDIR . 'Tables/SitesModel.php';
                     $SM = new SitesModel();

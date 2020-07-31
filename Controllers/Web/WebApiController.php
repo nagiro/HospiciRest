@@ -26,9 +26,15 @@ class WebApiController
         // $this->setNewDate(date('Y-m-d', time()));        
     }
 
-    public function ExisteixDNI($DNI = '') {
-        $U = new UsuarisModel();                
-        return $U->ExisteixDNI($DNI);
+    public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = false) {
+        $UM = new UsuarisModel();                
+        $CM = new CursosModel();
+        $RET['ExisteixDNI'] = $UM->ExisteixDNI($DNI);
+
+        if($IsRestringit) $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
+        else $RET['PotMatricularCursRestringit'] = true;
+        
+        return $RET;
     }
 
     public function getUsuariDNI($DNI) {

@@ -73,8 +73,13 @@ class MyAPIWeb extends API
         
         if( isset( $this->request['DNI'] ) ) {
             $WAPI = new WebApiController();
-            $ExisteixDNI = $WAPI->ExisteixDNI($this->request['DNI']);
-            return array(array('ExisteixDNI' => $ExisteixDNI), 200);
+            
+            $DNI = isset($this->request['DNI']) ? $this->request['DNI'] : '';
+            $idCurs = isset($this->request['idCurs']) ? $this->request['idCurs'] : '';            
+            $IsRestringit = isset($this->request['IsRestringit']) ? $this->request['IsRestringit'] : '';            
+            
+            $ExisteixDNI = $WAPI->ExisteixDNI($DNI, $idCurs, $IsRestringit);
+            return array($ExisteixDNI, 200);
         } 
 
     }    
