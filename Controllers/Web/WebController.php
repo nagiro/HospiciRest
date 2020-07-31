@@ -407,7 +407,8 @@ class WebController
         $CM = new CursosModel();
         $SM = new SitesModel();
         $EXTRES['LlistatCursos'] = $CM->getLlistatCursosWeb($idSite);
-        $EXTRES['SiteNom'] = $SM->loadNom($idSite);
+        $EXTRES['Site'] = $SM->getById($idSite);
+
 
         return $EXTRES;
     }

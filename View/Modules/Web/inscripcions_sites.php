@@ -41,11 +41,11 @@
 
         <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos">
 
-            <div id="detall_imatge_entitat">
-                <img src="http://www.casadecultura.cat/WebFiles/Web/img/LogoCCG.jpg" />
+            <div id="detall_imatge_entitat">                
+                <img :src="Site.SITES_logoUrl" />
             </div>
 
-            <h1>{{SiteNom}}</h1>            
+            <h1>{{Site.SITES_Nom}}</h1>            
 
             <table id="Taula_Llistat_Cursos">
                 <tr>
@@ -120,8 +120,8 @@
                 DetallCurs: null,         //Objecte inscripció                
                 DetallDescomptes: {},
                 DetallTeatre: {},
-                LlistatCursos: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta
-                SiteNom: "",
+                LlistatCursos: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                
+                Site: {},
                 SiteNom: {},
                 SeientsOcupats: [],
                 MostraDetall: false,         
@@ -157,7 +157,7 @@
                     //Paràmetre usat per llistar cursos
                     if(this.WebStructure.LlistatCursos) {
                         this.LlistatCursos = this.WebStructure.LlistatCursos;
-                        this.SiteNom = this.WebStructure.SiteNom;
+                        this.Site = this.WebStructure.Site;
                     }                    
                                      
                     this.UrlActual = window.location.href;  
