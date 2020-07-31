@@ -391,6 +391,27 @@ class WebController
         return $EXTRES;
     }
 
+    /**
+     * 
+     * $Filtres 
+     * Url[0] = 'activitats'
+     * Url[1] = Tipus enviament ( Pot ser FILTRE o CATEGORIA o TIPUS o DATA o TEXT ) Si vull buscar Text
+     * Url[2] = Dada ( Si és CATEGORIA => IdCategoria || Si és Tipus => idTipus || Si és Data => Data || Filtre => JSON(_BASE64) )        
+     * 
+     */    
+
+    public function viewCursosSites( $idSite ) {
+                
+        require_once DATABASEDIR . 'Tables/SitesModel.php';
+
+        $CM = new CursosModel();
+        $SM = new SitesModel();
+        $EXTRES['LlistatCursos'] = $CM->getLlistatCursosWeb($idSite);
+        $EXTRES['SiteNom'] = $SM->loadNom($idSite);
+
+        return $EXTRES;
+    }
+
     function get_include_contents($filename) {         
         if(is_file($filename)){
             ob_start();                                

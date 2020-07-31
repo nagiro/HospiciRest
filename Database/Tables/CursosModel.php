@@ -31,8 +31,7 @@ class CursosModel extends BDD {
     public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => intval($idCurs)) ); }    
     public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => intval($CicleId)) ); }
     public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId)) ); }
-
-
+    
     public function getDescomptes($CursObject) {
         require_once BASEDIR."Database/Tables/DescomptesModel.php";
         $DM = new DescomptesModel();
@@ -52,6 +51,28 @@ class CursosModel extends BDD {
         elseif( $DetallDescompteAplicat[$DM->gnfnwt('Preu')] > 0 ) $PreuCurs = $DetallDescompteAplicat[$DM->gnfnwt('Preu')]; 
 
         return $PreuCurs;
+    }
+
+    public function getLlistatCursosWeb($SiteId) { 
+
+        $DataInicial = date('Y-m-d', time());
+
+        $SQL = "
+                Select {$this->getSelectFieldsNames()}
+                from {$this->getTableName()}                 
+                where 
+                         {$this->getOldFieldNameWithTable('SiteId')} = :site_id
+                AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
+                AND      {$this->getOldFieldNameWithTable('DataFiMatricula')} >= :Data1
+                AND      {$this->getOldFieldNameWithTable('DataInMatricula')} <= :Data2
+                AND      {$this->getOldFieldNameWithTable('VisibleWeb')} = 1
+                ORDER BY {$this->getOldFieldNameWithTable('DataInMatricula')} asc
+            ";
+
+        $SQLW = array('site_id'=>$SiteId, 'Data1' => $DataInicial, 'Data2' => $DataInicial );        
+                
+        return $this->runQuery($SQL, $SQLW);
+
     }
 
 

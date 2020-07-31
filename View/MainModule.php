@@ -66,11 +66,20 @@ class MainModule {
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            // host/inscripcions/{idCurs}/token/{token}
+            // host/inscripcions/llistat/0/Casa_de_cultura_riudellots
             case 'inscripcions':
                 $this->getModuleContent('HtmlHeaderWeb.php');                                
+                
+                //Mirem i avaluem els paràmetres de la URL
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
-                $this->Auth->DecodeToken($Token);                
-                $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token, true );                                
+                if($Token != '') $this->Auth->DecodeToken($Token);
+                $Lloc = ( isset( $url[1] ) && $url[1] == 'llistat' && isset( $url[2] ) ) ? $url[2] : 0;
+                
+                // Si accedim a un lloc específic, llistem tots els cursos. Altrament mostrem el curs en qüestió
+                if($Lloc == 0) $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token, true );
+                elseif($Lloc > 0) $Data = $this->WebController->viewCursosSites( $Lloc );
+
                 $this->getModuleContent('Web/inscripcions_sites.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;            

@@ -1,12 +1,12 @@
 <style>
-        #detall_bloc { width: 100%; padding: 2vw; padding-top: 4vw; }
+        .detall_bloc { width: 100%; padding: 2vw; padding-top: 4vw; }
         #detall_franja_titol { text-align: center; width: 100%; display: block; cursor: default; }    
         #detall_dates > p { font-size: 1.5rem; }
         #detall_requadre_detall { border: 1px solid black; padding: 2vw; margin-top: 4vw; font-size: 1rem }        
         #detall_requadre_info { border: 1px solid black; padding: 2vw; margin-top: 2vw; font-size: 1rem; }
-        #detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; margin-top: 4vw; }
-        #detall_bloc h2 { font-size: 1.5rem; margin-bottom: 1vw; margin-top: 3vw; }
-        #detall_bloc h3 { font-size: 1.3rem; margin-bottom: 1vw; margin-top: 3vw; }
+        .detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; margin-top: 4vw; }
+        .detall_bloc h2 { font-size: 1.5rem; margin-bottom: 1vw; margin-top: 3vw; }
+        .detall_bloc h3 { font-size: 1.3rem; margin-bottom: 1vw; margin-top: 3vw; }        
             
         #detall_horaris { display: relative; margin-top: 1.5vw; text-align: center; }
         #detall_horaris > summary { margin-bottom:2vw; }
@@ -21,7 +21,10 @@
         
         .cal-info-text { margin-top: 2vw; }
 
-        .detall_imatge_entitat {}
+        #detall_imatge_entitat > img { width: 20vw; }
+        #Taula_Llistat_Cursos { width: 100%; border-collapse: collapse;  }
+        #Taula_Llistat_Cursos td { padding: 0.5vw; border-bottom: 1px solid black;  }
+        #Taula_Llistat_Cursos th { padding: 0.5vw; font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid gray; }
 
     </style>
 
@@ -34,8 +37,39 @@
 
         <show-errors style="padding-top:2vw;" v-if="Errors" :errors="WebStructure.Errors"></show-errors>
             
+        <!-- LListat de cursos disponibles -->
+
+        <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos">
+
+            <div id="detall_imatge_entitat">
+                <img src="http://www.casadecultura.cat/WebFiles/Web/img/LogoCCG.jpg" />
+            </div>
+
+            <h1>{{SiteNom}}</h1>            
+
+            <table id="Taula_Llistat_Cursos">
+                <tr>
+                    <th>Activitat</th>
+                    <th>Inici</th>
+                    <th>Horaris</th>
+                    <th>Preu</th>
+                </tr>
+                <tr v-for="Curs of LlistatCursos" >
+                    <td><a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a></td>
+                    <td>{{Curs.CURSOS_DataInMatricula | DateSwap }}</td>
+                    <td>{{Curs.CURSOS_Horaris}}</td>
+                    <td>{{Curs.CURSOS_Preu}}€</td>
+                </tr>
+                <tr v-if="LlistatCursos.length == 0">
+                    <td colspan="4">Actualment no hi ha cap inscripció activa.</td>
+                </tr>
+            </table>            
+            
+        </section>  
+
+
         <!-- INSCRIPCIÓ -->
-        <section id="detall_bloc" v-if="Loaded && !Errors && !DetallActivitat">
+        <section class="detall_bloc" v-if="Loaded && !Errors && DetallCurs">            
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallCurs.CURSOS_TitolCurs }} </h1>                                
                 <h2>Organitzat per {{ SiteNom }}</h2>
@@ -83,9 +117,11 @@
                 Errors: false,
                 WebStructure: <?php echo $Data ?>,                
                 DetallActivitat: {},    //Objecte activitat
-                DetallCurs: {},         //Objecte inscripció                
+                DetallCurs: null,         //Objecte inscripció                
                 DetallDescomptes: {},
                 DetallTeatre: {},
+                LlistatCursos: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta
+                SiteNom: "",
                 SiteNom: {},
                 SeientsOcupats: [],
                 MostraDetall: false,         
@@ -97,20 +133,37 @@
                 UrlActual: ''         //Url actual de la finestra
 
             },            
+            filters: {
+                DateSwap: function (date) {
+                    const D = date.split('-');
+                    return D[2] + '-' + D[1] + '-' + D[0];
+                }
+            },
             created: function() {
                 if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
                     this.Loaded = true;                
                     this.Errors = true;                    
-                } else {                    
-                    this.Loaded = true;                    
-                    this.DetallActivitat = (this.WebStructure.Activitat.length > 0) ? this.WebStructure.Activitat[0] : null                     
-                    this.DetallCurs = (this.WebStructure.Curs.length > 0) ? this.WebStructure.Curs[0] : null;    
-                    this.DetallDescomptes = this.WebStructure.Descomptes;            
-                    this.DetallTeatre = this.WebStructure.Teatre;                                        
-                    this.SiteNom = this.WebStructure.SiteNom;
-                    this.SeientsOcupats = this.WebStructure.SeientsOcupats;
+                } else {                                                   
+
+                    //Paràmetre usat per mostrar un curs                    
+                    if(this.WebStructure.Curs && this.WebStructure.Curs.length > 0) {
+                        this.DetallCurs = this.WebStructure.Curs[0];    
+                        this.DetallDescomptes = this.WebStructure.Descomptes;            
+                        this.DetallTeatre = this.WebStructure.Teatre;                                        
+                        this.SiteNom = this.WebStructure.SiteNom;
+                        this.SeientsOcupats = this.WebStructure.SeientsOcupats;
+                    }
+                    
+                    //Paràmetre usat per llistar cursos
+                    if(this.WebStructure.LlistatCursos) {
+                        this.LlistatCursos = this.WebStructure.LlistatCursos;
+                        this.SiteNom = this.WebStructure.SiteNom;
+                    }                    
+                                     
                     this.UrlActual = window.location.href;  
                     this.Token = this.WebStructure.Token;                                          
+                    this.Loaded = true;   
+
                 }
                 
             },
