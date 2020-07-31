@@ -42,7 +42,7 @@
         <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos">
 
             <div id="detall_imatge_entitat">                
-                <img :src="Site.SITES_logoUrl" />
+                <img :src="Site.SITES_LogoUrl" />
             </div>
 
             <h1>{{Site.SITES_Nom}}</h1>            
