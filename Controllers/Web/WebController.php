@@ -317,9 +317,10 @@ class WebController
                 $EXTRES['Site'] = $SM->getById( $CursObject[$CM->gnfnwt('SiteId')]);
                 
                 if($isSiteExtern) {
-                    require_once DATABASEDIR . 'Tables/SitesModel.php';
-                    $SM = new SitesModel();
-                    $EXTRES['SiteNom'] = $SM->loadNom($CursObject[$CM->gnfnwt('SiteId')]);                    
+                    // No cal perquè ja passo sempre el SITE a sobre
+                    // require_once DATABASEDIR . 'Tables/SitesModel.php';
+                    // $SM = new SitesModel();
+                    // $EXTRES['SiteNom'] = $SM->loadNom($CursObject[$CM->gnfnwt('SiteId')]);                    
                 }
                 
             }

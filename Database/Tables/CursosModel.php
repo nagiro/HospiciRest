@@ -120,7 +120,7 @@ class CursosModel extends BDD {
             $MatriculesLocalitats = $MM->getMatriculesByCurs( $this->getCursId($ObjecteCurs));
             $RET['QuantesMatricules'] = sizeof($MatriculesLocalitats);
             foreach($MatriculesLocalitats as $MatriculesObject) {
-                $RET['Localitats'] = $MM->getLocalitatArray($MatriculesObject);
+                $RET['Localitats'][] = $MM->getLocalitatArray($MatriculesObject);
             }            
         } else {
             $RET['QuantesMatricules'] = $MM->getQuantesMatriculesHiHa( $this->getCursid($ObjecteCurs));
