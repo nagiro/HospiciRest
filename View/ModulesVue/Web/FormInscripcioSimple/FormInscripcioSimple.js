@@ -71,6 +71,7 @@ Vue.component('form-inscripcio-simple', {
                 for(let T of TipusPagaments) {                
                     if(T == CONST_PAGAMENT_METALIC) ReturnPagaments.push({"id": CONST_PAGAMENT_METALIC, "text": "Metàl·lic"});
                     if(T == CONST_PAGAMENT_TARGETA) ReturnPagaments.push({"id": CONST_PAGAMENT_TARGETA, "text": "Targeta"});
+                    if(T == CONST_PAGAMENT_INVITACIO) ReturnPagaments.push({"id": CONST_PAGAMENT_INVITACIO, "text": "Invitació"});
                     
                     if(T == CONST_PAGAMENT_CODI_DE_BARRES) ReturnPagaments.push({"id": CONST_PAGAMENT_CODI_DE_BARRES, "text": "Codi de barres"});
                     if(T == CONST_PAGAMENT_RESERVA) ReturnPagaments.push({"id": CONST_PAGAMENT_RESERVA, "text": "Reserva (Gratuït)"});
@@ -385,9 +386,9 @@ Vue.component('form-inscripcio-simple', {
                 <div v-if="DetallTeatre.Seients.length > 0" class="row" style="display: flex; flex-direction: column; ">                   
                     <div v-for="Fila of DetallTeatre.Seients" style="display: flex; flex-wrap: nowrap;">
                         <div style="" v-for=" Seient of Fila ">
-                            <div v-if="Seient.tipus == 'text'" :style="DetallTeatre.Estils[Seient.Estil]"> <h1>{{Seient.text}}</h1> </div>                            
+                            <div v-if="Seient.tipus == 'text'" :style="DetallTeatre.Estils[Seient.Estil]"> <h1>{{Seient.text}}</h1> </div>
                             <div v-if="Seient.tipus == 'fila'" :style="DetallTeatre.Estils[Seient.Estil]"> <h4>{{Seient.text}}</h4> </div>
-                            <div v-if="Seient.tipus == 'loc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil] )"> 
+                            <div v-if="Seient.tipus == 'loc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil] )">
                                 <a class="withHand" @click="setLocalitat(Seient.fila, Seient.seient)"><i class="fas fa-chair"></i></a>
                             </div>
                         </div>

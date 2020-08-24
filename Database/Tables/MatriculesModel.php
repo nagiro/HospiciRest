@@ -29,7 +29,8 @@ class MatriculesModel extends BDD {
     const PAGAMENT_DOMICILIACIO     = '33';
     const PAGAMENT_CODI_DE_BARRES   = '34';
     const PAGAMENT_RESERVA          = '35';
-    const PAGAMENT_LLISTA_ESPERA    = '36';      
+    const PAGAMENT_LLISTA_ESPERA    = '36';
+    const PAGAMENT_INVITACIO        = '60';      
 
     public function __construct() {        
               
@@ -48,6 +49,7 @@ class MatriculesModel extends BDD {
     public function setEstatFromPagament($OM, $Pagament) {
         if($Pagament == self::PAGAMENT_TARGETA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES;
         if($Pagament == self::PAGAMENT_METALIC) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT;
+        if($Pagament == self::PAGAMENT_INVITACIO) $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT;
         if($Pagament == self::PAGAMENT_CODI_DE_BARRES) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT;
         if($Pagament == self::PAGAMENT_RESERVA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT;
         if($Pagament == self::PAGAMENT_LLISTA_ESPERA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_ESPERA;
