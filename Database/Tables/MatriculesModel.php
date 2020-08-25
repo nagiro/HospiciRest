@@ -255,6 +255,10 @@ class MatriculesModel extends BDD {
 
     }
 
+    public function getSiteValue($OM){
+        return $OM[$this->gnfnwt('SiteId')];
+    }
+
 
 
 

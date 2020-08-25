@@ -223,15 +223,19 @@ class WebApiController
     public function getTpv($Request, $AnemAOKUrl) {
         
         $miObj = new RedsysAPI;
-        $OM = new OptionsModel();                
-        $TPV = json_decode($OM->getOption("TPV_C_PARAMS", 1), true);
+        $OM = new OptionsModel();                        
         
         $version = $Request["Ds_SignatureVersion"];
         $datos = $Request["Ds_MerchantParameters"];
         $signatureRecibida = $Request["Ds_Signature"];
             
         $decodec = $miObj->decodeMerchantParameters($datos);	            
-        $D = json_decode($decodec, true);                
+        $D = json_decode($decodec, true);        
+        
+        // Carreguem la matrícula amb el SITE al que pertany
+        $MM = new MatriculesModel();        
+        $OMatricula = $MM->getMatriculaById($D['Ds_Order']);
+        $TPV = json_decode($OM->getOption("TPV_C_PARAMS", $MM->getSiteValue($OMatricula)), true);        
         $UrlDesti = base64_decode($D['Ds_MerchantData']);
         
         $kc = $TPV['CLAU_RECUPERACIO_CANALS']; //Clave recuperada de CANALES
@@ -243,8 +247,7 @@ class WebApiController
             // Crida directament del TPV per validar el pagament
             if ($AnemAOKUrl === false){            
 
-                // Tot correcte. Marquem les matrícules com a pagades. Agafem el grup de matrícules
-                $MM = new MatriculesModel();
+                // Tot correcte. Marquem les matrícules com a pagades. Agafem el grup de matrícules                
                 $Array_ObjectesMatricula = $MM->getMatriculesVinculades($D["Ds_Order"], false);
                 foreach($Array_ObjectesMatricula as $OM):
                     
