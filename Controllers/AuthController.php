@@ -11,7 +11,7 @@ class AuthController {
     public $isAdmin;
 
     public function __construct() {        
-        session_start();
+        if(session_status() != PHP_SESSION_ACTIVE) session_start();
         $this->UM = new UsuarisModel();
         $this->TokenLiteral = '';
         $this->TokenArray = array();

@@ -146,7 +146,27 @@ class CursosModel extends BDD {
         }
     }
 
-    public function potMatricularSegonsRestriccio($DNI, $idCurs) {
+    public function potMatricularSegonsRestriccio($DNI, $OCurs, $idS) {
+        $file = AUXDIR . "Restriccions/Notes-{$idS}.csv";                 
+
+        if( file_exists($file) && $OCurs[$this->gnfnwt('IsRestringit')] == '1' ) {
+
+            $ArxiuCSV = fopen($file, "r");
+            while (($datos = fgetcsv($ArxiuCSV, 1000, ";")) !== FALSE) {
+                if(strtoupper($datos[4]) == $DNI) {                    
+                    for($i = 15; $i < 25; $i = $i+2 ) {                        
+                        if( !   empty($datos[$i+1]) 
+                            &&  is_numeric($datos[$i+1]) 
+                            &&  $datos[$i+1] == $this->getCursId($OCurs)
+                        )   return true;                            
+                    }                    
+                }
+            }
+            fclose($ArxiuCSV);
+
+        } elseif($OCurs[$this->gnfnwt('IsRestringit')] == '0') return true;
+        else { throw new Exception("L'arxiu de restriccions és inexistent. Consulti amb la seva entitat."); }
+        
         return false;
     }
 

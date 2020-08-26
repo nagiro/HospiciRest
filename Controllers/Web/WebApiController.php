@@ -31,9 +31,10 @@ class WebApiController
         $CM = new CursosModel();
         $RET['ExisteixDNI'] = $UM->ExisteixDNI($DNI);
 
-        if($IsRestringit) $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
-        else $RET['PotMatricularCursRestringit'] = true;
-        
+//        if($IsRestringit) $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
+//        else $RET['PotMatricularCursRestringit'] = true;
+          $RET['PotMatricularCursRestringit'] = true;
+
         return $RET;
     }
 
@@ -412,8 +413,14 @@ class WebApiController
         $MM = new MatriculesModel();
 
         //Mirem si l'usuari ja té alguna matrícula en aquest curs
-        // if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
+        //if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
         //    throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
+
+        //Mirem si el curs té restriccions i si en té, si el DNI apareix a la llista i el curs també
+        
+        if( ! $CM->potMatricularSegonsRestriccio($OU[$UM->gnfnwt('Dni')], $OC, $idSite) ) {
+            throw new Exception('El DNI entrat no té permís per a matricular-se a aquesta activitat/curs.');
+        }
         
         // Marquem les entrades escollides comptant les localitats
         if( sizeof($Localitats) > 0 ) {
