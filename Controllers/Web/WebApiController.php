@@ -26,15 +26,13 @@ class WebApiController
         // $this->setNewDate(date('Y-m-d', time()));        
     }
 
-    public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = false) {
+    public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = 0) {
         $UM = new UsuarisModel();                
         $CM = new CursosModel();
         $RET['ExisteixDNI'] = $UM->ExisteixDNI($DNI);
 
-//        if($IsRestringit) $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
-//        else $RET['PotMatricularCursRestringit'] = true;
-          $RET['PotMatricularCursRestringit'] = true;
-
+        if($IsRestringit) $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
+        
         return $RET;
     }
 
@@ -118,6 +116,7 @@ class WebApiController
                 // Busco la localitat si existeix
                 $LocalitatText = '-----';
                 if($CursosModel->hasEscullLocalitats($OCurs)) { $LocalitatText = $MatriculesModel->getLocalitatString($OMatricula); }
+                $DisplayLocalitat = ($LocalitatText == '-----') ? 'none' : 'block';
                 
                 $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
                 $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
@@ -129,6 +128,8 @@ class WebApiController
                 $HTML = str_replace('@@DESCOMPTE@@', $MatriculesModel->getDescompteString($OMatricula), $HTML);
                 $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png', $HTML);
                 $HTML = str_replace('@@QR_TEXT@@', $NumeroInscripcio, $HTML);            
+                $HTML = str_replace('@@DISPLAY_LOCALITAT@@', $DisplayLocalitat, $HTML);            
+                
 
                 $Import_total_a_pagar += $OMatricula[$MatriculesModel->gnfnwt('Pagat')];
                     
@@ -412,15 +413,11 @@ class WebApiController
         //Passem a gestionar la matrícula
         $MM = new MatriculesModel();
 
-        //Mirem si l'usuari ja té alguna matrícula en aquest curs
-        //if($MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] ))
-        //    throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
-
-        //Mirem si el curs té restriccions i si en té, si el DNI apareix a la llista i el curs també
-        
-        if( ! $CM->potMatricularSegonsRestriccio($OU[$UM->gnfnwt('Dni')], $OC, $idSite) ) {
-            throw new Exception('El DNI entrat no té permís per a matricular-se a aquesta activitat/curs.');
-        }
+        // Mirem si l'usuari ja té alguna matrícula en aquest curs
+        $RestringitNomesUnCop = $CM->getIsRestringit($OC, $CM::RESTRINGIT_NOMES_UN_COP);        
+        if($RestringitNomesUnCop)
+            $UsuariHasMatricules = $MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] );
+            if($UsuariHasMatricules) throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');                
         
         // Marquem les entrades escollides comptant les localitats
         if( sizeof($Localitats) > 0 ) {

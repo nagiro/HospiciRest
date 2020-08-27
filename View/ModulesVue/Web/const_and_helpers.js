@@ -3,6 +3,12 @@ const CONST_url_cicles_img = '/images/cicles/C-';
 const CONST_api_web = '/apiweb/';
 const CONST_url_front_img = '/WebFiles/Imatges/Nodes/';
 
+// CURSOS
+
+const CONST_RESTRINGIT_EXCEL = '1';
+const CONST_RESTRINGIT_NOMES_UNA = '2';
+const CONST_RESTRINGIT_NOMES_UN_COP = '3';
+
 // Matricules
 
 const CONST_PAGAMENT_CAP = '0';

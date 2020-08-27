@@ -147,8 +147,13 @@ Vue.component('form-inscripcio-simple', {
             }
         },
         getQuantesPlacesOptions: function() {           
-            if( this.PlacesLliures < 11 && this.PlacesLliures > 0 ) return Array.from(Array(this.PlacesLliures), (_, i) => i + 1);
-            else return Array.from(Array(10), (_, i) => i + 1);
+                        
+            if( this.PlacesLliures > 0 && this.DetallCurs.CURSOS_IsRestringit.indexOf(CONST_RESTRINGIT_NOMES_UNA) >= 0 ) return [1];
+
+            if( this.PlacesLliures < 11 && this.PlacesLliures > 0 ){                
+                return Array.from(Array(this.PlacesLliures), (_, i) => i + 1);                
+            } else return Array.from(Array(10), (_, i) => i + 1);
+
         }, 
         dnikeymonitor: function($event) {
             
@@ -156,11 +161,20 @@ Vue.component('form-inscripcio-simple', {
                 this.classDNI = 'form-control is-valid';
                 axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {
                     if(X.data.ExisteixDNI) {                        
-                        if( X.data.PotMatricularCursRestringit || this.isAdmin ) {
+                        if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
                             this.Pas = 2;
                         } else {                                                         
                             this.Pas = 7; 
-                            this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong>' + this.PoseuEnContacteString();                            
+                            this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
+                            if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
+                                this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
+                                for(C of X.data.PotMatricularCursRestringit.CursosOk) {
+                                    this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
+                                }
+                                this.ErrorInscripcio += '</ul>';                                
+                            }
+                            
+                            // this.ErrorInscripcio //+ this.PoseuEnContacteString();
                         }
                     } else {                               
                         this.Pas = 1;
@@ -313,7 +327,7 @@ Vue.component('form-inscripcio-simple', {
             <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 
                 <p>Hi ha hagut el següent error fent la seva inscripció. Pot consultar amb nosaltres trucant al 972.20.20.13 (Ext 3).</p>
                 <p><b>{{ErrorInscripcio}}</b>                            </p>                
-                <p> <a href="./">Torna a carregar la pàgina.</a></p>
+                <br /><p> <a href="./">Torna a carregar la pàgina.</a></p>
             </div>
 
             <div class="row" v-if="Pas == 0">

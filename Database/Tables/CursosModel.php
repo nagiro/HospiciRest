@@ -5,6 +5,9 @@ require_once BASEDIR."Database/DB.php";
 
 class CursosModel extends BDD {
 
+    const RESTRINGIT_EXCEL        = "1";
+    const RESTRINGIT_NOMES_UNA    = "2";    
+    const RESTRINGIT_NOMES_UN_COP = "3";    
 
     public function __construct() {
         
@@ -12,6 +15,13 @@ class CursosModel extends BDD {
         $NewFields = array("IdCurs", "TitolCurs", "IsActiu", "Places" , "Codi", "Descripcio", "Preu", "Horaris", "Categoria",  "OrdreSortida", 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWeb', 'SiteId', 'Actiu', 'CicleId', 'ActivitatId' ,'Pdf', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'IsRestringit' ,'DadesExtres', 'Teatre');        
         parent::__construct("cursos", "CURSOS", $OldFields, $NewFields );
 
+    }
+
+    /**
+     * Funció que retorna si a un curs se li aplica una restricció específica
+     */
+    public function getIsRestringit($OCurs, $QuinaRestriccio) {
+        return ( stripos( $OCurs[$this->gnfnwt('IsRestringit')] , $QuinaRestriccio ) !== false );        
     }
 
     public function getEmptyObject($SiteId) {
@@ -75,42 +85,6 @@ class CursosModel extends BDD {
 
     }
 
-
-    public function getLlistatCursosCalendari( $idS, $paraules, $DataInicial, $DataFinal, $Estat ) {    
-        
-
-        $W = ''; $WA = array();        
-        if(strlen($paraules) > 0) { $W = " AND ({$this->getOldFieldNameWithTable('Nom')} like :paraula1 
-                                            OR {$this->getOldFieldNameWithTable('Organitzador')} like :paraula2
-                                            OR {$this->getOldFieldNameWithTable('tMig')} like :paraula3
-                                        ) "; 
-                                    $WA['paraula1'] = '%'.$paraula.'%';
-                                    $WA['paraula2'] = '%'.$paraula.'%';
-                                    $WA['paraula3'] = '%'.$paraula.'%';
-                                }
-
-        $SQL = "
-                Select {$this->gsfn('ActivitatId')}, {$HM->gsfn('Dia')}, {$HM->gsfn('HoraInici')}, {$HM->gsfn('HoraFi')},
-                       {$this->gsfn('Nom')}, {$this->gsfn('Organitzador')}, {$EM->gsfn('Nom')}
-                from {$this->getTableName()} 
-                LEFT JOIN {$HM->getTableName()} ON ( {$this->getOldFieldNameWithTable('ActivitatId')} = {$HM->getOldFieldNameWithTable('ActivitatId')} )
-                LEFT JOIN {$HEM->getTableName()} ON ( {$HM->getOldFieldNameWithTable('HorariId')} = {$HEM->getOldFieldNameWithTable('HorariId')} )
-                LEFT JOIN {$EM->getTableName()} ON ( {$EM->getOldFieldNameWithTable('EspaiId')} = {$HEM->getOldFieldNameWithTable('EspaiId')} )
-                where 
-                         {$this->getOldFieldNameWithTable('SiteId')} = :site_id
-                AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
-                AND      {$HM->getOldFieldNameWithTable('Dia')} > :DataInicial
-                AND      {$HM->getOldFieldNameWithTable('Dia')} < :DataFinal
-                         {$W}
-                ORDER BY {$HM->getOldFieldNameWithTable('Dia')} asc
-            ";
-
-        $SQLW = array('site_id'=>$idS, 'DataInicial' => $DataInicial, 'DataFinal' => $DataFinal );        
-                
-        return $this->runQuery($SQL, array_merge( $SQLW , $WA ) );
-        
-    }
-
     public function getSeientsOcupats($ObjecteCurs) {
         require_once BASEDIR."Database/Tables/MatriculesModel.php";
         $RET = array('QuantesMatricules' => 0, 'Localitats' => array());
@@ -146,28 +120,42 @@ class CursosModel extends BDD {
         }
     }
 
-    public function potMatricularSegonsRestriccio($DNI, $OCurs, $idS) {
+    public function potMatricularSegonsRestriccio($DNI, $idCurs) {
+
+        //Carrego el curs i miro les dades.
+        $OCurs = $this->getCursById($idCurs);
+        $idS = $OCurs[$this->gnfnwt('SiteId')];
+        $Return = array('IsOk' => false, 'CursosOk' => array());
+        $EsRestringitExcel = $this->getIsRestringit( $OCurs, self::RESTRINGIT_EXCEL );
+
         $file = AUXDIR . "Restriccions/Notes-{$idS}.csv";                 
 
-        if( file_exists($file) && $OCurs[$this->gnfnwt('IsRestringit')] == '1' ) {
+        if( $EsRestringitExcel && file_exists($file) ) {
 
             $ArxiuCSV = fopen($file, "r");
-            while (($datos = fgetcsv($ArxiuCSV, 1000, ";")) !== FALSE) {
+            while (($datos = fgetcsv($ArxiuCSV, 1000, ";","'")) !== FALSE) {                
                 if(strtoupper($datos[4]) == $DNI) {                    
                     for($i = 15; $i < 25; $i = $i+2 ) {                        
-                        if( !   empty($datos[$i+1]) 
-                            &&  is_numeric($datos[$i+1]) 
-                            &&  $datos[$i+1] == $this->getCursId($OCurs)
-                        )   return true;                            
+                        if( !empty($datos[$i+1]) &&  intval($datos[$i+1]) > 0 ) {
+                            if( $datos[$i+1] == $this->getCursId($OCurs) ) $Return['IsOk'] = true;                            
+                            else $Return['CursosOk'][] = array('id'=> $datos[$i + 1], 'nom'=> $datos[$i]);
+                        }
                     }                    
                 }
             }
             fclose($ArxiuCSV);
 
-        } elseif($OCurs[$this->gnfnwt('IsRestringit')] == '0') return true;
-        else { throw new Exception("L'arxiu de restriccions és inexistent. Consulti amb la seva entitat."); }
+        } elseif( ! $EsRestringitExcel ) { 
+
+            $Return['IsOk'] = true;
+
+        } else { 
+
+            throw new Exception("L'arxiu de restriccions és inexistent. Consulti amb la seva entitat."); 
+
+        }
         
-        return false;
+        return $Return;
     }
 
 }
