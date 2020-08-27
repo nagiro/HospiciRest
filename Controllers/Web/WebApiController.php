@@ -30,8 +30,7 @@ class WebApiController
         $UM = new UsuarisModel();                
         $CM = new CursosModel();
         $RET['ExisteixDNI'] = $UM->ExisteixDNI($DNI);
-
-        if($IsRestringit) $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
+        $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
         
         return $RET;
     }
