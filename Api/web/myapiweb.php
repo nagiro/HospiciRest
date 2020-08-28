@@ -39,13 +39,13 @@ class MyAPIWeb extends API
 
     protected function GeneraResguard() {
         $WAPI = new WebApiController();
-        $InscripcioCodificada = (isset($_GET['i'])) ? $_GET['i'] : '';
+        $InscripcioCodificada = (isset($_GET['i'])) ? $_GET['i'] : '';        
         $isGrup = (isset($_GET['g']));
         $testMail = (isset($_GET['m']));
         $UrlDesti = (isset($_GET['u'])) ? base64_decode($_GET['u']) : 'https://www.casadecultura.cat';
 
         if($isGrup) { $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); }
-        if($testMail) { $WAPI->EnviaEmailInscripcio( $InscripcioCodificada, 'albert.johe@gmail.com' ); }
+    if($testMail) { /* $WAPI->EnviaEmailInscripcio( $InscripcioCodificada, 'albert.johe@gmail.com' ); */ }
 
         // Retornem 0 perquè ensenyem l'HTML tal qual va. 
         return array($HTML, '0');
@@ -167,8 +167,10 @@ class MyAPIWeb extends API
                 break;
 
                 case 'inscripcio':                    
+                    /*
                     $idC = $this->request['idCurs'];
                     $EXTRES = $WEB->viewDetall( 0 , $idC ); 
+                    */
                 break;
 
                 case 'pagina': 
