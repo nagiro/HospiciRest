@@ -15,7 +15,7 @@ if(isset($_GET['DNI'])):
     $CURSOS = $CM->potMatricularSegonsRestriccio($DNI, 2741);
     
     
-    if(sizeof($CURSOS) == 0) echo '<h2>No hem trobat cap constància del seu DNI.</h2>';
+    if(sizeof($CURSOS['CursosOk']) == 0) echo '<h2>No hem trobat cap constància del seu DNI.</h2>';
     else echo "<h2>Cursos als que pot matricular-se</h2>";
     
     echo "<p><ul>";
