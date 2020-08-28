@@ -150,9 +150,9 @@ Vue.component('form-inscripcio-simple', {
                         
             if( this.PlacesLliures > 0 && this.DetallCurs.CURSOS_IsRestringit.indexOf(CONST_RESTRINGIT_NOMES_UNA) >= 0 ) return [1];
 
-            if( this.PlacesLliures < 11 && this.PlacesLliures > 0 ){                
+            if( this.PlacesLliures < 6 && this.PlacesLliures > 0 ){                
                 return Array.from(Array(this.PlacesLliures), (_, i) => i + 1);                
-            } else return Array.from(Array(10), (_, i) => i + 1);
+            } else return Array.from(Array(5), (_, i) => i + 1);
 
         }, 
         dnikeymonitor: function($event) {
