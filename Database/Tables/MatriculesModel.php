@@ -163,7 +163,7 @@ class MatriculesModel extends BDD {
             array( 
                 $this->gofnwt('CursId') => $idCurs,
                 $this->gofnwt('Actiu') => 1,
-                $this->gofnwt('Estat') => array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT)
+                $this->gofnwt('Estat') => array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT, self::ESTAT_EN_ESPERA)
             ) , true );        
     }
 
@@ -171,7 +171,8 @@ class MatriculesModel extends BDD {
         $W = array();
         $W[ $this->gofnwt('CursId') ] = $idC;
         $W[ $this->gofnwt('UsuariId') ] = $idU;
-        $W[ $this->gofnwt('Actiu') ] = 1;        
+        $W[ $this->gofnwt('Actiu') ] = 1;   
+        $W[ $this->gofnwt('Estat')] = array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT, self::ESTAT_EN_ESPERA);
         return sizeof($this->_getRowWhere( $W , true )) > 0;
     }
 
