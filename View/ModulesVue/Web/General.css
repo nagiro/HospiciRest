@@ -28,6 +28,7 @@ body {
 
 h1, h2, h3, a { font-family: 'Oswald', sans-serif; }
 strong { font-weight: bold; }
+em { font-style: italic; }
 
 
 ol, ul {
