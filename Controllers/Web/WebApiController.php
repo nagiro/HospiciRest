@@ -402,19 +402,21 @@ class WebApiController
         $USM->addUsuariASite( $OU[ $UM->gnfnwt('IdUsuari') ], $idSite ); 
 
         // Validem que passi el token... si no el superem, sortim.
+        $isAdmin = false;
         if( sizeof($Token) == 2 && strlen($Token[1]) > 0 ) {
             require_once CONTROLLERSDIR.'AuthController.php';
             $Auth = new AuthController();
             $Auth->DecodeToken($Token[1]);
             if( $Auth->getSiteIdIfAdmin() != $idSite || $Auth->getSiteIdIfAdmin() == 0) throw new Exception("Hi ha hagut algun problema autenticant. Torna a provar-ho.");
+            $isAdmin = $Auth->isAdmin();
         }
                         
         //Passem a gestionar la matrícula
         $MM = new MatriculesModel();
 
-        // Mirem si l'usuari ja té alguna matrícula en aquest curs
+        // Mirem si l'usuari ja té alguna matrícula en aquest curs (Menys per l'administrador)
         $RestringitNomesUnCop = $CM->getIsRestringit($OC, $CM::RESTRINGIT_NOMES_UN_COP);        
-        if($RestringitNomesUnCop)                    
+        if($RestringitNomesUnCop && !$isAdmin)
             $UsuariHasMatricules = $MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] );
             if($UsuariHasMatricules) throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
         

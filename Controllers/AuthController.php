@@ -44,6 +44,10 @@ class AuthController {
         }        
     }    
 
+    public function isAdmin() {        
+        return $this->isAdmin;
+    }
+
     public function isAuthenticated() {        
         return ($this->idUsuari > 0 && $this->idSite > 0);        
     }
