@@ -415,10 +415,11 @@ class WebApiController
         $MM = new MatriculesModel();
 
         // Mirem si l'usuari ja té alguna matrícula en aquest curs (Menys per l'administrador)
-        $RestringitNomesUnCop = $CM->getIsRestringit($OC, $CM::RESTRINGIT_NOMES_UN_COP);        
-        if($RestringitNomesUnCop && !$isAdmin)
+        $RestringitNomesUnCop = $CM->getIsRestringit($OC, CursosModel::RESTRINGIT_NOMES_UN_COP);        
+        if($RestringitNomesUnCop && !$isAdmin) {
             $UsuariHasMatricules = $MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] );
             if($UsuariHasMatricules) throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
+        }
         
         // Marquem les entrades escollides comptant les localitats
         if( sizeof($Localitats) > 0 ) {
