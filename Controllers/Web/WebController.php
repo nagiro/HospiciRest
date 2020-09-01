@@ -66,7 +66,12 @@ class WebController
         
         $EXTRES["Cicles"] = $this->WebQueries->getCiclesHome($idC, $Datai, $Dataf);                    
         if(sizeof($EXTRES['Cicles']) > 0) {
-            foreach($EXTRES["Cicles"] as $Row) { $C[$Row["idCicle"]] = $Row["idCicle"]; }                                                                    
+            foreach($EXTRES["Cicles"] as $K => $Row) { 
+                $C[$Row["idCicle"]] = $Row["idCicle"];                                
+                // Miro si hi ha un pdf i si hi és el carrego
+                $PdfCicle = 'C-'.$Row["idCicle"].'-PDF.pdf';
+                $EXTRES['Cicles'][$K]['tmp_PDF'] = ( is_file( OLD_BASEDIR_IMG_CICLES . $PdfCicle ) ) ? IMATGES_URL_CICLES . $PdfCicle : '';                
+            }
             $EXTRES["Activitats"] = $this->WebQueries->getActivitatsHome(array(), '', '', 1, 1, $C);         
                                 
             $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/')); 

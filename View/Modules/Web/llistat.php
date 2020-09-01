@@ -33,7 +33,8 @@
                              
                 <article class="llistat_franja_titol">
                     <h1 class="llistat_titol"> {{ ActivitatHome.NomActivitat }} </h1>
-                    <time class="llistat_dates" v-html="ResumDates()"></time>                
+                    <time class="llistat_dates" v-html="ResumDates()"></time>
+                    <a v-if="ActivitatHome.tmp_PDF.length > 0" :href="ActivitatHome.tmp_PDF">[Baixa't el pdf]</a>                                    
                     <article class="llistat_summary_text" v-html="ActivitatHome.Descripcio"></article>
                 
                             
