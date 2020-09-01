@@ -29,6 +29,7 @@ class WebApiController
     public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = 0) {
         $UM = new UsuarisModel();                
         $CM = new CursosModel();
+        $DNI = strtoupper($DNI);
         $RET['ExisteixDNI'] = $UM->ExisteixDNI($DNI);
         $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
         
