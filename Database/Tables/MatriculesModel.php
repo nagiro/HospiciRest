@@ -34,10 +34,20 @@ class MatriculesModel extends BDD {
 
     public function __construct() {        
               
-        $OldFields = array('idMatricules', 'Usuaris_UsuariID', 'Cursos_idCursos', 'Estat','Comentari', 'DataInscripcio', 'data_baixa', 'Pagat', 'tReduccio', 'tPagament', 'site_id', 'actiu', 'tpv_operacio', 'tpv_order', 'idDadesBancaries', 'tutor_dni','tutor_nom', 'Data_pagament', 'rebut', 'GrupMatricules', 'Fila', 'Seient');
-        $NewFields = array('IdMatricula', 'UsuariId', 'CursId', 'Estat','Comentari', 'DataInscripcio', 'DataBaixa', 'Pagat', 'TipusReduccio', 'TipusPagament', 'SiteId', 'Actiu', 'TpvOperacio', 'TpvOrder', 'DadesBancariesId', 'TutorDni','TutorNom', 'DataPagament', 'Rebut', 'GrupMatricules', 'Fila', 'Seient');
+        $OldFields = array('idMatricules', 'Usuaris_UsuariID', 'Cursos_idCursos', 'Estat','Comentari', 'DataInscripcio', 'data_baixa', 'Pagat', 'tReduccio', 'tPagament', 'site_id', 'actiu', 'tpv_operacio', 'tpv_order', 'idDadesBancaries', 'tutor_dni','tutor_nom', 'Data_pagament', 'data_hora_entrada', 'rebut', 'GrupMatricules', 'Fila', 'Seient');
+        $NewFields = array('IdMatricula', 'UsuariId', 'CursId', 'Estat','Comentari', 'DataInscripcio', 'DataBaixa', 'Pagat', 'TipusReduccio', 'TipusPagament', 'SiteId', 'Actiu', 'TpvOperacio', 'TpvOrder', 'DadesBancariesId', 'TutorDni','TutorNom', 'DataPagament', 'DataHoraEntrada', 'Rebut', 'GrupMatricules', 'Fila', 'Seient');
         parent::__construct("matricules", "MATRICULES", $OldFields, $NewFields );
 
+    }
+
+    public function isMatriculaEstatOk($OM) {
+        if( $OM[$this->gnfnwt('Estat')] == self::ESTAT_EN_ESPERA
+            || $OM[$this->gnfnwt('Estat')] == self::ESTAT_ERROR
+            || $OM[$this->gnfnwt('Estat')] == self::ESTAT_BAIXA
+            || $OM[$this->gnfnwt('Estat')] == self::ESTAT_EN_PROCES
+            || $OM[$this->gnfnwt('Estat')] == self::ESTAT_DEVOLUCIO
+        ) { return false; }
+        else return true;
     }
 
     /**
@@ -110,7 +120,7 @@ class MatriculesModel extends BDD {
                 ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_ACCEPTAT_NO_PAGAT
                 ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_RESERVAT
             );
-    }
+    }    
 
     public function getIdMatriculaGrup($idMatricula) {
                         
@@ -260,9 +270,45 @@ class MatriculesModel extends BDD {
         return $OM[$this->gnfnwt('SiteId')];
     }
 
+    /**
+     * Validem que el QR sigui correcte i la matrícula existeixi
+     */
+    public function validaQR($idMatricula) {
+        
+        $RET = array('estat' => false, 'error' => '');
 
+        // Si la matrícula és false, vol dir que no hem pogut desencriptar-la
+        if($idMatricula) {
 
+            $OMatricula = $this->getMatriculaById($idMatricula);
+            if(!empty($OMatricula)) {
 
+                $isCodiCorrecte = (!empty($OMatricula) && $OMatricula[$this->gnfnwt('IdMatricula')] == $idMatricula);        
+                $isMatriculaEstatCorrecte = $this->isMatriculaEstatOk($OMatricula);
+                $isMatriculaNoEntrada = strlen($OMatricula[$this->gnfnwt('DataHoraEntrada')]) == 0;
+                
+                if( $isCodiCorrecte && $isMatriculaEstatCorrecte && $isMatriculaNoEntrada ) {            
+                    $OMatricula[$this->gnfnwt('DataHoraEntrada')] = date('Y-m-d H:i:s',time());
+                    $this->updateMatricula($OMatricula);                                    
+                    $RET['estat'] = true;
+                    return $RET;
+                } else {
+                    if(!$isCodiCorrecte) $RET['error'] = 'Numero matrícula incorrecte';
+                    if(!$isMatriculaEstatCorrecte) $RET['error'] = "Estat incorrecte";
+                    if(!$isMatriculaNoEntrada) $RET['error'] = "Codi repetit";
+                    return $RET;
+                }
+            } else {
+                $RET['error'] = 'Codi inexistent';
+                return $RET;
+            }
+
+        } else {
+            $RET['error'] = 'Codi incorrecte';
+            return $RET;
+        }
+        
+    }
 
 }
 

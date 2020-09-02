@@ -111,6 +111,11 @@ class MainModule {
                 $this->getModuleContent('Web/pagina.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            case 'validador':
+                $this->getModuleContent('HtmlHeaderWeb.php');                                                
+                $this->getModuleContent('Web/validador.php', json_encode(array()) ); 
+                $this->getModuleContent('HtmlFooterWeb.php');                
+            break;
         }         
         
     }

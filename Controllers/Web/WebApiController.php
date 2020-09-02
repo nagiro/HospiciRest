@@ -20,6 +20,11 @@ class WebApiController
     const TIPUS_RESGUARD_MAIL = 'MAIL';
     const TIPUS_RESGUARD_WEB = 'WEB';
 
+    public function ValidaQR($QR) {
+        $MM = new MatriculesModel();
+        $CodiMatricula = $this->Decrypt($QR);            
+        return $MM->validaQR($CodiMatricula);                
+    }
 
     public function __construct() {
         // $this->WebQueries = new WebQueries();

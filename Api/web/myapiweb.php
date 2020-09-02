@@ -55,6 +55,16 @@ class MyAPIWeb extends API
     /**
      * Funció que es crida des del TPV per validar el pagament
      */
+    protected function validaCodi() {
+        $WAPI = new WebApiController();
+        $QREntrada = (isset($_POST['QR'])) ? $_POST['QR'] : '';        
+        return array($WAPI->ValidaQR($QREntrada), 200);
+    }
+
+
+    /**
+     * Funció que es crida des del TPV per validar el pagament
+     */
     protected function getTpv() {
         $WAPI = new WebApiController();
         $WAPI->getTpv($_REQUEST, false);

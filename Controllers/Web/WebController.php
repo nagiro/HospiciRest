@@ -64,7 +64,7 @@ class WebController
             $Dataf = $this->DataFi;
         }
         
-        $EXTRES["Cicles"] = $this->WebQueries->getCiclesHome($idC, $Datai, $Dataf);                    
+        $EXTRES["Cicles"] = $this->WebQueries->getCiclesHome($idC, $Datai, $Dataf);
         if(sizeof($EXTRES['Cicles']) > 0) {
             foreach($EXTRES["Cicles"] as $K => $Row) { 
                 $C[$Row["idCicle"]] = $Row["idCicle"];                                
