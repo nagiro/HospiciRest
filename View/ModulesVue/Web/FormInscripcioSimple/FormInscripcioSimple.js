@@ -159,26 +159,26 @@ Vue.component('form-inscripcio-simple', {
             
             if( ValidaDNI(this.DNI) ) {
                 this.classDNI = 'form-control is-valid';
-                axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {
-                    if(X.data.ExisteixDNI) {                        
-                        if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
+                axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {                    
+                    if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
+                        if(X.data.ExisteixDNI) {
                             this.Pas = 2;
-                        } else {                                                         
-                            this.Pas = 7; 
-                            this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
-                            if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
-                                this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
-                                for(C of X.data.PotMatricularCursRestringit.CursosOk) {
-                                    this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
-                                }
-                                this.ErrorInscripcio += '</ul>';                                
-                            }
-                            
-                            // this.ErrorInscripcio //+ this.PoseuEnContacteString();
+                        } else {                               
+                            this.Pas = 1;
                         }
-                    } else {                               
-                        this.Pas = 1;
-                    }
+                    } else {                                                         
+                        this.Pas = 7; 
+                        this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
+                        if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
+                            this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
+                            for(C of X.data.PotMatricularCursRestringit.CursosOk) {
+                                this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
+                            }
+                            this.ErrorInscripcio += '</ul>';                                
+                        }
+                        
+                        // this.ErrorInscripcio //+ this.PoseuEnContacteString();
+                    }                                        
                 }).catch( E => { alert(E); });
             } else {
                 this.Pas = 0;
