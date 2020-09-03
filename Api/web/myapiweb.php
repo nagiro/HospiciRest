@@ -43,9 +43,11 @@ class MyAPIWeb extends API
         $isGrup = (isset($_GET['g']));
         $testMail = (isset($_GET['m']));
         $UrlDesti = (isset($_GET['u'])) ? base64_decode($_GET['u']) : 'https://www.casadecultura.cat';
+        $GenKey = (isset($_GET['k']));
 
         if($isGrup) { $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); }
-    if($testMail) { /* $WAPI->EnviaEmailInscripcio( $InscripcioCodificada, 'albert.johe@gmail.com' ); */ }
+        if($testMail) { $HTML = $WAPI->ReenviaEmailInscripcio( $InscripcioCodificada, $UrlDesti ); }
+        if($GenKey) { $HTML = "El valor {$_GET['k']} és igual a " . $WAPI->Encrypt($_GET['k']); }
 
         // Retornem 0 perquè ensenyem l'HTML tal qual va. 
         return array($HTML, '0');
