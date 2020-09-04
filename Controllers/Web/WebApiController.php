@@ -21,8 +21,8 @@ class WebApiController
     const TIPUS_RESGUARD_WEB = 'WEB';
 
     public function ValidaQR($QR) {
-        $MM = new MatriculesModel();
-        $CodiMatricula = $this->Decrypt($QR);            
+        $MM = new MatriculesModel();        
+        $CodiMatricula = (is_numeric($QR)) ? $QR : $this->Decrypt($QR);            
         return $MM->validaQR($CodiMatricula);                
     }
 
