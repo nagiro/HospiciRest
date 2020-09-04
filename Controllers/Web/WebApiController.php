@@ -518,6 +518,20 @@ class WebApiController
         
     }
 
+    /**
+    * Reenviem el correu a la persona, un cop havent canviat el seu email 
+    **/
+    public function ReenviaEmailInscripcio( $Encrypted_IdMatricula, $UrlDesti ) {
+                        
+        $IdMatricula = $this->Decrypt($Encrypted_IdMatricula);
+        $MM = new MatriculesModel();
+        $OM = $MM->getMatriculaById($IdMatricula);
+        $Email = $MM->getUserEmail($OM);
+
+        return $this->EnviaEmailInscripcio( $Encrypted_IdMatricula, $Email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti );            
+        
+    }
+
     public function SendEmail($to, $from, $subject, $HTML) {
         $url = 'https://api.elasticemail.com/v2/email/send';
 
@@ -554,8 +568,8 @@ class WebApiController
         }        
     }
 
-    private function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
-    private function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
+    public function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
+    public function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
     
 }
 
