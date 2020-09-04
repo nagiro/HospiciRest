@@ -106,7 +106,19 @@ class MatriculesModel extends BDD {
         $O[$this->gnfnwt('TipusReduccio')] = -1; 
         $O[$this->gnfnwt('Pagat')] = 0; 
         $O[$this->gnfnwt('TipusPagament')] = self::PAGAMENT_RESERVA; 
-        $O[$this->gnfnwt('SiteId')] = $SiteId; 
+        $O[$this->gnfnwt('SiteId')] = $SiteId;         
+        $O[$this->gnfnwt('DataBaixa')] = NULL;
+        $O[$this->gnfnwt('Comentari')] = NULL;
+        $O[$this->gnfnwt('TpvOperacio')] = NULL;
+        $O[$this->gnfnwt('TpvOrder')] = NULL;
+        $O[$this->gnfnwt('DadesBancariesId')] = NULL;
+        $O[$this->gnfnwt('TutorDni')] = NULL;
+        $O[$this->gnfnwt('TutorNom')] = NULL;
+        $O[$this->gnfnwt('DataPagament')] = NULL;
+        $O[$this->gnfnwt('DataHoraEntrada')] = NULL;        
+        $O[$this->gnfnwt('Rebut')] = NULL;        
+        $O[$this->gnfnwt('Fila')] = NULL;        
+        $O[$this->gnfnwt('Seient')] = NULL;        
         return $O;
     }
     
