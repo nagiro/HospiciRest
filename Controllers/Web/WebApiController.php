@@ -116,7 +116,7 @@ class WebApiController
                 $HTML .= file_get_contents( AUXDIR . "Inscripcions/Mail/{$idS}/MailBody.html" );
                                                     
                 // Genero el QR de la matrícula
-                \PHPQRCode\QRcode::png($NumeroInscripcio, BASEDIR . "/WebFiles/Inscripcions/" . $NumeroInscripcio .'.png', 'L', 4, 2);
+                \PHPQRCode\QRcode::png($this->Encrypt($NumeroInscripcio), BASEDIR . "/WebFiles/Inscripcions/" . $NumeroInscripcio .'.png', 'L', 4, 2);
 
                 // Busco la localitat si existeix
                 $LocalitatText = '-----';
