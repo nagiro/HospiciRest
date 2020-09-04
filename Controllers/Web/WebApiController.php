@@ -144,7 +144,7 @@ class WebApiController
             /************************ PAGAMENT CODI DE BARRES AL HEADER *********************************/
 
             if( MatriculesModel::PAGAMENT_CODI_DE_BARRES == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {
-                $CB = $this->generaCodiBarres( $idMatricula, $Import, $idS );
+                $CB = $this->generaCodiBarres( $idMatricula, $Import_total_a_pagar, $idS );
                 $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: block;', $HTML);
                 $HTML = str_replace('@@URL_CODI_BARRES@@', $CB['URL'], $HTML);
                 $HTML = str_replace('@@CODI_BARRES@@',  $CB['CODI'], $HTML);
