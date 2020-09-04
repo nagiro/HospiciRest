@@ -456,6 +456,7 @@ class WebApiController
 
                 // Si hi ha descompte, l'apliquem. 
                 $PreuPagat = $OC[$CM->gnfnwt('Preu')];
+                if($TipusPagament == $MM::PAGAMENT_INVITACIO) $PreuPagat = 0;
                 if($DescompteAplicat > -1) {                                        
                     $PreuPagat = $CM->getPreuAplicantDescompte($OC, $DescompteAplicat);
                     $OM[$MM->gnfnwt('TipusReduccio')] = $DescompteAplicat;

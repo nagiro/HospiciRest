@@ -244,6 +244,7 @@ Vue.component('form-inscripcio-simple', {
 
             // Si tenim la llista d'espera activa, retornem 0
             if( this.LlistaEsperaActiu ) return 0;
+            if( this.TipusPagament == CONST_PAGAMENT_INVITACIO) return 0;
 
             // Mirem si hem escollit descompte
             if( this.DescompteAplicat > 0 ) {
