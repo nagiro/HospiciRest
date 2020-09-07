@@ -354,7 +354,7 @@ class WebApiController
     /**
      * $Origen: web, hospici
      */
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token) {                
+    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token, $DadesExtres) {                
         
         $OU = array();
         $UM = new UsuarisModel();
@@ -471,6 +471,9 @@ class WebApiController
                 if ( $CM->hasEscullLocalitats($OC) ) {
                     $OM = $MM->setLocalitat($OM, $Localitats[$i] );                    
                 }
+
+                // Si hi ha dades extres, les guardo
+                if(sizeof($OC[$CM->gnfnwt('DadesExtres')]) > 0) $OM[$MM->gnfnwt('Comentari')] = $DadesExtres;
                                                             
                 //Guardem la matrícula
                 $id = $MM->doInsert($OM);

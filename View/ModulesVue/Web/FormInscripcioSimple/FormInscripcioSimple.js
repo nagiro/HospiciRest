@@ -31,6 +31,7 @@ Vue.component('form-inscripcio-simple', {
                     TipusPagament: CONST_PAGAMENT_CAP,                         
                     PlacesLliures: 0,
                     LlistaEsperaActiu: false,
+                    DadesExtres: '',
                     Pas: 0, 
                     classDNI: 'form-control', 
                     classNom: 'form-control',
@@ -271,6 +272,7 @@ Vue.component('form-inscripcio-simple', {
                     || ( this.TipusPagament == 0 ) 
                     || ( this.Localitats.length == 0 && this.DetallTeatre.Seients.length > 0 )
                     || ( this.QuantesEntrades == 0 && this.DetallTeatre.Seients.length == 0 )
+                    || ( ( this.DetallCurs.CURSOS_DadesExtres && this.DetallCurs.CURSOS_DadesExtres.length > 0 ) && this.DadesExtres.length == 0 )
                     );
         },
         doInscripcio: function() {
@@ -293,6 +295,7 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('DescompteAplicat', this.DescompteAplicat);
             $FD.append('Localitats', JSON.stringify(this.Localitats));
             $FD.append('Token', JSON.stringify(this.Token));
+            $FD.append('DadesExtres', this.DadesExtres);
             
             this.Loading = true;
             axios.post( CONST_api_web + '/AltaUsuariSimple', $FD ).then( X => {
@@ -450,6 +453,11 @@ Vue.component('form-inscripcio-simple', {
                         <select :disabled="!(Pas == 2 || Pas == 4)" class="form-control" v-model="DescompteAplicat" id="DescompteAplicat">
                             <option v-for="O in DetallDescomptes" :value="O.DESCOMPTES_IdDescompte">{{O.DESCOMPTES_Nom}}</option>
                         </select>                                        
+                    </div>
+
+                    <div class="col" v-if="( DetallCurs.CURSOS_DadesExtres && DetallCurs.CURSOS_DadesExtres.length > 0 )">
+                        <label for="DadesExtres">{{DetallCurs.CURSOS_DadesExtres}}</label>                        
+                        <input type="text" class="form-control" v-model="DadesExtres" id="DadesExtres" :placeholder="DetallCurs.CURSOS_DadesExtres">
                     </div>
                 
                 </div>
