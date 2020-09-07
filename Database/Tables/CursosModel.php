@@ -34,6 +34,7 @@ class CursosModel extends BDD {
         $OC[$this->getNewFieldNameWithTable('Actualitzacio')] = date('Y-m-d', time());
         $OC[$this->getNewFieldNameWithTable('Actiu')] = 1;
         $OC[$this->getNewFieldNameWithTable('SiteId')] = $SiteId;
+        $OC[$this->getNewFieldNameWithTable('Teatre')] = null;        
         return $OC;
     }
 
