@@ -150,7 +150,7 @@ Vue.component('form-inscripcio-simple', {
         },
         getQuantesPlacesOptions: function() {           
                         
-            if( this.PlacesLliures > 0 && this.DetallCurs.CURSOS_IsRestringit.indexOf(CONST_RESTRINGIT_NOMES_UNA) >= 0 ) return [1];
+            if( this.PlacesLliures > 0 && this.DetallCurs.CURSOS_IsRestringit && this.DetallCurs.CURSOS_IsRestringit.indexOf(CONST_RESTRINGIT_NOMES_UNA) >= 0 ) return [1];
 
             if( this.PlacesLliures < 6 && this.PlacesLliures > 0 ){                
                 return Array.from(Array(this.PlacesLliures), (_, i) => i + 1);                
