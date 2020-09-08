@@ -181,6 +181,25 @@ class WebApiController
     }
 
     /**
+     * Funció que guarda el codi de la operació que s'ha fet amb un TPV
+     * $CodiOperacio = El codi que dóna el datàfon
+     * $Matricules = Llistat de les matrícules associades a aquest número codificades
+     * @return true si ha anat bé
+     */
+    public function setCodiOperacio($CodiOperacio, $Matricules) {
+        
+        $MM = new MatriculesModel();
+
+        foreach($Matricules as $CodiMatricula):
+            $idMatricula = $this->Decrypt($CodiMatricula);
+            $OM = $MM->getMatriculaById($idMatricula);
+            $OM[$MM->gnfnwt('TpvOperacio')] = $CodiOperacio;
+            $MM->updateMatricula($OM);            
+        endforeach;
+
+    }
+
+    /**
      * Funció que genera la crida del TPV
      * $idMatriculaGrup: Number indicador del grup de matrícules
      * $Import: Valor a pagar
@@ -450,10 +469,7 @@ class WebApiController
             
                 // Per cada inscripció, creo un objecte matrícula i marco com a reservat
                 $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $idCurs, $idSite);
-                
-                //Marquem l'estat de la matrícula. Si és pagament amb targeta, posem en procès. Els altres, reservat
-                $OM = $MM->setEstatFromPagament($OM, $TipusPagament);
-
+                                
                 // Si hi ha descompte, l'apliquem. 
                 $PreuPagat = $OC[$CM->gnfnwt('Preu')];
                 if($TipusPagament == $MM::PAGAMENT_INVITACIO) $PreuPagat = 0;
@@ -467,13 +483,16 @@ class WebApiController
                 $Import += $PreuPagat;
                 $OM[$MM->gnfnwt('TipusPagament')] = $TipusPagament;
 
+                //Marquem el nou estat de la matrícula segons el pagament que s'hagi fet
+                $OM = $MM->setEstatByTipusPagament($OM);
+
                 // Si és amb localitats, guardo les localitats
                 if ( $CM->hasEscullLocalitats($OC) ) {
                     $OM = $MM->setLocalitat($OM, $Localitats[$i] );                    
                 }
 
                 // Si hi ha dades extres, les guardo
-                if(sizeof($OC[$CM->gnfnwt('DadesExtres')]) > 0) $OM[$MM->gnfnwt('Comentari')] = $DadesExtres;
+                if(isset($OC[$CM->gnfnwt('DadesExtres')]) && sizeof($OC[$CM->gnfnwt('DadesExtres')]) > 0) $OM[$MM->gnfnwt('Comentari')] = $DadesExtres;
                                                             
                 //Guardem la matrícula
                 $id = $MM->doInsert($OM);
@@ -494,6 +513,7 @@ class WebApiController
             }
 
             $RET['MATRICULES'] = $Matricules;
+            $RET['TIPUS_PAGAMENT'] = $TipusPagament;
             if($TipusPagament == MatriculesModel::PAGAMENT_TARGETA) {                
                 $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $idSite, $UrlDesti);
             } else {                

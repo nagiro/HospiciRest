@@ -21,6 +21,7 @@ const CONST_PAGAMENT_CODI_DE_BARRES = '34';
 const CONST_PAGAMENT_RESERVA = '35';
 const CONST_PAGAMENT_LLISTA_ESPERA = '36';    
 const CONST_PAGAMENT_INVITACIO = '60';  
+const CONST_PAGAMENT_DATAFON = '61';
 
 var normalize = (function() {
     var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç.", 

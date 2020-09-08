@@ -81,6 +81,17 @@ class MyAPIWeb extends API
         return array($HTML, '0');
     }    
 
+    protected function PutOperacioDatafon() {
+        $WAPI = new WebApiController();        
+
+        $Matricules = isset($this->request['post']['Matricules']) ? json_decode($this->request['post']['Matricules'], true) : array();
+        $CodiOperacio = isset($this->request['post']['CodiOperacio']) ? $this->request['post']['CodiOperacio'] : '';            
+
+        $WAPI->setCodiOperacio($CodiOperacio, $Matricules);
+
+        return array('', '0');
+    }
+
     protected function ExisteixDNI() {
         
         if( isset( $this->request['DNI'] ) ) {

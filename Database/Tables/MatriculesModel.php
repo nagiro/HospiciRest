@@ -23,6 +23,7 @@ class MatriculesModel extends BDD {
   */  
     const PAGAMENT_CAP              = '0';
     const PAGAMENT_METALIC          = '21';
+    const PAGAMENT_DATAFON          = '61';     //Nou pagament amb targeta i TPV físic
     const PAGAMENT_TARGETA          = '20';
     const PAGAMENT_TELEFON          = '23';
     const PAGAMENT_TRANSFERENCIA    = '24';
@@ -40,6 +41,30 @@ class MatriculesModel extends BDD {
 
     }
 
+    /**
+     * Quan entra un pagament determinat, en quin estat es posa la matrícula
+     * $OM: Objecte Matrícula
+     * Pagament: Tipus de pagament escollit
+     * @return OM: Objecte Matrícula
+     */
+    public function setEstatByTipusPagament($OM) {
+
+        switch($OM[$this->gnfnwt('TipusPagament')]) {
+            case self::PAGAMENT_INVITACIO:      $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT; break;
+            case self::PAGAMENT_METALIC:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT; break;
+            case self::PAGAMENT_DATAFON:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT; break;
+            case self::PAGAMENT_TARGETA:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES; break;
+            case self::PAGAMENT_TELEFON:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
+            case self::PAGAMENT_TRANSFERENCIA:  $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
+            case self::PAGAMENT_DOMICILIACIO:   $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
+            case self::PAGAMENT_CODI_DE_BARRES: $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
+            case self::PAGAMENT_RESERVA:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT; break;
+            case self::PAGAMENT_LLISTA_ESPERA:  $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
+        }
+
+        return $OM;
+    }
+
     public function isMatriculaEstatOk($OM) {
         if( $OM[$this->gnfnwt('Estat')] == self::ESTAT_EN_ESPERA
             || $OM[$this->gnfnwt('Estat')] == self::ESTAT_ERROR
@@ -48,22 +73,6 @@ class MatriculesModel extends BDD {
             || $OM[$this->gnfnwt('Estat')] == self::ESTAT_DEVOLUCIO
         ) { return false; }
         else return true;
-    }
-
-    /**
-     * Quan entra un pagament determinat, en quin estat es posa la matrícula
-     * $OM: Objecte Matrícula
-     * Pagament: Tipus de pagament escollit
-     * @return OM: Objecte Matrícula
-     */
-    public function setEstatFromPagament($OM, $Pagament) {
-        if($Pagament == self::PAGAMENT_TARGETA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES;
-        if($Pagament == self::PAGAMENT_METALIC) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT;
-        if($Pagament == self::PAGAMENT_INVITACIO) $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT;
-        if($Pagament == self::PAGAMENT_CODI_DE_BARRES) $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT;
-        if($Pagament == self::PAGAMENT_RESERVA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT;
-        if($Pagament == self::PAGAMENT_LLISTA_ESPERA) $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_ESPERA;
-        return $OM;
     }
 
     /**

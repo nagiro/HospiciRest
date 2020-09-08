@@ -72,7 +72,8 @@ Vue.component('form-inscripcio-simple', {
     
                 for(let T of TipusPagaments) {                
                     if(T == CONST_PAGAMENT_METALIC) ReturnPagaments.push({"id": CONST_PAGAMENT_METALIC, "text": "Metàl·lic"});
-                    if(T == CONST_PAGAMENT_TARGETA) ReturnPagaments.push({"id": CONST_PAGAMENT_TARGETA, "text": "Targeta"});
+                    if(T == CONST_PAGAMENT_TARGETA) ReturnPagaments.push({"id": CONST_PAGAMENT_TARGETA, "text": "Targeta (Online)"});
+                    if(T == CONST_PAGAMENT_DATAFON) ReturnPagaments.push({"id": CONST_PAGAMENT_DATAFON, "text": "Targeta (Datàfon)"});
                     if(T == CONST_PAGAMENT_INVITACIO) ReturnPagaments.push({"id": CONST_PAGAMENT_INVITACIO, "text": "Invitació"});
                     
                     if(T == CONST_PAGAMENT_CODI_DE_BARRES) ReturnPagaments.push({"id": CONST_PAGAMENT_CODI_DE_BARRES, "text": "Codi de barres"});
@@ -252,7 +253,7 @@ Vue.component('form-inscripcio-simple', {
 
             // Si tenim la llista d'espera activa, retornem 0
             if( this.LlistaEsperaActiu ) return 0;
-            if( this.TipusPagament == CONST_PAGAMENT_INVITACIO) return 0;
+            if( this.TipusPagament == CONST_PAGAMENT_INVITACIO ) return 0;
 
             // Mirem si hem escollit descompte
             if( this.DescompteAplicat > 0 ) {
@@ -272,7 +273,7 @@ Vue.component('form-inscripcio-simple', {
                     || ( this.TipusPagament == 0 ) 
                     || ( this.Localitats.length == 0 && this.DetallTeatre.Seients.length > 0 )
                     || ( this.QuantesEntrades == 0 && this.DetallTeatre.Seients.length == 0 )
-                    || ( ( this.DetallCurs.CURSOS_DadesExtres && this.DetallCurs.CURSOS_DadesExtres.length > 0 ) && this.DadesExtres.length == 0 )
+                    || ( ( this.DetallCurs.CURSOS_DadesExtres && this.DetallCurs.CURSOS_DadesExtres.length > 0 ) && this.DadesExtres.length > 4 )
                     );
         },
         doInscripcio: function() {
@@ -309,6 +310,16 @@ Vue.component('form-inscripcio-simple', {
                         //Mostro el link per baixar-se el resguard d'inscripcions
                         this.Pas = 5; // Finalitzada.                     
                         this.MatriculesArray = X.data.AltaUsuari.MATRICULES;   //{[Matricules, ?TPV]}
+                        if( X.data.AltaUsuari.TIPUS_PAGAMENT == CONST_PAGAMENT_DATAFON ) {
+                            let P = prompt('Entreu el codi d\'operació que apareix al TPV');
+                            let FD = new FormData();
+                            FD.append('CodiOperacio', P);
+                            FD.append('Matricules', JSON.stringify(this.MatriculesArray));
+                            axios.post( CONST_api_web + '/PutOperacioDatafon', FD ).then( X => {
+                                alert('Codis actualitzats!');
+                            }).catch( E => { alert(E); });
+                        }
+                        
                     }                    
                     
                 } else {
@@ -334,7 +345,7 @@ Vue.component('form-inscripcio-simple', {
 
             <div v-if="Pas == 5" class="row alert alert-success Pas5"> 
                 <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
-                <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>            
+                <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>                            
             </div>
 
             <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 
@@ -455,7 +466,7 @@ Vue.component('form-inscripcio-simple', {
                         </select>                                        
                     </div>
 
-                    <div class="col" v-if="( DetallCurs.CURSOS_DadesExtres && DetallCurs.CURSOS_DadesExtres.length > 0 )">
+                    <div class="col" v-if="( DetallCurs.CURSOS_DadesExtres && DetallCurs.CURSOS_DadesExtres.length > 4 )">
                         <label for="DadesExtres">{{DetallCurs.CURSOS_DadesExtres}}</label>                        
                         <input type="text" class="form-control" v-model="DadesExtres" id="DadesExtres" :placeholder="DetallCurs.CURSOS_DadesExtres">
                     </div>
