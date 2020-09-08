@@ -453,7 +453,8 @@ class WebApiController
 
         //Si hem trobat l'activitat, comprovem que quedin prous entrades        
         $QuantesMatricules = $MM->getQuantesMatriculesHiHa( $idCurs );
-        if(($QuantesMatricules + $QuantesEntrades) > $OC[$CM->gnfnwt('Places')]) 
+        $TotalEntrades = $QuantesMatricules + $QuantesEntrades;
+        if( $TotalEntrades > $OC[$CM->gnfnwt('Places')] && $TipusPagament != $MM::PAGAMENT_LLISTA_ESPERA )
             throw new Exception('No hi ha prou places disponibles.');
 
         $Matricules = array(); $MatriculesId = array(); $idMatriculaGrup = 0;

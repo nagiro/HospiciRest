@@ -269,9 +269,6 @@ Vue.component('form-inscripcio-simple', {
             
         },
         NoPucSeguir: function() {            
-
-            console.log( ( ( this.DetallCurs.CURSOS_DadesExtres && this.DetallCurs.CURSOS_DadesExtres.length > 4 ) && this.DadesExtres.length == 0 ) );            
-
             return (   ! this.ConfirmoAssistencia 
                     || ( this.TipusPagament == 0 ) 
                     || ( this.Localitats.length == 0 && this.DetallTeatre.Seients.length > 0 )
