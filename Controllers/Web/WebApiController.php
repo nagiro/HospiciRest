@@ -72,10 +72,7 @@ class WebApiController
                 
         $OMatricula = $MatriculesModel->getMatriculaById( $idMatricula );        
         $OCurs = $CursosModel->getCursById( $OMatricula['MATRICULES_CursId'] );
-        $OUsuari = $UsuarisModel->getUsuariId( $OMatricula['MATRICULES_UsuariId'] );        
-
-        /* Carrego l'import general o bé només el de la primera matrícula */
-        $Import = ($Preu == 0 ) ? $OMatricula[$MatriculesModel->gnfnwt('Pagat')] : $Preu;
+        $OUsuari = $UsuarisModel->getUsuariId( $OMatricula['MATRICULES_UsuariId'] );                
         $idS = $OMatricula[$MatriculesModel->gnfnwt('SiteId')];
 
         $HTML = '';
@@ -157,7 +154,9 @@ class WebApiController
 
             /************************ PAGAMENT AMB TARGETA AL HEADER *********************************/
 
-            if( MatriculesModel::PAGAMENT_TARGETA == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {            
+            if(     MatriculesModel::PAGAMENT_TARGETA == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] 
+                ||  MatriculesModel::PAGAMENT_DATAFON == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')]
+            ) { 
                 $HTML = str_replace('@@DISPLAY_PAGAMENT_TARGETA@@', 'display: block;', $HTML);                        
                 $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
             } else {

@@ -59,7 +59,7 @@ class MatriculesModel extends BDD {
             case self::PAGAMENT_DOMICILIACIO:   $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
             case self::PAGAMENT_CODI_DE_BARRES: $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
             case self::PAGAMENT_RESERVA:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT; break;
-            case self::PAGAMENT_LLISTA_ESPERA:  $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
+            case self::PAGAMENT_LLISTA_ESPERA:  $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_ESPERA; break;
         }
 
         return $OM;
@@ -140,6 +140,7 @@ class MatriculesModel extends BDD {
         return (    $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_ACCEPTAT_PAGAT
                 ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_ACCEPTAT_NO_PAGAT
                 ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_RESERVAT
+                ||  $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_EN_ESPERA
             );
     }    
 
