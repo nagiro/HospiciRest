@@ -273,7 +273,7 @@ Vue.component('form-inscripcio-simple', {
                     || ( this.TipusPagament == 0 ) 
                     || ( this.Localitats.length == 0 && this.DetallTeatre.Seients.length > 0 )
                     || ( this.QuantesEntrades == 0 && this.DetallTeatre.Seients.length == 0 )
-                    || ( ( this.DetallCurs.CURSOS_DadesExtres && this.DetallCurs.CURSOS_DadesExtres.length > 0 ) && this.DadesExtres.length > 4 )
+                    || ( ( this.DetallCurs.CURSOS_DadesExtres && this.DetallCurs.CURSOS_DadesExtres.length > 4 ) && this.DadesExtres.length == 0 )
                     );
         },
         doInscripcio: function() {
