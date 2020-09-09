@@ -32,6 +32,7 @@ Vue.component('form-inscripcio-simple', {
                     PlacesLliures: 0,
                     LlistaEsperaActiu: false,
                     DadesExtres: '',
+                    CodiOperacio: '',
                     Pas: 0, 
                     classDNI: 'form-control', 
                     classNom: 'form-control',
@@ -306,20 +307,13 @@ Vue.component('form-inscripcio-simple', {
                     if(X.data.AltaUsuari.TPV) {
                         Object.keys( X.data.AltaUsuari.TPV ).forEach((K) => Vue.set(this.TPV, K, X.data.AltaUsuari.TPV[K]));                        
                         this.Pas = 8; // Fem pagament amb TPV
+                    } else if( X.data.AltaUsuari.TIPUS_PAGAMENT == CONST_PAGAMENT_DATAFON ) {
+                        this.Pas = 9; // Fem pagament amb Datàfon                                                
+                        this.MatriculesArray = X.data.AltaUsuari.MATRICULES;   //{[Matricules, ?TPV]}                                                                        
                     } else {
                         //Mostro el link per baixar-se el resguard d'inscripcions
                         this.Pas = 5; // Finalitzada.                     
-                        this.MatriculesArray = X.data.AltaUsuari.MATRICULES;   //{[Matricules, ?TPV]}
-                        if( X.data.AltaUsuari.TIPUS_PAGAMENT == CONST_PAGAMENT_DATAFON ) {
-                            let P = prompt('Entreu el codi d\'operació que apareix al TPV');
-                            let FD = new FormData();
-                            FD.append('CodiOperacio', P);
-                            FD.append('Matricules', JSON.stringify(this.MatriculesArray));
-                            axios.post( CONST_api_web + '/PutOperacioDatafon', FD ).then( X => {
-                                alert('Codis actualitzats!');
-                            }).catch( E => { alert(E); });
-                        }
-                        
+                        this.MatriculesArray = X.data.AltaUsuari.MATRICULES;   //{[Matricules, ?TPV]}                                                                        
                     }                    
                     
                 } else {
@@ -328,6 +322,18 @@ Vue.component('form-inscripcio-simple', {
                     this.ErrorInscripcio = X.data.error;
                 }
                 
+            }).catch( E => { alert(E); });
+        },
+        doTPVConfirm: function(PagatCorrectament) {
+            // let P = prompt('Entreu el codi d\'operació que apareix al TPV');
+            console.log(PagatCorrectament);
+            let FD = new FormData();
+            FD.append('CodiOperacio', this.CodiOperacio);
+            FD.append('Matricules', JSON.stringify(this.MatriculesArray));
+            FD.append('PagatCorrectament', PagatCorrectament );            
+            axios.post( CONST_api_web + '/PutOperacioDatafon', FD ).then( X => {
+                if(PagatCorrectament) { this.Pas = 5; }
+                else { this.Pas = 6; this.ErrorInscripcio = 'El pagament no s\'ha finalitzat correctament'; }
             }).catch( E => { alert(E); });
         }
 
@@ -495,7 +501,21 @@ Vue.component('form-inscripcio-simple', {
                 <div v-show="Loading" style="margin-top: 2vw">
                     <div class="alert alert-info">Carregant...</div>
                 </div>
- 
+                 
+            </div>
+
+            <div class="row" v-if="Pas == 9">
+                <div class="col">
+                    <label for="CodiOperacio">Codi d'operació datàfon</label>                        
+                    <input type="text" class="form-control" v-model="CodiOperacio" />
+                </div>
+                <div class="col">                        
+                    <button class="btn btn-success" @click.prevent="doTPVConfirm(true)">Pagat!</button>
+                </div>
+                <div class="col">                        
+                    <button class="btn btn-danger" @click.prevent="doTPVConfirm(false)">No pagat!</button>
+                </div>
+
             </div>
 
         </form>

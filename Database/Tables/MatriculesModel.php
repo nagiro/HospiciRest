@@ -52,7 +52,7 @@ class MatriculesModel extends BDD {
         switch($OM[$this->gnfnwt('TipusPagament')]) {
             case self::PAGAMENT_INVITACIO:      $OM[$this->gnfnwt('Estat')] = self::ESTAT_RESERVAT; break;
             case self::PAGAMENT_METALIC:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT; break;
-            case self::PAGAMENT_DATAFON:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_PAGAT; break;
+            case self::PAGAMENT_DATAFON:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES; break;
             case self::PAGAMENT_TARGETA:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_EN_PROCES; break;
             case self::PAGAMENT_TELEFON:        $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;
             case self::PAGAMENT_TRANSFERENCIA:  $OM[$this->gnfnwt('Estat')] = self::ESTAT_ACCEPTAT_NO_PAGAT; break;

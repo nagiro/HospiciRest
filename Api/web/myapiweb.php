@@ -86,8 +86,9 @@ class MyAPIWeb extends API
 
         $Matricules = isset($this->request['post']['Matricules']) ? json_decode($this->request['post']['Matricules'], true) : array();
         $CodiOperacio = isset($this->request['post']['CodiOperacio']) ? $this->request['post']['CodiOperacio'] : '';            
+        $PagatCorrectament = isset($this->request['post']['PagatCorrectament']) ? $this->request['post']['PagatCorrectament'] : '';            
 
-        $WAPI->setCodiOperacio($CodiOperacio, $Matricules);
+        $WAPI->setCodiOperacio($CodiOperacio, $Matricules, $PagatCorrectament);
 
         return array('', '0');
     }

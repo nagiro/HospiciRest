@@ -185,13 +185,14 @@ class WebApiController
      * $Matricules = Llistat de les matrícules associades a aquest número codificades
      * @return true si ha anat bé
      */
-    public function setCodiOperacio($CodiOperacio, $Matricules) {
+    public function setCodiOperacio($CodiOperacio, $Matricules, $PagatCorrectament) {
         
         $MM = new MatriculesModel();
-
+        
         foreach($Matricules as $CodiMatricula):
             $idMatricula = $this->Decrypt($CodiMatricula);
             $OM = $MM->getMatriculaById($idMatricula);
+            if($PagatCorrectament) $OM[$MM->gnfnwt("Estat")] = $MM::ESTAT_ACCEPTAT_PAGAT;
             $OM[$MM->gnfnwt('TpvOperacio')] = $CodiOperacio;
             $MM->updateMatricula($OM);            
         endforeach;
@@ -536,7 +537,7 @@ class WebApiController
                         
         $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);
         
-        if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
+        // if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
         
         return $HTML;
         
