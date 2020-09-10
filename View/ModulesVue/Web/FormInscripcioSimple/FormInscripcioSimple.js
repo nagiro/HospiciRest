@@ -330,7 +330,7 @@ Vue.component('form-inscripcio-simple', {
             let FD = new FormData();
             FD.append('CodiOperacio', this.CodiOperacio);
             FD.append('Matricules', JSON.stringify(this.MatriculesArray));
-            FD.append('PagatCorrectament', PagatCorrectament );            
+            FD.append('PagatCorrectament', (PagatCorrectament) ? 1 : 0 );            
             axios.post( CONST_api_web + '/PutOperacioDatafon', FD ).then( X => {
                 if(PagatCorrectament) { this.Pas = 5; }
                 else { this.Pas = 6; this.ErrorInscripcio = 'El pagament no s\'ha finalitzat correctament'; }

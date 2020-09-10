@@ -192,7 +192,7 @@ class WebApiController
         foreach($Matricules as $CodiMatricula):
             $idMatricula = $this->Decrypt($CodiMatricula);
             $OM = $MM->getMatriculaById($idMatricula);
-            if($PagatCorrectament) $OM[$MM->gnfnwt("Estat")] = $MM::ESTAT_ACCEPTAT_PAGAT;
+            if($PagatCorrectament == '1') $OM[$MM->gnfnwt("Estat")] = $MM::ESTAT_ACCEPTAT_PAGAT;
             $OM[$MM->gnfnwt('TpvOperacio')] = $CodiOperacio;
             $MM->updateMatricula($OM);            
         endforeach;
