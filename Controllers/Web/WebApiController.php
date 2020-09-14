@@ -563,7 +563,7 @@ class WebApiController
         try{
                 $post = array('from' => $from,
                 'fromName' => 'Casa de Cultura de Girona',
-                'apikey' => '6c7b2fdd-c15d-4e8d-b61b-d7fbb6d45f45',
+                'apikey' => '882D1E9420DA8EFC9A20F712B96703AC6D9D06099C059D20325B91A467DB449A558C4DAD46C13DC2712D8132F35847D3',
                 'subject' => $subject,
                 'to' => $to,
                 'bodyHtml' => $HTML,                
