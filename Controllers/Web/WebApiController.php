@@ -537,7 +537,7 @@ class WebApiController
                         
         $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);
         
-        // if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
+        if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
         
         return $HTML;
         
