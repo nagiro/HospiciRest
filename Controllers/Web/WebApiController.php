@@ -540,8 +540,7 @@ class WebApiController
         if(!empty($email) > 0) { 
             
             if($this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML)){
-                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);                                 
-                $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);                                 
+                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);                                                 
                 $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);                                 
             } else {
                 $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#FFD0D0', $HTML);                                 
@@ -563,8 +562,11 @@ class WebApiController
         $MM = new MatriculesModel();
         $OM = $MM->getMatriculaById($IdMatricula);
         $Email = $MM->getUserEmail($OM);
-
-        return $this->EnviaEmailInscripcio( $Encrypted_IdMatricula, $Email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti );            
+        $HTML = $this->EnviaEmailInscripcio( $Encrypted_IdMatricula, $Email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti ); 
+        
+        // Si encara hi ha el display... l'ensenyem perquè es vegi que s'ha enviat el correu.
+        $HTML = str_replace('@@DISPLAY_MAIL@@',  'block', $HTML);                                 
+        return $HTML;
         
     }
 
