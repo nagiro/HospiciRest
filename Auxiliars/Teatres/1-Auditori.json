@@ -43,10 +43,10 @@
       { "tipus": "loc", "seient": 28, "fila": 2, "Estil": 1 },
       { "tipus": "bloc", "seient": 29, "fila": 2, "Estil": 1 },
       { "tipus": "loc", "seient": 30, "fila": 2, "Estil": 1 },
-      { "tipus": "bloc", "seient": 31, "fila": 1, "Estil": 1 },
-      { "tipus": "loc", "seient": 32, "fila": 1, "Estil": 1 },
-      { "tipus": "bloc", "seient": 33, "fila": 1, "Estil": 1 },
-      { "tipus": "loc", "seient": 34, "fila": 1, "Estil": 1 }
+      { "tipus": "bloc", "seient": 31, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 32, "fila": 2, "Estil": 1 },
+      { "tipus": "bloc", "seient": 33, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 34, "fila": 2, "Estil": 1 }
     ],
     [   
       { "tipus": "fila", "text": "Fila 3", "Estil": 0 },
@@ -63,9 +63,9 @@
       { "tipus": "bloc", "seient": 45, "fila": 3, "Estil": 1 },
       { "tipus": "loc", "seient": 46, "fila": 3, "Estil": 1 },
       { "tipus": "bloc", "seient": 47, "fila": 3, "Estil": 1 },
-      { "tipus": "loc", "seient": 48, "fila": 1, "Estil": 1 },
-      { "tipus": "bloc", "seient": 49, "fila": 1, "Estil": 1 },
-      { "tipus": "loc", "seient": 50, "fila": 1, "Estil": 1 }
+      { "tipus": "loc", "seient": 48, "fila": 3, "Estil": 1 },
+      { "tipus": "bloc", "seient": 49, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 50, "fila": 3, "Estil": 1 }
     ],
     [   
       { "tipus": "fila", "text": "Fila 4", "Estil": 0 },
