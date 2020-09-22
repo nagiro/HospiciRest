@@ -239,15 +239,18 @@ Vue.component('form-inscripcio-simple', {
             const ExisteixAEscollits = (this.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
             const ExisteixAJaComprats = (this.SeientsOcupats.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
             if ( ExisteixAEscollits ) {
-                Estil2["color"] = "Red";
+                Estil2["color"] = "Blue";                
+                Estil2["cursor"] = "Pointer";
             } else if (ExisteixAJaComprats ) {
-                Estil2["color"] = "Blue";
+                Estil2["color"] = "Red";
+                Estil2["cursor"] = "not-allowed";
             } else { 
                 Estil2["color"] = "Black";
+                Estil2["cursor"] = "Pointer";                
             }
 
-            if(Tipus == 'bloc') Estil2["color"] = 'gray';
-            if(Tipus == 'blanc') Estil2["color"] = '#EAEAEA';
+            if(Tipus == 'bloc') { Estil2["color"] = 'gray'; Estil2["cursor"] = "not-allowed"; }
+            if(Tipus == 'blanc') { Estil2["color"] = '#EAEAEA'; }
             
             return Estil2;
         },
@@ -446,7 +449,7 @@ Vue.component('form-inscripcio-simple', {
                             <div v-if="Seient.tipus == 'text'" :style="DetallTeatre.Estils[Seient.Estil]"> <h1>{{Seient.text}}</h1> </div>
                             <div v-if="Seient.tipus == 'fila'" :style="DetallTeatre.Estils[Seient.Estil]"> <h4>{{Seient.text}}</h4> </div>
                             <div v-if="Seient.tipus == 'loc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil], Seient.tipus )">
-                                <a class="withHand" @click="setLocalitat(Seient.fila, Seient.seient)"><i class="fas fa-chair"></i></a>
+                                <a @click="setLocalitat(Seient.fila, Seient.seient)"><i class="fas fa-chair"></i></a>
                             </div>
                             <div v-if="Seient.tipus == 'bloc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil], Seient.tipus )"><i class="fas fa-times"></i></div>
                             <div v-if="Seient.tipus == 'blanc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil], Seient.tipus )"><i class="fas fa-chair"></i></div>
