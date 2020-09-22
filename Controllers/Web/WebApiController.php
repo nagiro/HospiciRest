@@ -541,6 +541,7 @@ class WebApiController
             
             if($this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML)){
                 $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);                                                 
+                $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);                                                 
                 $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);                                 
             } else {
                 $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#FFD0D0', $HTML);                                 
