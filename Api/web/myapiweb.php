@@ -47,7 +47,7 @@ class MyAPIWeb extends API
 
         if($isGrup) { 
             $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); 
-            $HTML = str_replace('@@DISPLAY_MAIL@@',  'block', $HTML); // Si encara hi ha el display... l'ensenyem perquè es vegi que s'ha enviat el correu.
+            $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML); // Si encara hi ha el display... l'ensenyem perquè es vegi que s'ha enviat el correu.
         }
         if($testMail) { $HTML = $WAPI->ReenviaEmailInscripcio( $InscripcioCodificada, $UrlDesti ); }
         if($GenKey) { $HTML = "El valor {$_GET['k']} és igual a " . $WAPI->Encrypt($_GET['k']); }
