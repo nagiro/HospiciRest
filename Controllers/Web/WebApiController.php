@@ -535,10 +535,21 @@ class WebApiController
      */
     public function EnviaEmailInscripcio( $Encrypted_IdMatricula, $email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti ) {
                         
-        $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);
+        $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);        
         
-        if(!empty($email) > 0) $this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML);        
-        
+        if(!empty($email) > 0) { 
+            
+            if($this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML)){
+                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);                                 
+                $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);                                 
+                $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);                                 
+            } else {
+                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#FFD0D0', $HTML);                                 
+                $HTML = str_replace('@@DISPLAY_MAIL@@',  'block', $HTML);                                                 
+                $HTML = str_replace('@@EMAIL_SEND@@',  'Hi ha hagut algun error enviant el correu a: '.$email, $HTML);                                 
+            }
+        }
+
         return $HTML;
         
     }
@@ -586,6 +597,8 @@ class WebApiController
                 if( $RES['success'] === false ){
                     throw new Exception($result);
                 }                
+                
+                return true;
                 
         }
         catch(Exception $ex){

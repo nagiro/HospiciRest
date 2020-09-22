@@ -497,11 +497,12 @@
 	.mcnButtonContent { display: none; }
 }
 </style></head>
-    <body>
+    <body>		
         <!--*|IF:MC_PREVIEW_TEXT|*-->
         <!--[if !gte mso 9]><!----><span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">*|MC_PREVIEW_TEXT|*</span><!--<![endif]-->
         <!--*|END:IF|*-->
-        <center>
+        <center>			
+			<div style="display: @@DISPLAY_MAIL@@; background-color: @@DISPLAY_MAIL_COLOR@@; padding: 1vw; font-size:0.8rem; color: gray;">@@EMAIL_SEND@@</div>
             <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
                 <tr>
                     <td align="center" valign="top" id="bodyCell">
@@ -522,9 +523,7 @@
                 <td style="padding:9px" class="mcnImageBlockInner" valign="top">
                     <table class="mcnImageContentContainer" style="min-width:100%;" width="100%" cellspacing="0" cellpadding="0" border="0" align="left">
                         <tbody><tr>
-                            <td class="mcnImageContent" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;" valign="top">
-                                
-                                    
+                            <td class="mcnImageContent" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;" valign="top">                                    
                                         <img alt="" src="@@LOGO@@" style="width: 30vw; padding-bottom: 0; vertical-align: bottom;" class="mcnImage" align="middle">
                                     
                                 
