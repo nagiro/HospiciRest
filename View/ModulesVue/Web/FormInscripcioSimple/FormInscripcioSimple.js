@@ -233,7 +233,7 @@ Vue.component('form-inscripcio-simple', {
                 else if( !ExisteixAJaComprats ) this.Localitats.push([fila, seient]);            
             }            
         },
-        getColorLocalitat: function(fila, seient, Estil) {
+        getColorLocalitat: function(fila, seient, Estil, Tipus) {
             
             let Estil2 = {}; Object.assign( Estil2, Estil)
             const ExisteixAEscollits = (this.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
@@ -245,6 +245,9 @@ Vue.component('form-inscripcio-simple', {
             } else { 
                 Estil2["color"] = "Black";
             }
+
+            if(Tipus == 'bloc') Estil2["color"] = 'gray';
+            if(Tipus == 'blanc') Estil2["color"] = '#EAEAEA';
             
             return Estil2;
         },
@@ -442,9 +445,11 @@ Vue.component('form-inscripcio-simple', {
                         <div style="" v-for=" Seient of Fila ">
                             <div v-if="Seient.tipus == 'text'" :style="DetallTeatre.Estils[Seient.Estil]"> <h1>{{Seient.text}}</h1> </div>
                             <div v-if="Seient.tipus == 'fila'" :style="DetallTeatre.Estils[Seient.Estil]"> <h4>{{Seient.text}}</h4> </div>
-                            <div v-if="Seient.tipus == 'loc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil] )">
+                            <div v-if="Seient.tipus == 'loc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil], Seient.tipus )">
                                 <a class="withHand" @click="setLocalitat(Seient.fila, Seient.seient)"><i class="fas fa-chair"></i></a>
                             </div>
+                            <div v-if="Seient.tipus == 'bloc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil], Seient.tipus )"><i class="fas fa-times"></i></div>
+                            <div v-if="Seient.tipus == 'blanc'" :style="getColorLocalitat(Seient.fila, Seient.seient, DetallTeatre.Estils[Seient.Estil], Seient.tipus )"><i class="fas fa-chair"></i></div>
                         </div>
                     </div>
                 </div>
