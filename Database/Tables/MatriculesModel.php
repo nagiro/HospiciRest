@@ -276,7 +276,7 @@ class MatriculesModel extends BDD {
                 where 
                         {$this->getOldFieldNameWithTable('CursId')} = {$idCurs}
                 AND     {$this->getOldFieldNameWithTable('Actiu')} = 1         
-                AND  " . implode(" OR ", $W);                                                
+                AND  (" . implode(" OR ", $W).')';
 
             $QuantsNiHa = $this->runQuery($SQL, array());
                 

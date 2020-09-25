@@ -463,7 +463,7 @@ class WebApiController
         if($QuantesEntrades > 0) {
 
             // Si són localitats, mirem que no estiguin ocupades per algú actualment
-            // if( ! $MM->hasSeientsSonLliures($Localitats, $CM->getCursId($OC) ) ) throw new Exception('Hi ha hagut algun conflicte guardant les localitats. Torna-ho a provar.');
+            if( ! $MM->hasSeientsSonLliures($Localitats, $CM->getCursId($OC) ) ) throw new Exception('Hi ha hagut algun conflicte guardant les localitats. Torna-ho a provar.');
 
             // Guardem les inscripcions
             for($i = 0; $i < $QuantesEntrades; $i++){
