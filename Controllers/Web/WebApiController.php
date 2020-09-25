@@ -463,7 +463,7 @@ class WebApiController
         if($QuantesEntrades > 0) {
 
             // Si són localitats, mirem que no estiguin ocupades per algú actualment
-            if( ! $MM->hasSeientsSonLliures($Localitats, $CM->getCursId($OC) ) ) throw new Exception('Hi ha hagut algun conflicte guardant les localitats. Torna-ho a provar.');
+            // if( ! $MM->hasSeientsSonLliures($Localitats, $CM->getCursId($OC) ) ) throw new Exception('Hi ha hagut algun conflicte guardant les localitats. Torna-ho a provar.');
 
             // Guardem les inscripcions
             for($i = 0; $i < $QuantesEntrades; $i++){
@@ -540,13 +540,13 @@ class WebApiController
         if(!empty($email) > 0) { 
             
             if($this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML)){
-                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);                                                 
-                $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);                                                 
-                $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);                                 
+                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);
+                $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);
+                $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);
             } else {
-                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#FFD0D0', $HTML);                                 
-                $HTML = str_replace('@@DISPLAY_MAIL@@',  'block', $HTML);                                                 
-                $HTML = str_replace('@@EMAIL_SEND@@',  'Hi ha hagut algun error enviant el correu a: '.$email, $HTML);                                 
+                $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#FFD0D0', $HTML);
+                $HTML = str_replace('@@DISPLAY_MAIL@@',  'block', $HTML);
+                $HTML = str_replace('@@EMAIL_SEND@@',  'Hi ha hagut algun error enviant el correu a: '.$email, $HTML);
             }
         }
 
