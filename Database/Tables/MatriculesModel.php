@@ -135,6 +135,14 @@ class MatriculesModel extends BDD {
         return $this->_doInsert($ObjecteMatricula);        
     }
 
+    public function ReturnEstatsCorrectesSQL() {
+        return "(".self::ESTAT_ACCEPTAT_PAGAT.
+                    ",".self::ESTAT_ACCEPTAT_NO_PAGAT.
+                    ",".self::ESTAT_RESERVAT.
+                    ",".self::ESTAT_EN_ESPERA.
+                ")";
+    }
+
     public function IsMatriculaCorrectaPerImprimirResguard($ObjecteMatricula) {
     
         return (    $ObjecteMatricula[$this->gnfnwt('Estat')] == self::ESTAT_ACCEPTAT_PAGAT
@@ -275,7 +283,8 @@ class MatriculesModel extends BDD {
                 from {$this->getTableName()}             
                 where 
                         {$this->getOldFieldNameWithTable('CursId')} = {$idCurs}
-                AND     {$this->getOldFieldNameWithTable('Actiu')} = 1         
+                AND     {$this->getOldFieldNameWithTable('Actiu')} = 1 
+                AND     {$this->getOldFieldNameWithTable('Estat')} in ".$this->ReturnEstatsCorrectesSQL()." 
                 AND  (" . implode(" OR ", $W).')';
 
             $QuantsNiHa = $this->runQuery($SQL, array());
