@@ -245,7 +245,7 @@ Vue.component('form-inscripcio-simple', {
                 Estil2["color"] = "Red";
                 Estil2["cursor"] = "not-allowed";
             } else { 
-                Estil2["color"] = "Black";
+                Estil2["color"] = "Green";
                 Estil2["cursor"] = "Pointer";                
             }
 
