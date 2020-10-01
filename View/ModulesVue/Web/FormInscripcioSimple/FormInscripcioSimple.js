@@ -159,34 +159,37 @@ Vue.component('form-inscripcio-simple', {
             } else return Array.from(Array(5), (_, i) => i + 1);
 
         }, 
-        dnikeymonitor: function($event) {
+        dnikeymonitor: function($event, isBoto) {
             
             if( ValidaDNI(this.DNI) ) {
                 this.classDNI = 'form-control is-valid';
-                this.Loading = true;
-                axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {                    
-                    this.Loading = false;
-                    if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
-                        if(X.data.ExisteixDNI) {
-                            this.Pas = 2;
-                        } else {                               
-                            this.Pas = 1;
-                        }
-                    } else {                                                         
-                        this.Pas = 7; 
-                        this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
-                        if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
-                            this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
-                            for(C of X.data.PotMatricularCursRestringit.CursosOk) {
-                                this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
+                if(isBoto) {
+                    this.Loading = true;
+                    axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {                    
+                        this.Loading = false;
+                        if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
+                            if(X.data.ExisteixDNI) {
+                                this.Pas = 2;
+                            } else {                               
+                                this.Pas = 1;
                             }
-                            this.ErrorInscripcio += '</ul>';                                
-                        }
-                        
-                        // this.ErrorInscripcio //+ this.PoseuEnContacteString();
-                    }                                        
-                }).catch( E => { alert(E); });
+                        } else {                                                         
+                            this.Pas = 7; 
+                            this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
+                            if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
+                                this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
+                                for(C of X.data.PotMatricularCursRestringit.CursosOk) {
+                                    this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
+                                }
+                                this.ErrorInscripcio += '</ul>';                                
+                            }
+                            
+                            // this.ErrorInscripcio //+ this.PoseuEnContacteString();
+                        }                                                                
+                    }).catch( E => { alert(E); });
+                }
             } else {
+                if(isBoto) alert('El DNI no és correcte.');
                 this.Pas = 0;
                 this.classDNI = 'form-control is-invalid';                
             }
@@ -239,7 +242,7 @@ Vue.component('form-inscripcio-simple', {
             const ExisteixAEscollits = (this.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
             const ExisteixAJaComprats = (this.SeientsOcupats.Localitats.findIndex( X => X[0] == fila && X[1] == seient) > -1);
             if ( ExisteixAEscollits ) {
-                Estil2["color"] = "Blue";                
+                Estil2["color"] = "Purple";                
                 Estil2["cursor"] = "Pointer";
             } else if (ExisteixAJaComprats ) {
                 Estil2["color"] = "Red";
@@ -341,6 +344,13 @@ Vue.component('form-inscripcio-simple', {
                 if(PagatCorrectament) { this.Pas = 5; }
                 else { this.Pas = 6; this.ErrorInscripcio = 'El pagament no s\'ha finalitzat correctament'; }
             }).catch( E => { alert(E); });
+        },
+        getNomBotoInscriume() {
+            if(this.getPreu() > 0) {
+                return 'Seguir fent el pagament';
+            } else {
+                return 'Inscriu-me';
+            }
         }
 
     },
@@ -368,10 +378,16 @@ Vue.component('form-inscripcio-simple', {
 
             <div class="row" v-if="Pas == 0">
                 <div v-show="!Loading" class="col">
-                    <label for="DNI">DNI/NIE</label>
-                    <input type="text" :class="classDNI" id="DNI" v-on:keyup="dnikeymonitor" v-model="DNI" aria-describedby="DNI" placeholder="Escriu el DNI/NIE..." />                         
-                    <small id="DNIHelp" class="form-text text-muted">Entri el seu DNI per apuntar-se. </small>                
-                </div>            
+                    <label for="DNI">DNI/NIE</label>                    
+                    <div class="input-group mb-3">
+                        <input type="text" :class="classDNI" id="DNI" v-on:keyup="dnikeymonitor($event, false)" v-model="DNI" aria-describedby="DNI" placeholder="Escriu el DNI/NIE..." />                         
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" @click="dnikeymonitor($event, true)" type="button">Segueix fent inscripció</button>
+                        </div>
+                    </div>
+                
+                    <small id="DNIHelp" class="form-text text-muted">Entri el seu DNI per apuntar-se. </small>                                                        
+                </div>                            
                 <div class="col" v-show="Loading">
                     <div class="alert alert-info">Carregant...</div>
                 </div>
@@ -434,7 +450,7 @@ Vue.component('form-inscripcio-simple', {
                     </div>                        
 
                     <div class="col-12">
-                        <button :disabled="!keymonitor()" type="submit" class="btn btn-info" @click.prevent="botoDadesUsuari()">Segueix...</button>
+                        <button :disabled="!keymonitor()" type="submit" class="boto btn btn-info" @click.prevent="botoDadesUsuari()">Segueix...</button>
                     </div>                    
 
                 </div>    
@@ -499,10 +515,10 @@ Vue.component('form-inscripcio-simple', {
                 </div>
                 
                 <div v-show="!Loading">
-                    <button v-if="LlistaEsperaActiu" :disabled="NoPucSeguir()" type="submit" class="btn btn-danger" @click.prevent="doInscripcio()">Posa'm en espera</button>
+                    <button v-if="LlistaEsperaActiu" :disabled="NoPucSeguir()" type="submit" class="boto btn btn-danger" @click.prevent="doInscripcio()">Posa'm en espera</button>
                     <small v-if="LlistaEsperaActiu"  id="EmailHelp" class="form-text text-muted">Vostè ha quedat en llista d'espera. Si, en un futur hi ha places disponibles, ens posarem en contacte amb vostè.</small>
     
-                    <button v-if="!LlistaEsperaActiu"  :disabled="NoPucSeguir()" type="submit" class="btn btn-primary" @click.prevent="doInscripcio()">Inscriu-me</button>
+                    <button v-if="!LlistaEsperaActiu"  :disabled="NoPucSeguir()" type="submit" class="boto btn btn-primary" @click.prevent="doInscripcio()">{{getNomBotoInscriume()}}</button>
                     <small  v-if="!LlistaEsperaActiu" id="EmailHelp" class="form-text text-muted">Nomes podrà prèmer el botó si ha omplert totes les dades necessàries.</small>
                 </div>
 
@@ -518,10 +534,10 @@ Vue.component('form-inscripcio-simple', {
                     <input type="text" class="form-control" v-model="CodiOperacio" />
                 </div>
                 <div class="col">                        
-                    <button class="btn btn-success" @click.prevent="doTPVConfirm(true)">Pagat!</button>
+                    <button class="boto btn btn-success" @click.prevent="doTPVConfirm(true)">Pagat!</button>
                 </div>
                 <div class="col">                        
-                    <button class="btn btn-danger" @click.prevent="doTPVConfirm(false)">No pagat!</button>
+                    <button class="boto btn btn-danger" @click.prevent="doTPVConfirm(false)">No pagat!</button>
                 </div>
 
             </div>
@@ -532,7 +548,7 @@ Vue.component('form-inscripcio-simple', {
             <input type="hidden" name="Ds_SignatureVersion" :value="TPV.version" /></br>
             <input type="hidden" name="Ds_MerchantParameters" :value="TPV.params"/></br>
             <input type="hidden" name="Ds_Signature" :value="TPV.signature" /></br>
-            <button type="submit" class="btn btn-primary"> Fes el pagament </button>
+            <button type="submit" class="boto btn btn-primary"> Fes el pagament </button>
         </form>    
 
     </div>

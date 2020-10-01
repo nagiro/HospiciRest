@@ -7,7 +7,7 @@
 .formulari-inscripcio label { margin-bottom: 0.5vw; }
 .formulari-inscripcio .alerta { padding: 1vw; background-color: crimson; color: white; border-radius: 10px; margin: 2vw 0vw; }
 .formulari-inscripcio .form-check { margin-top: 2vw;  }
-.formulari-inscripcio button { margin-top: 2vw;  }
+.formulari-inscripcio .boto { margin-top: 2vw;  }
 .formulari-inscripcio .Pas5 { display:block; }
 .formulari-inscripcio .Pas5 > ul { margin-top: 1vw; }
 
