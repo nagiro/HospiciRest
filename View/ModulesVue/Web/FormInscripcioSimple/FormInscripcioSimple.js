@@ -382,7 +382,7 @@ Vue.component('form-inscripcio-simple', {
                     <div class="input-group mb-3">
                         <input type="text" :class="classDNI" id="DNI" v-on:keyup="dnikeymonitor($event, false)" v-model="DNI" aria-describedby="DNI" placeholder="Escriu el DNI/NIE..." />                         
                         <div class="input-group-append">
-                            <button class="btn btn-outline-primary" @click="dnikeymonitor($event, true)" type="button">Segueix fent inscripció</button>
+                            <button class="btn btn-outline-primary" @click="dnikeymonitor($event, true)" type="button">Valida el DNI</button>
                         </div>
                     </div>
                 
