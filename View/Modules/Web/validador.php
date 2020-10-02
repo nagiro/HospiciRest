@@ -18,7 +18,7 @@
         <h1>Validador d'entrades</h1>
 
         <div class="validador_box">
-            <input type="text" v-model="QRText" v-on:keyup.13="ValidaCodi" />
+            <input type="text" v-model="QRText" v-on:keyup.13="ValidaCodi($event, true)" />
             <button @click="ValidaCodi($event, true)">Valida</button>
         </div>
 
@@ -61,8 +61,7 @@
             },
             computed: {},
             methods: {
-                EstilFila: function(HoraEntrada) {                    
-                    console.log(HoraEntrada);
+                EstilFila: function(HoraEntrada) {                                        
                     if( HoraEntrada && HoraEntrada.length > 0 ) { return 'validador_arribat'; }
                     else { return 'validador_falta_arribar'; }
                 },
