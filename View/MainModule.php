@@ -112,8 +112,9 @@ class MainModule {
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
             case 'validador':
+                $Data = $this->WebController->getActivitatsDiaValidar();
                 $this->getModuleContent('HtmlHeaderWeb.php');                                                
-                $this->getModuleContent('Web/validador.php', json_encode(array()) ); 
+                $this->getModuleContent('Web/validador.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
         }         

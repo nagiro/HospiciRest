@@ -444,6 +444,12 @@ class WebController
         return $EXTRES;
     }    
 
+    public function getActivitatsDiaValidar() {
+        $CM = new CursosModel();        
+        return $CM->getTodayCursosAndMatricules();
+    }
+
+
 
  }
 

@@ -306,10 +306,12 @@ class MatriculesModel extends BDD {
      */
     public function validaQR($idMatricula) {
         
-        $RET = array('estat' => false, 'error' => '');
+        $RET = array('estat' => false, 'error' => '', 'idMatricula' => 0);
 
         // Si la matrícula és false, vol dir que no hem pogut desencriptar-la
         if($idMatricula) {
+            
+            $RET['idMatricula'] = $idMatricula;
 
             $OMatricula = $this->getMatriculaById($idMatricula);
             if(!empty($OMatricula)) {

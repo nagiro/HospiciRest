@@ -5,6 +5,9 @@
         .validador_error { background-color: red; }
         .validador_ok { background-color: green; }
         .validador_codi { font-size:1rem; }
+        .validador_arribat { background-color: #ff9d88; }
+        .validador_falta_arribar { background-color: #b0ffc3; }
+        .validador_falten { margin-top: 2vw; }
     </style>
 
 </head>
@@ -16,14 +19,22 @@
 
         <div class="validador_box">
             <input type="text" v-model="QRText" v-on:keyup.13="ValidaCodi" />
-            <button @click="ValidaCodi">Valida</button>
+            <button @click="ValidaCodi($event, true)">Valida</button>
         </div>
 
-        <div class="validador_resposta" :class="VRC">
-            <span class="validador_codi">{{QRTextCopy}}</span>
-            <br />
-            <br />
+        <div class="validador_resposta" :class="VRC">            
             {{Missatge}}
+        </div>
+        
+        <div class="validador_falten">
+            <h1>Llistat d'assistents</h1>
+            <table>
+                <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada)">
+                    <td style="padding: 0.5vw;"><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
+                    <td style="padding: 0.5vw;">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
+                    <td style="padding: 0.5vw;"> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
+                </tr>
+            </table>
         </div>
 
         <div style="margin-bottom: 2vw">&nbsp;</div>
@@ -41,22 +52,39 @@
                 QRText: '',
                 QRTextCopy: '',
                 VRC: '',
-                Missatge: ''
-
+                Missatge: '',
+                CursosMatricules: []                
             },            
-            created: function() {},
+            created: function() {
+                let CursosMatriculesRaw = [];
+                this.CursosMatricules = <?php echo $Data ?>;                
+            },
             computed: {},
             methods: {
-                ValidaCodi(text) {
+                EstilFila: function(HoraEntrada) {                    
+                    console.log(HoraEntrada);
+                    if( HoraEntrada && HoraEntrada.length > 0 ) { return 'validador_arribat'; }
+                    else { return 'validador_falta_arribar'; }
+                },
+                ValidaCodi(text, fromQR) {
                     let FD = new FormData();
-                    FD.append('QR', this.QRText); 
+                    if(fromQR) FD.append('QR', this.QRText); 
+                    else FD.append('idMatricula', text);
 
                     this.axios.post('/apiweb/validaCodi', FD )
-                    .then( R => {  
-                        console.log(R.data);
+                    .then( R => {                          
                         if(R.data.estat) {
-                            this.VRC = ['validador_resposta', 'validador_ok'];
-                            this.Missatge = 'Entrada correcta';                            
+                            let idMatricula = R.data.idMatricula;
+                            this.VRC = ['validador_resposta', 'validador_ok'];                            
+                            
+                            // Trec la matrícula de la llista de pendents i la poso a l'altra llista
+                            let i = this.CursosMatricules.findIndex( E => E.idMatricules == idMatricula);
+                            let E = this.CursosMatricules[i];
+                            this.$set(this.CursosMatricules[i], 'data_hora_entrada', 'Arribat');                            
+                            
+                            // Munto el missatge OK. 
+                            this.Missatge = E.Cog1 + ' ' + E.Cog2 + ' ' + E.Nom + ' | F:' + E.Fila + '|S:' + E.Seient;
+                                                                                                                
                             // Ha anat bé
                         } else {
                             // Hi ha errors

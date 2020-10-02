@@ -41,7 +41,7 @@ class CursosModel extends BDD {
     public function getCursId($OC) { return $OC[$this->gnfnwt('IdCurs')]; }
     public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => intval($idCurs)) ); }    
     public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => intval($CicleId)) ); }
-    public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId), $this->gofnwt('IsActiu') => '1', $this->gofnwt('Actiu') => '1') ); }
+    public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId), $this->gofnwt('IsActiu') => '1', $this->gofnwt('Actiu') => '1') ); }    
     
     public function getDescomptes($CursObject) {
         require_once BASEDIR."Database/Tables/DescomptesModel.php";
@@ -157,6 +157,27 @@ class CursosModel extends BDD {
         }
         
         return $Return;
+    }
+
+    public function getTodayCursosAndMatricules() {
+
+        require_once 'MatriculesModel.php';
+
+        $MM = new MatriculesModel();
+
+        $SQL = "
+            SELECT c.idCursos, c.TitolCurs, m.idMatricules, m.data_hora_entrada, m.Fila, m.Seient, m.GrupMatricules, u.Nom, u.Cog1, u.Cog2
+            FROM cursos c LEFT JOIN matricules m ON (c.idCursos = m.Cursos_idCursos)
+            LEFT JOIN usuaris u ON (m.Usuaris_UsuariID = u.UsuariID)
+            WHERE m.Estat IN {$MM->ReturnEstatsCorrectesSQL()}
+            AND c.actiu = 1
+            AND c.site_id = 1
+            AND c.DataInici = CURDATE()
+            ORDER BY c.TitolCurs, u.Cog1, u.Cog2, u.Nom
+        ";
+        
+        return $this->runQuery($SQL, array());
+
     }
 
 }
