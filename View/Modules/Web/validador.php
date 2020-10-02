@@ -78,11 +78,14 @@
                             
                             // Trec la matrícula de la llista de pendents i la poso a l'altra llista
                             let i = this.CursosMatricules.findIndex( E => E.idMatricules == idMatricula);
-                            let E = this.CursosMatricules[i];
-                            this.$set(this.CursosMatricules[i], 'data_hora_entrada', 'Arribat');                            
-                            
-                            // Munto el missatge OK. 
-                            this.Missatge = E.Cog1 + ' ' + E.Cog2 + ' ' + E.Nom + ' | F:' + E.Fila + '|S:' + E.Seient;
+                            if(i == -1) {
+                                this.Missatge = "L'entrada s'ha venut a taquilla.";
+                            } else {
+                                let E = this.CursosMatricules[i];
+                                this.$set(this.CursosMatricules[i], 'data_hora_entrada', 'Arribat');                            
+                                // Munto el missatge OK. 
+                                this.Missatge = E.Cog1 + ' ' + E.Cog2 + ' ' + E.Nom + ' | F:' + E.Fila + '|S:' + E.Seient;
+                            }                                                                                    
                                                                                                                 
                             // Ha anat bé
                         } else {
