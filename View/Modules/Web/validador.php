@@ -1,7 +1,7 @@
     <style>
         #validador { padding: 2vw; }
         .validador_box { margin-top: 2vw; }
-        .validador_resposta { background-color: black; margin-top:2vw; border: 1px solid black; text-align: center; padding: 2vw; color: white; font-size: 3rem; }
+        .validador_resposta { background-color: black; margin-top:2vw; border: 1px solid black; text-align: center; padding: 2vw; color: white; font-size: 2rem; }
         .validador_error { background-color: red; }
         .validador_ok { background-color: green; }
         .validador_codi { font-size:1rem; }
