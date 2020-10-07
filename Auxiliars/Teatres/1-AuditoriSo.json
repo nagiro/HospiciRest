@@ -1,12 +1,13 @@
 {
   "Estils" : [
     { "padding-left": "5vw", "padding-right": "5vw", "padding-top": "0px", "padding-bottom": "0.5vw" },
-    { "padding-left": "0.5vw", "padding-right": "0.5vw", "padding-top": "0.5vw", "padding-bottom": "0.5vw" }    
+    { "padding-left": "0.5vw", "padding-right": "0.5vw", "padding-top": "0.5vw", "padding-bottom": "0.5vw" },
+    { "padding-left": "23vw", "padding-right": "5vw", "padding-top": "0px", "padding-bottom": "0.5vw" }
   ],
   "Seients": 
   [
     [
-      { "tipus": "text", "text": "ESCENARI", "fila": 0, "seient": 0, "Estil": 0 }
+      { "tipus": "text", "text": "ESCENARI", "fila": 0, "seient": 0, "Estil": 2 }
     ],
     [   
       { "tipus": "fila", "text": "Fila 1", "fila": 1, "Estil": 0, "Padding": 1 },      
