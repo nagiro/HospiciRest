@@ -99,7 +99,7 @@ class WebApiController
                 $ImatgeMatricula = 'http://www.casadecultura.cat/WebFiles/Web/img/NoImage.jpg';            
             endif;        
 
-            $HTML = str_replace('@@IMATGE@@', $ImatgeMatricula, $HTML);        
+            $HTML = str_replace('@@IMATGE@@', $this->ConvertImageBase64Url($ImatgeMatricula), $HTML);        
 
             /*********************** BODY *********************************/
 
@@ -128,7 +128,7 @@ class WebApiController
                 $HTML = str_replace('@@ESTAT@@', $MatriculesModel->getEstatString($OMatricula), $HTML);
                 $HTML = str_replace('@@IMPORT@@', $OMatricula[$MatriculesModel->gnfnwt('Pagat')], $HTML);
                 $HTML = str_replace('@@DESCOMPTE@@', $MatriculesModel->getDescompteString($OMatricula), $HTML);
-                $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png', $HTML);
+                $HTML = str_replace('@@QR_IMATGE@@', $this->ConvertImageBase64Url(IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png'), $HTML);
                 $HTML = str_replace('@@QR_TEXT@@', $NumeroInscripcio, $HTML);            
                 $HTML = str_replace('@@DISPLAY_LOCALITAT@@', $DisplayLocalitat, $HTML);            
                 
@@ -143,7 +143,7 @@ class WebApiController
             if( MatriculesModel::PAGAMENT_CODI_DE_BARRES == $OMatricula[$MatriculesModel->gnfnwt('TipusPagament')] ) {
                 $CB = $this->generaCodiBarres( $idMatricula, $Import_total_a_pagar, $idS );
                 $HTML = str_replace('@@DISPLAY_CODI_BARRES@@', 'display: block;', $HTML);
-                $HTML = str_replace('@@URL_CODI_BARRES@@', $CB['URL'], $HTML);
+                $HTML = str_replace('@@URL_CODI_BARRES@@', $this->ConvertImageBase64Url($CB['URL']), $HTML);
                 $HTML = str_replace('@@CODI_BARRES@@',  $CB['CODI'], $HTML);
                 $HTML = str_replace('@@IMPORT_TOTAL@@',  $Import_total_a_pagar, $HTML);
             } else {
@@ -172,11 +172,20 @@ class WebApiController
         
         }
 
-        $HTML = str_replace('@@LOGO@@', $OptionsModel->getOption('LOGO_URL', $idS), $HTML);
+        $HTML = str_replace('@@LOGO@@', $this->ConvertImageBase64Url($OptionsModel->getOption('LOGO_URL', $idS)), $HTML);
         $HTML = str_replace('@@URL_DESTI@@', $UrlDesti, $HTML);
+        $HTML = str_replace('@@URL_DOWNLOAD@@', '/apiweb/GeneraResguard?i='.$InscripcioCodificada.'&d=', $HTML);
+        $HTML = str_replace('@@URL_PRINT@@', 'javascript:window.print()', $HTML);
                 
         return $HTML;
         
+    }
+
+    private function ConvertImageBase64Url($url) {
+        // Guardo la imatge en format Base64        
+        $type = pathinfo($url, PATHINFO_EXTENSION);
+        $data = file_get_contents($url);
+        return 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
 
     /**
