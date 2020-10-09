@@ -174,7 +174,7 @@ class WebApiController
 
         $HTML = str_replace('@@LOGO@@', $this->ConvertImageBase64Url($OptionsModel->getOption('LOGO_URL', $idS)), $HTML);
         $HTML = str_replace('@@URL_DESTI@@', $UrlDesti, $HTML);
-        $HTML = str_replace('@@URL_DOWNLOAD@@', '/apiweb/GeneraResguard?i='.$InscripcioCodificada.'&d=', $HTML);
+        $HTML = str_replace('@@URL_DOWNLOAD@@', 'https://sites.hospici.cat/apiweb/GeneraResguard?i='.$InscripcioCodificada.'&g=&d=', $HTML);
         $HTML = str_replace('@@URL_PRINT@@', 'javascript:window.print()', $HTML);
                 
         return $HTML;

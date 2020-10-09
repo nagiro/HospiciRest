@@ -51,7 +51,7 @@ class MyAPIWeb extends API
             $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML); // Si encara hi ha el display... l'ensenyem perquè es vegi que s'ha enviat el correu.
 
             if($DownloadDocument) { 
-                $fitxer = tempnam(sys_get_temp_dir(), "ENT");
+                $fitxer = tempnamkk(sys_get_temp_dir(), "ENT");
                 file_put_contents($fitxer, $HTML);
                 $baseFitxer = 'entrades.html';
                 header("Content-Type: application/octet-stream");            
