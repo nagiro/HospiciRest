@@ -36,7 +36,8 @@
                 <table>
                     <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada)">
                         <td style="padding: 2vw 0.5vw; "><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
-                        <td style="padding: 2vw 0.5vw; ">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
+                        <td style="padding: 2vw 0.5vw; " v-if="!MF.Comentari">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
+                        <td style="padding: 2vw 0.5vw; " v-if="MF.Comentari && MF.Comentari.length > 0">{{MF.Comentari}}</td>
                         <td style="padding: 2vw 0.5vw; "> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
                     </tr>
                 </table>
