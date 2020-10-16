@@ -31,12 +31,13 @@
             </div>
             
             <div class="validador_falten">
-                <h1>Llistat d'assistents</h1>
+                <h1>Llistat d'assistents [{{Entrats}}/{{Total}}] = {{Total - Entrats}}</h1>
+                <br /><br />
                 <table>
                     <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada)">
-                        <td style="padding: 0.5vw;"><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
-                        <td style="padding: 0.5vw;">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
-                        <td style="padding: 0.5vw;"> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
+                        <td style="padding: 2vw 0.5vw; "><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
+                        <td style="padding: 2vw 0.5vw; ">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
+                        <td style="padding: 2vw 0.5vw; "> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
                     </tr>
                 </table>
             </div>
@@ -70,7 +71,9 @@
                 CursEscollit: -1,
                 CursosMatriculesRaw: [],
                 CursosAEscollir: [],
-                CursosMatricules: []                
+                CursosMatricules: [],
+                Entrats: 0, 
+                Totals: 0
             },            
             created: function() {
                 
@@ -80,18 +83,22 @@
                 for(E of this.CursosMatriculesRaw){                     
                     if(E.TitolCurs != T) this.CursosAEscollir.push(E.TitolCurs);                    
                     T = E.TitolCurs;
-                }                
+                }                                
             },
             computed: {},
             methods: {
                 EsculloCurs: function() {                    
                     NomCurs = this.CursosAEscollir[this.CursEscollit];                                        
                     this.CursosMatricules = [];
+                    this.Entrats = 0;
                     for(E of this.CursosMatriculesRaw) {
                         if(E.TitolCurs == NomCurs) {
-                            this.CursosMatricules.push(E);
+                            this.CursosMatricules.push(E);                            
+                            this.Entrats = ( E['data_hora_entrada'] ) ? this.Entrats + 1 : this.Entrats;
                         }                        
-                    }                    
+                    }    
+                    
+                    this.Total = this.CursosMatricules.length;                
                 },
                 EstilFila: function(HoraEntrada) {                                        
                     if( HoraEntrada && HoraEntrada.length > 0 ) { return 'validador_arribat'; }
@@ -114,8 +121,9 @@
                                 this.Missatge = "Venuda a taquilla. Actualitza per veure-la.";
                             } else {
                                 let E = this.CursosMatricules[i];
-                                this.$set(this.CursosMatricules[i], 'data_hora_entrada', 'Arribat');                                                            
+                                this.$set(this.CursosMatricules[i], 'data_hora_entrada', 'Arribat');
                                 this.Missatge = E.Cog1 + ' ' + E.Cog2 + ' ' + E.Nom + ' | F:' + E.Fila + '|S:' + E.Seient;
+                                this.Entrats++;
                             }                                                                                    
                                                                                                                 
                             // Ha anat bé
