@@ -492,9 +492,14 @@
 
 @media print {	
 	
-	#templateHeader { display: none; }
+	/* #templateHeader { display: none; } */
 	#templateFooter { display: none; }
 	.mcnButtonContent { display: none; }
+	.mcnCaptionBlockInner { display: none; }
+	.mcnImageCardBlockTargeta { display: none; }
+	body { font-size: 0.5rem; }
+	h1 { font-size: 2rem; }
+	h2 { font-size: 1.5rem; }
 }
 </style></head>
     <body>		
@@ -502,7 +507,7 @@
         <!--[if !gte mso 9]><!----><span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">*|MC_PREVIEW_TEXT|*</span><!--<![endif]-->
         <!--*|END:IF|*-->
         <center>			
-			<div style="display: @@DISPLAY_MAIL@@; background-color: @@DISPLAY_MAIL_COLOR@@; padding: 1vw; font-size:0.8rem; color: gray;">@@EMAIL_SEND@@</div>
+			<div style="display: @@DISPLAY_MAIL@@; background-color: @@DISPLAY_MAIL_COLOR@@; padding: 1vw; font-size:0.8rem; color: gray;">@@EMAIL_SEND@@</div>			
             <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
                 <tr>
                     <td align="center" valign="top" id="bodyCell">
@@ -524,7 +529,10 @@
                     <table class="mcnImageContentContainer" style="min-width:100%;" width="100%" cellspacing="0" cellpadding="0" border="0" align="left">
                         <tbody><tr>
                             <td class="mcnImageContent" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;" valign="top">                                    
-                                        <img alt="" src="@@LOGO@@" style="width: 30vw; padding-bottom: 0; vertical-align: bottom;" class="mcnImage" align="middle">
+										<img alt="" src="@@LOGO@@" style="width: 20vw; padding-bottom: 0; vertical-align: bottom;" class="mcnImage" align="middle">
+										<div style="margin-top:10px">&nbsp;</div>
+										<h1 style="margin: 0 auto; width: 100%; text-align: center;">Reserva / Entrada / Inscripció</h1>
+										<h2 style="margin: 0 auto; width: 100%; text-align: center;">@@ACTIVITAT@@</h2>
                                     
                                 
                             </td>
@@ -542,7 +550,8 @@
                                     </table>
                                     <![endif]-->
                                 </td>
-                            </tr>
+							</tr>
+
                             <tr>
                                 <td align="center" valign="top" id="templateBody" data-template-container>
                                     <!--[if (gte mso 9)|(IE)]>
@@ -626,7 +635,7 @@
 
 												
 
-												<table class="mcnImageCardBlock" width="100%" cellspacing="0" cellpadding="0" border="1" style="margin-bottom: 30px; @@DISPLAY_PAGAMENT_TARGETA@@">
+												<table class="mcnImageCardBlock mcnImageCardBlockTargeta" width="100%" cellspacing="0" cellpadding="0" border="1" style="margin-bottom: 30px; @@DISPLAY_PAGAMENT_TARGETA@@">
 													<tbody class="mcnImageCardBlockOuter">
 														<tr>
 															<td class="mcnImageCardBlockInner" style="padding-top:0px; padding-right:18px; padding-bottom:40px; padding-left:18px;" valign="top">

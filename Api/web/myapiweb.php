@@ -44,19 +44,23 @@ class MyAPIWeb extends API
         $testMail = (isset($_GET['m']));
         $UrlDesti = (isset($_GET['u'])) ? base64_decode($_GET['u']) : 'https://www.casadecultura.cat';
         $GenKey = (isset($_GET['k']));
-        $Pdf = (isset($_GET['p']));
+        $DownloadDocument = (isset($_GET['d']));
 
         if($isGrup) { 
             $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); 
             $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML); // Si encara hi ha el display... l'ensenyem perquè es vegi que s'ha enviat el correu.
 
-/*            if($Pdf) { 
-                $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false); 
-                $pdf->AddPage();
-                $pdf->writeHTML($HTML, true, false, true, false, '');
-                $pdf->Output('example_006.pdf', 'I');                                
+            if($DownloadDocument) { 
+                $fitxer = tempnam(sys_get_temp_dir(), "ENT");
+                file_put_contents($fitxer, $HTML);
+                $baseFitxer = 'entrades.html';
+                header("Content-Type: application/octet-stream");            
+                header("Content-Length: ".filesize($fitxer));            
+                header("Content-Disposition:attachment;filename=" .$baseFitxer);
+                readfile($fitxer);       
+                die;                                         
             }
-*/            
+
         }
         if($testMail) { $HTML = $WAPI->ReenviaEmailInscripcio( $InscripcioCodificada, $UrlDesti ); }
         if($GenKey) { $HTML = "El valor {$_GET['k']} és igual a " . $WAPI->Encrypt($_GET['k']); }
