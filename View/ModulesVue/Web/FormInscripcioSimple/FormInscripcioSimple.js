@@ -356,7 +356,7 @@ Vue.component('form-inscripcio-simple', {
     },
     template: `            
 
-    <div v-if="DetallCurs.CURSOS_VisibleWeb == 1">
+    <div v-if="DetallCurs.CURSOS_VisibleWeb == 1 || this.isAdmin">
         <form class="formulari-inscripcio">                        
 
             <h2>{{EtiquetaTitol(DetallCurs)}}</h2>
