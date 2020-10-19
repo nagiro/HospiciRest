@@ -1,22 +1,28 @@
 {
   "Estils" : [
     {
-      "padding-left": "34vw",
-      "padding-right": "34vw",
+      "padding-left": "3vw",
+      "padding-right": "3vw",
       "padding-top": "0vw",
       "padding-bottom": "1vw"
     },
     {
-      "padding-left": "1vw",
-      "padding-right": "1vw",
-      "padding-top": "1vw",
+      "padding-left": "0.5vw",
+      "padding-right": "0.5vw",
+      "padding-top": "0.5vw",
+      "padding-bottom": "0.5vw"
+    },
+    {
+      "padding-left": "20vw",
+      "padding-right": auto,
+      "padding-top": "0vw",
       "padding-bottom": "1vw"
-    }
+    },
   ],
   "Seients": 
   [
     [
-      { "tipus": "text", "text": "ESCENARI", "fila": 0, "seient": 0, "Estil": 0 }
+      { "tipus": "text", "text": "ESCENARI", "fila": 0, "seient": 0, "Estil": 2 }
     ],
     [   
       { "tipus": "fila", "text": "Fila 1", "fila": 1, "Estil": 0 },
