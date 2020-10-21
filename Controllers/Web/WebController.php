@@ -199,8 +199,7 @@ class WebController
             if ($F['type'] == 'DATA_INICIAL') {
                 if($this->validateDate($F['key'])) { 
                     $this->setNewDate($F['key']); 
-                    $this->DataFi = 
-                    $this->DataAvui;                     
+                    $this->DataFi = $this->DataAvui;                     
                 }
                 
                 $DP = explode("-", $this->DataAvui);

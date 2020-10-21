@@ -195,7 +195,7 @@ class WebQueries extends BDD {
                 LEFT JOIN horarisespais he ON (he.Horaris_HorarisID = h.HorarisID)
                 LEFT JOIN espais e ON (e.EspaiID = he.Espais_EspaiID)
                 LEFT JOIN tipusactivitat ta ON (ta.idTipusActivitat = a.TipusActivitat_idTipusActivitat)
-                WHERE a.actiu = 1 AND a.site_id = 1 AND a.PublicaWEB = 1 ";
+                WHERE a.actiu = 1 AND a.site_id = 1 AND a.PublicaWEB = 1 AND h.actiu = 1 ";
 
         if(sizeof($Categories) > 0) {
             $SQL .= "AND ( 1 <> 1 ";
