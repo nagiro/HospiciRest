@@ -48,7 +48,8 @@ Vue.component('form-inscripcio-simple', {
                     ConfirmoAssistencia: false,
                     TPV: {},
                     isAdmin: (this.Token[0] == this.DetallCurs.CURSOS_SiteId),
-                    Loading: false
+                    Loading: false,
+                    TEMP_CONST_LLISTA_ESPERA: CONST_PAGAMENT_LLISTA_ESPERA
                 }
     },    
     computed: {
@@ -365,9 +366,14 @@ Vue.component('form-inscripcio-simple', {
             <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
             </div>
 
-            <div v-if="Pas == 5" class="row alert alert-success Pas5"> 
-                <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
-                <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>                            
+            <div v-if="Pas == 5">            
+                <div v-if="TipusPagament != TEMP_CONST_LLISTA_ESPERA " class="row alert alert-success Pas5"> 
+                    <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
+                    <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>                            
+                </div>
+                <div v-else class="row alert alert-warning Pas5"> 
+                    <p>La seva inscripció ha finalitzat correctament.</p><p>Si en un futur tornem a tenir places disponibles, contactarem amb vostè.</p>                    
+                </div>
             </div>
 
             <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 

@@ -502,7 +502,7 @@ class WebApiController
                 }
 
                 // Si hi ha dades extres, les guardo
-                if(isset($OC[$CM->gnfnwt('DadesExtres')]) && sizeof($OC[$CM->gnfnwt('DadesExtres')]) > 0) $OM[$MM->gnfnwt('Comentari')] = $DadesExtres;
+                if(isset($OC[$CM->gnfnwt('DadesExtres')]) && strlen($OC[$CM->gnfnwt('DadesExtres')]) > 0) $OM[$MM->gnfnwt('Comentari')] = $DadesExtres;
                                                             
                 //Guardem la matrícula
                 $id = $MM->doInsert($OM);
@@ -527,7 +527,7 @@ class WebApiController
             if($TipusPagament == MatriculesModel::PAGAMENT_TARGETA) {                
                 $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $idSite, $UrlDesti);
             } else {                
-                if(sizeof($Matricules) > 0) { $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL), $UrlDesti); }
+                if(sizeof($Matricules) > 0 && $TipusPagament != MatriculesModel::PAGAMENT_LLISTA_ESPERA ) { $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL), $UrlDesti); }
             }
                     
             return $RET;
