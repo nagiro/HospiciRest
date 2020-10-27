@@ -34,9 +34,12 @@ class WebApiController
     public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = 0) {
         $UM = new UsuarisModel();                
         $CM = new CursosModel();
+        $MM = new MatriculesModel();
         $DNI = strtoupper($DNI);
-        $RET['ExisteixDNI'] = $UM->ExisteixDNI($DNI);
+        $idUsuari = $UM->ExisteixDNI($DNI);
+        $RET['ExisteixDNI'] = ($idUsuari > 0);
         $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
+        $RET['HasUsuariMatriculaAAquestCurs'] = $MM->getUsuariHasMatricula($idCurs, $idUsuari);
         
         return $RET;
     }
@@ -379,6 +382,25 @@ class WebApiController
 
     }    
 
+
+    /**
+    * Baixa inscripció, possiblement haurem de fer que entrin el correu electrònic o alguna altra dada per validar-ho.    
+    **/
+    public function BaixaInscripcioWeb($DNI, $idCurs) {
+        // Fem la baixa de la inscripció                
+        $UM = new UsuarisModel();
+        $OU = $UM->getUsuariDNI($DNI);
+
+        $MM = new MatriculesModel();    
+        $ArrayMatricules = $MM->getUsuariHasMatricula($idCurs, $OU[$UM->gnfnwt('IdUsuari')], true);
+        foreach($ArrayMatricules as $OM) {
+            $MM->doBaixaWeb($OM);
+        }        
+
+        return sizeof($ArrayMatricules);
+
+    }
+
     /**
      * $Origen: web, hospici
      */
@@ -580,6 +602,30 @@ class WebApiController
         
     }
 
+    /**
+    * Reenviem el correu a la persona, un cop havent canviat el seu email 
+    **/
+    public function ReenviaEmailInscripcioWeb( $DNI, $idCurs ) {
+
+        $UM = new UsuarisModel();
+        $OU = $UM->getUsuariDNI($DNI);
+
+        $MM = new MatriculesModel();
+        $MatriculesUsuariCurs = $MM->getUsuariHasMatricula($idCurs, $OU[$UM->gnfnwt('IdUsuari')], true);
+        $GrupsMatricules = array();
+        foreach($MatriculesUsuariCurs as $OM):
+            $GM = $OM[$MM->gnfnwt('GrupMatricules')];
+            $GrupsMatricules[$GM] = $GM;
+        endforeach;        
+        foreach($GrupsMatricules as $idMatricula):
+            $MatriculaEncriptada = $this->Encrypt($idMatricula);
+            $this->ReenviaEmailInscripcio($MatriculaEncriptada, '');
+        endforeach;     
+
+        return sizeof($MatriculesUsuariCurs);                                           
+        
+    }
+
     public function SendEmail($to, $from, $subject, $HTML) {
         $url = 'https://api.elasticemail.com/v2/email/send';
 
@@ -603,18 +649,18 @@ class WebApiController
                 ));
                 
                 $result=curl_exec ($ch);
-                $RES = json_decode($result, true);
+                $RES = json_decode($result, true);                                
                 curl_close ($ch);
                 
                 if( $RES['success'] === false ){
-                    throw new Exception($result);
+                    throw new Exception($RES['error']);
                 }                
                 
                 return true;
                 
         }
         catch(Exception $ex){
-            return false;
+            return false;            
         }        
     }
 

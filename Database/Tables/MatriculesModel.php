@@ -207,13 +207,14 @@ class MatriculesModel extends BDD {
             ) , true );        
     }
 
-    public function getUsuariHasMatricula($idC, $idU) {
+    public function getUsuariHasMatricula($idC, $idU, $ReturnMatricules = false) {
         $W = array();
         $W[ $this->gofnwt('CursId') ] = $idC;
         $W[ $this->gofnwt('UsuariId') ] = $idU;
         $W[ $this->gofnwt('Actiu') ] = 1;   
         $W[ $this->gofnwt('Estat')] = array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT, self::ESTAT_EN_ESPERA);
-        return sizeof($this->_getRowWhere( $W , true )) > 0;
+        if(!$ReturnMatricules) return sizeof($this->_getRowWhere( $W , true )) > 0;
+        else return $this->_getRowWhere( $W , true ); 
     }
 
     public function getQuantesMatriculesHiHa($idC) { 
@@ -340,6 +341,17 @@ class MatriculesModel extends BDD {
             $RET['error'] = 'Codi incorrecte';
             return $RET;
         }
+        
+    }
+
+    // Fa la baixa d'una matrícula
+
+    public function doBaixaWeb($OM) {
+        
+        $OM[$this->gnfnwt('Estat')] = SELF::ESTAT_BAIXA;
+        $OM[$this->gnfnwt('DataBaixa')] = date('Y-m-d');
+        $OM[$this->gnfnwt('Comentari')] = 'Baixa per la web';
+        $this->updateMatricula($OM);                
         
     }
 

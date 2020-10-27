@@ -36,7 +36,7 @@ class MyAPIWeb extends API
         } catch (Exception $e) { return array($e->getMessage(), 500); }        
         
     }
-
+    
     protected function GeneraResguard() {
         $WAPI = new WebApiController();
         $InscripcioCodificada = (isset($_GET['i'])) ? $_GET['i'] : '';        
@@ -125,6 +125,24 @@ class MyAPIWeb extends API
         } 
 
     }    
+
+    /**
+    * Funció que gestiona baixa o 
+    **/
+    protected function AccionsExisteixDNI() {
+        $DNI = isset($this->request['D']) ? $this->request['D'] : '';
+        $CURS = isset($this->request['C']) ? $this->request['C'] : '';
+        $Accio = isset($this->request['A']) ? $this->request['A'] : '';
+        $WAPI = new WebApiController();
+        
+        $RET = 0;
+        switch($Accio) {            
+            case 'B': $RET = $WAPI->BaixaInscripcioWeb($DNI, $CURS); break;
+            case 'R': $RET = $WAPI->ReenviaEmailInscripcioWeb( $DNI, $CURS ); break;
+        }
+        
+        return array($RET, 200);
+    }
 
     /**
      * Funció que realitza la inscripció d'usuaris a través del web. 

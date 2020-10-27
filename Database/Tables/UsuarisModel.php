@@ -55,8 +55,7 @@ class UsuarisModel extends BDD {
         $W[ $this->getOldFieldNameWithTable('Dni') ] = $DNI;
         $W[ $this->getOldFieldNameWithTable('Actiu') ] = 1;
         $RET = $this->getUsuariRow( $W );            
-        return (sizeof($RET) > 0);
-        
+        return (sizeof($RET) > 0) ? $RET[$this->gnfnwt('IdUsuari')] : 0;                
     }
 
 }

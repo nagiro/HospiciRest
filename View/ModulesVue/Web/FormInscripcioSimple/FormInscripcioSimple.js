@@ -49,7 +49,8 @@ Vue.component('form-inscripcio-simple', {
                     TPV: {},
                     isAdmin: (this.Token[0] == this.DetallCurs.CURSOS_SiteId),
                     Loading: false,
-                    TEMP_CONST_LLISTA_ESPERA: CONST_PAGAMENT_LLISTA_ESPERA
+                    TEMP_CONST_LLISTA_ESPERA: CONST_PAGAMENT_LLISTA_ESPERA,
+                    Alert: {'Missatge': '', 'Class': 'col-12 alert alert-success', 'Mostro': false }
                 }
     },    
     computed: {
@@ -100,6 +101,8 @@ Vue.component('form-inscripcio-simple', {
     * Pas 6 = Hi ha hagut error fent la inscripció
     * Pas 7 = Error previ en condicions del curs ( data inici matrícula, restringit, etc. )
     * Pas 8 = Pagament amb TPV
+    * Pas 9 = Pagament amb Datàfon, permet entrar el codi operació
+    * Pas 10 = Quan entrem , si l'usuari ja té una matrícula, pot escollir si fer baixa o fer-ne una altra
     */
     methods: {
         EtiquetaTitol: function(DetallCurs) {                    
@@ -160,6 +163,39 @@ Vue.component('form-inscripcio-simple', {
             } else return Array.from(Array(5), (_, i) => i + 1);
 
         }, 
+        doAccioRepetit: function($accio) { 
+            switch($accio) {
+                case 'Baixa': 
+                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'D' : this.DNI, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'B'}})
+                    .then( R => { 
+                        this.Alert.Missatge = R.data + " inscripció/ns donades de baixa correctament. Gràcies per avisar-nos.";
+                        this.Alert.Class = 'col-12 alert alert-success';
+                        this.Alert.Mostro = true;
+                    })
+                    .catch( E => { 
+                        this.Alert.Missatge = "Hi ha hagut el següent error: " + E;
+                        this.Alert.Class = 'col-12 alert alert-danger';
+                        this.Alert.Mostro = true;
+                    });
+                break;
+                case 'NovaInscripcio': 
+                    this.Pas = 2;
+                break;
+                case 'Reenviar':
+                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'D' : this.DNI, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'R'}})
+                    .then( R => { 
+                        this.Alert.Missatge = R.data + " inscripció/ns reenviades correctament al seu correu. Si no les ha rebut, faci'ns ho saber.";
+                        this.Alert.Class = 'col-12 alert alert-success';
+                        this.Alert.Mostro = true;
+                    })
+                    .catch( E => { 
+                        this.Alert.Missatge = "Hi ha hagut el següent error: " + E;
+                        this.Alert.Class = 'col-12 alert alert-danger';
+                        this.Alert.Mostro = true;
+                    });
+                break;
+            }
+        },
         dnikeymonitor: function($event, isBoto) {
             
             if( ValidaDNI(this.DNI) ) {
@@ -168,9 +204,16 @@ Vue.component('form-inscripcio-simple', {
                     this.Loading = true;
                     axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {                    
                         this.Loading = false;
+                        // Segons restriccions pot matricular o bé és administrador i saltem les restriccions
                         if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
+                            //Si existeix el DNI
                             if(X.data.ExisteixDNI) {
-                                this.Pas = 2;
+                                // Si l'usuari ja té una matrícula a aquest curs, li deixem escollir si fer baixa o fer-ne una altra
+                                if(X.data.HasUsuariMatriculaAAquestCurs) {
+                                    this.Pas = 10;
+                                } else {
+                                    this.Pas = 2;
+                                }                                
                             } else {                               
                                 this.Pas = 1;
                             }
@@ -548,6 +591,22 @@ Vue.component('form-inscripcio-simple', {
 
             </div>
 
+            <div v-if="Pas == 10">                
+                <div v-if="!Alert.Mostro" class="row">
+                    <div class="col-12">
+                        Hem trobat inscripcions amb aquest DNI per aquest curs. 
+                        <br /><br /><strong>Quina acció desitja fer?</strong>
+                    </div>           
+                    <div class="col"><button class="boto btn btn-danger" @click.prevent="doAccioRepetit('Baixa')">Donar-me de baixa</button></div>
+                    <div class="col"><button class="boto btn btn-info" @click.prevent="doAccioRepetit('NovaInscripcio')">Fer una altra inscripció</button></div>
+                    <div class="col"><button class="boto btn btn-success" @click.prevent="doAccioRepetit('Reenviar')">Reenvia'm les entrades</button></div>
+                </div>
+
+                <div v-if="Alert.Mostro" :class="Alert.Class">{{Alert.Missatge}}</div>
+
+            </div>
+
+            
         </form>
         
         <form class="formulari-inscripcio" v-if="Pas == 8" name="frm" :action="TPV.url" method="POST" target="_blank">
