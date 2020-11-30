@@ -35,19 +35,18 @@ class WebController
         $E["Musica"] =              $this->WebQueries->getActivitatsHome(array(56), $this->DataAvui, $this->DataFi, 1);
         $E["Petita"] =              $this->WebQueries->getActivitatsHome(array(59), $this->DataAvui, $this->DataFi, 1);
         $E["Cicles"] =              $this->WebQueries->getCiclesHome(0, $this->DataAvui, $this->DataFi);
-        $E["ProperesActivitats"] =  $this->WebQueries->getActivitatsHome(array(), $this->DataAvui, $this->DataFiAct, 1);
+        $TEMP =  $this->WebQueries->getActivitatsHome(array(), $this->DataAvui, $this->DataFiAct, 1);
         $E["Noticies"] =            $this->WebQueries->getNoticiesHome(1, $this->DataAvui);
         $E["Promocions"] =          $this->WebQueries->getPromocions();   
         $E["Breadcumb"] =           array(array('Titol'=>'Inici', "Link"=> '/')); 
         $E["Menu"]      =           $this->getMenu();        
 
         // Trec les activitats de properes activitats que tenen més d'un dia o que són cicles. 
-        foreach($E["ProperesActivitats"] as $id => $EL) {
-            if($E["ProperesActivitats"][$id]["Dia"] != $E["ProperesActivitats"][$id]["DiaMax"]) {
-                unset($E["ProperesActivitats"][$id]);
-            }
+        $E["ProperesActivitats"] = array();
+        foreach($TEMP as $EL) {
+            if($EL["Dia"] == $EL["DiaMax"]) $E["ProperesActivitats"][] = $EL;            
         }
-
+         
         return $E;
     }
 
