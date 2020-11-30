@@ -39,7 +39,15 @@ class WebController
         $E["Noticies"] =            $this->WebQueries->getNoticiesHome(1, $this->DataAvui);
         $E["Promocions"] =          $this->WebQueries->getPromocions();   
         $E["Breadcumb"] =           array(array('Titol'=>'Inici', "Link"=> '/')); 
-        $E["Menu"]      =           $this->getMenu();
+        $E["Menu"]      =           $this->getMenu();        
+
+        // Trec les activitats de properes activitats que tenen més d'un dia o que són cicles. 
+        foreach($E["ProperesActivitats"] as $id => $EL) {
+            if($E["ProperesActivitats"][$id]["Dia"] != $E["ProperesActivitats"][$id]["DiaMax"]) {
+                unset($E["ProperesActivitats"][$id]);
+            }
+        }
+
         return $E;
     }
 
