@@ -348,7 +348,7 @@ class MatriculesModel extends BDD {
 
     public function doBaixaWeb($OM) {
         
-        $OM[$this->gnfnwt('Estat')] = SELF::ESTAT_BAIXA;
+        $OM[$this->gnfnwt('Estat')] = self::ESTAT_BAIXA;
         $OM[$this->gnfnwt('DataBaixa')] = date('Y-m-d');
         $OM[$this->gnfnwt('Comentari')] = 'Baixa per la web';
         $this->updateMatricula($OM);                
