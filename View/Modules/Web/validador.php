@@ -7,6 +7,7 @@
         .validador_codi { font-size:1rem; }
         .validador_arribat { background-color: #ff9d88; }
         .validador_falta_arribar { background-color: #b0ffc3; }
+        .validador_falta_arribar_llista_espera { background-color: orange; }
         .validador_falten { margin-top: 2vw; }
     </style>
 
@@ -38,7 +39,8 @@
                         <td style="padding: 2vw 0.5vw; "><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
                         <td style="padding: 2vw 0.5vw; " v-if="!MF.Comentari">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
                         <td style="padding: 2vw 0.5vw; " v-if="MF.Comentari && MF.Comentari.length > 0">{{MF.Comentari}}</td>
-                        <td style="padding: 2vw 0.5vw; "> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
+                        <td style="padding: 2vw 0.5vw; " v-show="MF.Fila > 0"> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
+                        <td style="padding: 2vw 0.5vw; background-color: orange; " v-show="MF.tPagament == TipusPagamentLlistaEspera"> Llista espera </td>                        
                     </tr>
                 </table>
             </div>
@@ -72,17 +74,18 @@
                 CursEscollit: -1,
                 CursosMatriculesRaw: [],
                 CursosAEscollir: [],
-                CursosMatricules: [],
+                CursosMatricules: [],                
                 Entrats: 0, 
-                Totals: 0
+                Totals: 0,
+                TipusPagamentLlistaEspera: CONST_PAGAMENT_LLISTA_ESPERA,
             },            
             created: function() {
                 
                 let T = '';
                 this.CursosMatriculesRaw = <?php echo $Data ?>;
                 
-                for(E of this.CursosMatriculesRaw){                     
-                    if(E.TitolCurs != T) this.CursosAEscollir.push(E.TitolCurs);                    
+                for(E of this.CursosMatriculesRaw) {                    
+                    if(E.TitolCurs != T) this.CursosAEscollir.push(E.TitolCurs); 
                     T = E.TitolCurs;
                 }                                
             },
@@ -90,10 +93,10 @@
             methods: {
                 EsculloCurs: function() {                    
                     NomCurs = this.CursosAEscollir[this.CursEscollit];                                        
-                    this.CursosMatricules = [];
+                    this.CursosMatricules = [];                    
                     this.Entrats = 0;
                     for(E of this.CursosMatriculesRaw) {
-                        if(E.TitolCurs == NomCurs) {
+                        if(E.TitolCurs == NomCurs) {                            
                             this.CursosMatricules.push(E);                            
                             this.Entrats = ( E['data_hora_entrada'] ) ? this.Entrats + 1 : this.Entrats;
                         }                        
@@ -101,9 +104,10 @@
                     
                     this.Total = this.CursosMatricules.length;                
                 },
-                EstilFila: function(HoraEntrada) {                                        
+                EstilFila: function(HoraEntrada, TipusPagament) {                                        
                     if( HoraEntrada && HoraEntrada.length > 0 ) { return 'validador_arribat'; }
-                    else { return 'validador_falta_arribar'; }
+                    else if (TipusPagament == this.TipusPagamentLlistaEspera) { return 'validador_falta_arribar_llista_espera'; }
+                    else return 'validador_falta_arribar';
                 },
                 ValidaCodi(text, fromQR) {
                     let FD = new FormData();
@@ -123,7 +127,8 @@
                             } else {
                                 let E = this.CursosMatricules[i];
                                 this.$set(this.CursosMatricules[i], 'data_hora_entrada', 'Arribat');
-                                this.Missatge = E.Cog1 + ' ' + E.Cog2 + ' ' + E.Nom + ' | F:' + E.Fila + '|S:' + E.Seient;
+                                this.Missatge = E.Cog1 + ' ' + E.Cog2 + ' ' + E.Nom ;
+                                this.Missatge += (E.Fila > 0) ? ' | F:' + E.Fila + '|S:' + E.Seient : '';
                                 this.Entrats++;
                             }                                                                                    
                                                                                                                 
