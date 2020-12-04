@@ -203,7 +203,8 @@ Vue.component('filters-div', {
                 </select>
 
                 <div class="filtres_input_search">
-                    <input type="text" v-model="TextCerca" class="filtres_form-control_input_text" placeholder="Escriu un text per buscar..." />
+                    <label for="input_cerca" style="display:none">Cerca un text</label>
+                    <input type="text" id="input_cerca" v-model="TextCerca" class="filtres_form-control_input_text" placeholder="Escriu un text per buscar..." />
                     <button @click="cercaText()">Cerca!</button>
                 </div>
             </div>
@@ -235,6 +236,7 @@ Vue.component('filters-div', {
             <a class="filtres_mes-filtres-resta-element" v-for="T of TagsDisponibles" :href="getLinkTipus(T)">
                 {{ T[1] }}
             </a>
+            <label for="InputTextCerca" style="display:none">Cerca un text</label>
             <input type="text" v-model="TextCerca" id="InputTextCerca" placeholder="Cerca..." />
             <button class="btn btn-xs" id="InputTextBoto" @click="cercaText()">Cerca!</button>                                  
         </div>      

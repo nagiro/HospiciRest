@@ -23,7 +23,8 @@
             <h2>{{CursosAEscollir[CursEscollit]}}</h2>
 
             <div class="validador_box">
-                <input type="text" v-model="QRText" v-on:keyup.13="ValidaCodi($event, true)" />
+                <label for="EntradaDades">Codi entrada</label>
+                <input type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
                 <button @click="ValidaCodi($event, true)">Valida</button>
             </div>
 

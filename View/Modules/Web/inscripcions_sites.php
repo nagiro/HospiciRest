@@ -31,7 +31,7 @@
 </head>
 <body>
     
-    <div id="detall" class="page">
+    <main id="detall" class="page">
           
         <!-- Possible, puc afegir que es mostrin altres cursos de l'entitat. -->        
 
@@ -42,12 +42,12 @@
         <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos">
 
             <div id="detall_imatge_entitat">                
-                <img :src="DetallSite.SITES_LogoUrl" />
+                <img :src="DetallSite.SITES_LogoUrl" alt="Logo de l'entitat" />
             </div>
 
             <h1>{{DetallSite.SITES_Nom}}</h1>            
 
-            <table id="Taula_Llistat_Cursos">
+            <table id="Taula_Llistat_Cursos">                
                 <tr>
                     <th>Activitat</th>
                     <th>Inici</th>
@@ -106,7 +106,7 @@
 
         <div style="margin-bottom: 2vw">&nbsp;</div>
                 
-  </div>
+  </main>
 
 
   <script>
