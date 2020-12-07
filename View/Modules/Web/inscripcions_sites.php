@@ -56,7 +56,7 @@
                 </tr>
                 <tr v-for="Curs of LlistatCursos" >
                     <td><a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a></td>
-                    <td>{{Curs.CURSOS_DataInMatricula | DateSwap }}</td>
+                    <td>{{Curs.CURSOS_DataInici | DateSwap }}</td>
                     <td>{{Curs.CURSOS_Horaris}}</td>
                     <td>{{Curs.CURSOS_Preu}}€</td>
                 </tr>
