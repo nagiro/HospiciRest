@@ -50,7 +50,7 @@
             :amb-titol="true">
         </single-list>
 
-        <single-list v-if="Loaded" 
+        <single-list v-if="Loaded && WebStructure.Musica && WebStructure.Musica.length > 0" 
             :input-titol="'MÚSICA'" 
             :input-color="'#2A9D8F'" 
             :input-dades="WebStructure.Musica" 
