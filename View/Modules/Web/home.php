@@ -34,7 +34,7 @@
 
         <noticies-carrousel v-if="Loaded" :input-dades="WebStructure.Noticies"></noticies-carrousel>
 
-        <single-list v-if="Loaded" 
+        <single-list v-if="Loaded && WebStructure.Cicles && WebStructure.Cicles.length > 0" 
             :input-titol="'DIVULGACIÓ'" 
             :input-color="'#F4A261'" 
             :input-dades="WebStructure.Cicles" 
@@ -42,7 +42,7 @@
             :amb-titol="true">
         </single-list>
         
-        <single-list v-if="Loaded" 
+        <single-list v-if="Loaded && WebStructure.Exposicions && WebStructure.Exposicions.length > 0" 
             :input-titol="'EXPOSICIONS'" 
             :input-color="'#C95E49'" 
             :input-dades="WebStructure.Exposicions" 
@@ -58,7 +58,7 @@
             :amb-titol="true">
         </single-list>
 
-        <single-list v-if="Loaded" 
+        <single-list v-if="Loaded && WebStructure.Petita && WebStructure.Petita.length > 0" 
             :input-titol="'PETITA CASA DE CULTURA'" 
             :input-color="'#cc6699'" 
             :input-dades="WebStructure.Petita" 
