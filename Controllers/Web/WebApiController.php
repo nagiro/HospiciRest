@@ -192,6 +192,49 @@ class WebApiController
     }
 
     /**
+     * Llistat que treu els seients ocupats i lliures d'un teatre
+     */
+    public function getLlistatTeatre($idActivitatCurs) {
+        $CM = new CursosModel();
+        $OC = $CM->getCursById($idActivitatCurs);        
+        $Teatre = $CM->getTeatre($OC);
+        $SeientsIOcupacions = array();
+        foreach($Teatre['Seients'] as $Fila):
+            foreach($Fila as $Seient):
+                if($Seient['tipus'] == 'loc'):                                        
+                    $SeientsIOcupacions["F: ".$Seient['fila'].' | S: '.$Seient['seient']] = 
+                        array('Fila' => $Seient['fila'], 'Seient' => $Seient['seient'], 'Ocupat' => false);
+                endif;            
+            endforeach;
+        endforeach;
+        
+        //Miro els matriculats d'aquest curs i els vinculo amb els llocs escollits
+        $LlistatMatricules = $CM->getMatriculesByCursAndUserData($idActivitatCurs);        
+        foreach($LlistatMatricules as $OM):
+            $index = "F: ".$OM['Fila'].' | S: '.$OM['Seient'];
+            if(isset($SeientsIOcupacions[$index])):
+                 $SeientsIOcupacions[$index]['Ocupat'] = true;
+                 $SeientsIOcupacions[$index]['Dades'] = $OM['Cog1'] . ' ' . $OM['Cog2'].', '.$OM['Nom'] . ' - '.$OM['Email'].' - '.$OM['Telefon'];                 
+            endif;
+        endforeach;
+
+        foreach($Teatre['Seients'] as $Fila):
+            foreach($Fila as $S):
+                if($S['tipus'] == 'fila') echo $S['text'].' ';
+                if($S['tipus'] == 'bloc') echo ' _ ';
+                if($S['tipus'] == 'loc') echo $S['seient'];
+            endforeach;
+            echo "\n";
+        endforeach;
+        echo "\n\n";
+
+        foreach($SeientsIOcupacions as $K => $E):
+            echo $K . ' => '. $E['Dades']. "\n";
+        endforeach;
+        
+    }
+
+    /**
      * Funció que guarda el codi de la operació que s'ha fet amb un TPV
      * $CodiOperacio = El codi que dóna el datàfon
      * $Matricules = Llistat de les matrícules associades a aquest número codificades

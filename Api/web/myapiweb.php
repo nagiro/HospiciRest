@@ -144,6 +144,12 @@ class MyAPIWeb extends API
         return array($RET, 200);
     }
 
+    protected function getLlistatTeatre() {
+        $idActivitatCurs = isset($this->request['idActivitatCurs']) ? $this->request['idActivitatCurs'] : '';        
+        $WAPI = new WebApiController();
+        return array($WAPI->getLlistatTeatre($idActivitatCurs), 200);                
+    }
+
     /**
      * Funció que realitza la inscripció d'usuaris a través del web. 
      */
