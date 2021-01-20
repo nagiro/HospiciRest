@@ -195,7 +195,6 @@ class CursosModel extends BDD {
             AND c.actiu = 1
             AND c.idCursos = {$idCurs}
             AND m.actiu = 1
-            AND c.site_id = 1
             ORDER BY c.TitolCurs, u.Cog1, u.Cog2, u.Nom
         ";
         
