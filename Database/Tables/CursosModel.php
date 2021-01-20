@@ -171,8 +171,7 @@ class CursosModel extends BDD {
             LEFT JOIN usuaris u ON (m.Usuaris_UsuariID = u.UsuariID)
             WHERE m.Estat IN {$MM->ReturnEstatsCorrectesSQL()}
             AND c.actiu = 1
-            AND m.actiu = 1
-            AND c.site_id = 1
+            AND m.actiu = 1            
             AND c.DataInici = CURDATE()
             ORDER BY c.TitolCurs, u.Cog1, u.Cog2, u.Nom
         ";
