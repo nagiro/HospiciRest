@@ -378,12 +378,12 @@ Vue.component('form-inscripcio-simple', {
             }).catch( E => { alert(E); });
         },
         doTPVConfirm: function(PagatCorrectament) {
-            // let P = prompt('Entreu el codi d\'operació que apareix al TPV');
-            console.log(PagatCorrectament);
+            // let P = prompt('Entreu el codi d\'operació que apareix al TPV');            
             let FD = new FormData();
             FD.append('CodiOperacio', this.CodiOperacio);
             FD.append('Matricules', JSON.stringify(this.MatriculesArray));
             FD.append('PagatCorrectament', (PagatCorrectament) ? 1 : 0 );            
+            FD.append('UrlDesti', this.UrlActual);
             axios.post( CONST_api_web + '/PutOperacioDatafon', FD ).then( X => {
                 if(PagatCorrectament) { this.Pas = 5; }
                 else { this.Pas = 6; this.ErrorInscripcio = 'El pagament no s\'ha finalitzat correctament'; }

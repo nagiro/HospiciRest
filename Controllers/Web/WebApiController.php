@@ -250,8 +250,8 @@ class WebApiController
             if($PagatCorrectament == '1') $OM[$MM->gnfnwt("Estat")] = $MM::ESTAT_ACCEPTAT_PAGAT;
             $OM[$MM->gnfnwt('TpvOperacio')] = $CodiOperacio;
             $MM->updateMatricula($OM);            
-        endforeach;
-
+        endforeach;                
+        
     }
 
     /**
@@ -589,10 +589,12 @@ class WebApiController
 
             $RET['MATRICULES'] = $Matricules;
             $RET['TIPUS_PAGAMENT'] = $TipusPagament;
-            if($TipusPagament == MatriculesModel::PAGAMENT_TARGETA) {                
+            if( $TipusPagament == MatriculesModel::PAGAMENT_TARGETA ) {                
                 $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $idSite, $UrlDesti);
-            } else {                
-                if(sizeof($Matricules) > 0 && $TipusPagament != MatriculesModel::PAGAMENT_LLISTA_ESPERA ) { $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL), $UrlDesti); }
+            } elseif (   sizeof($Matricules) > 0 
+                        && $TipusPagament != MatriculesModel::PAGAMENT_LLISTA_ESPERA 
+                        && $TipusPagament != MatriculesModel::PAGAMENT_DATAFON ) {
+                $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL), $UrlDesti);                    
             }
                     
             return $RET;
