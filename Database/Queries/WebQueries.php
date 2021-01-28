@@ -142,6 +142,7 @@ class WebQueries extends BDD {
          WHERE h.actiu = 1
            AND h.Activitats_ActivitatID = {$idA}
            AND h.site_id = 1
+           AND he.actiu = 1
            ORDER BY e.Nom asc, h.Dia asc, h.HoraInici asc
           ";
 
