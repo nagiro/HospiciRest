@@ -117,6 +117,26 @@ class MainModule {
                 $this->getModuleContent('Web/validador.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            case 'espais':                
+                
+                $Data = array();
+
+                // espais/llistat/:idSite/:TextNomSite
+                if($url[1] == 'llistat'):
+                    $Data['EspaisDisponibles'] = $this->WebController->getEspaisDisponibles($url[2]);
+                    $Data['Site'] = $this->WebController->getSiteInfo($url[2]);
+                
+                // espais/detall/:idEspai/:TextEspai
+                elseif($url[1] == 'detall'):
+                    $Data['EspaiDetall'] = $this->WebController->getDetallEspai($url[2]);
+                    $Data['Site'] = $this->WebController->getSiteInfo($url[2]);
+                endif;
+                
+                $this->getModuleContent('HtmlHeaderWeb.php');                                                
+                $this->getModuleContent('Web/espais_sites.php', json_encode($Data) ); 
+                $this->getModuleContent('HtmlFooterWeb.php');                
+                
+            break;            
         }         
         
     }

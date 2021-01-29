@@ -455,6 +455,39 @@ class WebController
         return $CM->getTodayCursosAndMatricules();
     }
 
+    public function getSiteInfo($idSite) {
+        
+        require_once DATABASEDIR . 'Tables/SitesModel.php';
+
+        $SM = new SitesModel();
+        return $SM->getById($idSite);
+    }
+
+    public function getEspaisDisponibles($idSite) {
+        $EM = new EspaisModel();
+        $LlistatEspais = $EM->getEspaisDisponiblesSite($idSite);
+        // Carreguem les url de les imatges de cada espai si n'hi ha
+        foreach($LlistatEspais as $K => $Espai):
+            $LlistatEspais[$K]['Imatges'] = $EM->getImageUrlsFromEspai($Espai[$EM->gnfnwt('EspaiId')]);
+        endforeach;
+
+        return $LlistatEspais;
+    }
+
+    public function getDetallEspai($idEspai, $Dia = '') {
+        $EM = new EspaisModel();
+        $HEM = new HorarisEspaisModel();
+        $Espai = array('Detall' => array(), 'HorarisOcupats' => array());
+        $Espai['Detall'] = $EM->getEspaiDetall($idEspai);
+        $Espai['Imatges'] = $EM->getImageUrlsFromEspai($idEspai);
+
+        // Mirem quins horaris hi ha ocupats en aquest dia
+        if(empty($Dia)) $Dia = date('Y-m-d', time());                
+        $Dia = '2020-04-04';
+        $Espai['HorarisOcupats'] = $HEM->getHorarisEspaisOcupats($idEspai, $Dia);
+
+        return $Espai;        
+    }
 
 
  }

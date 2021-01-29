@@ -42,6 +42,9 @@ const IMATGES_URL_ACTIVITATS = '/images/activitats/';
 const IMATGES_URL_CICLES = '/images/cicles/';
 const IMATGES_URL_INSCRIPCIONS = '/WebFiles/Inscripcions/';
 
+const IMATGES_URL_ESPAIS = '/WebFiles/Imatges/Espais/';
+const IMATGES_DIR_ESPAIS = BASEDIR . '/WebFiles/Imatges/Espais/';
+
 const DOCUMENTSDIR = WEBFILESDIR . 'Documents/';
 const DOCUMENTSURL = WEBFILESURL . 'Documents/';
 

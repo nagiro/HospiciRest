@@ -18,7 +18,8 @@ class Router {
         'pagina',
         'inscripcio',
         'inscripcions',
-        'validador'
+        'validador',
+        'espais',
     );
 
     public function __construct($SERVER) {
