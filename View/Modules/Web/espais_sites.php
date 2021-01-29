@@ -59,7 +59,11 @@
             </ul>
             <p id="detall_descripcio" v-html = "EspaiDetall.ESPAIS_Descripcio">
                 {{ EspaiDetall.ESPAIS_Descripcio }}
-            </p>                
+            </p>    
+
+            <div>
+                AQUÍ HI VA EL FORMULARI
+            </div>            
 <!--                
             <p>
             <div v-if="DetallCurs">
