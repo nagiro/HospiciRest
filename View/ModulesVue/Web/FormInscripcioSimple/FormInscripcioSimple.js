@@ -117,7 +117,13 @@ Vue.component('form-inscripcio-simple', {
           
             // Treballem les places lliures i la llista d'espera                   
             this.PlacesLliures = DetallCurs.CURSOS_Places - this.SeientsOcupats.QuantesMatricules;                                       
-            this.TeLlistaEsperaActiu = ( 0 <=  DetallCurs.CURSOS_PagamentExtern.split("@").findIndex( X => ( X == 36 ) ) );                   
+            
+            // Tindrà la llista d'espera activa si és administrador i té activada l'opció o bé si és usuari i també hi ha activada l'opció.
+            this.TeLlistaEsperaActiu = ( 
+                this.isAdmin && 0 <=  DetallCurs.CURSOS_PagamentIntern.split("@").findIndex( X => ( X == 36 ) )
+                || 0 <=  DetallCurs.CURSOS_PagamentExtern.split("@").findIndex( X => ( X == 36 ) ) 
+            );                   
+            
             if( this.PlacesLliures <= 0 && !this.TeLlistaEsperaActiu ) {
                 this.Pas = 7;
                 this.ErrorInscripcio = '<strong>Aquest curs no disposa de places lliures.</strong>' + this.PoseuEnContacteString();
