@@ -31,6 +31,12 @@ class WebApiController
         // $this->setNewDate(date('Y-m-d', time()));        
     }
 
+    public function getOcupacioEspai($idEspai, $Mes, $Any) {        
+        require_once DATABASEDIR . 'Tables/HorarisEspaisModel.php';
+        $HEM = new HorarisEspaisModel();
+        return $HEM->getHorarisEspaisOcupats($idEspai, $Mes, $Any);
+    }
+
     public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = 0) {
         $UM = new UsuarisModel();                
         $CM = new CursosModel();

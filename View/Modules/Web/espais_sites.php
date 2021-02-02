@@ -60,6 +60,15 @@
             <p id="detall_descripcio" v-html = "EspaiDetall.ESPAIS_Descripcio">
                 {{ EspaiDetall.ESPAIS_Descripcio }}
             </p>    
+                <button @click="getOcupacio('-')"> <  </button><button @click="getOcupacio('=')">Mes actual</button><button @click="getOcupacio('+')"> > </button>
+                <div v-for="EHO of EspaiHorarisOcupats">
+                    El dia {{EHO.HORARIS_Dia}} de {{EHO.HORARIS_HoraPre}} a {{EHO.HORARIS_HoraPost}}                    
+                    <v-calendar></v-calendar>
+                    <!-- <v-date-picker v-model='selectedDate' /> -->
+                </div>
+                //Aquí hi va l'ocupació de l'espai
+            </p>
+            
 
             <div>
                 AQUÍ HI VA EL FORMULARI
@@ -106,7 +115,9 @@
                 EspaiDetall: null,         //Objecte inscripció                                                
                 EspaiHorarisOcupats: [],
                 EspaiImatges: [],
-                ImatgeGran: false,
+                ImatgeGran: false,  
+                MesActual: 0,  
+                AnyActual: 0,           
 
                 DetallSite: {},
                 LlistatEspais: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
@@ -116,7 +127,7 @@
             },            
             filters: {},
             created: function() {
-
+                console.log(window);
                 if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
 
                     this.Loaded = true;                
@@ -135,9 +146,8 @@
                     
                     if(this.WebStructure.EspaiDetall && this.WebStructure.EspaiDetall.Detall) {
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
-                        this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;
-                        this.EspaiHorarisOcupats = this.WebStructure.EspaiDetall.HorarisOcupats;
-                        this.DetallSite = this.WebStructure.Site;                                                
+                        this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
+                        this.DetallSite = this.WebStructure.Site;                                                                        
                     }                    
 
                     this.UrlActual = window.location.href;  
@@ -157,9 +167,43 @@
             methods: {
                 ClicaImatge() {
                     this.ImatgeGran = !this.ImatgeGran;
+                },
+                // Accio = '-', '+', '='
+                getOcupacio(Accio) {
+                    
+                    switch(Accio) {
+                        case '=': 
+                            let $D = new Date();        
+                            this.MesActual = $D.getMonth()+1;
+                            this.AnyActual = $D.getFullYear();                            
+                        break;
+                        case '-':
+                            this.MesActual--;
+                            if(this.MesActual == 0){ this.MesActual = 12; this.AnyActual--; }
+                        break;
+                        case '+':
+                            this.MesActual++;
+                            if(this.MesActual == 13){ this.MesActual = 1; this.AnyActual++; }
+                        break;
+                    }
+
+                    console.log(this.EspaiDetall);
+
+                    let FD = new FormData();
+                    FD.append('MesActual', this.MesActual);
+                    FD.append('AnyActual', this.AnyActual);
+                    FD.append('IdEspai', this.EspaiDetall.ESPAIS_EspaiId);                                                            
+                    FD.append('Accio', 'OcupacioEspai');                                                            
+                    axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
+                        this.EspaiHorarisOcupats = X.data;
+                    }).catch( E => { alert(E); });
+
+                    //Consulto el mes escollit      
+
+                    
                 }
             }
-        });
+        });        
 
     </script>
 

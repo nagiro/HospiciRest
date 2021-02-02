@@ -31,6 +31,9 @@
     
     <link href="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.css" rel="stylesheet">    
     <script  src="https://cdn.jsdelivr.net/npm/vuejs-dialog@1.4.1/dist/vuejs-dialog.min.js"></script>        
+
+    <script src="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.js" integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.css" integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
     
 
     <script>CookieBoxConfig = { 
@@ -78,10 +81,12 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->
 
-    <script src='https://unpkg.com/v-calendar@next'></script>
+    <script src='https://unpkg.com/v-calendar'></script>
 
     <script>
         window.Vue.use(VuejsDialog.main.default)        
+        import VCalendar from 'v-calendar';
+        // window.Vue.use("v-calendar");        
         // window.Vue.use(CKEditor); 
     </script>
 

@@ -97,7 +97,7 @@ class MyAPIWeb extends API
         $WAPI = new WebApiController();
         $HTML = $WAPI->getTpv($_REQUEST, true);
         return array($HTML, '0');
-    }    
+    }        
 
     protected function PutOperacioDatafon() {
         $WAPI = new WebApiController();        
@@ -194,6 +194,24 @@ class MyAPIWeb extends API
               
         return array( array('AltaUsuari' => $RET, 'error' => '' ), 200 );
 
+    }
+
+    protected function ajaxReservaEspais() {
+     
+        $WAPI = new WebApiController();
+        $Accio = isset($this->request['post']['Accio']) ? $this->request['post']['Accio'] : ''; 
+        
+        switch($Accio){
+            case 'OcupacioEspai': 
+                $IdEspai = isset($this->request['post']['IdEspai']) ? $this->request['post']['IdEspai'] : '';
+                $MesActual = isset($this->request['post']['MesActual']) ? $this->request['post']['MesActual'] : '';
+                $AnyActual = isset($this->request['post']['AnyActual']) ? $this->request['post']['AnyActual'] : '';
+                $AnyActual = '2020';
+                $RET = $WAPI->getOcupacioEspai($IdEspai, $MesActual, $AnyActual);
+                break;
+        }
+
+        return array($RET, 200);
     }
 
     /**

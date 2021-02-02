@@ -473,22 +473,16 @@ class WebController
 
         return $LlistatEspais;
     }
-
-    public function getDetallEspai($idEspai, $Dia = '') {
-        $EM = new EspaisModel();
-        $HEM = new HorarisEspaisModel();
+    
+    public function getDetallEspai($idEspai) {
+        $EM = new EspaisModel();        
         $Espai = array('Detall' => array(), 'HorarisOcupats' => array());
         $Espai['Detall'] = $EM->getEspaiDetall($idEspai);
         $Espai['Imatges'] = $EM->getImageUrlsFromEspai($idEspai);
-
-        // Mirem quins horaris hi ha ocupats en aquest dia
-        if(empty($Dia)) $Dia = date('Y-m-d', time());                
-        $Dia = '2020-04-04';
-        $Espai['HorarisOcupats'] = $HEM->getHorarisEspaisOcupats($idEspai, $Dia);
-
+        
         return $Espai;        
-    }
 
+    }    
 
  }
 
