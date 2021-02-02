@@ -164,11 +164,11 @@
       { "tipus": "bloc", "seient": 110, "fila": 9, "Estil": 1 },
       { "tipus": "bloc", "seient": 111, "fila": 9, "Estil": 1 },
       { "tipus": "bloc", "seient": 112, "fila": 9, "Estil": 1 },
-      { "tipus": "loc", "seient": 113, "fila": 9, "Estil": 1 },
-      { "tipus": "bloc", "seient": 114, "fila": 9, "Estil": 1 },
-      { "tipus": "loc", "seient": 115, "fila": 9, "Estil": 1 },
-      { "tipus": "bloc", "seient": 116, "fila": 9, "Estil": 1 },
-      { "tipus": "loc", "seient": 117, "fila": 9, "Estil": 1 }      
+      { "tipus": "bloc", "seient": 113, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 114, "fila": 9, "Estil": 1 },
+      { "tipus": "bloc", "seient": 115, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 116, "fila": 9, "Estil": 1 },
+      { "tipus": "bloc", "seient": 117, "fila": 9, "Estil": 1 }      
     ]  
   ]
 }

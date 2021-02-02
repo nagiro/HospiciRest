@@ -54,13 +54,19 @@ class ActivitatsModel extends BDD {
         foreach($Rows as $Row) {
             foreach($Row as $FieldName => $Field ) {
                 
+                $idH = $Row[ $HM->gnfnwt( 'HorariId' ) ] ;                    
+                $idE = $Row[ $EM->gnfnwt( 'EspaiId' ) ] ;
+
+                // Si el camp és de la taula Activitats
                 if( stripos($FieldName, $this->getNewTableName()) !== false ):
                     $RET['ACTIVITAT'][ $FieldName ] = $Field;
-                elseif( stripos( $FieldName , $HM->getNewTableName() ) !== false ):
-                    $idH = $Row[ $HM->gnfnwt( 'HorariId' ) ] ;                    
-                    $idE = $Row[ $EM->gnfnwt( 'EspaiId' ) ] ;
+                
+                // Si el camp és de la taula Horaris
+                elseif( stripos( $FieldName , $HM->getNewTableName() ) !== false ):                    
                     if( !isset( $RET['HORARIS'][$idH] ) ) $RET['HORARIS'][$idH] = array( 'HORARI' => array(), 'ESPAIS' => array() );
                     $RET['HORARIS'][$idH]['HORARI'][$FieldName] = $Field; 
+                
+                // Si el camp és de la taula Espais
                 elseif( stripos($FieldName, $EM->getNewTableName() ) !== false ):
                     if( !isset( $RET['HORARIS'][$idH]['ESPAIS'][$idE] ) ) $RET['HORARIS'][$idH]['ESPAIS'][$idE] = array();
                     $RET['HORARIS'][$idH]['ESPAIS'][$idE][$FieldName] = $Field;                    
