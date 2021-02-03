@@ -33,6 +33,7 @@ class HorarisEspaisModel extends BDD {
                     ON {$HM->gofnwt('HorariId')} = {$this->gofnwt('HorariId')}
                  WHERE {$this->gofnwt('Actiu')} = 1 AND {$HM->gofnwt('Actiu')} = 1 AND {$this->gofnwt('EspaiId')} = :espai
                    AND MONTH({$HM->gofnwt('Dia')}) = :mes AND YEAR({$HM->gofnwt('Dia')}) = :any
+                ORDER BY {$HM->gofnwt('Dia')} asc, {$HM->gofnwt('HoraPre')} asc
                  ";                                  
         
         return $this->runQuery($SQL, array_merge( $W ) );        

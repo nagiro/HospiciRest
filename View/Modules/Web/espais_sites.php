@@ -1,5 +1,9 @@
 <style>
-        .detall_bloc { width: 100%; padding: 2vw; padding-top: 4vw; }        
+
+        .detall_bloc { width: 100%; padding: 2vw; padding-top: 4vw; padding-left: 4vw; }        
+        .detall_bloc h1, h2 { padding-bottom: 2vw; padding-top: 2vw; padding-right: 4vw;}
+        .detall_bloc p { }
+        .detall_bloc ul { }
         #detall_titol { padding-bottom: 4vw; }        
         #detall_descripcio {  }
         
@@ -51,28 +55,33 @@
         <!-- Petició -->
         <section class="detall_bloc" v-if="Loaded && !Errors && EspaiDetall">            
             
-            <h1 id="detall_titol"> {{ EspaiDetall.ESPAIS_Nom }} </h1>
-            <ul class="Detall_Llistat_Imatges">
-                <li v-for="(I, index) of EspaiImatges.ImatgesL">
-                    <img :class="getClassImatge" @click="ClicaImatge()" :src="I" />                    
-                </li>
-            </ul>
-            <p id="detall_descripcio" v-html = "EspaiDetall.ESPAIS_Descripcio">
+            <h1 id="detall_titol"> {{ EspaiDetall.ESPAIS_Nom }} </h1>            
+            <h2>Descripció de l'espai</h2>
+            <p>
+                <ul class="Detall_Llistat_Imatges">
+                    <li v-for="(I, index) of EspaiImatges.ImatgesL">
+                        <img :class="getClassImatge" @click="ClicaImatge()" :src="I" />                    
+                    </li>
+                </ul>
+            </p>
+            <p v-html = "EspaiDetall.ESPAIS_Descripcio">
                 {{ EspaiDetall.ESPAIS_Descripcio }}
-            </p>    
-                <button @click="getOcupacio('-')"> <  </button><button @click="getOcupacio('=')">Mes actual</button><button @click="getOcupacio('+')"> > </button>
-                <div v-for="EHO of EspaiHorarisOcupats">
-                    El dia {{EHO.HORARIS_Dia}} de {{EHO.HORARIS_HoraPre}} a {{EHO.HORARIS_HoraPost}}                    
-                    <v-calendar></v-calendar>
-                    <!-- <v-date-picker v-model='selectedDate' /> -->
-                </div>
-                //Aquí hi va l'ocupació de l'espai
+                {{DiaEscollit}}
+            </p>
+            <h2>Ocupació prevista</h2>
+            <p> 
+
+                <v-calendar @update:to-page="getOcupacio" :attributes="AtributsCalendari" locale="ca"></v-calendar>                                
+            </p>
+            <h2>Fes una reseva</h2>
+            <p> 
+            <form-inscripcio-espai
+                :espais-disponibles-entitat="FormEspaisDisponiblesEntitat" 
+                :model-inicial="FormModelInicial"
+             ></form-inscripcio-espai>
+
             </p>
             
-
-            <div>
-                AQUÍ HI VA EL FORMULARI
-            </div>            
 <!--                
             <p>
             <div v-if="DetallCurs">
@@ -107,7 +116,7 @@
   <script>
         var vm2 = new Vue({
         
-            el: '#detall',        
+            el: '#detall',                
             data: { 
                 Loaded: false,
                 Errors: false,
@@ -117,7 +126,10 @@
                 EspaiImatges: [],
                 ImatgeGran: false,  
                 MesActual: 0,  
-                AnyActual: 0,           
+                AnyActual: 0,  
+                DiaEscollit: null,     
+                AtributsCalendari: [],    
+                FormEspaisDisponiblesEntitat: [],   // Carrega quan carrega la pàgina en detall
 
                 DetallSite: {},
                 LlistatEspais: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
@@ -127,7 +139,9 @@
             },            
             filters: {},
             created: function() {
-                console.log(window);
+                
+                this.DiaEscollit = new Date();                
+
                 if(this.WebStructure.Errors && this.WebStructure.Errors.length > 0) {
 
                     this.Loaded = true;                
@@ -147,8 +161,13 @@
                     if(this.WebStructure.EspaiDetall && this.WebStructure.EspaiDetall.Detall) {
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
                         this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
-                        this.DetallSite = this.WebStructure.Site;                                                                        
-                    }                    
+                        this.DetallSite = this.WebStructure.Site;                          
+                        this.FormEspaisDisponiblesEntitat = this.WebStructure.EspaiDetall.FormEspaisDisponibles;                                                                                              
+                        this.FormModelInicial = this.WebStructure.EspaiDetall.FormModelInicial;
+                        this.FormModelInicial.RESERVAESPAIS_Nom = 'Això és el nom';
+                        
+                    }   
+
 
                     this.UrlActual = window.location.href;  
                     this.Token = this.WebStructure.Token;                                          
@@ -168,26 +187,11 @@
                 ClicaImatge() {
                     this.ImatgeGran = !this.ImatgeGran;
                 },
-                // Accio = '-', '+', '='
-                getOcupacio(Accio) {
+                
+                getOcupacio(DataCalendari) {
                     
-                    switch(Accio) {
-                        case '=': 
-                            let $D = new Date();        
-                            this.MesActual = $D.getMonth()+1;
-                            this.AnyActual = $D.getFullYear();                            
-                        break;
-                        case '-':
-                            this.MesActual--;
-                            if(this.MesActual == 0){ this.MesActual = 12; this.AnyActual--; }
-                        break;
-                        case '+':
-                            this.MesActual++;
-                            if(this.MesActual == 13){ this.MesActual = 1; this.AnyActual++; }
-                        break;
-                    }
-
-                    console.log(this.EspaiDetall);
+                    this.MesActual = DataCalendari.month;
+                    this.AnyActual = DataCalendari.year;                                                                                           
 
                     let FD = new FormData();
                     FD.append('MesActual', this.MesActual);
@@ -195,10 +199,25 @@
                     FD.append('IdEspai', this.EspaiDetall.ESPAIS_EspaiId);                                                            
                     FD.append('Accio', 'OcupacioEspai');                                                            
                     axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
-                        this.EspaiHorarisOcupats = X.data;
-                    }).catch( E => { alert(E); });
+                        this.EspaiHorarisOcupats = X.data;                        
+                        for(HO of this.EspaiHorarisOcupats){
 
-                    //Consulto el mes escollit      
+                            let D = HO.HORARIS_Dia.split('-');
+                            this.AtributsCalendari.push(
+                                { 
+                                    key: String(HO.HORARIS_Dia) + String(HO.HORARIS_HoraPost), 
+                                    dot: true, 
+                                    popover: { 
+                                        label: 'De ' + String(HO.HORARIS_HoraPre) + ' a ' + String(HO.HORARIS_HoraPost)
+                                    }, 
+                                    dates: new Date(D[0],(D[1]-1),D[2],0,0,0,0)
+                                }
+                            ); 
+
+                        }                        
+
+                    }).catch( E => { alert(E); });
+                    
 
                     
                 }

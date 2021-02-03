@@ -205,8 +205,7 @@ class MyAPIWeb extends API
             case 'OcupacioEspai': 
                 $IdEspai = isset($this->request['post']['IdEspai']) ? $this->request['post']['IdEspai'] : '';
                 $MesActual = isset($this->request['post']['MesActual']) ? $this->request['post']['MesActual'] : '';
-                $AnyActual = isset($this->request['post']['AnyActual']) ? $this->request['post']['AnyActual'] : '';
-                $AnyActual = '2020';
+                $AnyActual = isset($this->request['post']['AnyActual']) ? $this->request['post']['AnyActual'] : '';                
                 $RET = $WAPI->getOcupacioEspai($IdEspai, $MesActual, $AnyActual);
                 break;
         }

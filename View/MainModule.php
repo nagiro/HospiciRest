@@ -128,7 +128,7 @@ class MainModule {
                 
                 // espais/detall/:idEspai/:TextEspai
                 elseif($url[1] == 'detall'):
-                    $Data['EspaiDetall'] = $this->WebController->getDetallEspai($url[2]);
+                    $Data['EspaiDetall'] = $this->WebController->getDetallEspai($url[2]);                                        
                     $Data['Site'] = $this->WebController->getSiteInfo($url[2]);
                 endif;
                 

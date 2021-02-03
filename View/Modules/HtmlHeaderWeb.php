@@ -25,6 +25,9 @@
         
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue-form-generator@2.3.4/dist/vfg.min.js"></script>
+    <link href="https://unpkg.com/vue-form-generator/dist/vfg.css" rel="stylesheet" />
 
     <script src="https://kit.fontawesome.com/4479587b76.js" crossorigin="anonymous"></script>
 
@@ -58,6 +61,7 @@
     <script  src="/View/ModulesVue/Web/NoticiesCarrousel/NoticiesCarrousel.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/ShowErrors/showErrors.js?<?php echo date('U', time()) ?>"></script>    
+    <script  src="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.js?<?php echo date('U', time()) ?>"></script>    
     
     
     <link href="/View/ModulesVue/Web/barraSuperior/barraSuperior.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
@@ -70,6 +74,7 @@
     <link href="/View/ModulesVue/Web/NoticiesCarrousel/NoticiesCarrousel.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
     <link href="/View/ModulesVue/Web/ShowErrors/showErrors.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
+    <link href="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
 
     <link href="/View/ModulesVue/Web/General.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
 
@@ -82,13 +87,8 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->
 
     <script src='https://unpkg.com/v-calendar'></script>
+    <script type="module" src="/View/ModulesVue/VueMainLoader.js"></script>
 
-    <script>
-        window.Vue.use(VuejsDialog.main.default)        
-        import VCalendar from 'v-calendar';
-        // window.Vue.use("v-calendar");        
-        // window.Vue.use(CKEditor); 
-    </script>
 
 <!--    <script src="/View/Scripts/cropper.js"></script>
     <link rel="stylesheet" href="/View/Styles/cropper.css"> -->
