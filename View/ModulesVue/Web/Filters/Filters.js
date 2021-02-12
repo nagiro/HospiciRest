@@ -73,7 +73,7 @@ Vue.component('filters-div', {
         },
         
         QuantsDiesTeElMes(any, mes) {
-            return new Date(any, mes, 0).getDate();
+            return new Date(any, mes + 1, 0).getDate();
         },
 
         DiaSetmana(DiaSetmana) {
