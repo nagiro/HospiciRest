@@ -26,8 +26,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/vue-form-generator@2.3.4/dist/vfg.min.js"></script>
-    <link href="https://unpkg.com/vue-form-generator/dist/vfg.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@braid/vue-formulate@2.5.0/dist/formulate.min.js"></script>    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@braid/vue-formulate@2.5.0/dist/snow.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@braid/vue-formulate-i18n@1.14.0/dist/locales.umd.min.js"></script>
 
     <script src="https://kit.fontawesome.com/4479587b76.js" crossorigin="anonymous"></script>
 
@@ -49,6 +50,8 @@
             url: '/pagina/115/cookies' }</script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookie-consent-box@2.3.1/dist/cookie-consent-box.min.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/cookie-consent-box@2.3.1/dist/cookie-consent-box.min.js"></script>    
+
+    <script src='https://unpkg.com/v-calendar'></script>    
 
     <script  src="/View/ModulesVue/Web/const_and_helpers.js?<?php echo date('U', time()) ?>"></script>
     <script  src="/View/ModulesVue/Web/barraSuperior/barraSuperior.js?<?php echo date('U', time()) ?>"></script>
@@ -85,9 +88,6 @@
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->
-
-    <script src='https://unpkg.com/v-calendar'></script>
-    <script type="module" src="/View/ModulesVue/VueMainLoader.js"></script>
 
 
 <!--    <script src="/View/Scripts/cropper.js"></script>

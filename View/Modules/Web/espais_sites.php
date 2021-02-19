@@ -72,19 +72,18 @@
             <p> 
 
                 <v-calendar @update:to-page="getOcupacio" :attributes="AtributsCalendari" locale="ca"></v-calendar>                                
-            </p>
-            <h2>Fes una reseva</h2>
-            <p> 
+            </p>            
+            
             <form-inscripcio-espai
                 :espais-disponibles-entitat="FormEspaisDisponiblesEntitat" 
                 :model-inicial="FormModelInicial"
              ></form-inscripcio-espai>
 
-            </p>
+            
             
 <!--                
             <p>
-            <div v-if="DetallCurs">
+            <div v-if="DetallCurs">            
                 <form-inscripcio-simple 
                     :activitat-id="'0'" 
                     :cicle-id="'0'"
@@ -113,7 +112,14 @@
   </main>
 
 
-  <script>
+  <script>       
+                         
+        Vue.use(VueFormulate, {
+            plugins: [ VueFormulateI18n.ca ],
+            locale: 'ca',
+            validationNameStrategy: ['validationName', 'label', 'name', 'type']
+        }); 
+        
         var vm2 = new Vue({
         
             el: '#detall',                
