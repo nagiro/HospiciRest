@@ -715,6 +715,15 @@ class WebApiController
         }        
     }
 
+    /**
+    * Funció que es crida quan es fa una nova reserva d'espai a través de l'Hospici
+    */
+    public function setReservaEspai($FormulariReservaEspai){
+        require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
+        $REM = new ReservaEspaisModel();
+        $REM->insert($FormulariReservaEspai);
+    }
+
     public function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
     public function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
     

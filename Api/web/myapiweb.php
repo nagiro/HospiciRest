@@ -115,6 +115,17 @@ class MyAPIWeb extends API
         return array('', '0');
     }
 
+    protected function PutNovaReservaEspai() {
+        $WAPI = new WebApiController();        
+
+        $FormulariReservaEspai = isset($this->request['post']['DadesFormulari']) ? json_decode($this->request['post']['DadesFormulari'], true) : array();        
+        $WAPI->setReservaEspai($FormulariReservaEspai);
+        // $WAPI->ReenviaEmailInscripcio( $Matricules[0], $UrlDesti );
+        
+
+        return array('', '0');
+    }
+
     protected function ExisteixDNI() {
         
         if( isset( $this->request['DNI'] ) ) {

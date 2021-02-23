@@ -48,6 +48,20 @@ class ReservaEspaisModel extends BDD {
         $O = $this->getDefaultObject();        
     }
 
+    public function insert($ORE) {           
+
+        $ORE[$this->gnfnwt(self::EspaisSolicitats)] = $this->ReturnWithArrobas($ORE[$this->gnfnwt(self::EspaisSolicitats)]);
+        $this->_doInsert($ORE);
+
+    }
+
+    public function ReturnWithArrobas($ElementArray) {
+        $RET = array();        
+        foreach($ElementArray as $id => $val) $RET[] = $val;
+        return implode('@', $RET);
+    }
+
+
         // Carrego la informació d'un espai i els seus horaris ocupats ( si n'hi ha )
 //    public function getEspaiDetall($idEspai) {
 //        return $this->_getRowWhere( array( $this->gofnwt('EspaiId') => intval($idEspai)) );
