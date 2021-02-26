@@ -252,6 +252,7 @@ class MyAPIWeb extends API
      
         $WAPI = new WebApiController();
         $Accio = isset($this->request['post']['Accio']) ? $this->request['post']['Accio'] : ''; 
+        if(empty($Accio)) $Accio = isset($this->request['Accio']) ? $this->request['Accio'] : ''; 
         
         switch($Accio){
             case 'OcupacioEspai': 
@@ -260,6 +261,9 @@ class MyAPIWeb extends API
                 $AnyActual = isset($this->request['post']['AnyActual']) ? $this->request['post']['AnyActual'] : '';                
                 $RET = $WAPI->getOcupacioEspai($IdEspai, $MesActual, $AnyActual);
                 break;
+            case 'getEspaisDisponibles':
+                $IdSite = isset($this->request['IdSite']) ? $this->request['IdSite'] : '';
+                $RET = $WAPI->getEspaisDisponibles($IdSite);
         }
 
         return array($RET, 200);

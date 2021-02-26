@@ -748,6 +748,14 @@ class WebApiController
         $REM->insert($FormulariReservaEspai);
     }
 
+    public function getEspaisDisponibles($idSite) {
+        require_once DATABASEDIR . 'Tables/EspaisModel.php';
+        $EM = new EspaisModel(); 
+        return $EM->getEspaisDisponiblesSite($idSite);
+    }
+
+    
+
     public function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
     public function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
     

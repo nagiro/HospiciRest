@@ -73,9 +73,8 @@
 
                 <v-calendar @update:to-page="getOcupacio" :attributes="AtributsCalendari" locale="ca"></v-calendar>                                
             </p>            
-            
-            <form-usuari-auth></form-usuari-auth>
-            <!-- <form-inscripcio-espai ></form-inscripcio-espai> -->
+                        
+            <form-inscripcio-espai :id-site="IdSite" ></form-inscripcio-espai>
 
             
             
@@ -134,6 +133,7 @@
                 DiaEscollit: null,     
                 AtributsCalendari: [],    
                 FormEspaisDisponiblesEntitat: [],   // Carrega quan carrega la pàgina en detall
+                IdSite: 0, 
 
                 DetallSite: {},
                 LlistatEspais: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
@@ -165,12 +165,9 @@
                     if(this.WebStructure.EspaiDetall && this.WebStructure.EspaiDetall.Detall) {
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
                         this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
-                        this.DetallSite = this.WebStructure.Site;                          
-/*                        this.FormEspaisDisponiblesEntitat = this.WebStructure.EspaiDetall.FormEspaisDisponibles;                                                                                              
-                        this.FormModelInicial = this.WebStructure.EspaiDetall.FormModelInicial;
-                        this.FormModelInicial.RESERVAESPAIS_Nom = 'Això és el nom';
-                        
-*/                        
+                        this.DetallSite = this.WebStructure.Site;                                                  
+                        console.log(this.DetallSite);
+                        this.IdSite = this.DetallSite.SITES_SiteId;
                     }   
 
 
