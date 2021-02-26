@@ -113,10 +113,16 @@ class MyAPIWeb extends API
         }
 
         return array('', '0');
-    }
+    }    
 
-    protected function PutNovaReservaEspai() {
+    /**
+    * Funció que tracta les peticions de reserva d'espais
+     */
+    protected function AjaxReservaEspai() {
         $WAPI = new WebApiController();        
+
+        //Primer consultem el DNI i carreguem el formulari d'un espai amb un DNI concret d'usuari i després passem a mostrar el menú.
+        //Entrem el DNI si el DNI existeix, passem a carregar el formulari. Si no existeix, creem l'usuari i després passem a mostar el menú.                 
 
         $FormulariReservaEspai = isset($this->request['post']['DadesFormulari']) ? json_decode($this->request['post']['DadesFormulari'], true) : array();        
         $WAPI->setReservaEspai($FormulariReservaEspai);
@@ -124,36 +130,49 @@ class MyAPIWeb extends API
         
 
         return array('', '0');
-    }
+    }    
 
+    /**
+    * Funció que ens diu si un DNI existeix o no a la nostra base de dades
+    */    
     protected function ExisteixDNI() {
         
         if( isset( $this->request['DNI'] ) ) {
-            $WAPI = new WebApiController();
-            
+            $WAPI = new WebApiController();            
             $DNI = isset($this->request['DNI']) ? $this->request['DNI'] : '';
-            $idCurs = isset($this->request['idCurs']) ? $this->request['idCurs'] : '';            
-            $IsRestringit = isset($this->request['IsRestringit']) ? $this->request['IsRestringit'] : '';            
-            
-            $ExisteixDNI = $WAPI->ExisteixDNI($DNI, $idCurs, $IsRestringit);
+            $ExisteixDNI = $WAPI->ExisteixDNI($DNI);                                                                                                                
             return array($ExisteixDNI, 200);
         } 
 
     }    
 
     /**
+    * Funció que ens diu si un usuari per un curs quines restriccions té
+    */
+    protected function getPermisosUsuarisCursos() {
+        $WAPI = new WebApiController();         
+        $idUsuariDecrypted = isset($this->request['IdUsuariEncrypted']) ? $WAPI->Decrypt($this->request['IdUsuariEncrypted']) : '';            
+        $idCurs = isset($this->request['idCurs']) ? $this->request['idCurs'] : '';            
+        $IsRestringit = isset($this->request['IsRestringit']) ? $this->request['IsRestringit'] : '';            
+        $RET = $WAPI->getPermisosUsuariCursos($idUsuariDecrypted, $idCurs, $IsRestringit);
+        return array($RET, 200);
+    }
+
+    /**
     * Funció que gestiona baixa o 
     **/
     protected function AccionsExisteixDNI() {
-        $DNI = isset($this->request['D']) ? $this->request['D'] : '';
+        $WAPI = new WebApiController();
+
+        $idUsuari = isset($this->request['I']) ? $WAPI->Decrypt($this->request['I']) : '';
         $CURS = isset($this->request['C']) ? $this->request['C'] : '';
         $Accio = isset($this->request['A']) ? $this->request['A'] : '';
-        $WAPI = new WebApiController();
+        
         
         $RET = 0;
         switch($Accio) {            
-            case 'B': $RET = $WAPI->BaixaInscripcioWeb($DNI, $CURS); break;
-            case 'R': $RET = $WAPI->ReenviaEmailInscripcioWeb( $DNI, $CURS ); break;
+            case 'B': $RET = $WAPI->BaixaInscripcioWeb($idUsuari, $CURS); break;
+            case 'R': $RET = $WAPI->ReenviaEmailInscripcioWeb( $idUsuari, $CURS ); break;
         }
         
         return array($RET, 200);
@@ -165,12 +184,15 @@ class MyAPIWeb extends API
         return array($WAPI->getLlistatTeatre($idActivitatCurs), 200);                
     }
 
+
     /**
-     * Funció que realitza la inscripció d'usuaris a través del web. 
+    * Alta usuari simple. Retorna el mateix que la funció ExisteixDNI
      */
-    protected function AltaUsuariSimple() {
-        
+
+    protected function NouUsuari() {
+
         //Agafo el DNI, Nom, Email i Telèfon... de contrasenya poso un número aleatori. 
+        $WAPI = new WebApiController();
         $DNI = isset($this->request['post']['DNI']) ? $this->request['post']['DNI'] : '';
         $Nom = isset($this->request['post']['Nom']) ? $this->request['post']['Nom'] : '';
         $Cog1 = isset($this->request['post']['Cog1']) ? $this->request['post']['Cog1'] : '';
@@ -181,7 +203,27 @@ class MyAPIWeb extends API
         $Municipi = isset($this->request['post']['Municipi']) ? $this->request['post']['Municipi'] : '';
         $Genere = isset($this->request['post']['Genere']) ? $this->request['post']['Genere'] : '';
         $AnyNaixement = isset($this->request['post']['AnyNaixement']) ? $this->request['post']['AnyNaixement'] : '';
+        
+        try {
+            
+            $NouIdUsuari = $WAPI->NouUsuari($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement);
+            return array( array('IdUsuariEncrypted' => $WAPI->Encrypt($NouIdUsuari), 'ExisteixDNI' => ($NouIdUsuari > 0)) , 200);
 
+        } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
+
+        
+        
+    }
+
+
+    /**
+     * Funció que realitza la inscripció d'usuaris a través del web. 
+     */
+    protected function NovaInscripcio() {
+
+        $WAPI = new WebApiController();
+
+        $IdUsuari = isset($this->request['post']['IdUsuariEncrypted']) ? $WAPI->Decrypt($this->request['post']['IdUsuariEncrypted']) : '';        
         $QuantesEntrades = isset($this->request['post']['QuantesEntrades']) ? $this->request['post']['QuantesEntrades'] : '';        
         $ActivitatId = isset($this->request['post']['ActivitatId']) ? $this->request['post']['ActivitatId'] : 0;
         $CicleId = isset($this->request['post']['CicleId']) ? $this->request['post']['CicleId'] : 0;        
@@ -197,10 +239,9 @@ class MyAPIWeb extends API
         $UrlDesti = isset($this->request['post']['UrlDesti']) ? $this->request['post']['UrlDesti'] : 0;        
 
         $DadesExtres = isset($this->request['post']['DadesExtres']) ? $this->request['post']['DadesExtres'] : null;
-
-        $WAPI = new WebApiController();
+        
         try {
-            $RET = $WAPI->NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token, $DadesExtres);
+            $RET = $WAPI->NovaInscripcioSimple($IdUsuari, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token, $DadesExtres);
         } catch( Exception $e) { return array( array('matricules' => array(), 'error' => $e->getMessage()), 200); }
               
         return array( array('AltaUsuari' => $RET, 'error' => '' ), 200 );

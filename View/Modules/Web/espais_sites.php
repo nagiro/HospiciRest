@@ -74,10 +74,8 @@
                 <v-calendar @update:to-page="getOcupacio" :attributes="AtributsCalendari" locale="ca"></v-calendar>                                
             </p>            
             
-            <form-inscripcio-espai
-                :espais-disponibles-entitat="FormEspaisDisponiblesEntitat" 
-                :model-inicial="FormModelInicial"
-             ></form-inscripcio-espai>
+            <form-usuari-auth></form-usuari-auth>
+            <!-- <form-inscripcio-espai ></form-inscripcio-espai> -->
 
             
             
@@ -168,10 +166,11 @@
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
                         this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
                         this.DetallSite = this.WebStructure.Site;                          
-                        this.FormEspaisDisponiblesEntitat = this.WebStructure.EspaiDetall.FormEspaisDisponibles;                                                                                              
+/*                        this.FormEspaisDisponiblesEntitat = this.WebStructure.EspaiDetall.FormEspaisDisponibles;                                                                                              
                         this.FormModelInicial = this.WebStructure.EspaiDetall.FormModelInicial;
                         this.FormModelInicial.RESERVAESPAIS_Nom = 'Això és el nom';
                         
+*/                        
                     }   
 
 

@@ -9,6 +9,7 @@ Vue.component('form-inscripcio-espai', {
 
     },          
     created: function() {
+        formValues = ModelInicial;
         // Posem aquí formValues en comptes de a data perquè millora molt el rendiment.        
         
     },
@@ -16,11 +17,7 @@ Vue.component('form-inscripcio-espai', {
         return {            
             isFormLoading: false,
             OpcionsEstat: {0: "En espera", 1: "Acceptada", 2:"Denegada", 3:"Anul·lada", 4:"Pendent d'acceptar condicions", 5:"Esborrada"},
-            OpcionsSiNo: {1: "Sí", 0: "No"},
-            formValues: {
-                RESERVAESPAIS_Representacio: "Hola",
-                RESERVAESPAIS_Estat: 0
-            }
+            OpcionsSiNo: {1: "Sí", 0: "No"}            
         }
     },    
     computed: {},
@@ -38,9 +35,9 @@ Vue.component('form-inscripcio-espai', {
     },
     template: `            
     <div>
-
-        <formulate-form
-            v-model="formValues"
+                
+        <formulate-form            
+            v-model="formValues"        
             @submit="submitHandler"             
         >        
         

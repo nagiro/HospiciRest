@@ -37,16 +37,30 @@ class WebApiController
         return $HEM->getHorarisEspaisOcupats($idEspai, $Mes, $Any);
     }
 
-    public function ExisteixDNI($DNI = '', $idCurs = '', $IsRestringit = 0) {
+    /**
+    * Funció que ens diu si un DNI existeix o no. Si existeix retorna l'usuari encriptat
+     */
+    public function ExisteixDNI($DNI = '') {
         $UM = new UsuarisModel();                
-        $CM = new CursosModel();
-        $MM = new MatriculesModel();
+        
         $DNI = strtoupper($DNI);
         $idUsuari = $UM->ExisteixDNI($DNI);
         $RET['ExisteixDNI'] = ($idUsuari > 0);
-        $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
-        $RET['HasUsuariMatriculaAAquestCurs'] = $MM->getUsuariHasMatricula($idCurs, $idUsuari);
-        
+        $RET['IdUsuariEncrypted'] = self::Encrypt($idUsuari);        
+                
+        return $RET;
+    }
+
+    /**
+    * Funció que retorna els permisos d'un usuari en funció d'un curs. 
+    */
+    public function getPermisosUsuariCursos($idUsuariDecrypted = 0, $idCurs = 0, $IsRestringit = 0) {
+        if($idCurs > 0) {
+            $CM = new CursosModel();
+            $MM = new MatriculesModel();
+            $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($idUsuariDecrypted, $idCurs);
+            $RET['HasUsuariMatriculaAAquestCurs'] = $MM->getUsuariHasMatricula($idCurs, $idUsuariDecrypted);
+        }
         return $RET;
     }
 
@@ -435,13 +449,10 @@ class WebApiController
     /**
     * Baixa inscripció, possiblement haurem de fer que entrin el correu electrònic o alguna altra dada per validar-ho.    
     **/
-    public function BaixaInscripcioWeb($DNI, $idCurs) {
-        // Fem la baixa de la inscripció                
-        $UM = new UsuarisModel();
-        $OU = $UM->getUsuariDNI($DNI);
-
+    public function BaixaInscripcioWeb($idUsuari, $idCurs) {
+                
         $MM = new MatriculesModel();    
-        $ArrayMatricules = $MM->getUsuariHasMatricula($idCurs, $OU[$UM->gnfnwt('IdUsuari')], true);
+        $ArrayMatricules = $MM->getUsuariHasMatricula($idCurs, $idUsuari, true);
         foreach($ArrayMatricules as $OM) {
             $MM->doBaixaWeb($OM);
         }        
@@ -451,14 +462,13 @@ class WebApiController
     }
 
     /**
-     * $Origen: web, hospici
+    * Funció que dóna d'alta un nou usuari i retorna el seu IdUsuari
      */
-    public function NovaInscripcioSimple($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token, $DadesExtres) {                
+    public function NouUsuari($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement) {
         
-        $OU = array();
         $UM = new UsuarisModel();
-        $CM = new CursosModel();
         
+        $OU = array();        
         $OU = $UM->getUsuariDNI($DNI);
         
         // Si no hem trobat el DNI, creem l'usuari
@@ -481,12 +491,29 @@ class WebApiController
             $OU[$UM->gnfnwt('Habilitat')] = 1;             
             
             // Inserim l'usuari nou i el recarreguem de la base de dades per garantir que s'ha creat.
-            $id = $UM->doInsert($OU);            
+            $id = $UM->doInsert($OU);                        
             if($id > 0) $OU = $UM->getUsuariId($id);
             else throw new Exception("No he pogut crear l'usuari amb DNI {$DNI}");         
-
+                        
+            return ($id > 0); 
+            
+        } else {
+            return $UM->getId($OU);
         }
+
+    }
+
+    /**
+     * $Origen: web, hospici
+     */
+    public function NovaInscripcioSimple($IdUsuari, $QuantesEntrades, $ActivitatId, $CicleId, $CursId, $TipusPagament, $UrlDesti, $DescompteAplicat, $Localitats, $Token, $DadesExtres) {                
         
+        $UM = new UsuarisModel();
+        $CM = new CursosModel();
+
+        //Carreguem l'usuari en qüestió
+        $OU = $UM->getUsuariId($IdUsuari);
+                
         // Validem si el TipusPagament és correcte
         if($TipusPagament == MatriculesModel::PAGAMENT_CAP) throw new Exception("No heu escollit cap tipus de pagament.");
 
@@ -504,7 +531,7 @@ class WebApiController
 
         // Vinculem l'usuari amb el site si fa falta... 
         $USM = new UsuarisSitesModel();
-        $USM->addUsuariASite( $OU[ $UM->gnfnwt('IdUsuari') ], $idSite ); 
+        $USM->addUsuariASite( $IdUsuari, $idSite ); 
 
         // Validem que passi el token... si no el superem, sortim.
         $isAdmin = false;
@@ -522,7 +549,7 @@ class WebApiController
         // Mirem si l'usuari ja té alguna matrícula en aquest curs (Menys per l'administrador)
         $RestringitNomesUnCop = $CM->getIsRestringit($OC, CursosModel::RESTRINGIT_NOMES_UN_COP);        
         if($RestringitNomesUnCop && !$isAdmin) {
-            $UsuariHasMatricules = $MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $OU[$UM->gnfnwt('IdUsuari')] );
+            $UsuariHasMatricules = $MM->getUsuariHasMatricula( $OC[$CM->gnfnwt('IdCurs')], $IdUsuari );
             if($UsuariHasMatricules) throw new Exception('Ja hi ha inscripcions per a aquest DNI a aquesta activitat/curs.');
         }
         
@@ -549,7 +576,7 @@ class WebApiController
             for($i = 0; $i < $QuantesEntrades; $i++){
             
                 // Per cada inscripció, creo un objecte matrícula i marco com a reservat
-                $OM = $MM->getEmptyObject($OU[$UM->gnfnwt('IdUsuari')], $idCurs, $idSite);
+                $OM = $MM->getEmptyObject($IdUsuari, $idCurs, $idSite);
                                 
                 // Si hi ha descompte, l'apliquem. 
                 $PreuPagat = $OC[$CM->gnfnwt('Preu')];
@@ -600,7 +627,7 @@ class WebApiController
             } elseif (   sizeof($Matricules) > 0 
                         && $TipusPagament != MatriculesModel::PAGAMENT_LLISTA_ESPERA 
                         && $TipusPagament != MatriculesModel::PAGAMENT_DATAFON ) {
-                $this->EnviaEmailInscripcio($Matricules[0], $OU[$UM->gnfnwt('Email')], array(self::TIPUS_RESGUARD_MAIL), $UrlDesti);                    
+                $this->EnviaEmailInscripcio($Matricules[0], $UM->getEmail($OU), array(self::TIPUS_RESGUARD_MAIL), $UrlDesti);                    
             }
                     
             return $RET;
@@ -656,13 +683,10 @@ class WebApiController
     /**
     * Reenviem el correu a la persona, un cop havent canviat el seu email 
     **/
-    public function ReenviaEmailInscripcioWeb( $DNI, $idCurs ) {
-
-        $UM = new UsuarisModel();
-        $OU = $UM->getUsuariDNI($DNI);
-
+    public function ReenviaEmailInscripcioWeb( $IdUsuari, $idCurs ) {
+        
         $MM = new MatriculesModel();
-        $MatriculesUsuariCurs = $MM->getUsuariHasMatricula($idCurs, $OU[$UM->gnfnwt('IdUsuari')], true);
+        $MatriculesUsuariCurs = $MM->getUsuariHasMatricula($idCurs, $IdUsuari, true);
         $GrupsMatricules = array();
         foreach($MatriculesUsuariCurs as $OM):
             $GM = $OM[$MM->gnfnwt('GrupMatricules')];

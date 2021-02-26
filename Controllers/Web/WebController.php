@@ -475,18 +475,12 @@ class WebController
     }
     
     public function getDetallEspai($idEspai) {
-        $EM = new EspaisModel();             
+        $EM = new EspaisModel();            
 
         $Espai = array('Detall' => array(), 'HorarisOcupats' => array());
         $Espai['Detall'] = $EM->getEspaiDetall($idEspai);
         $Espai['Imatges'] = $EM->getImageUrlsFromEspai($idEspai);
-        $idSite = $Espai['Detall'][$EM->gnfnwt('SiteId')];
-        $Espai['FormEspaisDisponibles'] = $this->getEspaisDisponibles($idSite);
-        
-        require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
-        $REM = new ReservaEspaisModel();
-        $Espai['FormModelInicial'] = $REM->getDefaultObject();
-        
+                                
         return $Espai;        
 
     }    

@@ -1,0 +1,24 @@
+.FormUsuariAuth .formulate-form {
+  background-color: #EAEAEA; 
+  padding: 3vw;
+  margin-right: 2vw;
+}
+
+.FormUsuariAuth .formulate-form { display: flex; flex-flow: wrap; }
+.FormUsuariAuth .formulate-form h3 { width: 100%; margin-bottom: 2vw; }
+.FormUsuariAuth .formulate-input .formulate-input-element { width: 27vw; max-width: 24vw; }
+.FormUsuariAuth .formulate-input-wrapper { width: 26vw; }
+.FormUsuariAuth .formulate-input[data-classification=box] .formulate-input-element { width: 1vw; }
+.FormUsuariAuth .formulate-input input, select, textarea, .formulate-input-element-decorator { background-color: floralwhite !important; }
+.FormUsuariAuth .formulate-input button { margin-top: 1.4vw; }
+.FormUsuariAuth .formulate-input .has-value { border: 1px solid green !important; }
+.FormUsuariAuth .formulate-input .has-errors { border: 1px solid red !important; }
+
+
+
+@media screen and (min-width: 300px) and (max-width: 1199px) {
+    
+  .FormUsuariAuth .formulate-input .formulate-input-element { width: 80vw; }
+  .FormUsuariAuth .formulate-input-wrapper { width: 80vw; }
+
+}

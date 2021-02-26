@@ -32,20 +32,29 @@ class ReservaEspaisModel extends BDD {
     const WebDescripcio = "WebDescripcio";
     const SiteId = "SiteId";
     const Actiu = "Actiu";
-    const IsTractada = "IsTractada";        
+    const IsTractada = "IsTractada";       
+    
+    const LlistatEstatsReserva = array(0 => "En espera", 1 => "Acceptada", 2 => "Denegada", 3 => "Anul·lada", 4 => "Pendent d'acceptar condicions", 5 => "Esborrada");
 
     public function __construct() {                      
 
-        $OldFields = array("ReservaEspaiID", "Representacio", "Responsable", "TelefonResponsable", "PersonalAutoritzat", "PrevisioAssistents","EsCicle", "Comentaris", "Estat", "Usuaris_usuariID", "Organitzadors", "DataActivitat", "HorariActivitat", "TipusActe", "Nom", "isEnregistrable", "EspaisSolicitats", "MaterialSolicitat", "DataAlta", "Compromis", "Codi", "CondicionsCCG", "DataAcceptacioCondicions", "ObservacionsCondicions", "HasDifusio","WebDescripcio", "site_id", "actiu","tractada");
-        
-        $NewFields = array(self::ReservaEspaiId, self::Representacio, self::Responsable, self::TelefonResponsable, self::PersonalAutoritzat, self::PrevisioAssistents, self::EsCicle, self::Comentaris, self::Estat, self::UsuariId, self::Organitzadors, self::DataActivitat, self::HorariActivitat, self::TipusActe, self::Nom, self::IsEnregistrable, self::EspaisSolicitats, self::MaterialSolicitat, self::DataAlta, self::Compromis, self::Codi, self::Condicions, self::DataAcceptacioCondicions, self::ObservacionsCondicions, self::HasDifusio, self::WebDescripcio, self::SiteId, self::Actiu, self::IsTractada);
-        
+        $OldFields = array("ReservaEspaiID", "Representacio", "Responsable", "TelefonResponsable", "PersonalAutoritzat", "PrevisioAssistents","EsCicle", "Comentaris", "Estat", "Usuaris_usuariID", "Organitzadors", "DataActivitat", "HorariActivitat", "TipusActe", "Nom", "isEnregistrable", "EspaisSolicitats", "MaterialSolicitat", "DataAlta", "Compromis", "Codi", "CondicionsCCG", "DataAcceptacioCondicions", "ObservacionsCondicions", "HasDifusio","WebDescripcio", "site_id", "actiu","tractada");        
+        $NewFields = array(self::ReservaEspaiId, self::Representacio, self::Responsable, self::TelefonResponsable, self::PersonalAutoritzat, self::PrevisioAssistents, self::EsCicle, self::Comentaris, self::Estat, self::UsuariId, self::Organitzadors, self::DataActivitat, self::HorariActivitat, self::TipusActe, self::Nom, self::IsEnregistrable, self::EspaisSolicitats, self::MaterialSolicitat, self::DataAlta, self::Compromis, self::Codi, self::Condicions, self::DataAcceptacioCondicions, self::ObservacionsCondicions, self::HasDifusio, self::WebDescripcio, self::SiteId, self::Actiu, self::IsTractada);        
         parent::__construct("reservaespais", "RESERVAESPAIS", $OldFields, $NewFields );                        
 
     }
     
-    public function getEmptyObject() {
-        $O = $this->getDefaultObject();        
+    public function getEmptyObject($SiteId) {
+
+        $O = $this->getDefaultObject();           
+        $O[$this->gnfnwt(self::DataAlta)] = getdate('Y-m-d H:i:s', time());
+        $O[$this->gnfnwt(self::SiteId)] = $SiteId;
+        $O[$this->gnfnwt(self::Actiu)] = 1;
+        $O[$this->gnfnwt(self::IsTractada)] = 0;
+        $O[$this->gnfnwt(self::UsuariId)] = 0;
+        $O[$this->gnfnwt(self::Estat)] = self::$LlistatEstatsReserva[0];                
+
+        return $O;
     }
 
     public function insert($ORE) {           

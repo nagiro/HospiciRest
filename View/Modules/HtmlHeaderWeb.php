@@ -62,6 +62,7 @@
     <script  src="/View/ModulesVue/Web/Filters/Filters.js?<?php echo date('U', time()) ?>"></script>
     <script  src="/View/ModulesVue/Web/ListNodes/ListNodes.js?<?php echo date('U', time()) ?>"></script>
     <script  src="/View/ModulesVue/Web/NoticiesCarrousel/NoticiesCarrousel.js?<?php echo date('U', time()) ?>"></script>    
+    <script  src="/View/ModulesVue/Web/FormUsuariAuth/FormUsuariAuth.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/ShowErrors/showErrors.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.js?<?php echo date('U', time()) ?>"></script>    
@@ -76,6 +77,7 @@
     <link href="/View/ModulesVue/Web/ListNodes/ListNodes.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/NoticiesCarrousel/NoticiesCarrousel.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
+    <link href="/View/ModulesVue/Web/FormUsuariAuth/FormUsuariAuth.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
     <link href="/View/ModulesVue/Web/ShowErrors/showErrors.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
     <link href="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.css?<?php echo date('U', time()) ?>" rel="stylesheet" />    
 
@@ -92,3 +94,14 @@
 
 <!--    <script src="/View/Scripts/cropper.js"></script>
     <link rel="stylesheet" href="/View/Styles/cropper.css"> -->
+    <script>
+        Vue.use(VueFormulate, {
+            plugins: [ VueFormulateI18n.ca ],
+            locale: 'ca',
+            validationNameStrategy: ['validationName', 'label', 'name', 'type'],
+            classes: {
+                inputHasErrors: 'has-errors',
+                inputHasValue: 'has-value'
+            }
+        }); 
+    </script>

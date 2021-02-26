@@ -16,15 +16,7 @@ Vue.component('form-inscripcio-simple', {
     },          
     data: function() {
         return {    ActivitatHome: {}, 
-                    DNI: '', 
-                    Nom: '', 
-                    Cog1: '',
-                    Cog2: '',
-                    Telefon: '', 
-                    Email: '', 
-                    Municipi: '',
-                    Genere: '',
-                    AnyNaixement: '',
+                    IdUsuariEncrypted: '',
                     QuantesEntrades: 1,
                     DescompteAplicat: -1,
                     Localitats: [],
@@ -34,15 +26,6 @@ Vue.component('form-inscripcio-simple', {
                     DadesExtres: '',
                     CodiOperacio: '',
                     Pas: 0, 
-                    classDNI: 'form-control', 
-                    classNom: 'form-control',
-                    classCog1: 'form-control',
-                    classCog2: 'form-control',
-                    classTelefon: 'form-control',
-                    classEmail: 'form-control', 
-                    classMunicipi: 'form-control',
-                    classGenere: 'form-control',
-                    classAnyNaixement: 'form-control',
                     MatriculesArray: Array,
                     ErrorInscripcio: '',
                     ConfirmoAssistencia: false,
@@ -172,7 +155,7 @@ Vue.component('form-inscripcio-simple', {
         doAccioRepetit: function($accio) { 
             switch($accio) {
                 case 'Baixa': 
-                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'D' : this.DNI, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'B'}})
+                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'I' : this.IdUsuariEncrypted, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'B'}})
                     .then( R => { 
                         this.Alert.Missatge = R.data + " inscripció/ns donades de baixa correctament. Gràcies per avisar-nos.";
                         this.Alert.Class = 'col-12 alert alert-success';
@@ -188,7 +171,7 @@ Vue.component('form-inscripcio-simple', {
                     this.Pas = 2;
                 break;
                 case 'Reenviar':
-                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'D' : this.DNI, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'R'}})
+                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'I' : this.IdUsuariEncrypted, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'R'}})
                     .then( R => { 
                         this.Alert.Missatge = R.data + " inscripció/ns reenviades correctament al seu correu. Si no les ha rebut, faci'ns ho saber.";
                         this.Alert.Class = 'col-12 alert alert-success';
@@ -202,76 +185,38 @@ Vue.component('form-inscripcio-simple', {
                 break;
             }
         },
-        dnikeymonitor: function($event, isBoto) {
+        OnUsuariLoaded: function($UserDataDNIAndEncryptedId) {
             
-            if( ValidaDNI(this.DNI) ) {
-                this.classDNI = 'form-control is-valid';
-                if(isBoto) {
-                    this.Loading = true;
-                    axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {                    
-                        this.Loading = false;
-                        // Segons restriccions pot matricular o bé és administrador i saltem les restriccions
-                        if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {
-                            //Si existeix el DNI
-                            if(X.data.ExisteixDNI) {
-                                // Si l'usuari ja té una matrícula a aquest curs, li deixem escollir si fer baixa o fer-ne una altra
-                                if(X.data.HasUsuariMatriculaAAquestCurs) {
-                                    this.Pas = 10;
-                                } else {
-                                    this.Pas = 2;
-                                }                                
-                            } else {                               
-                                this.Pas = 1;
-                            }
-                        } else {                                                         
-                            this.Pas = 7; 
-                            this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
-                            if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
-                                this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
-                                for(C of X.data.PotMatricularCursRestringit.CursosOk) {
-                                    this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
-                                }
-                                this.ErrorInscripcio += '</ul>';                                
-                            }
-                            
-                            // this.ErrorInscripcio //+ this.PoseuEnContacteString();
-                        }                                                                
-                    }).catch( E => { alert(E); });
-                }
-            } else {
-                if(isBoto) alert('El DNI no és correcte.');
-                this.Pas = 0;
-                this.classDNI = 'form-control is-invalid';                
-            }
-        },
-        keymonitor: function() {                        
-            const ValNom = (this.Nom.length > 1);
-            const ValCog1 = (this.Cog1.length > 1);
-            const ValTelefon = ValidaTelefon( this.Telefon );
-            const ValEmail = ValidaEmail(this.Email);
-            const ValMunicipi = (true);
-            const ValGenere = (true);
-            const ValAnyNaixement = (!isNaN(this.AnyNaixement));
-
-            this.classNom = (!ValNom) ? 'form-control is-invalid' : 'form-control is-valid';
-            this.classCog1 = (!ValCog1) ? 'form-control is-invalid' : 'form-control is-valid';
-            this.classCog2 = 'form-control';
-            this.classEmail = (!ValEmail) ? 'form-control is-invalid' : 'form-control is-valid';
-            this.classTelefon = (!ValTelefon) ? 'form-control is-invalid' : 'form-control is-valid';
-
-            this.classMunicipi = (!ValMunicipi) ? 'form-control is-invalid' : 'form-control is-valid';
-            this.classGenere = (!ValGenere) ? 'form-control is-invalid' : 'form-control is-valid';
-            this.classAnyNaixement = (!ValAnyNaixement) ? 'form-control is-invalid' : 'form-control is-valid';
+            const $DNI = $UserDataDNIAndEncryptedId.DNI;
+            const $IdUsuariEncrypted = $UserDataDNIAndEncryptedId.IdUsuariEncrypted;
+            this.IdUsuariEncrypted = $IdUsuariEncrypted;            
             
-            if( ValNom && ValCog1 && ValTelefon && ValEmail && ValAnyNaixement ) {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        botoDadesUsuari: function() {
-            if(this.keymonitor()) this.Pas = 4;
-            else this.Pas = 1;
+            this.Loading = true;
+            axios.get( CONST_api_web + '/getPermisosUsuarisCursos', {'params': {'DNI': $DNI, 'IdUsuariEncrypted': this.IdUsuariEncrypted, 'idCurs': this.DetallCurs.CURSOS_IdCurs, 'IsRestringit': this.DetallCurs.CURSOS_IsRestringit }}).then( X => {                    
+                this.Loading = false;
+                                
+                // Segons restriccions pot matricular o bé és administrador i saltem les restriccions
+                if( X.data.PotMatricularCursRestringit.IsOk || this.isAdmin ) {                    
+                    // Si l'usuari ja té una matrícula a aquest curs, li deixem escollir si fer baixa o fer-ne una altra
+                    if(X.data.HasUsuariMatriculaAAquestCurs) {
+                        this.Pas = 10;
+                    } else {
+                        this.Pas = 2;
+                    }                                
+                } else {                                                         
+                    this.Pas = 7; 
+                    this.ErrorInscripcio = '<strong>Vostè no disposa de permisos per a matricular-se en aquest curs.</strong><br />';
+                    if(X.data.PotMatricularCursRestringit.CursosOk.length > 0) {
+                        this.ErrorInscripcio += 'Els cursos als que es pot matricular són: <ul style="display: block; width: 100%; margin-top: 2vw;">';
+                        for(C of X.data.PotMatricularCursRestringit.CursosOk) {
+                            this.ErrorInscripcio += '<li><a href="/inscripcio/'+C.id+'">'+C.nom+'</a></li>';
+                        }
+                        this.ErrorInscripcio += '</ul>';                                
+                    }
+                                                        
+                }                                                                
+            }).catch( E => { alert(E); });
+        
         },
         setLocalitat: function(fila, seient) {
                                     
@@ -338,15 +283,7 @@ Vue.component('form-inscripcio-simple', {
         },
         doInscripcio: function() {
             $FD = new FormData();
-            $FD.append('DNI', this.DNI);
-            $FD.append('Nom', this.Nom);
-            $FD.append('Cog1', this.Cog1);
-            $FD.append('Cog2', this.Cog2);
-            $FD.append('Email', this.Email);
-            $FD.append('Telefon', this.Telefon);            
-            $FD.append('Municipi', this.Municipi);
-            $FD.append('Genere', this.Genere);
-            $FD.append('AnyNaixement', this.AnyNaixement);
+            $FD.append('IdUsuariEncrypted', this.IdUsuariEncrypted);
             $FD.append('QuantesEntrades', this.QuantesEntrades);
             $FD.append('ActivitatId', this.ActivitatId);
             $FD.append('CicleId', this.CicleId);     
@@ -359,7 +296,7 @@ Vue.component('form-inscripcio-simple', {
             $FD.append('DadesExtres', this.DadesExtres);
             
             this.Loading = true;
-            axios.post( CONST_api_web + '/AltaUsuariSimple', $FD ).then( X => {
+            axios.post( CONST_api_web + '/NovaInscripcio', $FD ).then( X => {
                 this.Loading = false;
                 if(X.data.AltaUsuari && X.data.AltaUsuari.MATRICULES.length > 0) {
                     // Si el pagament és amb targeta, anem a la nova web per a fer el pagament
@@ -431,86 +368,13 @@ Vue.component('form-inscripcio-simple', {
                 <br /><p> <a href="./">Torna a carregar la pàgina.</a></p>
             </div>
 
-            <div class="row" v-if="Pas == 0">
-                <div v-show="!Loading" class="col">
-                    <label for="DNI">DNI/NIE</label>                    
-                    <div class="input-group mb-3">
-                        <input type="text" :class="classDNI" id="DNI" v-on:keyup="dnikeymonitor($event, false)" v-model="DNI" aria-describedby="DNI" placeholder="Escriu el DNI/NIE..." />                         
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-primary" @click="dnikeymonitor($event, true)" type="button">Valida el DNI</button>
-                        </div>
-                    </div>
-                
-                    <small id="DNIHelp" class="form-text text-muted">Entri el seu DNI per apuntar-se. </small>                                                        
-                </div>                            
-                <div class="col" v-show="Loading">
-                    <div class="alert alert-info">Carregant...</div>
-                </div>
-            </div>
-            
+            <form-usuari-auth                 
+                v-if="Pas == 0 || Pas == 1"
+                @on-id-usuari-encrypted-loaded="OnUsuariLoaded">
+            </form-usuari-auth>
+           
             <div v-if="Pas == 2 && !LlistaEsperaActiu" class="row alert alert-success"> Hem trobat el seu DNI a la nostra base de dades. <br />Pot seguir amb la inscripció! </div>
-            <div v-if="Pas == 2 && LlistaEsperaActiu" class="row alert alert-danger"> L'activitat ja no disposa de places lliures. Tot i això, si ho desitja pot posar-se en llista d'espera i l'avisarem si torna a haver-n'hi. </div>
-             
-            <div v-if="Pas == 1" class="row alert alert-warning"> No hem trobat el seu DNI a la nostra base de dades. <br />Si és tant amable, ens hauria d'informar del seu nom, telèfon i email per si hem de posar-nos en conacte amb vostè per a poder seguir amb la inscripció. </div>
-            
-            <div v-if="Pas == 1">
-                <div class="row">                                                
-                    <div class="col">
-                        <label for="NomComplet">Nom</label>
-                        <input type="text" :class="classNom" v-on:blur="keymonitor" v-model="Nom" id="NomComplet" aria-describedby="Nom complet" placeholder="Escriu el nom..." /> 
-                        <small id="NomCompletHelp" class="form-text text-muted">Entri el seu nom complet.</small>                
-                    </div>
-                    <div class="col">
-                        <label for="Cog1">Primer cognom</label>
-                        <input type="text" :class="classCog1" v-on:blur="keymonitor" v-model="Cog1" id="Cog1" aria-describedby="Primer cognom" placeholder="" /> 
-                        <small id="Cog1Help" class="form-text text-muted">Entri el seu primer cognom.</small>                
-                    </div>            
-                    <div class="col">
-                        <label for="Cog2">Segon cognom</label>
-                        <input type="text" :class="classCog2" v-on:blur="keymonitor" v-model="Cog2" id="Cog2" aria-describedby="Segon cognom" placeholder="" /> 
-                        <small id="Cog2Help" class="form-text text-muted">Entri el seu segon cognom, si en té.</small>                
-                    </div>                        
-                </div>
-                <div class="row">                                                
-                    <div class="col">
-                        <label for="telefon">Mòbil</label>
-                        <input type="text" :class="classTelefon" v-on:blur="keymonitor" v-model="Telefon" id="telefon" placeholder="">
-                        <small id="TelefonHelp" class="form-text text-muted">Entri el seu telèfon de contacte.</small>
-                    </div>
-                    <div class="col">
-                        <label for="Email">Correu electrònic</label>
-                        <input type="text" :class="classEmail" v-on:blur="keymonitor" v-model="Email" id="telefon" placeholder="">
-                        <small id="EmailHelp" class="form-text text-muted">Entri el seu correu electrònic.</small>
-                    </div>            
-                </div>
-                <div class="row">                                                
-                    <div class="col">
-                        <label for="municipi">Municipi</label>
-                        <input type="text" :class="classMunicipi" v-on:blur="keymonitor" v-model="Municipi" id="municipi" placeholder="">
-                        <small id="MunicipiHelp" class="form-text text-muted">Opcional: El seu municipi de residència.</small>
-                    </div>
-                    <div class="col">
-                        <label for="genere">Gènere</label>
-                        <select :class="classGenere" v-on:change="keymonitor" v-model="Genere" id="genere">
-                            <option value="M">Masculí</option>
-                            <option value="F">Femení</option>
-                            <option value="A">Altres</option>
-                        </select>                
-                        <small id="GenereHelp" class="form-text text-muted">Opcional: El seu gènere.</small>
-                    </div>            
-                    <div class="col">
-                        <label for="anynaixement">Any de naixement</label>
-                        <input type="text" :class="classAnyNaixement" v-on:blur="keymonitor" v-model="AnyNaixement" id="anynaixement" placeholder="">
-                        <small id="AnyNaixementHelp" class="form-text text-muted">Opcional: El seu any de naixement.</small>
-                    </div>                        
-
-                    <div class="col-12">
-                        <button :disabled="!keymonitor()" type="submit" class="boto btn btn-info" @click.prevent="botoDadesUsuari()">Segueix...</button>
-                    </div>                    
-
-                </div>    
-            </div>    
-            
+            <div v-if="Pas == 2 && LlistaEsperaActiu" class="row alert alert-danger"> L'activitat ja no disposa de places lliures. Tot i això, si ho desitja pot posar-se en llista d'espera i l'avisarem si torna a haver-n'hi. </div>             
             
             <div v-if="Pas == 4 || Pas == 2">
 
