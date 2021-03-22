@@ -4,7 +4,7 @@
 const PDOString = "mysql:host=127.0.0.1;dbname=intranet;charset=utf8";
 const Username = 'root';
 const Password = '';
-const BASEDIR = "C:\Users\User\Documents\Code\HospiciRest/";
+const BASEDIR = "C:\Users\Usuario\Documents\Code\HospiciRest/";
 # const BASEDIR = "C:\Users\Usuario\Documents\Code\HospiciRest\\";
 //const OLD_BASEDIR_IMG_ACT = "/var/www/hospici_cultural/web/images/activitats/";
 const OLD_BASEDIR_IMG_ACT = "C:\Users\User\Documents\Code\HospiciRest\WebFiles\Imatges\Activitats/";
