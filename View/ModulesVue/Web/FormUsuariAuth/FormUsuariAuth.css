@@ -1,9 +1,10 @@
-.FormUsuariAuth .formulate-form {
+.FormUsuariAuth {
   background-color: #EAEAEA; 
   padding: 3vw;
   margin-right: 2vw;
 }
 
+.FormUsuariAuth .row { margin-bottom: 2vw; }
 .FormUsuariAuth .formulate-form { display: flex; flex-flow: wrap; }
 .FormUsuariAuth .formulate-form h3 { width: 100%; margin-bottom: 2vw; }
 .FormUsuariAuth .formulate-input .formulate-input-element { width: 27vw; max-width: 24vw; }

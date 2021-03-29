@@ -6,24 +6,39 @@ Vue.component('form-utils', {
         fieldtype: String,
         value: String,
         helptext: { default: '', type: String },
-        placeholder: { default: '', type: String }, 
-        required: { default: false, type: Boolean },
+        placeholder: { default: '', type: String },         
         disabled: { default: false, type: Boolean } ,
         options: { default: () => [], type: Array },        
         groupclass: { default: () => [], type: Array },
-        errornumber: { default: -1, type: Number },
-        errortexts: { default: () => [] , type: Array },
+        errors: { default: () => [] , type: Array },        
+        sterrors: { default: () => [] , type: Array }     //Llistat dels errors més comuns
     },          
     data: function() {
-        return {}
+        return {
+            HiHaError: false,
+            Errors: []
+        }
     },    
     computed: {
         elementclass: function() {
             let C = ['form-control'];            
-            if(this.value.length > 0 ){
-                if(this.errornumber == -1) C.push('is-valid');
-                else C.push('is-invalid');
-            }
+            
+            this.Errors = [];
+            
+            
+            for(let VP of this.sterrors)  {               
+                if(VP == 'Telefon' && !ValidaTelefon(this.value)) this.Errors.push("El telèfon no és correcte.");                 
+                if(VP == 'Required' && this.value.length == 0) this.Errors.push("El camp és obligatori.");
+                if(VP == 'Email' && !ValidaEmail(this.value)) this.Errors.push("El correu electrònic no és correcte.");                                    
+            };
+            
+            for(let EN of this.errors)  {                               
+                if(EN[0]) this.Errors.push(EN[1]);
+            };
+
+            if(this.Errors.length == 0) C.push('is-valid');
+            else C.push('is-invalid');
+        
             return C;
         }
     },
@@ -42,9 +57,9 @@ Vue.component('form-utils', {
     },
     template: `            
 
-    <div class="FormUtils">        
+    <div class="FormUtils"  :class="groupclass">        
 
-        <div v-if="fieldtype == 'input'" :class="groupclass">
+        <div v-if="fieldtype == 'input'">
             <label :for="id" class="form-label">{{title}}</label>
             <input  type="text" 
                     :class="elementclass" 
@@ -56,16 +71,53 @@ Vue.component('form-utils', {
                     @change="inputChange"
                     @keyup="inputKeyup"
                     >
-            <small v-if="errornumber > -1" class="form-text-error">{{errortexts[errornumber]}}</small>
+            <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
             <small class="form-text text-muted">{{helptext}}</small>            
         </div>        
-        <div v-if="fieldtype == 'button'" :class="groupclass">
+
+        <div v-if="fieldtype == 'button'">
             <label :for="id" class="form-label"></label>
-            <button :disabled="disabled" class="form-control btn btn-success" :aria-label="title" :id="id">Valida</button>
+            <button :disabled="disabled" class="form-control btn btn-success" :aria-label="title" :id="id" @click="buttonPress">{{title}}</button>
         </div>
+
+        <div v-if="fieldtype == 'select'">
+            <label :for="id" class="form-label">{{title}}</label>
+            <select  type="select" 
+                    :class="elementclass" 
+                    :placeholder="placeholder" 
+                    :aria-label="title" 
+                    :aria-describedby="title"
+                    :id="id"
+                    :value="value"
+                    @change="inputChange"                    
+                    >
+                    <option value="">-- Escull una opció --</option>
+                    <option v-for="o of options" :value="o.id">{{o.text}}</option>
+            </select>
+            <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
+            <small class="form-text text-muted">{{helptext}}</small>            
+        </div>        
+
+        <div v-if="fieldtype == 'date'">
+            <label :for="id" class="form-label">{{title}}</label>
+            <input  type="date" 
+                    :class="elementclass" 
+                    :placeholder="placeholder" 
+                    :aria-label="title" 
+                    :aria-describedby="title"
+                    :id="id"
+                    :value="value"
+                    @change="inputChange"
+                    @keyup="inputKeyup"
+                    >
+            <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
+            <small class="form-text text-muted">{{helptext}}</small>            
+        </div>        
+
 
                                                     
     </div>
+
 
 `
 });

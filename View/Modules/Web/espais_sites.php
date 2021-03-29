@@ -113,8 +113,7 @@
         
         var vm2 = new Vue({
         
-            el: '#detall',                
-            components: {VueEditor},
+            el: '#detall',                            
             data: { 
                 Loaded: false,
                 Errors: false,

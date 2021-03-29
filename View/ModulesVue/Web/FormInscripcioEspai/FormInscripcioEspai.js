@@ -48,7 +48,7 @@ Vue.component('form-inscripcio-espai', {
             v-if="IdUsuariEncrypted.length == 0"
             @on-id-usuari-encrypted-loaded="OnUsuariLoaded">
         </form-usuari-auth>
- 
+<!--        
         <formulate-form            
             v-if="IdUsuariEncrypted.length > 0"
             v-model="formValues"        
@@ -56,7 +56,7 @@ Vue.component('form-inscripcio-espai', {
         >                    
 
             <h3>Reserva un espai</h3>
-    <!--        
+    
             <div v-if="false">
                 <formulate-input type="text" name="RESERVAESPAIS_Nom" label="Títol de l'activitat" validation="required"></formulate-input>
                 <formulate-input type="text" name="RESERVAESPAIS_DataActivitat" label="Proposta de dates de l'activitat" validation="required"></formulate-input>
@@ -73,12 +73,12 @@ Vue.component('form-inscripcio-espai', {
                 <formulate-input type="text" name="RESERVAESPAIS_TipusActe" label="Tipus d'acte" validation="required"></formulate-input>
                 <formulate-input type="select" name="RESERVAESPAIS_IsEnregistrable" label="Cal enregistrar-lo?" validation="required" :options = "OpcionsSiNo" placeholder = "-- Escull una opció -- "></formulate-input>
             </div>
-    -->
+    
             <div v-if="true">
                 <formulate-input type="checkbox" name="RESERVAESPAIS_EspaisSolicitats" label="Quins espais vols demanar?" validation="required" :options = "EspaisDisponiblesEntitat.map(function(E) { return { 'value': E.ESPAIS_EspaiId, 'label' : E.ESPAIS_Nom } } )" placeholder = "-- Escull una opció -- "></formulate-input>
                 <formulate-input type="checkbox" name="RESERVAESPAIS_MaterialSolicitat" label="Material sol·licitat" validation="" :options = "{}" placeholder = "-- Escull una opció -- "></formulate-input>                    
             </div>
-    <!--
+    
             <div v-if="false">
                 <formulate-input type="textarea" name="RESERVAESPAIS_Compromis" label="Compromís" validation=""></formulate-input>
                 <formulate-input type="textarea" name="RESERVAESPAIS_Condicions" label="Condicions" validation="required"></formulate-input>
@@ -87,13 +87,15 @@ Vue.component('form-inscripcio-espai', {
                 <formulate-input type="image" name="RESERVAESPAIS_TmpArxiuImatge" label="Imatge per la web"></formulate-input>
                 <formulate-input type="file" name="RESERVAESPAIS_TmpArxiuPdf" label="Arxiu Pdf" validation=""></formulate-input>                                                                                            
             </div>
-    -->
+   
 
             <FormulateErrors />
 
             <formulate-input #default="{ isFormLoading }"  type="submit" :label="( isFormLoading ? 'Enviant...' : 'Fes la petició')" :disabled = "isFormLoading"></formulate-input>                                                                                                        
                 
         </formulate-form>                            
+
+        -->
                 
     </div>
 
