@@ -91,12 +91,15 @@
     <link rel="stylesheet" href="/View/Styles/General.css?<?php echo date('U', time()) ?>">    
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@17.0.0/build/ckeditor.min.js"> </script> -->    
+
 
 
 <!--    <script src="/View/Scripts/cropper.js"></script>
     <link rel="stylesheet" href="/View/Styles/cropper.css"> -->
     <script>
+        
+        const axiosInstance = axios.create({baseURL: ''});
         Vue.use(VueFormulate, {
             plugins: [ VueFormulateI18n.ca ],
             locale: 'ca',
@@ -104,6 +107,10 @@
             classes: {
                 inputHasErrors: 'has-errors',
                 inputHasValue: 'has-value'
-            }
-        }); 
+            },
+            uploader: axiosInstance,
+            uploadUrl: '/upload',
+        });         
+        
+        
     </script>

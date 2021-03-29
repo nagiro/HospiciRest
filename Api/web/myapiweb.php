@@ -116,23 +116,6 @@ class MyAPIWeb extends API
     }    
 
     /**
-    * Funció que tracta les peticions de reserva d'espais
-     */
-    protected function AjaxReservaEspai() {
-        $WAPI = new WebApiController();        
-
-        //Primer consultem el DNI i carreguem el formulari d'un espai amb un DNI concret d'usuari i després passem a mostrar el menú.
-        //Entrem el DNI si el DNI existeix, passem a carregar el formulari. Si no existeix, creem l'usuari i després passem a mostar el menú.                 
-
-        $FormulariReservaEspai = isset($this->request['post']['DadesFormulari']) ? json_decode($this->request['post']['DadesFormulari'], true) : array();        
-        $WAPI->setReservaEspai($FormulariReservaEspai);
-        // $WAPI->ReenviaEmailInscripcio( $Matricules[0], $UrlDesti );
-        
-
-        return array('', '0');
-    }    
-
-    /**
     * Funció que ens diu si un DNI existeix o no a la nostra base de dades
     */    
     protected function ExisteixDNI() {
@@ -260,6 +243,10 @@ class MyAPIWeb extends API
                 $MesActual = isset($this->request['post']['MesActual']) ? $this->request['post']['MesActual'] : '';
                 $AnyActual = isset($this->request['post']['AnyActual']) ? $this->request['post']['AnyActual'] : '';                
                 $RET = $WAPI->getOcupacioEspai($IdEspai, $MesActual, $AnyActual);
+                break;
+            case 'addReservaEspai': 
+                $FormulariReservaEspai = isset($this->request['post']['DadesFormulari']) ? json_decode($this->request['post']['DadesFormulari'], true) : array();        
+                $WAPI->setReservaEspai($FormulariReservaEspai);        
                 break;
             case 'getEspaisDisponibles':
                 $IdSite = isset($this->request['IdSite']) ? $this->request['IdSite'] : '';

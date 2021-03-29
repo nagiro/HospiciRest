@@ -26,7 +26,8 @@ Vue.component('form-inscripcio-espai', {
             this.isFormLoading = true;
             let FD = new FormData();            
             FD.append('DadesFormulari', JSON.stringify(data));                                    
-            axios.post( CONST_api_web + '/PutNovaReservaEspai', FD ).then( X => {
+            FD.append('Accio', 'addReservaEspai');
+            axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
                 // Si hi ha hagut errors, ho ensenyo.
                 this.isFormLoading = false;
             }).catch( E => { alert(E); });
@@ -36,13 +37,12 @@ Vue.component('form-inscripcio-espai', {
             
             axios.get( CONST_api_web + '/ajaxReservaEspais', { 'params':  {'Accio' : 'getEspaisDisponibles', 'IdSite': this.IdSite } } ).then( X => {                
                 this.isFormLoading = false;
-                this.EspaisDisponiblesEntitat = X.data;
-                console.log(X);
+                this.EspaisDisponiblesEntitat = X.data;                
             }).catch( E => { alert(E); });
         }
     },
     template: `            
-    <div>
+    <div>    
 
         <form-usuari-auth 
             v-if="IdUsuariEncrypted.length == 0"
@@ -53,8 +53,8 @@ Vue.component('form-inscripcio-espai', {
             v-if="IdUsuariEncrypted.length > 0"
             v-model="formValues"        
             @submit="submitHandler"             
-        >        
-        
+        >                    
+
             <h3>Reserva un espai</h3>
     <!--        
             <div v-if="false">

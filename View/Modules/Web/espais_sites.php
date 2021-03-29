@@ -109,17 +109,12 @@
   </main>
 
 
-  <script>       
-                         
-        Vue.use(VueFormulate, {
-            plugins: [ VueFormulateI18n.ca ],
-            locale: 'ca',
-            validationNameStrategy: ['validationName', 'label', 'name', 'type']
-        }); 
+  <script>                                                           
         
         var vm2 = new Vue({
         
             el: '#detall',                
+            components: {VueEditor},
             data: { 
                 Loaded: false,
                 Errors: false,
