@@ -26,15 +26,12 @@ Vue.component('form-usuari-auth', {
         // Retorna l'Idusuari... per seguir amb el procés.
         throwIdUsuari(IdUsuariEncrypted) {
             this.$emit('on-id-usuari-encrypted-loaded', IdUsuariEncrypted);
+        },        
+        validaDNILocal: function() {
+            if(this.DNI.length > 0) return (!ValidaDNI(this.DNI)) ? 0 : -1 ;
+            else return -1;
         },
-        
-        // $event: {getFormValues, getGroupValues, name, value}
-        dnikeymonitor: function($event) {
-            this.DNI = $event.value;            
-            return ValidaDNI(this.DNI);
-        },
-        submitDNI: function(Form) {
-            this.DNI = Form.DNI;
+        submitDNI: function() {            
             this.Loading = true;
             axios.get( CONST_api_web + '/ExisteixDNI', {'params': {'DNI': this.DNI, 'Origen': 'FormUsuariAuth' }}).then( X => {                    
                 this.Loading = false;
@@ -68,20 +65,28 @@ Vue.component('form-usuari-auth', {
     template: `            
 
     <div class="FormUsuariAuth">        
-                            
-        <formulate-form v-if="!EntraDades" @submit="submitDNI">                                        
-            <formulate-input 
-                type="text" 
-                name="DNI" 
-                label="DNI/NIE" 
-                validation="ValidaDNI" 
-                :validation-rules="{ValidaDNI: dnikeymonitor}"
-                :validation-messages="{'ValidaDNI': 'El DNI/NIE no és correcte i és obligatori'}"
-                help="Entri el seu DNI per apuntar-se."></formulate-input>            
-            <formulate-input #default="{ Loading }"  type="submit" :label="( Loading ? 'Enviant...' : 'Valida el DNI')" :disabled = "Loading"></formulate-input>                                                                                                        
-            <FormulateErrors />                                        
-        </formulate-form>                            
-                            
+                                                
+        <form v-if="!EntraDades">                                        
+            <div class="row">
+                <form-utils 
+                    :fieldtype="'input'" :id = "'DNI'" 
+                    :title = "'DNI/NIE'" :value = "DNI" 
+                    :helptext = "'Entreu el DNI/NIE'"                    
+                    @onkeyup="DNI = $event" 
+                    :errornumber = "validaDNILocal(DNI)"
+                    :errortexts  = "['El DNI/NIE és incorrecte']"
+                    :groupclass="[col-lg-3]"
+                ></form-utils>
+                &nbsp; &nbsp;
+                <form-utils 
+                    :fieldtype="'button'" :id = "'BDNI'" :title = "''" 
+                    :value = "''" :disabled = "validaDNILocal(DNI) == 0"                    
+                    :groupclass="[col-lg-3]"
+                    @onButtonPress = "submitDNI()"
+                    ></form-utils>
+                </form>                            
+            </div>
+            
         <formulate-form v-show="EntraDades" v-model="formDataValues" @submit="doAltaUsuari">                                        
             <div class="alert alert-warning">No hem trobat el seu usuari a la nostra base de dades. Per poder continuar hauria d'entrar les seves dades personals.</div>            
             <formulate-input type="text" name="Nom" label="Nom" validation="required" help="El seu nom."></formulate-input>            

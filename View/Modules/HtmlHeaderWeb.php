@@ -53,7 +53,8 @@
 
     <script src='https://unpkg.com/v-calendar'></script>    
 
-    <script  src="/View/ModulesVue/Web/const_and_helpers.js?<?php echo date('U', time()) ?>"></script>
+    <script  src="/View/ModulesVue/Web/const_and_helpers.js?<?php echo date('U', time()) ?>"></script>    
+    <script  src="/View/ModulesVue/Web/FormUtils/FormUtils.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/barraSuperior/barraSuperior.js?<?php echo date('U', time()) ?>"></script>
     <script  src="/View/ModulesVue/Web/SingleImage/SingleImage.js?<?php echo date('U', time()) ?>"></script>
     <script  src="/View/ModulesVue/Web/SingleList/SingleList.js?<?php echo date('U', time()) ?>"></script>
@@ -68,6 +69,7 @@
     <script  src="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.js?<?php echo date('U', time()) ?>"></script>    
     
     
+    <link href="/View/ModulesVue/Web/FormUtils/FormUtils.js?<?php echo date('U', time()) ?>"  rel="stylesheet" />   
     <link href="/View/ModulesVue/Web/barraSuperior/barraSuperior.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/SingleImage/SingleImage.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/SingleList/SingleList.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
