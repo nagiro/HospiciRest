@@ -78,27 +78,6 @@
 
             
             
-<!--                
-            <p>
-            <div v-if="DetallCurs">            
-                <form-inscripcio-simple 
-                    :activitat-id="'0'" 
-                    :cicle-id="'0'"
-                    :curs-id = "DetallCurs.CURSOS_IdCurs"
-                    :detall-curs = "DetallCurs"
-                    :detall-descomptes = "DetallDescomptes"
-                    :detall-teatre = "DetallTeatre"
-                    :detall-site = "DetallSite"
-                    :seients-ocupats = "SeientsOcupats"
-                    :url-actual = "UrlActual"
-                    :token = "Token"                        
-                >
-                </form-inscripcio-simple>
-            </div>
-
-            </p>
--->                                          
-            
         </section>        
 
         <!-- Aquí hi va el llistat amb altres cursos disponibles per l'entitat -->

@@ -69,7 +69,7 @@
     <script  src="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.js?<?php echo date('U', time()) ?>"></script>    
     
     
-    <link href="/View/ModulesVue/Web/FormUtils/FormUtils.js?<?php echo date('U', time()) ?>"  rel="stylesheet" />   
+    <link href="/View/ModulesVue/Web/FormUtils/FormUtils.css?<?php echo date('U', time()) ?>"  rel="stylesheet" />   
     <link href="/View/ModulesVue/Web/barraSuperior/barraSuperior.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/SingleImage/SingleImage.css?<?php echo date('U', time()) ?>" rel="stylesheet" />
     <link href="/View/ModulesVue/Web/SingleList/SingleList.css?<?php echo date('U', time()) ?>" rel="stylesheet" />

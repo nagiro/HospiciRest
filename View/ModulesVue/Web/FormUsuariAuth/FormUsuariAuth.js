@@ -13,10 +13,20 @@ Vue.component('form-usuari-auth', {
                 Genere: '',
                 AnyNaixement: ''
             },
+            formErrors: {                                
+                Nom: true,
+                Cog1: true,
+                Cog2: true,
+                Telefon: true,
+                Email: true,
+                Municipi: true,
+                Genere: true,
+                AnyNaixement: true
+            },
             Loading: false,
             DNIFormVisible: true,
             DadesFormVisible: false,
-            DNI: ''
+            DNI: ''            
         }
     },    
     computed: {},
@@ -38,8 +48,17 @@ Vue.component('form-usuari-auth', {
                 if(X.data.ExisteixDNI) { this.throwIdUsuari({'DNI': this.DNI, 'IdUsuariEncrypted' : X.data.IdUsuariEncrypted }); this.DNIFormVisible = false; }
                 else { this.DadesFormVisible = true; this.DNIFormVisible = false; }
             }).catch( E => { this.DNIFormVisible = true; this.DadesFormVisible = false; alert(E); });
-        },        
-                
+        },                
+        isValidFormUsuari: function($camp, $E) {
+
+            this.formErrors[$camp] = $E;
+            for(E of Object.keys(this.formErrors)) {
+                if(!this.formErrors[E]) { this.isFormValid = false; return; }
+            }
+            this.isFormValid = true;                        
+            return;
+            
+        },
         doAltaUsuari: function() {
             $FD = new FormData();
             $FDV = this.formDataValues;
@@ -86,69 +105,113 @@ Vue.component('form-usuari-auth', {
         </div>
         <div class="row" v-if="DadesFormVisible">
             <form-utils 
-                :fieldtype="'input'" :id = "'Nom'" :title = "'Nom'" :value = "formDataValues.Nom" :helptext = "'(Obligatori) El seu nom de pila'"                                    
-                :sterrors = "['Required']"
+                :fieldtype="'input'" 
+                :id = "'Nom'" 
+                :title = "'Nom'" 
+                :value = "formDataValues.Nom" 
+                :helptext = "'(Obligatori) El seu nom de pila'"                                    
+                :sterrors = "['Required']"                
+                :groupclass="['col-lg-4']"
                 @onkeyup="formDataValues.Nom = $event"
-                :groupclass="['col-lg-4']"
+                @isvalid="isValidFormUsuari('Nom', $event)"
             ></form-utils>
             <form-utils 
-                :fieldtype="'input'" :id = "'Cog1'" :title = "'Primer cognom'" :value = "formDataValues.Cog1" :helptext = "'(Obligatori) El seu primer cognom'"                                    
-                :sterrors = "['Required']" @onkeyup="formDataValues.Cog1 = $event"
+                :fieldtype="'input'" 
+                :id = "'Cog1'" 
+                :title = "'Primer cognom'" 
+                :value = "formDataValues.Cog1" 
+                :helptext = "'(Obligatori) El seu primer cognom'"                                    
+                :sterrors = "['Required']" 
                 :groupclass="['col-lg-4']"
+                @onkeyup="formDataValues.Cog1 = $event"                
+                @isvalid="isValidFormUsuari('Cog1', $event)"
             ></form-utils>
             <form-utils 
-                :fieldtype="'input'" :id = "'Cog2'" :title = "'Segon cognom'" :value = "formDataValues.Cog2" :helptext = "'(Opcional) El segon cognom'"                 
+                :fieldtype="'input'" 
+                :id = "'Cog2'" 
+                :title = "'Segon cognom'" 
+                :value = "formDataValues.Cog2" 
+                :helptext = "'(Opcional) El segon cognom'"                                 
+                :groupclass="['col-lg-4']"
                 @onkeyup="formDataValues.Cog2 = $event"
-                :groupclass="['col-lg-4']"
+                @isvalid="isValidFormUsuari('Cog2', $event)"
             ></form-utils>                    
 
         </div>
         <div class="row" v-if="DadesFormVisible">
             
             <form-utils 
-                :fieldtype="'input'" :id = "'Telefon'" :title = "'Telèfon'" :value = "formDataValues.Telefon" :helptext = "'(Obligatori) El seu número de mòbil.'"                                    
-                :sterrors = "['Required', 'Telefon']" @onkeyup="formDataValues.Telefon = $event"
+                :fieldtype="'input'" 
+                :id = "'Telefon'" 
+                :title = "'Telèfon'" 
+                :value = "formDataValues.Telefon" 
+                :helptext = "'(Obligatori) El seu número de mòbil.'"                                    
+                :sterrors = "['Required', 'Telefon']"
                 :groupclass="['col-lg-6']"
+                @onkeyup="formDataValues.Telefon = $event"
+                @isvalid="isValidFormUsuari('Telefon', $event)"
             ></form-utils>
             <form-utils 
-                :fieldtype="'input'" :id = "'Email'" :title = "'Correu electrònic'" :value = "formDataValues.Email" :helptext = "'(Obligatori) El seu correu electrònic.'"                                    
-                :sterrors = "['Required', 'Email']" @onkeyup="formDataValues.Email = $event"
+                :fieldtype="'input'" 
+                :id = "'Email'" 
+                :title = "'Correu electrònic'" 
+                :value = "formDataValues.Email" 
+                :helptext = "'(Obligatori) El seu correu electrònic.'"                                    
+                :sterrors = "['Required', 'Email']" 
                 :groupclass="['col-lg-6']"
+                @onkeyup="formDataValues.Email = $event"                
+                @isvalid="isValidFormUsuari('Email', $event)"
             ></form-utils>
                           
         </div>
         <div class="row" v-if="DadesFormVisible">
 
             <form-utils 
-                :fieldtype="'input'" :id = "'Municipi'" :title = "'Municipi'" :value = "formDataValues.Municipi" :helptext = "'(Opcional) El nom del municipi on viu.'"                                    
+                :fieldtype="'input'" 
+                :id = "'Municipi'" 
+                :title = "'Municipi'" 
+                :value = "formDataValues.Municipi" 
+                :helptext = "'(Opcional) El nom del municipi on viu.'"                                                    
+                :groupclass="['col-lg-4']"            
                 @onkeyup="formDataValues.Municipi = $event"
-                :groupclass="['col-lg-4']"                
+                @isvalid="isValidFormUsuari('Municipi', $event)"
             ></form-utils>
 
             <form-utils 
-                :fieldtype="'select'" :id = "'Genere'" :title = "'Gènere'" :value = "formDataValues.Genere" :helptext = "'(Opcional) El seu gènere.'"                                    
-                @onchange="formDataValues.Genere = $event"
+                :fieldtype="'select'" 
+                :id = "'Genere'" 
+                :title = "'Gènere'" 
+                :value = "formDataValues.Genere" 
+                :helptext = "'(Opcional) El seu gènere.'"                                                    
                 :groupclass="['col-lg-4']"
                 :options="[{ id: 'M', text: 'Masculí'}, { id: 'F', text: 'Femení'}, { id: 'A', text: 'Altres'}]"
+                @onchange="formDataValues.Genere = $event"
+                @isvalid="isValidFormUsuari('Genere', $event)"
             ></form-utils>            
 
             <form-utils 
-                :fieldtype="'date'" :id = "'AnyNaixement'" :title = "'Any de naixement'" :value = "formDataValues.AnyNaixement" :helptext = "'(Opcional) La seva data de naixement.'"                                    
-                @onkeyup="formDataValues.AnyNaixement = $event"
+                :fieldtype="'date'" 
+                :id = "'AnyNaixement'" 
+                :title = "'Any de naixement'" 
+                :value = "formDataValues.AnyNaixement" 
+                :helptext = "'(Opcional) La seva data de naixement.'"                                                    
                 :groupclass="['col-lg-4']"
+                @onkeyup="formDataValues.AnyNaixement = $event"
+                @isvalid="isValidFormUsuari('AnyNaixement', $event)"
             ></form-utils>                        
                    
         </div>
         <div class="row" v-if="DadesFormVisible">
             <form-utils 
-                :fieldtype="'button'" :id = "'BSEGUEIX'" :title = "'Segueix...'" 
-                :value = "''" :disabled = " ( validaDNILocal(DNI) || DNI.length == 0 )"
+                :fieldtype="'button'" 
+                :id = "'BSEGUEIX'" 
+                :title = "'Segueix...'" 
+                :value = "''" 
+                :disabled = "!isFormValid"
                 :groupclass="['col-lg-2']"                    
                 @onButtonPress = "doAltaUsuari()"
             ></form-utils>
-        </div>
-
-
+        </div>        
                                                     
     </div>
 

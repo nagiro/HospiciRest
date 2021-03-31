@@ -1,16 +1,5 @@
-.formulate-form {
-  background-color: #EAEAEA; 
-  padding: 3vw;
-  margin-right: 2vw;
-}
-
-.formulate-form { display: flex; flex-flow: wrap; }
-.formulate-form h3 { width: 100%; margin-bottom: 2vw; }
-.formulate-input .formulate-input-element { width: 33vw; max-width: 30vw; }
-.formulate-input-wrapper { width: 32vw; }
-.formulate-input[data-classification=box] .formulate-input-element { width: 1vw; }
-.formulate-input input, select, textarea, .formulate-input-element-decorator { background-color: floralwhite !important; }
-
+.form-inscripcio-espai .row { margin-top: 1vw; }
+.form-inscripcio-espai { background-color: #EAEAEA; padding: 3vw; }
 
 @media screen and (min-width: 300px) and (max-width: 1199px) {
     
