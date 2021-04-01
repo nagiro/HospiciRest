@@ -744,7 +744,17 @@ class WebApiController
     */
     public function setReservaEspai($FormulariReservaEspai){
         require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
+
+        // Treballem el que rebem de reserva espai, per adaptar-ho a la nostra base de dades. Els camps múltiples els convertim a @ i els arxius els guardem. 
         $REM = new ReservaEspaisModel();
+        $REM->adaptFields($FormulariReservaEspai);
+
+        throw new Exception('Això encra no ho he fet!!!!');
+        
+
+
+
+        
         $REM->insert($FormulariReservaEspai);
     }
 

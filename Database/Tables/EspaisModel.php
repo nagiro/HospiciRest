@@ -61,6 +61,10 @@ class EspaisModel extends BDD {
         return $LlistatImatges;
 
     }
+
+    public function getSiteId($OEM) {
+        return $OEM[$this->gnfnwt('SiteId')];
+    }
 }
 
 ?>

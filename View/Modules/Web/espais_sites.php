@@ -74,7 +74,11 @@
                 <v-calendar @update:to-page="getOcupacio" :attributes="AtributsCalendari" locale="ca"></v-calendar>                                
             </p>            
                         
-            <form-inscripcio-espai :id-site="IdSite" ></form-inscripcio-espai>
+            <form-inscripcio-espai 
+                :formdata = "FormulariReservaEspai"
+                :estats = "FormulariReservaEspaiEstats"
+            >
+            </form-inscripcio-espai>
 
             
             
@@ -111,7 +115,10 @@
                 DetallSite: {},
                 LlistatEspais: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
                 MostraDetall: false,                         
-                UrlActual: ''         //Url actual de la finestra
+                UrlActual: '',         //Url actual de la finestra
+
+                FormulariReservaEspai: {},
+                FormulariReservaEspaiEstats: [],
 
             },            
             filters: {},
@@ -129,7 +136,7 @@
                     //Paràmetre usat per llistar espais                    
                     if(this.WebStructure.EspaisDisponibles && this.WebStructure.EspaisDisponibles.length > 0) {
                         this.LlistatEspais = this.WebStructure.EspaisDisponibles;
-                        this.DetallSite = this.WebStructure.Site;                        
+                        this.DetallSite = this.WebStructure.Site;
                     }                    
                                      
 
@@ -138,9 +145,11 @@
                     if(this.WebStructure.EspaiDetall && this.WebStructure.EspaiDetall.Detall) {
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
                         this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
-                        this.DetallSite = this.WebStructure.Site;                                                  
-                        console.log(this.DetallSite);
+                        this.DetallSite = this.WebStructure.Site;                                                                          
                         this.IdSite = this.DetallSite.SITES_SiteId;
+                        
+                        this.FormulariReservaEspai = this.WebStructure.FormulariReservaEspai.FORM;
+                        this.FormulariReservaEspaiEstats = JSON.parse(this.WebStructure.FormulariReservaEspai.ESTATS);
                     }   
 
 

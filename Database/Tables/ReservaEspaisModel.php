@@ -44,17 +44,45 @@ class ReservaEspaisModel extends BDD {
 
     }
     
-    public function getEmptyObject($SiteId) {
+    // Retorna el camp estats per a un formulari json
+    public function getEstatsForForm() {
+        $RET = array();
+        foreach(self::LlistatEstatsReserva as $K => $L) {
+            $RET[] = array( 'id' => $K, 'text' => $L );
+        } 
+        return json_encode($RET);
+    }
+
+    public function getEmptyObject($EspaiId) {
+
+        // Busco a quin site pertany l'Espai
+        $EM = new EspaisModel();
+        $OEM = $EM->getEspaiDetall($EspaiId);
 
         $O = $this->getDefaultObject();           
-        $O[$this->gnfnwt(self::DataAlta)] = getdate('Y-m-d H:i:s', time());
-        $O[$this->gnfnwt(self::SiteId)] = $SiteId;
-        $O[$this->gnfnwt(self::Actiu)] = 1;
-        $O[$this->gnfnwt(self::IsTractada)] = 0;
-        $O[$this->gnfnwt(self::UsuariId)] = 0;
-        $O[$this->gnfnwt(self::Estat)] = self::$LlistatEstatsReserva[0];                
+        $O[$this->gnfnwt(self::DataAlta)] = date('Y-m-d H:i:s', time());
+        $O[$this->gnfnwt(self::SiteId)] = $EM->getSiteId($OEM);
+        $O[$this->gnfnwt(self::Actiu)] = "1";
+        $O[$this->gnfnwt(self::IsTractada)] = "0";
+        $O[$this->gnfnwt(self::UsuariId)] = "0";
+        $O[$this->gnfnwt(self::Estat)] = "0";
+        $O[$this->gnfnwt(self::EspaisSolicitats)] = array();
+        $O[$this->gnfnwt(self::MaterialSolicitat)] = array();        
+        $O[$this->gnfnwt(self::EsCicle)] = "";
+        $O[$this->gnfnwt(self::IsEnregistrable)] = "";
+        $O[$this->gnfnwt(self::HasDifusio)] = "";
+        $O[$this->gnfnwt(self::PrevisioAssistents)] = "";
 
         return $O;
+    }
+
+    public function adaptFromFormFields($FieldsFromForm) {
+                
+        $FieldsFromForm[ $this->gnfnwt( self::EspaisSolicitats ) ] = implode('@', $FieldsFromForm[ $this->gnfnwt( self::EspaisSolicitats ) ]);
+        $FieldsFromForm[ $this->gnfnwt( self::MaterialSolicitat ) ] = implode('@', $FieldsFromForm[ $this->gnfnwt( self::MaterialSolicitat ) ]);
+        
+        return $FieldsFromForm;
+        
     }
 
     public function insert($ORE) {           

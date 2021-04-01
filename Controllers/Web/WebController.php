@@ -485,6 +485,13 @@ class WebController
 
     }    
 
+    public function getFormulariReservaEspai($idEspai) {
+        require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
+        $REM = new ReservaEspaisModel();
+        $ORE = $REM->getEmptyObject($idEspai);
+        return array('FORM'=>$ORE, 'ESTATS' => $REM->getEstatsForForm()); 
+    }
+
  }
 
  ?>

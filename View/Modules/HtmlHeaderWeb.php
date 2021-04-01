@@ -67,6 +67,7 @@
     <script  src="/View/ModulesVue/Web/FormInscripcioSimple/FormInscripcioSimple.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/ShowErrors/showErrors.js?<?php echo date('U', time()) ?>"></script>    
     <script  src="/View/ModulesVue/Web/FormInscripcioEspai/FormInscripcioEspai.js?<?php echo date('U', time()) ?>"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     
     
     <link href="/View/ModulesVue/Web/FormUtils/FormUtils.css?<?php echo date('U', time()) ?>"  rel="stylesheet" />   

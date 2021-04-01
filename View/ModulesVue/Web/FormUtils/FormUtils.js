@@ -38,8 +38,13 @@ Vue.component('form-utils', {
                 if(VP == 'Number' && isNaN(this.value)) this.Errors.push("El valor ha de ser numèric.");                   
 
                 if(VP == 'Required') {
-                    if(this.fieldtype == 'multipleselect' && this.valuemultiple.length == 0 ) this.Errors.push("El camp és obligatori.");                    
-                    if(this.fieldtype !== 'multipleselect' && this.value.length == 0 ) this.Errors.push("El camp és obligatori.");                                                
+                    if(this.fieldtype == 'multipleselect') 
+                        if(!this.valuemultiple) this.Errors.push('El camp és obligatori');
+                        else if(this.valuemultiple.length == 0 ) this.Errors.push("El camp és obligatori.");                    
+                    
+                    if(this.fieldtype !== 'multipleselect')
+                        if(!this.value) this.Errors.push("El camp és obligatori.");                                                
+                        else if( this.value.length == 0 ) this.Errors.push("El camp és obligatori.");                                                
                 }
                 
             };
@@ -64,11 +69,9 @@ Vue.component('form-utils', {
             this.$emit('onButtonPress', this.id);
         },
         inputChange: function($val) {
-            if(this.fieldtype == 'multipleselect'){
-                console.log(this.CheckList);
+            if(this.fieldtype == 'multipleselect'){                
                 this.$emit('onchange', this.CheckList);
-            } else {                
-                console.log($val.target.value);
+            } else {                                
                 this.$emit('onchange', $val.target.value);
             }
             
