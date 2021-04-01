@@ -77,6 +77,7 @@
             <form-inscripcio-espai 
                 :formdata = "FormulariReservaEspai"
                 :estats = "FormulariReservaEspaiEstats"
+                :espaisdisponibles = "LlistaEspaisDisponiblesForm"
             >
             </form-inscripcio-espai>
 
@@ -109,7 +110,7 @@
                 AnyActual: 0,  
                 DiaEscollit: null,     
                 AtributsCalendari: [],    
-                FormEspaisDisponiblesEntitat: [],   // Carrega quan carrega la pàgina en detall
+                LlistaEspaisDisponiblesForm: [],   // Carrega quan carrega la pàgina en detall
                 IdSite: 0, 
 
                 DetallSite: {},
@@ -145,11 +146,13 @@
                     if(this.WebStructure.EspaiDetall && this.WebStructure.EspaiDetall.Detall) {
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
                         this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
-                        this.DetallSite = this.WebStructure.Site;                                                                          
+                        this.DetallSite = this.WebStructure.Site;                                                                             
                         this.IdSite = this.DetallSite.SITES_SiteId;
                         
                         this.FormulariReservaEspai = this.WebStructure.FormulariReservaEspai.FORM;
                         this.FormulariReservaEspaiEstats = JSON.parse(this.WebStructure.FormulariReservaEspai.ESTATS);
+
+                        this.LlistaEspaisDisponiblesForm = this.WebStructure.LlistaEspaisDisponiblesForm;                                             
                     }   
 
 

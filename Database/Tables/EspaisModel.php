@@ -19,7 +19,7 @@ class EspaisModel extends BDD {
     /**
     * Retorna els espais disponibles del SiteId
     */
-    public function getEspaisDisponiblesSite($idSite) {
+    public function getEspaisDisponiblesSite($idSite, $forForm = false) {
         
         $LlistatEspais = $this->_getRowWhere( 
             array( 
@@ -32,9 +32,18 @@ class EspaisModel extends BDD {
         usort($LlistatEspais, function ($a, $b) {
             return $a[$this->gnfnwt('Ordre')] - $b[$this->gnfnwt('Ordre')];
         });
-
-        return $LlistatEspais;
         
+        if($forForm) {
+            
+            $RET = array();
+            foreach($LlistatEspais as $K => $Row){
+              $RET[] = array('id' => $Row[$this->gnfnwt('EspaiId')], 'text' => $Row[$this->gnfnwt('Nom')]);
+            }
+            return $RET;
+        } else {
+            return $LlistatEspais;
+        }
+                
     }
 
     // Carrego la informació d'un espai i els seus horaris ocupats ( si n'hi ha )

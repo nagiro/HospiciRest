@@ -463,14 +463,23 @@ class WebController
         return $SM->getById($idSite);
     }
 
-    public function getEspaisDisponibles($idSite) {
+    public function getEspaisDisponibles($idSite, $inArrayFormat = false) {
         $EM = new EspaisModel();
-        $LlistatEspais = $EM->getEspaisDisponiblesSite($idSite);
-        // Carreguem les url de les imatges de cada espai si n'hi ha
-        foreach($LlistatEspais as $K => $Espai):
-            $LlistatEspais[$K]['Imatges'] = $EM->getImageUrlsFromEspai($Espai[$EM->gnfnwt('EspaiId')]);
-        endforeach;
+        $LlistatEspais = array();
+        
+        if($inArrayFormat) {
 
+            $LlistatEspais = $EM->getEspaisDisponiblesSite($idSite, true);
+
+        } else {            
+
+            $LlistatEspais = $EM->getEspaisDisponiblesSite($idSite);
+            // Carreguem les url de les imatges de cada espai si n'hi ha
+            foreach($LlistatEspais as $K => $Espai):
+                $LlistatEspais[$K]['Imatges'] = $EM->getImageUrlsFromEspai($Espai[$EM->gnfnwt('EspaiId')]);
+            endforeach;
+
+        }
         return $LlistatEspais;
     }
     
@@ -479,7 +488,7 @@ class WebController
 
         $Espai = array('Detall' => array(), 'HorarisOcupats' => array());
         $Espai['Detall'] = $EM->getEspaiDetall($idEspai);
-        $Espai['Imatges'] = $EM->getImageUrlsFromEspai($idEspai);
+        $Espai['Imatges'] = $EM->getImageUrlsFromEspai($idEspai);        
                                 
         return $Espai;        
 

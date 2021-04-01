@@ -2,7 +2,8 @@
 Vue.component('form-inscripcio-espai', {        
     props: { 
         formdata: Object,
-        estats: Array       //Els estats que pot tenir una reserva
+        estats: Array,       //Els estats que pot tenir una reserva
+        espaisdisponibles: Array
     
     },          
     created: function() {
@@ -13,8 +14,7 @@ Vue.component('form-inscripcio-espai', {
             isFormLoading: false,
             IdUsuariEncrypted: '',            
             OpcionsSiNo: [{id: 1, text: "Sí"}, {id: 0, text: "No"}],
-            isFormValid: false,
-            EspaisDisponiblesEntitat: [],
+            isFormValid: false,            
             formValues: Vue.util.extend({}, this.formdata),
             formErrors: Vue.util.extend({}, this.formdata)
         }
@@ -38,12 +38,7 @@ Vue.component('form-inscripcio-espai', {
             }).catch( E => { alert(E); });
         },
         OnUsuariLoaded: function($UserData)  {                        
-            this.IdUsuariEncrypted = $UserData.IdUsuariEncrypted;
-            
-            axios.get( CONST_api_web + '/ajaxReservaEspais', { 'params':  {'Accio' : 'getEspaisDisponibles', 'IdSite': this.formValues.RESERVAESPAIS_SiteId } } ).then( X => {                
-                this.isFormLoading = false;
-                this.EspaisDisponiblesEntitat = X.data;                
-            }).catch( E => { alert(E); });
+            this.IdUsuariEncrypted = $UserData.IdUsuariEncrypted;                        
         },
         isValidFormEspais: function($camp, $E) {
             this.formErrors[$camp] = $E;
@@ -56,9 +51,7 @@ Vue.component('form-inscripcio-espai', {
 
     },
     template: `            
-    <div class="form-inscripcio-espai">    
-
-{{formValues}}
+    <div class="form-inscripcio-espai">        
 
         <h3>Reserva un espai</h3>
         <form-usuari-auth 
@@ -105,7 +98,7 @@ Vue.component('form-inscripcio-espai', {
                     :id = "'RESERVAESPAIS_EspaisSolicitats'" 
                     :title = "'Espais sol·licitats'" 
                     :valuemultiple = "formValues.RESERVAESPAIS_EspaisSolicitats"                     
-                    :options="EspaisDisponiblesEntitat.map(function(E) { return { 'id': E.ESPAIS_EspaiId, 'text' : E.ESPAIS_Nom } } )" 
+                    :options="espaisdisponibles" 
                     :errors = "[]" 
                     :sterrors = "['Required']" 
                     :groupclass="['col-lg-6', 'col-12']"
