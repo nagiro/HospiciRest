@@ -2,10 +2,10 @@
 
         .detall_bloc { width: 100%; padding: 2vw; padding-top: 4vw; padding-left: 4vw; }        
         .detall_bloc h1, h2 { padding-bottom: 2vw; padding-top: 2vw; padding-right: 4vw;}
-        .detall_bloc p { }
-        .detall_bloc ul { }
+        /* .detall_bloc p { } */
+        /* .detall_bloc ul { } */
         #detall_titol { padding-bottom: 4vw; }        
-        #detall_descripcio {  }
+        /* #detall_descripcio {  } */
         
         .Detall_Llistat_Imatges { display: flex; list-style: none; width: 100%; justify-content: left; flex-flow: wrap; }
         .Detall_Llistat_Imatges li { padding:2vw; }

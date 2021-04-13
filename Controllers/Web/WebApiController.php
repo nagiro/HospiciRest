@@ -742,20 +742,17 @@ class WebApiController
     /**
     * Funció que es crida quan es fa una nova reserva d'espai a través de l'Hospici
     */
-    public function setReservaEspai($FormulariReservaEspai){
+    public function setReservaEspai($FormulariReservaEspai, $isNew){
         require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
 
         // Treballem el que rebem de reserva espai, per adaptar-ho a la nostra base de dades. Els camps múltiples els convertim a @ i els arxius els guardem. 
-        $REM = new ReservaEspaisModel();
-        $REM->adaptFields($FormulariReservaEspai);
+        $REM = new ReservaEspaisModel();        
+        $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);
+                
+        $id = $REM->insert($FormulariReservaEspai);
 
-        throw new Exception('Això encra no ho he fet!!!!');
-        
+        HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $id);
 
-
-
-        
-        $REM->insert($FormulariReservaEspai);
     }
 
     public function getEspaisDisponibles($idSite) {
@@ -765,12 +762,9 @@ class WebApiController
     }
 
     
-
-    public function Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
-    public function Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
+    public function Encrypt($id) { return HelperForm_Encrypt($id); }
+    public function Decrypt($id) { return HelperForm_Decrypt($id); }
     
 }
-
-
 
  ?>

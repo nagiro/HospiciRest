@@ -7,7 +7,7 @@ Vue.component('form-inscripcio-espai', {
     
     },          
     created: function() {
-        this.iniciaErrors();        // Funció que inicia tots els errors a 0
+        this.formErrors = const_and_helpers_iniciaErrors(this.formErrors);        // Funció que inicia tots els errors a 0
     },
     data: function() {
         return {            
@@ -21,32 +21,26 @@ Vue.component('form-inscripcio-espai', {
     },    
     computed: {},
     watch: {},    
-    methods: {
-        iniciaErrors: function() {
-            for(O of Object.keys(this.formErrors)) {
-                this.formErrors[O] = true;
-            }
-        },
-        submitHandler: function() {
+    methods: {        
+        submitFormulari: function() {
             this.isFormLoading = true;
+            
             let FD = new FormData();            
-            FD.append('DadesFormulari', JSON.stringify(this.formValues));                                    
-            FD.append('Accio', 'addReservaEspai');
+            FD.append('Accio', 'addReservaEspai');            
+            FD.append('DadesFormulari', JSON.stringify(this.formValues));                                                
+            
             axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
                 // Si hi ha hagut errors, ho ensenyo.
                 this.isFormLoading = false;
             }).catch( E => { alert(E); });
         },
         OnUsuariLoaded: function($UserData)  {                        
-            this.IdUsuariEncrypted = $UserData.IdUsuariEncrypted;                        
+            this.IdUsuariEncrypted = $UserData.IdUsuariEncrypted;
+            this.formValues.RESERVAESPAIS_UsuariId = this.IdUsuariEncrypted;            
         },
         isValidFormEspais: function($camp, $E) {
             this.formErrors[$camp] = $E;
-            for(E of Object.keys(this.formErrors)) {
-                if(!this.formErrors[E]) { this.isFormValid = false; return; }
-            }
-            this.isFormValid = true;                        
-            return;            
+            this.isFormValid = const_and_helpers_isFormValid(this.formErrors, $camp);                                    
         },
 
     },
@@ -62,6 +56,7 @@ Vue.component('form-inscripcio-espai', {
         <div 
             v-if="IdUsuariEncrypted.length > 0"
         >            
+        
             <div class="row">
                 <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Nom'" :title = "'Títol de lactivitat'" :value = "formValues.RESERVAESPAIS_Nom" @onkeyup="formValues.RESERVAESPAIS_Nom = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Nom', $event)"
@@ -134,21 +129,21 @@ Vue.component('form-inscripcio-espai', {
                 @isvalid="isValidFormEspais('RESERVAESPAIS_WebDescripcio', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'image'" :id = "'RESERVAESPAIS_TmpArxiuImatge'" :title = "'Imatge per la web'" :valuefile = "formValues.RESERVAESPAIS_TmpArxiuImatge" @onchange="formValues.RESERVAESPAIS_TmpArxiuImatge = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
-                @isvalid="isValidFormEspais('RESERVAESPAIS_TmpArxiuImatge', $event)"
+                <form-utils :fieldtype="'image'" :id = "'TMP_ArxiuImatge'" :title = "'Imatge per la web'" :valuefile = "formValues.TMP_ArxiuImatge" @onchange="formValues.TMP_ArxiuImatge = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
+                @isvalid="isValidFormEspais('TMP_ArxiuImatge', $event)"
                 >
                 </form-utils>                
 
-                <form-utils :fieldtype="'file'" :id = "'RESERVAESPAIS_TmpArxiuPdf'" :title = "'Arxiu PDF'" :value = "formValues.RESERVAESPAIS_TmpArxiuPdf" @onchange="formValues.RESERVAESPAIS_TmpArxiuPdf = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
-                @isvalid="isValidFormEspais('RESERVAESPAIS_TmpArxiuPdf', $event)"
+                <form-utils :fieldtype="'file'" :id = "'TMP_ArxiuPdf'" :title = "'Arxiu PDF'" :valuefile = "formValues.TMP_ArxiuPdf" @onchange="formValues.TMP_ArxiuPdf = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
+                @isvalid="isValidFormEspais('TMP_ArxiuPdf', $event)"
                 ></form-utils>                                
 
                 
                 <form-utils 
                     :fieldtype="'button'" :id = "'BSEGUEIX'" :title = "'Demana espai'" 
                     :value = "''" :disabled = "!isFormValid"
-                    :groupclass="['col-lg-2']"                    
-                    @onButtonPress = "submitHandler()"
+                    :groupclass="['col-lg-2']"
+                    @onButtonPress = "submitFormulari()"
                 ></form-utils>
 
     
@@ -157,21 +152,6 @@ Vue.component('form-inscripcio-espai', {
 
 
         </div>
-
-
-<!--                                                                                        
-                                                                                                
-            <div v-if="false">
-                                                
-                <formulate-input type="image" name="RESERVAESPAIS_TmpArxiuImatge" label="Imatge per la web"></formulate-input>
-                <formulate-input type="file" name="RESERVAESPAIS_TmpArxiuPdf" label="Arxiu Pdf" validation=""></formulate-input>                                                                                            
-            </div>
-               
-            <formulate-input #default="{ isFormLoading }"  type="submit" :label="( isFormLoading ? 'Enviant...' : 'Fes la petició')" :disabled = "isFormLoading"></formulate-input>                                                                                                        
-                
-        </formulate-form>                            
-
-        -->
                 
     </div>
 

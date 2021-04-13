@@ -2,6 +2,7 @@
 
 require_once APIDIR . 'api.php';
 require_once CONTROLLERSDIR . 'ControllersWebLoader.php';
+require_once VIEWDIRMOD . 'HelperForm.php';
 
 class NoAuthException extends Exception {
     
@@ -244,9 +245,9 @@ class MyAPIWeb extends API
                 $AnyActual = isset($this->request['post']['AnyActual']) ? $this->request['post']['AnyActual'] : '';                
                 $RET = $WAPI->getOcupacioEspai($IdEspai, $MesActual, $AnyActual);
                 break;
-            case 'addReservaEspai': 
+            case 'addReservaEspai':                 
                 $FormulariReservaEspai = isset($this->request['post']['DadesFormulari']) ? json_decode($this->request['post']['DadesFormulari'], true) : array();        
-                $WAPI->setReservaEspai($FormulariReservaEspai);        
+                $WAPI->setReservaEspai($FormulariReservaEspai, true);
                 break;
             case 'getEspaisDisponibles':
                 $IdSite = isset($this->request['IdSite']) ? $this->request['IdSite'] : '';

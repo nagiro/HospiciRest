@@ -4,8 +4,9 @@ Vue.component('form-utils', {
         id: String,
         title: String,
         fieldtype: String,
-        value: { default: () => "", type: String },
-        valuemultiple: { default: () => [], type: Array },                
+        value: { default: () => "", type: String },         // Quan és un valor únic i no objecte
+        valuemultiple: { default: () => [], type: Array },  // Sempre usem aquest si és un valor múltiple
+        valuefile: { default: () => {}, type: Object},      // Sempre usem aquest si és un arxiu que carreguem
         helptext: { default: '', type: String },
         placeholder: { default: '', type: String },         
         disabled: { default: false, type: Boolean } ,
@@ -23,8 +24,7 @@ Vue.component('form-utils', {
             ImageLoading: false,
             ImageLoaded: false,
             ImageShow: false,
-            ImageURL: "",
-
+            ImageURL: {'url': '', 'hexfile': '', 'name': ''},
         }
     },        
     computed: {
@@ -83,13 +83,12 @@ Vue.component('form-utils', {
 
             const files = $val.target.files
             let filename = files[0].name
-            
             const fileReader = new FileReader()
-            fileReader.addEventListener('load', () => { 
+            fileReader.addEventListener('load', () => {                 
                 this.ImageURL = fileReader.result                
                 this.ImageLoading = false;
                 this.ImageLoaded = true;
-                this.$emit('onchange', this.ImageURL)
+                this.$emit('onchange', {'url': '', 'hexfile':this.ImageURL, 'name': filename})
             })
             this.ImageLoading = true;
             fileReader.readAsDataURL(files[0])            
@@ -232,7 +231,7 @@ Vue.component('form-utils', {
                 :class="elementclass" 
             >
                 
-                <span v-if="ImageURL.length > 0">Arxiu carregat</span>
+                <span v-if="ImageLoaded">Arxiu carregat</span>
                 <a  style="display: block; cursor: pointer" 
                     @click="ReiniciaImatge"
                     aria-label="Esborra arxiu"                    

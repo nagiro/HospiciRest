@@ -157,3 +157,21 @@ function ResumDates(Horaris){
     
     return ResumDates;
 }
+
+/********************************* */
+/*** GESTIÓ D'ERRORS ************* */
+
+// Gestió d'errors als formularis
+function const_and_helpers_iniciaErrors(form) {
+    for(O of Object.keys(form)) {
+        form[O] = true;
+    }
+    return form;
+}
+
+function const_and_helpers_isFormValid(form, field) {    
+    for( key of Object.keys(form)) {
+        if(!form[key]) { return false; }
+    }
+    return true;            
+}

@@ -111,4 +111,63 @@ function TitleWithAdd($Action, $Titol){
     return "<h5>{$Titol} <i @click=\"{$Action}\" class=\"fas fa-plus-square withHand\"></i></h5>";
 }
 
+
+function HelperForm_FileConvertAndSaveFromPostParameterBase64($DirWhereToSave, $UrlToShow, $FormFile, $id) {
+    
+    if(sizeof($FormFile['hexfile']) == 0) return true; 
+    if(empty($id)) $id = "tmp_" . session_id();
+
+    $Extensio = array_pop(explode('.', $FormFile['name']));    
+    
+    $index = 0;
+    $filename = "F_{$id}_{$index}.{$Extensio}";
+        
+    while(file_exists($DirWhereToSave . $filename)) {
+        $index = $index + 1;
+        $filename = "F_{$id}_{$index}.{$Extensio}";
+    }
+        
+    file_put_contents($DirWhereToSave . $filename, base64_decode($FormFile['hexfile'])); 
+    $FormFile['dir'] = $filename;
+    $FormFile['url'] = $UrlToShow . $filename;
+    $FormFile['hexfile'] = '';
+    return $FormFile;
+}
+
+function HelperForm_FileCleanFromPostParameterBase64($DirWhereToSave, $id) {
+                    
+    if(empty($id)) $id = "F_tmp_" . session_id();
+    foreach (glob("{$DirWhereToSave}F_{$id}*") as $filename) {
+        unlink($filename);
+    } 
+
+}
+
+// Esborrem tots els arxius d'una id determinada a un directori determinat
+function HelperForm_FileRenameFromTempToId($DirWhereToSave, $id) {
+                    
+    if(empty($id)) throw new Exception('Vols renombrar un arxiu sense un id vàlid');
+    else {
+        $oldName = "F_tmp_" . session_id();
+        foreach (glob("{$DirWhereToSave}{$oldName}*") as $filename) {
+            $oldFile = basename($filename);
+            $Parts = explode("_", $oldFile);
+            $Parts[2] = $id;
+            unset($Parts[1]);            
+            $newName = implode("_", $Parts);            
+            rename("{$DirWhereToSave}{$oldFile}", "{$DirWhereToSave}{$newName}");
+        } 
+    }
+    
+
+}
+
+function HelperForm_DefaultValueForFileUploadForm() {
+    return array('url' => '', 'dir' => '', 'hexfile' => '', 'name' => '');
+}
+
+
+function HelperForm_Encrypt($id) { return base64_encode(openssl_encrypt($id, 'aes128', '(ccg@#).', 0, '45gh354645gh3546' )); }
+function HelperForm_Decrypt($id) { return openssl_decrypt(base64_decode($id), 'aes128', '(ccg@#).', 0, '45gh354645gh3546'); }
+
 ?>

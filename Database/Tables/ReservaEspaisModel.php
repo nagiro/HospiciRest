@@ -4,6 +4,7 @@ require_once BASEDIR."Database/DB.php";
 
 class ReservaEspaisModel extends BDD {
 
+    // Variables de la taula    
     const ReservaEspaiId = "ReservaEspaiId";
     const Representacio = "Representacio";
     const Responsable = "Responsable";
@@ -32,7 +33,12 @@ class ReservaEspaisModel extends BDD {
     const WebDescripcio = "WebDescripcio";
     const SiteId = "SiteId";
     const Actiu = "Actiu";
-    const IsTractada = "IsTractada";       
+    const IsTractada = "IsTractada";
+    
+    // Hi ha possibles camps temp per càrrega d'arxius
+    const TmpArxiuImatge = "TMP_ArxiuImatge";
+    const TmpArxiuPdf = "TMP_ArxiuPdf";
+
     
     const LlistatEstatsReserva = array(0 => "En espera", 1 => "Acceptada", 2 => "Denegada", 3 => "Anul·lada", 4 => "Pendent d'acceptar condicions", 5 => "Esborrada");
 
@@ -71,33 +77,51 @@ class ReservaEspaisModel extends BDD {
         $O[$this->gnfnwt(self::EsCicle)] = "";
         $O[$this->gnfnwt(self::IsEnregistrable)] = "";
         $O[$this->gnfnwt(self::HasDifusio)] = "";
-        $O[$this->gnfnwt(self::PrevisioAssistents)] = "";
+        $O[$this->gnfnwt(self::PrevisioAssistents)] = "";        
+        $O[$this->gnfnwt(self::Compromis)] = "";        
+        $O[$this->gnfnwt(self::Codi)] = "";        
+
+        $O[self::TmpArxiuImatge] = HelperForm_DefaultValueForFileUploadForm();
+        $O[self::TmpArxiuPdf] = HelperForm_DefaultValueForFileUploadForm();
 
         return $O;
     }
 
-    public function adaptFromFormFields($FieldsFromForm) {
+    public function adaptFromFormFields($FieldsFromForm, $isNew = false) {
                 
+        $FieldsFromForm[ $this->gnfnwt( self::UsuariId ) ] = HelperForm_Decrypt( $this->getUsuariId($FieldsFromForm) );
         $FieldsFromForm[ $this->gnfnwt( self::EspaisSolicitats ) ] = implode('@', $FieldsFromForm[ $this->gnfnwt( self::EspaisSolicitats ) ]);
         $FieldsFromForm[ $this->gnfnwt( self::MaterialSolicitat ) ] = implode('@', $FieldsFromForm[ $this->gnfnwt( self::MaterialSolicitat ) ]);
+                
+        $imageName = $this->getId($FieldsFromForm);
         
+        // Si l'arxiu és nou, esborrem arxius antics
+        if($isNew) HelperForm_FileCleanFromPostParameterBase64(DOCUMENTS_RESERVAESPAIS_DIR, $imageName);        
+        
+        // Guardem els arxius annexats al formulari
+        $FieldsFromForm[ self::TmpArxiuImatge ] =   HelperForm_FileConvertAndSaveFromPostParameterBase64(DOCUMENTS_RESERVAESPAIS_DIR, DOCUMENTS_RESERVAESPAIS_URL, $FieldsFromForm[ self::TmpArxiuImatge ], $imageName);                        
+        $FieldsFromForm[ self::TmpArxiuPdf ] =      HelperForm_FileConvertAndSaveFromPostParameterBase64(DOCUMENTS_RESERVAESPAIS_DIR, DOCUMENTS_RESERVAESPAIS_URL, $FieldsFromForm[ self::TmpArxiuPdf ], $imageName);
+                
         return $FieldsFromForm;
         
     }
 
+    // Abans d'inserir cal aplicar la funció adaptFromFormFields si venim d'un formulari
     public function insert($ORE) {           
 
-        $ORE[$this->gnfnwt(self::EspaisSolicitats)] = $this->ReturnWithArrobas($ORE[$this->gnfnwt(self::EspaisSolicitats)]);
-        $this->_doInsert($ORE);
-
+        //Copio només els camps que vull guardar i que corresponen a la taula
+        $ORE_To_Insert = array();
+        foreach($this->NewFieldsWithTableArray as $Field) {
+            $ORE_To_Insert[$Field] = $ORE[$Field];        
+        }
+        return $this->_doInsert($ORE);        
+    }
+    
+    public function getId($ORE) {
+        return $ORE[$this->gnfnwt(self::ReservaEspaiId)];
     }
 
-    public function ReturnWithArrobas($ElementArray) {
-        $RET = array();        
-        foreach($ElementArray as $id => $val) $RET[] = $val;
-        return implode('@', $RET);
-    }
-
+    public function getUsuariId($ORE){ return $ORE[$this->gnfnwt(self::UsuariId)]; }    
 
         // Carrego la informació d'un espai i els seus horaris ocupats ( si n'hi ha )
 //    public function getEspaiDetall($idEspai) {
