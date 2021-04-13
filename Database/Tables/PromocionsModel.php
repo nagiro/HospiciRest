@@ -4,6 +4,10 @@ require_once BASEDIR."Database/DB.php";
 
 class PromocionsModel extends BDD {
 
+    const TIPUS_PROMOCIO_ACTIVITAT = 'A';
+    const TIPUS_PROMOCIO_CICLE = 'C';
+    const TIPUS_PROMOCIO_PAGINA = 'P';
+
     public function __construct() {
         
         $OldFields = array("PromocioID", "Nom", "Titol", "SubTitol", "Ordre", "isActiva", "URL", "ImatgeS", "ImatgeM", "ImatgeL", "site_id", "actiu");

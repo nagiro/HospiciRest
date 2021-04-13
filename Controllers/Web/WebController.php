@@ -251,24 +251,24 @@ class WebController
 
         $EXTRES = array('Activitat' => array(), 'Curs' => array(), 'Token' => array($SiteIdAdminAuth, $Token) );
         $IsCurs = $idCurs > 0;
-        $IsAct = $idA > 0;
+        $IsActivitat = $idA > 0;
         $isAdmin = false;
 
-        if( $IsAct ) $EXTRES["Activitat"]     = $this->WebQueries->getActivitatsDetall( $idA );
+        if( $IsActivitat ) $EXTRES["Activitat"]     = $this->WebQueries->getActivitatsDetall( $idA );
         elseif( $IsCurs > 0 ) $EXTRES["Curs"] = $this->WebQueries->getCursDetall( $idCurs );                
         
         if( !empty($EXTRES["Curs"]) || !empty($EXTRES['Activitat']) ) {
 
-            if( $IsAct ) $isAdmin = ($EXTRES["Activitat"][0]['ACTIVITATS_SiteId'] == $SiteIdAdminAuth);
+            if( $IsActivitat ) $isAdmin = ($EXTRES["Activitat"][0]['ACTIVITATS_SiteId'] == $SiteIdAdminAuth);
             elseif( $IsCurs > 0 ) $isAdmin = ($EXTRES["Curs"]['CURSOS_SiteId'] == $SiteIdAdminAuth);
                         
-            $EXTRES['Horaris'] = ($IsAct) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
+            $EXTRES['Horaris'] = ($IsActivitat) ? $this->WebQueries->getHorarisActivitatDetall( $idA ) : array();
         
-            $Nom = ( $IsAct ) ? $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'] : $EXTRES['Curs']['CURSOS_TitolCurs'];
-            $idCicle = ( $IsAct ) ? $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"] : 0;
+            $Nom = ( $IsActivitat ) ? $EXTRES['Activitat'][0]['ACTIVITATS_TitolMig'] : $EXTRES['Curs']['CURSOS_TitolCurs'];
+            $idCicle = ( $IsActivitat ) ? $EXTRES["Activitat"][0]["ACTIVITATS_CiclesCicleId"] : 0;
 
             // Miro si té un pdf associat
-            if( $IsAct ) {
+            if( $IsActivitat ) {
                 $PDF = IMATGES_URL_ACTIVITATS . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" ;
                 $PDF_EXIST = is_file( OLD_BASEDIR_IMG_ACT . "A-{$EXTRES['Activitat'][0]["ACTIVITATS_ActivitatId"]}-PDF.pdf" );
                 if( $PDF_EXIST ) $EXTRES["Activitat"][0]["ACTIVITATS_Pdf"] = $PDF;
@@ -308,14 +308,14 @@ class WebController
 
                 /* BREADCUMB Si volem veure tots els cicles */
 
-                if ( $IsAct ) $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
+                if ( $IsActivitat ) $EXTRES["Breadcumb"][] =     array('Titol' => 'Totes les activitats', "Link" => '/activitats/0/' .  $this->aUrl('Totes les activitats')); 
                 
             }
-            $EXTRES["Breadcumb"][] = ( $IsAct ) ? array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)) :  array('Titol' => $Nom, "Link" => '/inscripcio/' . $idCurs . '/' . $this->aUrl($Nom));
+            $EXTRES["Breadcumb"][] = ( $IsActivitat ) ? array('Titol' => $Nom, "Link" => '/activitats/' . $idA . '/' . $this->aUrl($Nom)) :  array('Titol' => $Nom, "Link" => '/inscripcio/' . $idCurs . '/' . $this->aUrl($Nom));
 
             /* ENTRADES Carrego el curs si està habilitat */
             $CM = new CursosModel();                        
-            $CursObject = ( $IsAct ) ? $CM->getRowActivitatId( $idA ) : $EXTRES['Curs'];
+            $CursObject = ( $IsActivitat ) ? $CM->getRowActivitatId( $idA ) : $EXTRES['Curs'];
             if(!empty($CursObject)) { 
 
                 require_once DATABASEDIR . 'Tables/SitesModel.php';
@@ -337,7 +337,7 @@ class WebController
             }
             else $EXTRES['Curs'] = array();                                         
             
-            $EXTRES['Promocions'] = ( $IsAct ) ? $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA ) :  $this->WebQueries->getPromocions(true, $Nom, '', 'A', $idCurs );                                
+            $EXTRES['Promocions'] = ( $IsActivitat ) ? $this->WebQueries->getPromocions(true, $Nom, $NOM_CICLE, 'A', $idA ) :  $this->WebQueries->getPromocions(true, $Nom, '', 'A', $idCurs );                                
 
         } else {
 
@@ -355,6 +355,9 @@ class WebController
 
     public function viewPagina( $idN ) {
         
+        require_once DATABASEDIR . 'Tables/NodesModel.php';
+        
+        $PM = new NodesModel();
         $R = $this->getMenu();                                        
         $EXTRES["Pagina"] = array();
         
@@ -363,8 +366,8 @@ class WebController
         $NodeSons = array();
         
         foreach($R as $K => $Node) {
-            $NodeIndex = ($Node['Nodes_idNodes'] == $idN) ? $K : $NodeIndex; 
-            if ( $Node['Nodes_idPare'] == $idN ) { $NodeSons[] = $Node; } 
+            $NodeIndex = ( $PM->getIdNodes($Node) == $idN) ? $K : $NodeIndex; 
+            if ( $PM->getIdPare($Node) == $idN ) { $NodeSons[] = $Node; } 
         }                
 
         if($NodeIndex >= 0) {
@@ -378,23 +381,23 @@ class WebController
             
             $EXTRES["Breadcumb"] =       array(array('Titol'=>'Inici', "Link"=> '/'));             
             $Pares = array($NodeIndex);                                 // Pares serà un node que és l'actual                   
-            for($i = $R[$NodeIndex]['Nodes_Nivell']; $i >= 0; $i--) {   // Agafo els nodes des de l'actual fins l'arrel
+            for($i = $PM->getNivell( $R[$NodeIndex] ); $i >= 0; $i--) {   // Agafo els nodes des de l'actual fins l'arrel
                 foreach($R as $id => $NodeObject) {                     // Per cada node que trobo el guardo a Pares i això serà el breadcumb.
                     $IndexNivellActual = end($Pares);
-                    if( $NodeObject['Nodes_idNodes'] == $R[$IndexNivellActual]['Nodes_idPare'] ):
+                    if( $PM->getIdNodes( $NodeObject ) == $PM->getIdPare( $R[$IndexNivellActual] ) ):
                         $Pares[] = $id;
                     endif;
                 }                
             }                        
             $Pares = array_reverse($Pares);
             foreach($Pares as $IndexNode) {
-                $EXTRES["Breadcumb"][] =     array('Titol' => $R[$IndexNode]['Nodes_TitolMenu'], "Link" => '/pagina/' . $R[$IndexNode]['Nodes_idNodes'] . '/' . $this->aUrl($R[$IndexNode]['Nodes_TitolMenu'])); 
+                $EXTRES["Breadcumb"][] =     array('Titol' => $PM->getTitolMenu( $R[$IndexNode] ), "Link" => '/pagina/' . $PM->getIdNodes( $R[$IndexNode] ) . '/' . $this->aUrl( $PM->getTitolMenu( $R[$IndexNode] ) )); 
             }
 
             /* SI ÉS UN PHP */
 
-            if($EXTRES["Pagina"]['Nodes_isPhp'] == 1) {
-                $EXTRES["Pagina"]['Nodes_Html'] = $this->get_include_contents( AUXDIR . $EXTRES["Pagina"]['Nodes_Html']); 
+            if( $PM->getIsPhp( $EXTRES["Pagina"] ) == 1) {
+                $PM->setHtml( $EXTRES["Pagina"], $this->get_include_contents( AUXDIR . $PM->getHtml( $EXTRES["Pagina"] ) )); 
             }
             
         } else {
@@ -403,7 +406,7 @@ class WebController
 
         }
         
-        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, '', '', 'A', 0 );                
+        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $PM->getTitolMenu( $EXTRES['Pagina'] ) , '', PromocionsModel::TIPUS_PROMOCIO_PAGINA, $PM->getIdNodes( $EXTRES['Pagina'] ) );                
         $EXTRES['Menu'] = $this->getMenu();
 
         return $EXTRES;
