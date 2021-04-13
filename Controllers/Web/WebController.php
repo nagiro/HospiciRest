@@ -406,7 +406,7 @@ class WebController
 
         }
         
-        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $PM->getTitolMenu( $EXTRES['Pagina'] ) , '', PromocionsModel::TIPUS_PROMOCIO_PAGINA, $PM->getIdNodes( $EXTRES['Pagina'] ) );                
+        $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, $PM->getTitolMenu( $EXTRES['Pagina'] ) , '', PromocionsModel::TIPUS_PROMOCIO_PAGINA, $PM->getIdNodes( $EXTRES['Pagina'] ) );
         $EXTRES['Menu'] = $this->getMenu();
 
         return $EXTRES;
