@@ -83,9 +83,9 @@ class WebQueries extends BDD {
                 $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-XL.jpg';
             // Si és una imatge de pàgina
             elseif($TipusImatge == 'P'):
-                $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_NODES . $idImatge . '-S.jpg';
-                $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_NODES . $idImatge . '-M.jpg';
-                $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_NODES . $idImatge . '-L.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_NODES . $idImatge . '-M.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_NODES . $idImatge . '-L.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_NODES . $idImatge . '-XL.jpg';
             endif;
             $RET[0]['PROMOCIONS_TITOL'] = $title;
             $RET[0]['PROMOCIONS_SUBTITOL'] = $subtitle;
