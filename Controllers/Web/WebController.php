@@ -397,7 +397,7 @@ class WebController
             /* SI ÉS UN PHP */
 
             if( $PM->getIsPhp( $EXTRES["Pagina"] ) == 1) {
-                $PM->setHtml( $EXTRES["Pagina"], $this->get_include_contents( AUXDIR . $PM->getHtml( $EXTRES["Pagina"] ) )); 
+                $EXTRES["Pagina"] = $PM->setHtml( $EXTRES["Pagina"], $this->get_include_contents( AUXDIR . $PM->getHtml( $EXTRES["Pagina"] ) )); 
             }
             
         } else {

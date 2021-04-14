@@ -47,7 +47,7 @@ class NodesModel extends BDD {
     public function getIsPhp( $ON ) { return $ON[$this->gnfnwt("isPhp")]; }
     public function getHtml( $ON ) { return $ON[$this->gnfnwt("Html")]; }
 
-    public function setHtml( $ON, $Value ) { return $ON[$this->gnfnwt('Html')] = $Value; }
+    public function setHtml( $ON, $Value ) { $ON[$this->gnfnwt('Html')] = $Value; return $ON; }
 
 }
 
