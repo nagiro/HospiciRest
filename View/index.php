@@ -7,8 +7,14 @@ require_once VIEWDIR . 'MainModule.php';
 error_reporting( E_ALL );
 ini_set('display_errors', 1);
 
-$MainModule = new MainModule();
-echo $MainModule->getView();
+try {
+
+    $MainModule = new MainModule();
+    echo $MainModule->getView();
+
+} catch (PDOException $e) { echo "Hi ha hagut algun error inesperat: " . $e->getCode(); 
+} catch (Exception $e) { echo $e->getMessage(); }
+
 
 
 ?>
