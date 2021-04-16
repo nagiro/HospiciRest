@@ -286,12 +286,12 @@ class MatriculesModel extends BDD {
                 Select count(*)
                 from {$this->getTableName()}             
                 where 
-                        {$this->getOldFieldNameWithTable('CursId')} = {$idCurs}
+                        {$this->getOldFieldNameWithTable('CursId')} = :idcurs
                 AND     {$this->getOldFieldNameWithTable('Actiu')} = 1 
-                AND     {$this->getOldFieldNameWithTable('Estat')} in ".$this->ReturnEstatsCorrectesSQL()." 
+                AND     {$this->getOldFieldNameWithTable('Estat')} in (:estats)  
                 AND  (" . implode(" OR ", $W).')';
 
-            $QuantsNiHa = $this->runQuery($SQL, array());
+            $QuantsNiHa = $this->runQuery($SQL, array('idcurs' => $idCurs, 'estats' => $this->ReturnEstatsCorrectesSQL() ));
                 
             return ($QuantsNiHa[0]['count(*)'] == 0);
         } else {

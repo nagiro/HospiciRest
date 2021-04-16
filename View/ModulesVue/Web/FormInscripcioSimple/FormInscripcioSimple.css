@@ -3,6 +3,7 @@
   padding: 3vw;
 }
 
+.formulari-inscripcio #BDNI { margin-top: 0.5vw; }
 .formulari-inscripcio .row { margin-top: 2vw; margin-bottom: 1vw; }
 .formulari-inscripcio label { margin-bottom: 0.5vw; }
 .formulari-inscripcio .alerta { padding: 1vw; background-color: crimson; color: white; border-radius: 10px; margin: 2vw 0vw; }

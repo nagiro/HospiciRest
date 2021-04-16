@@ -344,38 +344,28 @@ Vue.component('form-inscripcio-simple', {
     template: `            
 
     <div v-if="DetallCurs.CURSOS_VisibleWeb == 1 || this.isAdmin">
-        <form class="formulari-inscripcio">                        
+        <div class="formulari-inscripcio">                        
 
             <h2>{{EtiquetaTitol(DetallCurs)}}</h2>
             <div class="row alert alert-info" v-if="isAdmin">Estàs accedint com administrador.</div>
+            
 
-            <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
-            </div>
 
-            <div v-if="Pas == 5">            
-                <div v-if="TipusPagament != TEMP_CONST_LLISTA_ESPERA " class="row alert alert-success Pas5"> 
-                    <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
-                    <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>                            
-                </div>
-                <div v-else class="row alert alert-warning Pas5"> 
-                    <p>La seva inscripció ha finalitzat correctament.</p><p>Si en un futur tornem a tenir places disponibles, contactarem amb vostè.</p>                    
-                </div>
-            </div>
-
-            <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 
-                <p>Hi ha hagut el següent error fent la seva inscripció. Pot consultar amb nosaltres trucant al 972.20.20.13 (Ext 3).</p>
-                <p><b>{{ErrorInscripcio}}</b>                            </p>                
-                <br /><p> <a href="./">Torna a carregar la pàgina.</a></p>
-            </div>
 
             <form-usuari-auth                 
                 v-if="Pas == 0 || Pas == 1"
                 @on-id-usuari-encrypted-loaded="OnUsuariLoaded">
             </form-usuari-auth>
            
+
+
+
             <div v-if="Pas == 2 && !LlistaEsperaActiu" class="row alert alert-success"> Hem trobat el seu DNI a la nostra base de dades. <br />Pot seguir amb la inscripció! </div>
             <div v-if="Pas == 2 && LlistaEsperaActiu" class="row alert alert-danger"> L'activitat ja no disposa de places lliures. Tot i això, si ho desitja pot posar-se en llista d'espera i l'avisarem si torna a haver-n'hi. </div>             
             
+
+
+
             <div v-if="Pas == 4 || Pas == 2">
 
                 <div v-if="DetallTeatre.Seients.length > 0" class="row" style="display: flex; flex-direction: column; ">                   
@@ -447,6 +437,39 @@ Vue.component('form-inscripcio-simple', {
                  
             </div>
 
+
+
+
+
+            <div v-if="Pas == 5">            
+                <div v-if="TipusPagament != TEMP_CONST_LLISTA_ESPERA " class="row alert alert-success Pas5"> 
+                    <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
+                    <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>                            
+                </div>
+                <div v-else class="row alert alert-warning Pas5"> 
+                    <p>La seva inscripció ha finalitzat correctament.</p><p>Si en un futur tornem a tenir places disponibles, contactarem amb vostè.</p>                    
+                </div>
+            </div>
+
+
+
+
+            <div v-if="Pas == 6" class="row alert alert-danger Pas6"> 
+                <p>Hi ha hagut el següent error fent la seva inscripció. Pot consultar amb nosaltres trucant al 972.20.20.13 (Ext 3).</p>
+                <p><b>{{ErrorInscripcio}}</b>                            </p>                
+                <br /><p> <a href="./">Torna a carregar la pàgina.</a></p>
+            </div>
+
+
+
+
+            <div class="row alert alert-danger" v-if=" ! PucMatricular(DetallCurs) || Pas == 7" v-html="ErrorInscripcio">            
+            </div>
+
+
+
+
+
             <div class="row" v-if="Pas == 9">
                 <div class="col">
                     <label for="CodiOperacio">Codi d'operació datàfon</label>                        
@@ -477,7 +500,7 @@ Vue.component('form-inscripcio-simple', {
             </div>
 
             
-        </form>
+        </div>
         
         <form class="formulari-inscripcio" v-if="Pas == 8" name="frm" :action="TPV.url" method="POST" target="_blank">
             <input type="hidden" name="Ds_SignatureVersion" :value="TPV.version" /></br>

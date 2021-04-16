@@ -191,14 +191,14 @@ class CursosModel extends BDD {
             SELECT c.idCursos, c.TitolCurs, m.idMatricules, m.data_hora_entrada, m.Fila, m.Seient, m.GrupMatricules, u.Nom, u.Cog1, u.Cog2, u.Email, u.Telefon, m.Comentari, m.tPagament
             FROM cursos c LEFT JOIN matricules m ON (c.idCursos = m.Cursos_idCursos)
             LEFT JOIN usuaris u ON (m.Usuaris_UsuariID = u.UsuariID)
-            WHERE m.Estat IN {$MM->ReturnEstatsCorrectesSQL()}
+            WHERE m.Estat IN (:estats)
             AND c.actiu = 1
-            AND c.idCursos = {$idCurs}
+            AND c.idCursos = :idcurs
             AND m.actiu = 1
             ORDER BY c.TitolCurs, u.Cog1, u.Cog2, u.Nom
         ";
         
-        return $this->runQuery($SQL, array());
+        return $this->runQuery($SQL, array('estats' => $MM->ReturnEstatsCorrectesSQL(), 'idcurs' => $idCurs ));
 
     }
 
