@@ -114,14 +114,29 @@ class ReservaEspaisModel extends BDD {
         foreach($this->NewFieldsWithTableArray as $Field) {
             $ORE_To_Insert[$Field] = $ORE[$Field];        
         }
-        return $this->_doInsert($ORE);        
+        
+        $id = $this->_doInsert($ORE);
+
+        if( is_numeric( $id ) && $id > 0 ) $ORE[ $this->gnfnwt( self::ReservaEspaiId ) ] = $id;
+        else throw new Exception('Hi ha hagut algun problema guardant la reserva.');
+
+        $ORE = $this->setCodi($ORE, $id . date('mY'));
+
+        return $ORE;
+
     }
     
     public function getId($ORE) {
         return $ORE[$this->gnfnwt(self::ReservaEspaiId)];
     }
 
-    public function getUsuariId($ORE){ return $ORE[$this->gnfnwt(self::UsuariId)]; }    
+    public function getUsuariId($ORE){ return $ORE[$this->gnfnwt(self::UsuariId)]; } 
+    
+    public function setReservaEspaiId($ORE, $id) { $ORE[$this->gnfnwt(self::ReservaEspaiId)] = $id; return $ORE;  }
+    public function getReservaEspaiId($ORE) { return $ORE[$this->gnfnwt(self::ReservaEspaiId)]; }
+
+    public function setCodi($ORE, $id) { $ORE[$this->gnfnwt(self::Codi)] = $id; return $ORE; }
+    public function getCodi($ORE) { return $ORE[$this->gnfnwt(self::Codi)]; }
 
         // Carrego la informació d'un espai i els seus horaris ocupats ( si n'hi ha )
 //    public function getEspaiDetall($idEspai) {

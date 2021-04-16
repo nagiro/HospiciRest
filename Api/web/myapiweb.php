@@ -247,7 +247,7 @@ class MyAPIWeb extends API
                 break;
             case 'addReservaEspai':                 
                 $FormulariReservaEspai = isset($this->request['post']['DadesFormulari']) ? json_decode($this->request['post']['DadesFormulari'], true) : array();        
-                $WAPI->setReservaEspai($FormulariReservaEspai, true);
+                $RET = array('FormulariReservaComplet' => $WAPI->setReservaEspai($FormulariReservaEspai, true) );
                 break;
             case 'getEspaisDisponibles':
                 $IdSite = isset($this->request['IdSite']) ? $this->request['IdSite'] : '';

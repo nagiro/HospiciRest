@@ -7,6 +7,8 @@
         #detall_titol { padding-bottom: 4vw; }        
         /* #detall_descripcio {  } */
         
+        #detall_imatge_entitat img { width: 20vw; margin-bottom: 3vw; }
+
         .Detall_Llistat_Imatges { display: flex; list-style: none; width: 100%; justify-content: left; flex-flow: wrap; }
         .Detall_Llistat_Imatges li { padding:2vw; }
         .Detall_Llistat_Imatges img { transition: transform .2s; width: 10vw; }

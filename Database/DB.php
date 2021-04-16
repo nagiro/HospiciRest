@@ -29,8 +29,10 @@ class BDD extends PDO {
         while( $F = $select->fetch() ){                        
             $valor = $F['COLUMN_DEFAULT'];
             
-            if($F['DATA_TYPE'] == 'tinyint' || $F['DATA_TYPE'] == 'int' || $F['DATA_TYPE'] == 'bigint') $valor = intval($valor);
-            if($F['EXTRA'] == 'auto_increment') $valor = '';
+            if( $F['DATA_TYPE'] == 'tinyint' || $F['DATA_TYPE'] == 'int' || $F['DATA_TYPE'] == 'bigint' ) $valor = intval($valor);
+            if( ( $F['DATA_TYPE'] == 'text' || $F['DATA_TYPE'] == 'char' || $F['DATA_TYPE'] == 'varchar' ) && ($valor == 'NULL' || is_null($valor) ) ) $valor = "";
+            if( $F['DATA_TYPE'] == 'timestamp' ) $valor = date('Y-m-d H:i:s', time());
+            if( $F['EXTRA'] == 'auto_increment' ) $valor = '';
 
             $O[ $this->getFromOltFieldNameToNewFieldNameWithTable($F['COLUMN_NAME']) ] = $valor;                        
         }

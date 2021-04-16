@@ -21,10 +21,7 @@ class HorarisEspaisModel extends BDD {
     */
     public function getHorarisEspaisOcupats($idEspai, $Mes, $Any) {
         require_once BASEDIR."Database/Tables/HorarisModel.php";
-        $HM = new HorarisModel();                        
-        $PartsDataDiaInicial = explode('-',$DiaInicial);        
-        $DiaInicial = $PartsDataDiaInicial[0] . '-' . $PartsDataDiaInicial[1] . '-01';
-        $DiaFinal = $PartsDataDiaInicial[0] . '-' . $PartsDataDiaInicial[1] . '-31';
+        $HM = new HorarisModel();                                        
         
         $W = array('espai' => $idEspai, 'mes' => $Mes, 'any' => $Any);
         $SQL = "SELECT {$HM->gsfn('Dia')}, {$HM->gsfn('HoraPre')}, {$HM->gsfn('HoraPost')} 

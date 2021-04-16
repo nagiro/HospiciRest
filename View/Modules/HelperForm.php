@@ -114,10 +114,11 @@ function TitleWithAdd($Action, $Titol){
 
 function HelperForm_FileConvertAndSaveFromPostParameterBase64($DirWhereToSave, $UrlToShow, $FormFile, $id) {
     
-    if(sizeof($FormFile['hexfile']) == 0) return true; 
+    if(strlen($FormFile['hexfile']) == 0) return true; 
     if(empty($id)) $id = "tmp_" . session_id();
 
-    $Extensio = array_pop(explode('.', $FormFile['name']));    
+    $DirPartsArray = explode('.', $FormFile['name']);
+    $Extensio = array_pop($DirPartsArray);    
     
     $index = 0;
     $filename = "F_{$id}_{$index}.{$Extensio}";

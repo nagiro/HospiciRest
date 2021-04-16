@@ -16,7 +16,8 @@ Vue.component('form-inscripcio-espai', {
             OpcionsSiNo: [{id: 1, text: "Sí"}, {id: 0, text: "No"}],
             isFormValid: false,            
             formValues: Vue.util.extend({}, this.formdata),
-            formErrors: Vue.util.extend({}, this.formdata)
+            formErrors: Vue.util.extend({}, this.formdata),
+            Pas: 0            
         }
     },    
     computed: {},
@@ -31,12 +32,15 @@ Vue.component('form-inscripcio-espai', {
             
             axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
                 // Si hi ha hagut errors, ho ensenyo.
-                this.isFormLoading = false;
+                this.formValues = Vue.util.extend({}, X.data.FormulariReservaComplet),
+                this.formErrors = Vue.util.extend({}, X.data.FormulariReservaComplet),                
+                this.Pas = 2;
             }).catch( E => { alert(E); });
         },
         OnUsuariLoaded: function($UserData)  {                        
-            this.IdUsuariEncrypted = $UserData.IdUsuariEncrypted;
+            this.IdUsuariEncrypted = $UserData.IdUsuariEncrypted;            
             this.formValues.RESERVAESPAIS_UsuariId = this.IdUsuariEncrypted;            
+            this.Pas = 1;
         },
         isValidFormEspais: function($camp, $E) {
             this.formErrors[$camp] = $E;
@@ -49,12 +53,12 @@ Vue.component('form-inscripcio-espai', {
 
         <h3>Reserva un espai</h3>
         <form-usuari-auth 
-            v-if="IdUsuariEncrypted.length == 0"
+            v-if="Pas == 0"
             @on-id-usuari-encrypted-loaded="OnUsuariLoaded">
         </form-usuari-auth>
 
         <div 
-            v-if="IdUsuariEncrypted.length > 0"
+            v-if="Pas == 1 || Pas == 2"
         >            
         
             <div class="row">
@@ -137,22 +141,28 @@ Vue.component('form-inscripcio-espai', {
                 <form-utils :fieldtype="'file'" :id = "'TMP_ArxiuPdf'" :title = "'Arxiu PDF'" :valuefile = "formValues.TMP_ArxiuPdf" @onchange="formValues.TMP_ArxiuPdf = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('TMP_ArxiuPdf', $event)"
                 ></form-utils>                                
-
+        
+                <div v-if="isFormLoading && Pas == 1" class="alert alert-info">
+                    Espereu un moment mentre guardem la petició d'espai.
+                </div>
                 
                 <form-utils 
+                    v-if="!isFormLoading && Pas == 1"
                     :fieldtype="'button'" :id = "'BSEGUEIX'" :title = "'Demana espai'" 
                     :value = "''" :disabled = "!isFormValid"
                     :groupclass="['col-lg-2']"
                     @onButtonPress = "submitFormulari()"
                 ></form-utils>
 
+                <div v-if="Pas == 2" class="alert alert-success">
+                    La reserva amb codi <strong>{{formValues.RESERVAESPAIS_Codi}}</strong> s'ha efectuat correctament. 
+                    Ens posarem en contacte amb vostè properament per comunicar-li les condicions i si és possible o no concedir-li l'espai.
+                </div>
     
-
-            </div>
-
+            </div>        
 
         </div>
-                
+                        
     </div>
 
 `

@@ -749,9 +749,11 @@ class WebApiController
         $REM = new ReservaEspaisModel();        
         $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);
                 
-        $id = $REM->insert($FormulariReservaEspai);
+        $ORE = $REM->insert($FormulariReservaEspai);
 
-        HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $id);
+        HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $REM->getReservaEspaiId($ORE, $REM->getReservaEspaiId($ORE) ) );
+
+        return $ORE;
 
     }
 

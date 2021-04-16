@@ -1,4 +1,5 @@
 .form-inscripcio-espai .row { margin-top: 1vw; }
+.form-inscripcio-espai .alert { margin-top: 5vw; }
 .form-inscripcio-espai { background-color: #EAEAEA; padding: 3vw; }
 
 @media screen and (min-width: 300px) and (max-width: 1199px) {
