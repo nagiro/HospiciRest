@@ -112,8 +112,11 @@ class MainModule {
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
             case 'validador':
-                $Data = $this->WebController->getActivitatsDiaValidar();
-                $this->getModuleContent('HtmlHeaderWeb.php');                                                
+                if(!isset($url[1])) throw new Exception("Has d'entrar el codi d'entitat.");
+                if(!is_numeric($url[1])) throw new Exception("Has d'entrar el codi d'entitat correcte."); 
+                $idS = strval( $url[1] );
+                $Data = $this->WebController->getActivitatsDiaValidar( $idS );
+                $this->getModuleContent('HtmlHeaderWeb.php');       
                 $this->getModuleContent('Web/validador.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;

@@ -13,11 +13,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-<<<<<<< HEAD
-        <title>Inscripció a activitats de la Diputació de Girona</title>
-=======
-        <title>Inscripció al Pati Cultural</title>
->>>>>>> master
+        <title>*|MC:SUBJECT|*</title>
         
     <style type="text/css">
 		p{
@@ -43,6 +39,7 @@
 			margin:0;
 			padding:0;
 			width:100%;
+			-webkit-print-color-adjust:exact;
 		}
 		.mcnPreviewText{
 			display:none !important;
@@ -127,7 +124,7 @@
 		h2{
 			/*@editable*/color:#222222;
 			/*@editable*/font-family:Helvetica;
-			/*@editable*/font-size:28px;
+			/*@editable*/font-size:1.5rem;
 			/*@editable*/font-style:normal;
 			/*@editable*/font-weight:bold;
 			/*@editable*/line-height:150%;
@@ -142,7 +139,7 @@
 		h3{
 			/*@editable*/color:#444444;
 			/*@editable*/font-family:Helvetica;
-			/*@editable*/font-size:22px;
+			/*@editable*/font-size: 1.3rem;
 			/*@editable*/font-style:normal;
 			/*@editable*/font-weight:bold;
 			/*@editable*/line-height:150%;
@@ -201,7 +198,7 @@
 		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
 			/*@editable*/color:#757575;
 			/*@editable*/font-family:Helvetica;
-			/*@editable*/font-size:16px;
+			/*@editable*/font-size:1rem;
 			/*@editable*/line-height:150%;
 			/*@editable*/text-align:left;
 		}
@@ -251,7 +248,7 @@
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
 			/*@editable*/color:#757575;
 			/*@editable*/font-family:Helvetica;
-			/*@editable*/font-size:16px;
+			/*@editable*/font-size:1rem;
 			/*@editable*/line-height:150%;
 			/*@editable*/text-align:left;
 		}
@@ -301,7 +298,7 @@
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
 			/*@editable*/color:#FFFFFF;
 			/*@editable*/font-family:Helvetica;
-			/*@editable*/font-size:12px;
+			/*@editable*/font-size:1rem;
 			/*@editable*/line-height:150%;
 			/*@editable*/text-align:center;
 		}
@@ -453,7 +450,7 @@
 	@tip Make the boxed text larger in size for better readability on small screens. We recommend a font size of at least 16px.
 	*/
 		.mcnBoxedTextContentContainer .mcnTextContent,.mcnBoxedTextContentContainer .mcnTextContent p{
-			/*@editable*/font-size:14px !important;
+			/*@editable*/font-size:1rem !important;
 			/*@editable*/line-height:150% !important;
 		}
 
@@ -464,7 +461,7 @@
 	@tip Make the header text larger in size for better readability on small screens.
 	*/
 		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
-			/*@editable*/font-size:16px !important;
+			/*@editable*/font-size:1rem !important;
 			/*@editable*/line-height:150% !important;
 		}
 
@@ -475,7 +472,7 @@
 	@tip Make the body text larger in size for better readability on small screens. We recommend a font size of at least 16px.
 	*/
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
-			/*@editable*/font-size:16px !important;
+			/*@editable*/font-size:1rem !important;
 			/*@editable*/line-height:150% !important;
 		}
 
@@ -486,16 +483,31 @@
 	@tip Make the footer content text larger in size for better readability on small screens.
 	*/
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
-			/*@editable*/font-size:14px !important;
+			/*@editable*/font-size:1rem !important;
 			/*@editable*/line-height:150% !important;
 		}
 
-}</style></head>
-    <body>
+}
+
+
+@media print {	
+	
+	/* #templateHeader { display: none; } */
+	#templateFooter { display: none; }
+	.mcnButtonContent { display: none; }
+	.mcnCaptionBlockInner { display: none; }
+	.mcnImageCardBlockTargeta { display: none; }
+	body { font-size: 0.5rem; }
+	h1 { font-size: 2rem; }
+	h2 { font-size: 1.5rem; }
+}
+</style></head>
+    <body>		
         <!--*|IF:MC_PREVIEW_TEXT|*-->
         <!--[if !gte mso 9]><!----><span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">*|MC_PREVIEW_TEXT|*</span><!--<![endif]-->
         <!--*|END:IF|*-->
-        <center>
+        <center>			
+			<div style="display: @@DISPLAY_MAIL@@; background-color: @@DISPLAY_MAIL_COLOR@@; padding: 1vw; font-size:0.8rem; color: gray;">@@EMAIL_SEND@@</div>			
             <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
                 <tr>
                     <td align="center" valign="top" id="bodyCell">
@@ -516,10 +528,11 @@
                 <td style="padding:9px" class="mcnImageBlockInner" valign="top">
                     <table class="mcnImageContentContainer" style="min-width:100%;" width="100%" cellspacing="0" cellpadding="0" border="0" align="left">
                         <tbody><tr>
-                            <td class="mcnImageContent" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;" valign="top">
-                                
-                                    
-                                        <img alt="" src="@@LOGO@@" style="max-width:1200px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" width="564" align="middle">
+                            <td class="mcnImageContent" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;" valign="top">                                    
+										<img alt="" src="@@LOGO@@" style="width: 20vw; padding-bottom: 0; vertical-align: bottom;" class="mcnImage" align="middle">
+										<div style="margin-top:10px">&nbsp;</div>
+										<h1 style="margin: 0 auto; width: 100%; text-align: center;">Reserva / Entrada / Inscripció</h1>
+										<h2 style="margin: 0 auto; width: 100%; text-align: center;">@@ACTIVITAT@@</h2>
                                     
                                 
                             </td>
@@ -537,7 +550,8 @@
                                     </table>
                                     <![endif]-->
                                 </td>
-                            </tr>
+							</tr>
+
                             <tr>
                                 <td align="center" valign="top" id="templateBody" data-template-container>
                                     <!--[if (gte mso 9)|(IE)]>
@@ -559,28 +573,30 @@
                                                             <td class="mcnCaptionBlockInner" style="padding:9px;" valign="top">
                                                                 
                                                 
-																<table class="mcnCaptionBottomContent" border="0" cellspacing="0" cellpadding="0" align="left">
-																	<tbody>
-																	<tr>
-																	<td class="mcnCaptionBottomImageContent" style="padding: 0 9px 9px 9px;" align="center" valign="top"><!-- <img alt="" src="@@IMATGE@@" style="max-width:800px;" class="mcnImage" width="564"> --></td>
-																	</tr>
-																	<tr>
-																	<td class="mcnTextContent" style="padding: 0 9px 0 9px;" valign="top" width="564">
-<<<<<<< HEAD
-																	<h3>Benvolgut i benvolguda,</h3>
-																	<p>La vostra reserva ha estat realitzada, moltes gràcies! En arribar a l'acte només cal que ens ensenyeu aquest missatge amb el mòbil o bé imprès. Si teniu qualsevol dubte envieu un mail a info@ddgi.cat</p> 																	
-																	<p>Gràcies per la vostra col·laboració.</p>
-=======
-																	<h3>Benvinguts al Pati Cultural 2021</h3>
-																	<p>La inscripció a l'esdeveniment seleccionat s'ha efectuat correctament.</p>
-																	<p>Si té qualsevol dubte pot contactar amb nosaltres enviant un correu a cultura@ddgi.cat o per telèfon trucant al 972184837.</p>
-																	<p>Desitgem que us agradi i que gaudiu de la cultura!</p>
->>>>>>> master
-																	</td>
-																	</tr>
-																	</tbody>
-																</table>                                                
-                                                                                                                                                                                                
+                                                <table class="mcnCaptionBottomContent" cellspacing="0" cellpadding="0" border="0" align="left">
+                                                    <tbody><tr>
+                                                        <td class="mcnCaptionBottomImageContent" style="padding:0 9px 9px 9px;" valign="top" align="center">
+                                                        
+                                                            <img alt="" src="@@IMATGE@@" style="width: 20vw;" class="mcnImage">
+                                                        
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="mcnTextContent" style="padding:0 9px 0 9px;" width="564" valign="top">
+                                                            <h3>Benvinguts a la Casa de Cultura</h3>
+                                                
+                                                <p>Vostè ha efectuat una inscripció a les nostres activitats correctament.</p>
+                                                <p>Si té qualsevol dubte pot contactar amb nosaltres enviant un correu a <strong>info@casadecultura.cat</strong>, per telèfon trucant al <strong>972.20.20.13</strong> o bé per whatsapp al <strong>691.217.259</strong>.<br>
+                                                <br>Esperem que tot sigui del seu gust i que gaudeixi molt d'aquesta activitat.<br><br>
+                                                Atentament, equip de la Casa de Cultura de Girona.</p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody></table>
+                                                
+                                                
+                                                
+                                                
+                                                
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -601,7 +617,7 @@
 																			</td>
 																		</tr>
 																		<tr>
-																			<td class="mcnTextContent" style="padding: 9px 18px;color: #222222;font-family: Helvetica;font-size: 14px;font-weight: normal;text-align: center;" width="546" valign="top">
+																			<td class="mcnTextContent" style="padding: 9px 18px;color: #222222;font-family: Helvetica;font-weight: normal;text-align: center;" width="546" valign="top">
 																				@@CODI_BARRES@@															
 																				<h2 class="null" style="text-align: center;"><br>PAGAMENT AMB CODI DE BARRES</h2>
 																				<br>Per poder fer el pagament amb codi de barres podeu anar a qualsevol oficina de CaixaBank, escollir el pagament a tercers amb codi de barres i finalment escanejar el codi que teniu a sobre per a poder finalitzar el pagament.<br>
@@ -619,7 +635,7 @@
 
 												
 
-												<table class="mcnImageCardBlock" width="100%" cellspacing="0" cellpadding="0" border="1" style="margin-bottom: 30px; @@DISPLAY_PAGAMENT_TARGETA@@">
+												<table class="mcnImageCardBlock mcnImageCardBlockTargeta" width="100%" cellspacing="0" cellpadding="0" border="1" style="margin-bottom: 30px; @@DISPLAY_PAGAMENT_TARGETA@@">
 													<tbody class="mcnImageCardBlockOuter">
 														<tr>
 															<td class="mcnImageCardBlockInner" style="padding-top:0px; padding-right:18px; padding-bottom:40px; padding-left:18px;" valign="top">
@@ -627,9 +643,9 @@
 																<table class="mcnImageCardBottomContent" style="background-color: #FFFFFF;" width="100%" cellspacing="0" cellpadding="0" border="0" align="right">
 																	<tbody>
 																		<tr>
-																			<td class="mcnTextContent" style="padding-bottom: 20px; padding: 0px 18px;color: #222222;font-family: Helvetica;font-size: 14px;font-weight: normal;text-align: center;" width="546" valign="top">
+																			<td class="mcnTextContent" style="padding-bottom: 20px; padding: 0px 18px;color: #222222;font-family: Helvetica;font-weight: normal;text-align: center;" width="546" valign="top">
 																				<h2 class="null" style="text-align: center;"><br>PAGAT AMB TARGETA</h2>
-																				<h3 style="text-align: center;">Import pagat: @@IMPORT_TOTAL@@ €</h3>
+																				<h3 style="text-align: center;">Import total a pagar: @@IMPORT_TOTAL@@ €</h3>
 																			</td>
 																		</tr>
 																	</tbody>

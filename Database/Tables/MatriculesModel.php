@@ -135,12 +135,15 @@ class MatriculesModel extends BDD {
         return $this->_doInsert($ObjecteMatricula);        
     }
 
+    /**
+     * Funció que retorna els estats correctes d'¡una matrícula per donar-se com a matriculat o vàlida. 
+     */
+    public function ReturnEstatsCorrectesArray() {
+        return array(self::ESTAT_ACCEPTAT_PAGAT, self::ESTAT_ACCEPTAT_NO_PAGAT, self::ESTAT_RESERVAT, self::ESTAT_EN_ESPERA);    
+    }
+
     public function ReturnEstatsCorrectesSQL() {
-        return "(".self::ESTAT_ACCEPTAT_PAGAT.
-                    ",".self::ESTAT_ACCEPTAT_NO_PAGAT.
-                    ",".self::ESTAT_RESERVAT.
-                    ",".self::ESTAT_EN_ESPERA.
-                ")";
+        return implode(",", $this->ReturnEstatsCorrectesArray());
     }
 
     public function IsMatriculaCorrectaPerImprimirResguard($ObjecteMatricula) {

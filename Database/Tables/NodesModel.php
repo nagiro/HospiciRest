@@ -40,6 +40,15 @@ class NodesModel extends BDD {
         
     }
 
+    public function getTitolMenu( $ON ) { return $ON[$this->gnfnwt("TitolMenu")]; }
+    public function getIdNodes( $ON ) { return $ON[$this->gnfnwt("idNodes")]; }
+    public function getIdPare( $ON ) { return $ON[$this->gnfnwt("idPare")]; }
+    public function getNivell( $ON ) { return $ON[$this->gnfnwt("Nivell")]; }
+    public function getIsPhp( $ON ) { return $ON[$this->gnfnwt("isPhp")]; }
+    public function getHtml( $ON ) { return $ON[$this->gnfnwt("Html")]; }
+
+    public function setHtml( $ON, $Value ) { $ON[$this->gnfnwt('Html')] = $Value; return $ON; }
+
 }
 
 ?>

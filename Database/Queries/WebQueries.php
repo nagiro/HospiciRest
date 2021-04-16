@@ -58,6 +58,7 @@ class WebQueries extends BDD {
     }
 
     public function getPromocions($empty = false, $title = '', $subtitle = '', $TipusImatge = 'A', $idImatge = '', $Link = '') {
+        // Si la promoció no és buida ( o sigui , és un carroussel )
         if(!$empty) {
             $RET = $this->runQuery( $this->getSQLPromocions() , array());                
             foreach($RET as $index => $Row) {
@@ -65,17 +66,26 @@ class WebQueries extends BDD {
                 $RET[$index]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_M'];
                 $RET[$index]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_PROMOCIONS . $Row['PROMOCIONS_IMATGE_L'];
             }
+        
+        // La promoció no és un carroussel. Potser negre o una imatge.
         } else {
             $P = new PromocionsModel();
             $RET[0] = $P->getEmptyArray();
+            // Si és una imatge d'activitat
             if($TipusImatge == 'A'):            
                 $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_ACTIVITATS . 'A-' . $idImatge . '-M.jpg';
                 $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_ACTIVITATS . 'A-' . $idImatge . '-L.jpg';
                 $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_ACTIVITATS . 'A-' . $idImatge . '-XL.jpg';
+            // Si és una imatge de cicle
             elseif($TipusImatge == 'C'):
                 $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-M.jpg';
                 $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-L.jpg';
                 $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_CICLES . 'C-' . $idImatge . '-XL.jpg';
+            // Si és una imatge de pàgina
+            elseif($TipusImatge == 'P'):
+                $RET[0]['PROMOCIONS_IMATGE_S'] = IMATGES_URL_NODES . $idImatge . '-M.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_M'] = IMATGES_URL_NODES . $idImatge . '-L.jpg';
+                $RET[0]['PROMOCIONS_IMATGE_L'] = IMATGES_URL_NODES . $idImatge . '-XL.jpg';
             endif;
             $RET[0]['PROMOCIONS_TITOL'] = $title;
             $RET[0]['PROMOCIONS_SUBTITOL'] = $subtitle;
