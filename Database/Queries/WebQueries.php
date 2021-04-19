@@ -278,6 +278,21 @@ class WebQueries extends BDD {
                 
     }
 
+    public function getActivitatsFuturesPerXML() {
+
+        $SQL = "SELECT a.ActivitatID, h.HorarisID, a.tMig, a.dMig, h.Dia, h.HoraInici, a.Cicles_CicleID, a.Imatge, a.TipusActivitat_idTipusActivitat, a.Categories
+                  FROM activitats a LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID)
+                 WHERE a.site_id = 1
+                   AND a.actiu = 1 AND h.actiu = 1
+                   AND h.Dia > :dataavui
+	               AND a.PublicaWEB = 1";
+
+        return $this->runQuery( $SQL , array('dataavui' => date('Y-m-d')) );                                                           
+        
+    }
+
 }
+
+
 
 ?>

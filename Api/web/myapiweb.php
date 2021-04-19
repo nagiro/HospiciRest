@@ -328,6 +328,12 @@ class MyAPIWeb extends API
         
     }    
 
+    protected function getCulturaVirtual() {
+        require_once AUXDIR . 'Culturavirtual\Auxiliar_CulturaVirtual.php';        
+        $CV = new Auxiliar_CulturaVirtual();
+        return array($CV->loadActivitatsFutures(), 200);
+    }
+
 
  }
 
