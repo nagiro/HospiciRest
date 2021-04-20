@@ -93,7 +93,7 @@
 
                     <div class="text" v-html="DetallCurs.CURSOS_Descripcio">  </div>                    
 
-                    <div style="margin-bottom: 1vw;" v-if="MostroImatge">
+                    <div style="margin-bottom: 1vw; margin-left: 2vw;" v-if="MostroImatge">
                         <img alt="Imatge de l'activitat" @error="onImgError()" style="width: 30vw" :src="'https://intranet.casadecultura.cat/images/cursos/C-'+ DetallCurs.CURSOS_IdCurs + '-L.png'" />
                     </div>
                     
