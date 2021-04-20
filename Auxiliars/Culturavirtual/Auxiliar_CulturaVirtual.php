@@ -56,6 +56,7 @@ class Auxiliar_CulturaVirtual {
         )
 
  */
+
     public function loadActivitatsFutures() {
         $WQ = new WebQueries();
         $ROWS = $WQ->getActivitatsFuturesPerXML();
@@ -79,8 +80,9 @@ class Auxiliar_CulturaVirtual {
             $ImatgeParts = explode('.', $R["Imatge"]);
             $ImatgePartsNumber = sizeof($ImatgeParts);
             $ImatgeParts[$ImatgePartsNumber - 2] .= 'L';
-            $Imatge = 'http://www.casadecultura.cat' . implode('.', $ImatgeParts);
+            // $Imatge = 'http://www.casadecultura.cat' . implode('.', $ImatgeParts);
             // $Imatge = 'http://culturavirtual.ddgi.cat' . implode('.', $ImatgeParts);
+            $Imatge = 'http://culturavirtual.ddgi.cat/testapi/testfoto.jpg';
             
             $data = array(
                 'title' => $R['tMig'],
@@ -88,6 +90,10 @@ class Auxiliar_CulturaVirtual {
                 'start_date' =>  $R['DataInicial'],
                 'end_date' => $R['DataFinal'],
                 'categories' => $this->ConvertCategories($R['Categories'], $R['TipusActivitat_idTipusActivitat']),
+//                'organizer' => $R['Organitzador'],
+                'website' => "https://www.casadecultura.cat/detall/{$R['ActivitatID']}/" . urlencode($R['tMig']),
+                'cost' => 0,
+                'venue' => 284,
                 'image' => $Imatge
             );
             print_r($data);
@@ -125,13 +131,9 @@ class Auxiliar_CulturaVirtual {
         curl_setopt($process, CURLOPT_USERPWD, $username . ":" . $password);
         curl_setopt($process, CURLOPT_TIMEOUT, 30);
         curl_setopt($process, CURLOPT_POST, 1);
-
         curl_setopt($process, CURLOPT_CUSTOMREQUEST, "POST");
-
         curl_setopt($process, CURLOPT_POSTFIELDS, $data_string);
-
         curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
-
         curl_setopt($process, CURLOPT_HTTPHEADER, array(                                                                          
             'Content-Type: application/json',                                                                                
             'Content-Length: ' . strlen($data_string))                                                                       
@@ -144,7 +146,7 @@ class Auxiliar_CulturaVirtual {
         $result = json_decode($return, true);
 
         if( isset($result['id']) ) {
-            // print_r($result);
+            print_r($result);
             return $result['id'];
         } else {            
             print_r($result);
