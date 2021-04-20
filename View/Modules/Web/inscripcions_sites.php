@@ -58,8 +58,7 @@
 
                 <tr v-for="Curs of LlistatCursos" >
                     <td>                                                
-                        <a v-if="EsOberta( Curs.CURSOS_DataInMatricula )" target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>
-                        <span v-if="!EsOberta( Curs.CURSOS_DataInMatricula )">{{Curs.CURSOS_TitolCurs}}</span>
+                        <a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>                        
                     </td>
                     <td>
                         De <i>{{getDataFormatada(Curs.CURSOS_DataInMatricula, true)}}</i> a <i>{{getDataFormatada(Curs.CURSOS_DataFiMatricula, true)}}</i> 
