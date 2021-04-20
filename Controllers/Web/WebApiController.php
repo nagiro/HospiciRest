@@ -495,7 +495,7 @@ class WebApiController
             if($id > 0) $OU = $UM->getUsuariId($id);
             else throw new Exception("No he pogut crear l'usuari amb DNI {$DNI}");         
                         
-            return ($id > 0); 
+            return $id; 
             
         } else {
             return $UM->getId($OU);
