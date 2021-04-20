@@ -86,7 +86,9 @@ function ConvertirData( DataBDD, ReturnType = 'A' ) {
         return {'dia': Dia, 'mes': Mes, 'any': Any };
     } else if(ReturnType == 'Javascript') {
         return new Date(Any, (Mes - 1), Dia, 0, 0, 0);
-    }
+    } else if(ReturnType == 'Text') {        
+        return String(Dia) + ' ' + MesNom({'dia': Dia, 'mes': Mes, 'any': Any });
+    } 
 
 
 }

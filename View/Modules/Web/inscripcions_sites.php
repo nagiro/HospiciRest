@@ -50,13 +50,21 @@
             <table id="Taula_Llistat_Cursos">                
                 <tr>
                     <th>Activitat</th>
-                    <th>Inici</th>
+                    <th>Període d'inscripció</th>
+                    <th>Inici activitat</th>
                     <th>Horaris</th>
                     <th>Preu</th>
                 </tr>
+
                 <tr v-for="Curs of LlistatCursos" >
-                    <td><a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a></td>
-                    <td>{{Curs.CURSOS_DataInici | DateSwap }}</td>
+                    <td>                                                
+                        <a v-if="EsOberta( Curs.CURSOS_DataInMatricula )" target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>
+                        <span v-if="!EsOberta( Curs.CURSOS_DataInMatricula )">{{Curs.CURSOS_TitolCurs}}</span>
+                    </td>
+                    <td>
+                        De <i>{{getDataFormatada(Curs.CURSOS_DataInMatricula, true)}}</i> a <i>{{getDataFormatada(Curs.CURSOS_DataFiMatricula, true)}}</i> 
+                    </td>                    
+                    <td>{{getDataFormatada(Curs.CURSOS_DataInici, true)}}</td>
                     <td>{{Curs.CURSOS_Horaris}}</td>
                     <td>{{Curs.CURSOS_Preu}}€</td>
                 </tr>
@@ -195,7 +203,17 @@
                     return Ret;
                 }                
             },
-            methods: {}
+            methods: {
+                EsOberta: function(DataInici) {
+                    let D = ConvertirData( DataInici, 'Javascript' );
+                    DataActual = new Date();
+                    return (DataActual > D);                    
+                },
+                getDataFormatada: function(DataInici, textFormat) {
+                    return (!textFormat) ? ConvertirData( DataInici, 'TDM' ) : ConvertirData( DataInici, 'Text' );
+                }
+
+            }
         });
 
     </script>
