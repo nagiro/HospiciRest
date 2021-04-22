@@ -223,7 +223,7 @@ class WebApiController
             foreach($Fila as $Seient):
                 if($Seient['tipus'] == 'loc'):                                        
                     $SeientsIOcupacions["F: ".$Seient['fila'].' | S: '.$Seient['seient']] = 
-                        array('Fila' => $Seient['fila'], 'Seient' => $Seient['seient'], 'Ocupat' => false);
+                        array('Fila' => $Seient['fila'], 'Seient' => $Seient['seient'], 'Ocupat' => false, 'Dades' => '---');
                 endif;            
             endforeach;
         endforeach;

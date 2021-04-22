@@ -143,7 +143,7 @@ class MatriculesModel extends BDD {
     }
 
     public function ReturnEstatsCorrectesSQL() {
-        return implode(",", $this->ReturnEstatsCorrectesArray());
+        return '(' . implode(",", $this->ReturnEstatsCorrectesArray()) . ')';
     }
 
     public function IsMatriculaCorrectaPerImprimirResguard($ObjecteMatricula) {
@@ -288,10 +288,10 @@ class MatriculesModel extends BDD {
                 where 
                         {$this->getOldFieldNameWithTable('CursId')} = :idcurs
                 AND     {$this->getOldFieldNameWithTable('Actiu')} = 1 
-                AND     {$this->getOldFieldNameWithTable('Estat')} in (:estats)  
+                AND     {$this->getOldFieldNameWithTable('Estat')} in {$this->ReturnEstatsCorrectesSQL()}  
                 AND  (" . implode(" OR ", $W).')';
 
-            $QuantsNiHa = $this->runQuery($SQL, array('idcurs' => $idCurs, 'estats' => $this->ReturnEstatsCorrectesSQL() ));
+            $QuantsNiHa = $this->runQuery($SQL, array('idcurs' => $idCurs ));
                 
             return ($QuantsNiHa[0]['count(*)'] == 0);
         } else {
