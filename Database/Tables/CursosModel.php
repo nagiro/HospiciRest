@@ -117,7 +117,7 @@ class CursosModel extends BDD {
             $TeatreJson = file_get_contents( TEATRES . $CursObject[$this->gnfnwt('SiteId')] . '-' . $CursObject[$this->gnfnwt('Teatre')] . '.json' );
             return json_decode($TeatreJson, true);        
         } else {
-            throw new Exception('Aquesta activitat no disposa de teatre amb selecció de seient');
+            return array('Seients' => array());
         }
     }
 
