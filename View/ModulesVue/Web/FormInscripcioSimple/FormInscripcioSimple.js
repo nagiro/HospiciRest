@@ -420,7 +420,7 @@ Vue.component('form-inscripcio-simple', {
 
                 <div class="form-check">
                     <input :disabled="!(Pas == 2 || Pas == 4)" type="checkbox" class="form-check-input" v-model="ConfirmoAssistencia" id="Assistire">
-                    <label class="form-check-label" for="Assistire">Confirmo que <b>assistiré a l'acte</b> o que <b>avisaré</b>, a la Casa de Cultura, en cas de no poder-ho fer.</label>
+                    <label class="form-check-label" for="Assistire">Confirmo que <b>assistiré a l'acte</b> o que <b>avisaré</b>, en cas de no poder-ho fer.</label>
                 </div>
                 
                 <div v-show="!Loading">
