@@ -75,12 +75,12 @@ class CursosModel extends BDD {
                          {$this->getOldFieldNameWithTable('SiteId')} = :site_id
                 AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
                 AND      {$this->getOldFieldNameWithTable('DataFiMatricula')} >= :Data1
-                AND      {$this->getOldFieldNameWithTable('DataInMatricula')} <= :Data2
+--                AND      {$this->getOldFieldNameWithTable('DataInMatricula')} <= :Data2
                 AND      {$this->getOldFieldNameWithTable('VisibleWeb')} = 1
                 ORDER BY {$this->getOldFieldNameWithTable('DataInici')} asc
             ";
 
-        $SQLW = array('site_id'=>$SiteId, 'Data1' => $DataInicial, 'Data2' => $DataInicial );        
+    $SQLW = array('site_id'=>$SiteId, 'Data1' => $DataInicial /*, 'Data2' => $DataInicial */);        
                 
         return $this->runQuery($SQL, $SQLW);
 
@@ -112,12 +112,12 @@ class CursosModel extends BDD {
     /**
     * Funció que carrega el teatre escollit pel curs en qüestió
     **/
-    public function getTeatre( $CursObject ) {
-        if( strlen($CursObject[$this->gnfnwt('Teatre')]) > 0 ){
+    public function getTeatre( $CursObject ) {        
+        if( isset($CursObject[$this->gnfnwt('Teatre')]) && strlen($CursObject[$this->gnfnwt('Teatre')]) > 0 ){
             $TeatreJson = file_get_contents( TEATRES . $CursObject[$this->gnfnwt('SiteId')] . '-' . $CursObject[$this->gnfnwt('Teatre')] . '.json' );
             return json_decode($TeatreJson, true);        
         } else {
-            return array('Seients'=> array());
+            return array('Seients' => array());
         }
     }
 
@@ -169,7 +169,7 @@ class CursosModel extends BDD {
             SELECT c.idCursos, c.TitolCurs, m.idMatricules, m.data_hora_entrada, m.Fila, m.Seient, m.GrupMatricules, u.Nom, u.Cog1, u.Cog2, m.Comentari, m.tPagament
             FROM cursos c LEFT JOIN matricules m ON (c.idCursos = m.Cursos_idCursos)
             LEFT JOIN usuaris u ON (m.Usuaris_UsuariID = u.UsuariID)
-            WHERE m.Estat IN (:estat)
+            WHERE m.Estat IN {$MM->ReturnEstatsCorrectesSQL()}
             AND c.actiu = 1
             AND m.actiu = 1            
             AND c.DataInici = CURDATE()
@@ -177,7 +177,7 @@ class CursosModel extends BDD {
             ORDER BY c.TitolCurs, u.Cog1, u.Cog2, u.Nom
         ";                            
 
-        return $this->runQuery($SQL, array( 'estat' => $MM->ReturnEstatsCorrectesSQL() , 'siteid' => $idSite ));
+        return $this->runQuery($SQL, array('siteid' => $idSite ));
 
     }
 
@@ -191,14 +191,14 @@ class CursosModel extends BDD {
             SELECT c.idCursos, c.TitolCurs, m.idMatricules, m.data_hora_entrada, m.Fila, m.Seient, m.GrupMatricules, u.Nom, u.Cog1, u.Cog2, u.Email, u.Telefon, m.Comentari, m.tPagament
             FROM cursos c LEFT JOIN matricules m ON (c.idCursos = m.Cursos_idCursos)
             LEFT JOIN usuaris u ON (m.Usuaris_UsuariID = u.UsuariID)
-            WHERE m.Estat IN (:estats)
+            WHERE m.Estat IN {$MM->ReturnEstatsCorrectesSQL()}
             AND c.actiu = 1
             AND c.idCursos = :idcurs
             AND m.actiu = 1
             ORDER BY c.TitolCurs, u.Cog1, u.Cog2, u.Nom
         ";
         
-        return $this->runQuery($SQL, array('estats' => $MM->ReturnEstatsCorrectesSQL(), 'idcurs' => $idCurs ));
+        return $this->runQuery($SQL, array('idcurs' => $idCurs ));
 
     }
 

@@ -223,7 +223,7 @@ class WebApiController
             foreach($Fila as $Seient):
                 if($Seient['tipus'] == 'loc'):                                        
                     $SeientsIOcupacions["F: ".$Seient['fila'].' | S: '.$Seient['seient']] = 
-                        array('Fila' => $Seient['fila'], 'Seient' => $Seient['seient'], 'Ocupat' => false);
+                        array('Fila' => $Seient['fila'], 'Seient' => $Seient['seient'], 'Ocupat' => false, 'Dades' => '---');
                 endif;            
             endforeach;
         endforeach;
@@ -495,7 +495,7 @@ class WebApiController
             if($id > 0) $OU = $UM->getUsuariId($id);
             else throw new Exception("No he pogut crear l'usuari amb DNI {$DNI}");         
                         
-            return ($id > 0); 
+            return $id; 
             
         } else {
             return $UM->getId($OU);

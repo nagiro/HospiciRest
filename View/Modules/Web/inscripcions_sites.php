@@ -50,13 +50,20 @@
             <table id="Taula_Llistat_Cursos">                
                 <tr>
                     <th>Activitat</th>
-                    <th>Inici</th>
+                    <th>Període d'inscripció</th>
+                    <th>Inici activitat</th>
                     <th>Horaris</th>
                     <th>Preu</th>
                 </tr>
+
                 <tr v-for="Curs of LlistatCursos" >
-                    <td><a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a></td>
-                    <td>{{Curs.CURSOS_DataInici | DateSwap }}</td>
+                    <td>                                                
+                        <a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>                        
+                    </td>
+                    <td>
+                        De <i>{{getDataFormatada(Curs.CURSOS_DataInMatricula, true)}}</i> a <i>{{getDataFormatada(Curs.CURSOS_DataFiMatricula, true)}}</i> 
+                    </td>                    
+                    <td>{{getDataFormatada(Curs.CURSOS_DataInici, true)}}</td>
                     <td>{{Curs.CURSOS_Horaris}}</td>
                     <td>{{Curs.CURSOS_Preu}}€</td>
                 </tr>
@@ -73,15 +80,24 @@
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallCurs.CURSOS_TitolCurs }} </h1>                                
                 <h2>Organitzat per {{ DetallSite.SITES_Nom }}</h2>
-                <h3>{{ DetallCurs.CURSOS_Horaris }}</h3>
-                
+                <h3>Dia {{getDataFormatada(DetallCurs.CURSOS_DataInici, true)}} | {{ DetallCurs.CURSOS_Horaris }}</h3>                
             </div>
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
                 <p v-if="DetallCurs.CURSOS_Pdf.length > 0">
                     [<a :href="DetallCurs.CURSOS_Pdf" target="_NEW">{{NomEnllacPDFCurs}}</a>]
                 </p>
-                <div class="text" v-html="DetallCurs.CURSOS_Descripcio">  </div>                
+
+                <div style="display: flex;">                
+
+                    <div class="text" v-html="DetallCurs.CURSOS_Descripcio">  </div>                    
+
+                    <div style="margin-bottom: 1vw; margin-left: 2vw;" v-if="MostroImatge">
+                        <img alt="Imatge de l'activitat" @error="onImgError()" style="width: 30vw" :src="'https://intranet.casadecultura.cat/images/cursos/C-'+ DetallCurs.CURSOS_IdCurs + '-L.png'" />
+                    </div>
+                    
+                </div>
+                
                 <div v-if="DetallCurs">
                     <form-inscripcio-simple 
                         :activitat-id="'0'" 
@@ -130,7 +146,8 @@
                 MesosAny: [],
                 Dies: [],
                 DiesMes: [],
-                UrlActual: ''         //Url actual de la finestra
+                UrlActual: '',         //Url actual de la finestra
+                MostroImatge: true
 
             },            
             filters: {
@@ -195,7 +212,20 @@
                     return Ret;
                 }                
             },
-            methods: {}
+            methods: {
+                EsOberta: function(DataInici) {
+                    let D = ConvertirData( DataInici, 'Javascript' );
+                    DataActual = new Date();
+                    return (DataActual > D);                    
+                },
+                getDataFormatada: function(DataInici, textFormat) {
+                    return (!textFormat) ? ConvertirData( DataInici, 'TDM' ) : ConvertirData( DataInici, 'Text' );
+                },
+                onImgError: function() {
+                    this.MostroImatge = false;
+                }
+
+            }
         });
 
     </script>
