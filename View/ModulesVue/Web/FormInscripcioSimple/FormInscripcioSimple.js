@@ -443,8 +443,9 @@ Vue.component('form-inscripcio-simple', {
 
             <div v-if="Pas == 5">            
                 <div v-if="TipusPagament != TEMP_CONST_LLISTA_ESPERA " class="row alert alert-success Pas5"> 
-                    <p>La seva inscripció ha finalitzat correctament. Pot descarregar-se els resguards clicant els enllaços:</p>
-                    <p><a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>                            
+                    <p>La seva inscripció ha finalitzat correctament.</p>
+                    <p>Pot descarregar-se el resguard clicant l'enllaç: <a target="_NEW" :href="genUrlInscripcio">Baixa't la inscripció</a></p>
+                    <p>També rebrà una còpia del resguard al seu correu elecrònic. Si no la troba, busqui també al correu brossa.</p>
                 </div>
                 <div v-else class="row alert alert-warning Pas5"> 
                     <p>La seva inscripció ha finalitzat correctament.</p><p>Si en un futur tornem a tenir places disponibles, contactarem amb vostè.</p>                    
