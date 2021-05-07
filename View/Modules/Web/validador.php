@@ -9,6 +9,7 @@
         .validador_falta_arribar { background-color: #b0ffc3; }
         .validador_falta_arribar_llista_espera { background-color: orange; }
         .validador_falten { margin-top: 2vw; }
+        .qrcode-stream-wrapper { width: 20% !important; }
     </style>
 
 </head>
@@ -24,12 +25,12 @@
 
             <div class="validador_box">
                 <label for="EntradaDades">Codi entrada</label>
-                <qrcode-stream @init="onInit" @decode="ValidaCodi($event, true)"></qrcode-stream>                        
-                <input type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
+                <qrcode-stream @init="onInit" :key="_uid" :track="paintOutline" @decode="DecodeQR($event)"></qrcode-stream>                        
+                <input style="width: 70%" type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
                 <button @click="ValidaCodi($event, true)">Valida</button>
             </div>
 
-            <div class="validador_resposta" :class="VRC">            
+            <div class="validador_resposta" :class="VRC">                            
                 {{Missatge}}
             </div>
             
@@ -80,7 +81,7 @@
                 Entrats: 0, 
                 Totals: 0,
                 TipusPagamentLlistaEspera: CONST_PAGAMENT_LLISTA_ESPERA,
-                error: ""
+                error: ""                
             },            
             created: function() {
                 
@@ -164,8 +165,28 @@
                         this.error = "ERROR: Stream API is not supported in this browser"
                         }
                     }
+                },
+                paintOutline (detectedCodes, ctx) {
+                    for (const detectedCode of detectedCodes) {
+                        const [ firstPoint, ...otherPoints ] = detectedCode.cornerPoints
+
+                        ctx.strokeStyle = "blue";
+
+                        ctx.beginPath();
+                        ctx.moveTo(firstPoint.x, firstPoint.y);
+                        for (const { x, y } of otherPoints) {
+                        ctx.lineTo(x, y);
+                        }
+                        ctx.lineTo(firstPoint.x, firstPoint.y);
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
+                },
+                DecodeQR(event) {
+                    this.QRText = event;
+                    this.ValidaCodi(this.QRText, true);
                 }
-            }            
+            }
         });
 
     </script>
