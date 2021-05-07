@@ -331,8 +331,8 @@ class MatriculesModel extends BDD {
                     return $RET;
                 } else {
                     if(!$isCodiCorrecte) $RET['error'] = 'Numero matrícula incorrecte';
-                    if(!$isMatriculaEstatCorrecte) $RET['error'] = "Estat incorrecte";
-                    if(!$isMatriculaNoEntrada) $RET['error'] = "Codi repetit";
+                    if(!$isMatriculaEstatCorrecte) $RET['error'] = "Estat incorrecte | {$this->getEstatString($OMatricula)}";
+                    if(!$isMatriculaNoEntrada) $RET['error'] = "Codi repetit, ja entrat anteriorment.";
                     return $RET;
                 }
             } else {

@@ -166,7 +166,7 @@ class CursosModel extends BDD {
         $MM = new MatriculesModel();
 
         $SQL = "
-            SELECT c.idCursos, c.TitolCurs, m.idMatricules, m.data_hora_entrada, m.Fila, m.Seient, m.GrupMatricules, u.Nom, u.Cog1, u.Cog2, m.Comentari, m.tPagament
+            SELECT c.idCursos, c.TitolCurs, m.idMatricules, m.data_hora_entrada, m.Fila, m.Seient, m.GrupMatricules, u.Nom, u.Cog1, u.Cog2, m.Comentari, m.tPagament, m.Estat
             FROM cursos c LEFT JOIN matricules m ON (c.idCursos = m.Cursos_idCursos)
             LEFT JOIN usuaris u ON (m.Usuaris_UsuariID = u.UsuariID)
             WHERE m.Estat IN {$MM->ReturnEstatsCorrectesSQL()}

@@ -23,6 +23,8 @@ const CONST_PAGAMENT_LLISTA_ESPERA = '36';
 const CONST_PAGAMENT_INVITACIO = '60';  
 const CONST_PAGAMENT_DATAFON = '61';
 
+const CONST_ESTAT_LLISTA_ESPERA = '14';
+
 var normalize = (function() {
     var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç.", 
         to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc_",

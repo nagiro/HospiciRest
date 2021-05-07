@@ -25,7 +25,7 @@
 
             <div class="validador_box">
                 <label for="EntradaDades">Codi entrada</label>
-                <qrcode-stream @init="onInit" :key="_uid" :track="paintOutline" @decode="DecodeQR($event)"></qrcode-stream>                        
+                <!-- <qrcode-stream @init="onInit" :key="_uid" :track="paintOutline" @decode="DecodeQR($event)"></qrcode-stream>                        -->
                 <input style="width: 70%" type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
                 <button @click="ValidaCodi($event, true)">Valida</button>
             </div>
@@ -38,12 +38,12 @@
                 <h1>Llistat d'assistents [{{Entrats}}/{{Total}}] = {{Total - Entrats}}</h1>
                 <br /><br />
                 <table>
-                    <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada)">
+                    <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada, MF.Estat)">                    
                         <td style="padding: 2vw 0.5vw; "><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
                         <td style="padding: 2vw 0.5vw; " v-if="!MF.Comentari">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
                         <td style="padding: 2vw 0.5vw; " v-if="MF.Comentari && MF.Comentari.length > 0">{{MF.Comentari}}</td>
                         <td style="padding: 2vw 0.5vw; " v-show="MF.Fila > 0"> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
-                        <td style="padding: 2vw 0.5vw; background-color: orange; " v-show="MF.tPagament == TipusPagamentLlistaEspera"> Llista espera </td>                        
+                        <td style="padding: 2vw 0.5vw; background-color: orange; " v-show="MF.Estat == ConstEstatLlistaEspera "> Llista espera </td>                                                
                     </tr>
                 </table>
             </div>
@@ -80,7 +80,7 @@
                 CursosMatricules: [],                
                 Entrats: 0, 
                 Totals: 0,
-                TipusPagamentLlistaEspera: CONST_PAGAMENT_LLISTA_ESPERA,
+                ConstEstatLlistaEspera: CONST_ESTAT_LLISTA_ESPERA,
                 error: ""                
             },            
             created: function() {
@@ -108,9 +108,9 @@
                     
                     this.Total = this.CursosMatricules.length;                
                 },
-                EstilFila: function(HoraEntrada, TipusPagament) {                                        
+                EstilFila: function(HoraEntrada, Estat) {                                                            
                     if( HoraEntrada && HoraEntrada.length > 0 ) { return 'validador_arribat'; }
-                    else if (TipusPagament == this.TipusPagamentLlistaEspera) { return 'validador_falta_arribar_llista_espera'; }
+                    else if (Estat == this.ConstEstatLlistaEspera) { return 'validador_falta_arribar_llista_espera'; }
                     else return 'validador_falta_arribar';
                 },
                 ValidaCodi(text, fromQR) {
@@ -145,7 +145,9 @@
                         this.QRTextCopy = this.QRText;
                         this.QRText = '';
                     }).catch(E => { alert(E); });
-                },
+                }
+/*
+                ,
                 async onInit (promise) {
                     try {
                         await promise
@@ -186,6 +188,7 @@
                     this.QRText = event;
                     this.ValidaCodi(this.QRText, true);
                 }
+*/                
             }
         });
 
