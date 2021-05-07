@@ -14,9 +14,9 @@
 </head>
 <body>
     
-    <div id="validador" class="page">
-
-        <h1>Validador d'entrades</h1>
+    <div id="validador" class="page">                
+    
+        <h1>Validador d'entrades</h1>        
 
         <div v-if="CursEscollit > -1">
 
@@ -24,6 +24,7 @@
 
             <div class="validador_box">
                 <label for="EntradaDades">Codi entrada</label>
+                <qrcode-stream @init="onInit" @decode="ValidaCodi($event, true)"></qrcode-stream>                        
                 <input type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
                 <button @click="ValidaCodi($event, true)">Valida</button>
             </div>
@@ -79,6 +80,7 @@
                 Entrats: 0, 
                 Totals: 0,
                 TipusPagamentLlistaEspera: CONST_PAGAMENT_LLISTA_ESPERA,
+                error: ""
             },            
             created: function() {
                 
@@ -142,7 +144,27 @@
                         this.QRTextCopy = this.QRText;
                         this.QRText = '';
                     }).catch(E => { alert(E); });
-                }                    
+                },
+                async onInit (promise) {
+                    try {
+                        await promise
+                    } catch (error) {
+                        alert(error.name);
+                        if (error.name === 'NotAllowedError') {
+                        this.error = "ERROR: you need to grant camera access permisson"
+                        } else if (error.name === 'NotFoundError') {
+                        this.error = "ERROR: no camera on this device"
+                        } else if (error.name === 'NotSupportedError') {
+                        this.error = "ERROR: secure context required (HTTPS, localhost)"
+                        } else if (error.name === 'NotReadableError') {
+                        this.error = "ERROR: is the camera already in use?"
+                        } else if (error.name === 'OverconstrainedError') {
+                        this.error = "ERROR: installed cameras are not suitable"
+                        } else if (error.name === 'StreamApiNotSupportedError') {
+                        this.error = "ERROR: Stream API is not supported in this browser"
+                        }
+                    }
+                }
             }            
         });
 
