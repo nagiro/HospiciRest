@@ -53,15 +53,127 @@ class Auxiliar_CulturaVirtual {
             [Imatge] => /images/activitats/A-25944-.jpg
             [TipusActivitat_idTipusActivitat] => 103
             [Categories] => 49@56
+            [TmpAccio] => 'add, update'
         )
 
  */
 
-    public function loadActivitatsFutures() {
-        $WQ = new WebQueries();
-        $ROWS = $WQ->getActivitatsFuturesPerXML();
-        $RET = array();
 
+
+    public function loadActivitatsFutures( $idS ) {
+        $WQ = new WebQueries();
+        $FileCSV = $this->ReadFileCSV( $idS );
+        
+        $ROWS = $WQ->getActivitatsFuturesPerXML( $idS );                
+        $LlistatActivitats = $this->MarcoAccioAFer( $FileCSV, $this->AgrupoActivitatsPerData( $ROWS ) );
+
+        foreach($LlistatActivitats as $Activitat) {                        
+
+            $Imatge = $this->getImatgeUrl($Activitat['Imatge']);
+            $ActivitatAGuardar = $this->addData($Activitat, $Imatge);                                    
+            
+            $idWordPress = false;              
+            if( $Activitat['TmpAccio'] == 'add' ) $idWordPress = $this->curlToLoad( $ActivitatAGuardar );            
+            elseif($ActivitatAGuardar['TmpAccio'] == 'update') $idWordPress = false;
+            else $idWordPress = false;
+                                                
+            $FileCSV[$idWordPress] = $this->genCSVRow($idWordPress, $Activitat);            
+
+        }
+
+        // Guardem totes les línies noves que hem generat i les actualitzades
+        $this->WriteFileCSV($idS, $FileCSV);
+
+    }
+
+
+
+
+
+
+    private function genCSVRow($id, $Activitat) {
+        unset($Activitat['TmpAccio']);
+        return array($id, hash('md5', json_encode($Activitat)), $Activitat['Dia']);
+    }
+
+    public function MarcoAccioAFer( $FileCSV, $LlistatActivitats ) {
+        foreach($LlistatActivitats as $id => $Activitat) {                        
+            // Si ja havíem entrat aquesta activitat
+            if( isset( $FileCSV[$Activitat['ActivitatID'] ] ) ) {
+                if( $this->SonIguales( $FileCSV[$Activitat['ActivitatID'] ] , $Activitat ) ) $LlistatActivitats[$id]['TmpAccio'] =  'update';
+                else $LlistatActivitats[$id]['TmpAccio'] = 'nothing';
+            } else {
+                $LlistatActivitats[$id]['TmpAccio'] =  'add';
+            }            
+        }
+        return $LlistatActivitats;
+    }
+
+    private function SonIguales($ActCSV, $Activitat ) {        
+        unset($Activitat['TmpAccio']);
+        return $ActCSV[1] == hash('md5', json_encode($Activitat));
+    }
+
+    /**
+     * Format del fitxer
+     * 0 => idActivitat, 1 => Estat, 2 => Data
+     */
+    private function ReadFileCSV( $idS ){
+        $RET = array();
+        $file = __DIR__ . "/{$idS}-activitats.csv";
+
+        if(!is_file($file)){ file_put_contents($file, ""); }
+
+        $gestor = fopen($file, "r+");
+        if ($gestor !== FALSE) {
+            while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
+                $RET[$datos[0]] = $datos;                
+            }
+            fclose($gestor);
+        } 
+        return $RET;
+    }
+
+    /**
+     * Format del fitxer
+     * 0 => idActivitat, 1 => hash, 2 => DataFi
+     */
+    private function WriteFileCSV( $idS, $Data ){
+        $RET = array();
+        $fp = fopen(__DIR__ . "/{$idS}-activitats.csv", 'w');
+        if($fp) {
+            foreach ($Data as $fields) { fputcsv($fp, $fields); }        
+            fclose($fp);
+        }
+        return $RET;
+    }
+
+    public function addData($R, $Imatge) {        
+        return array(
+            'title' => $R['tMig'],
+            'description' =>  $R['dMig'],
+            'start_date' =>  $R['DataInicial'],
+            'end_date' => $R['DataFinal'],
+            'categories' => $this->ConvertCategories($R['Categories'], $R['TipusActivitat_idTipusActivitat']),
+            'website' => "https://www.casadecultura.cat/detall/{$R['ActivitatID']}/" . urlencode($R['tMig']),
+            'cost' => 0,
+            'venue' => 284,
+            'image' => $Imatge
+        );
+    }
+
+    public function getImatgeUrl($Imatge) {
+        $ImatgeParts = explode('.', $Imatge);
+        $ImatgePartsNumber = sizeof($ImatgeParts);
+        $ImatgeParts[$ImatgePartsNumber - 2] .= 'L';
+        // $Imatge = 'http://culturavirtual.ddgi.cat' . implode('.', $ImatgeParts);
+        // $Imatge = 'http://culturavirtual.ddgi.cat/testapi/testfoto.jpg';
+        
+        return 'http://www.casadecultura.cat' . implode('.', $ImatgeParts);
+    }
+
+    public function AgrupoActivitatsPerData( $ROWS ) {
+        $RET = array();
         foreach($ROWS as $R):                                    
             
             if( isset($RET[ $R['ActivitatID'] ])){
@@ -74,34 +186,7 @@ class Auxiliar_CulturaVirtual {
             }
             
         endforeach;
-
-        foreach($RET as $R) {
-            
-            $ImatgeParts = explode('.', $R["Imatge"]);
-            $ImatgePartsNumber = sizeof($ImatgeParts);
-            $ImatgeParts[$ImatgePartsNumber - 2] .= 'L';
-            // $Imatge = 'http://www.casadecultura.cat' . implode('.', $ImatgeParts);
-            // $Imatge = 'http://culturavirtual.ddgi.cat' . implode('.', $ImatgeParts);
-            $Imatge = 'http://culturavirtual.ddgi.cat/testapi/testfoto.jpg';
-            
-            $data = array(
-                'title' => $R['tMig'],
-                'description' =>  $R['dMig'],
-                'start_date' =>  $R['DataInicial'],
-                'end_date' => $R['DataFinal'],
-                'categories' => $this->ConvertCategories($R['Categories'], $R['TipusActivitat_idTipusActivitat']),
-//                'organizer' => $R['Organitzador'],
-                'website' => "https://www.casadecultura.cat/detall/{$R['ActivitatID']}/" . urlencode($R['tMig']),
-                'cost' => 0,
-                'venue' => 284,
-                'image' => $Imatge
-            );
-            print_r($data);
-            $ok = $this->curlToLoad($data);
-
-            echo "Codi: " . $ok;
-
-        }
+        return $RET;
     }
 
     public function ConvertCategories($Categories, $TipusActivitat) {
@@ -117,7 +202,7 @@ class Auxiliar_CulturaVirtual {
         return $Cats;
     }
 
-    public function curlToLoad($data) {
+    public function curlToLoad($ActivitatAGuardar) {
 
         $username = 'test';
         $password = 'n7Qb UMF4 tFHX DBtF KlKm Cuww';
@@ -125,8 +210,7 @@ class Auxiliar_CulturaVirtual {
         // end point
         $process = curl_init('http://culturavirtual.ddgi.cat/wp-json/tribe/events/v1/events/');                        
         
-        $data_string = json_encode($data);
-
+        $data_string = json_encode($ActivitatAGuardar);
 
         curl_setopt($process, CURLOPT_USERPWD, $username . ":" . $password);
         curl_setopt($process, CURLOPT_TIMEOUT, 30);
@@ -137,11 +221,9 @@ class Auxiliar_CulturaVirtual {
         curl_setopt($process, CURLOPT_HTTPHEADER, array(                                                                          
             'Content-Type: application/json',                                                                                
             'Content-Length: ' . strlen($data_string))                                                                       
-        );
-
+        );                        
 
         $return = curl_exec($process);
-
         curl_close($process);
         $result = json_decode($return, true);
 
