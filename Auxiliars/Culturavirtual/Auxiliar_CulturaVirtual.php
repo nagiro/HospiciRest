@@ -5,8 +5,10 @@ require_once DATABASEDIR . 'Tables/ActivitatsModel.php';
 class Auxiliar_CulturaVirtual {
 
     public $Categoria = array(
-        56 => array(3),
-        46 => array(41)
+        56 => array(3),         // Música
+        46 => array(41),        // Exposició
+        64 => array(54),        // Activitat en Línia
+        66 => array(0)         // No cal penjar-la
     );
 
     public $TipusActivitat = array(
@@ -54,6 +56,8 @@ class Auxiliar_CulturaVirtual {
             [TipusActivitat_idTipusActivitat] => 103
             [Categories] => 49@56
             [TmpAccio] => 'add, update'
+            [DataInicial] => ''
+            [DataFinal] => ''
         )
 
  */
@@ -127,7 +131,7 @@ class Auxiliar_CulturaVirtual {
         $gestor = fopen($file, "r+");
         if ($gestor !== FALSE) {
             while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
-                $RET[$datos[0]] = $datos;                
+                $RET[$datos[0]] = $datos;                                
             }
             fclose($gestor);
         } 
