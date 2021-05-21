@@ -9,14 +9,15 @@
         .validador_falta_arribar { background-color: #b0ffc3; }
         .validador_falta_arribar_llista_espera { background-color: orange; }
         .validador_falten { margin-top: 2vw; }
+        .qrcode-stream-wrapper { width: 20% !important; }
     </style>
 
 </head>
 <body>
     
-    <div id="validador" class="page">
-
-        <h1>Validador d'entrades</h1>
+    <div id="validador" class="page">                
+    
+        <h1>Validador d'entrades</h1>        
 
         <div v-if="CursEscollit > -1">
 
@@ -24,11 +25,12 @@
 
             <div class="validador_box">
                 <label for="EntradaDades">Codi entrada</label>
-                <input type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
+                <!-- <qrcode-stream @init="onInit" :key="_uid" :track="paintOutline" @decode="DecodeQR($event)"></qrcode-stream>                        -->
+                <input style="width: 70%" type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
                 <button @click="ValidaCodi($event, true)">Valida</button>
             </div>
 
-            <div class="validador_resposta" :class="VRC">            
+            <div class="validador_resposta" :class="VRC">                            
                 {{Missatge}}
             </div>
             
@@ -36,12 +38,12 @@
                 <h1>Llistat d'assistents [{{Entrats}}/{{Total}}] = {{Total - Entrats}}</h1>
                 <br /><br />
                 <table>
-                    <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada)">
+                    <tr v-for="MF of CursosMatricules" :class="EstilFila(MF.data_hora_entrada, MF.Estat)">                    
                         <td style="padding: 2vw 0.5vw; "><button v-if="!MF.data_hora_entrada" @click="ValidaCodi(MF.idMatricules, false)">Valida</button></td>    
                         <td style="padding: 2vw 0.5vw; " v-if="!MF.Comentari">{{MF.Cog1}} {{MF.Cog2}}, {{MF.Nom}}</td>
                         <td style="padding: 2vw 0.5vw; " v-if="MF.Comentari && MF.Comentari.length > 0">{{MF.Comentari}}</td>
                         <td style="padding: 2vw 0.5vw; " v-show="MF.Fila > 0"> F: {{MF.Fila}} | S: {{MF.Seient}}</td>
-                        <td style="padding: 2vw 0.5vw; background-color: orange; " v-show="MF.tPagament == TipusPagamentLlistaEspera"> Llista espera </td>                        
+                        <td style="padding: 2vw 0.5vw; background-color: orange; " v-show="MF.Estat == ConstEstatLlistaEspera "> Llista espera </td>                                                
                     </tr>
                 </table>
             </div>
@@ -78,7 +80,8 @@
                 CursosMatricules: [],                
                 Entrats: 0, 
                 Totals: 0,
-                TipusPagamentLlistaEspera: CONST_PAGAMENT_LLISTA_ESPERA,
+                ConstEstatLlistaEspera: CONST_ESTAT_LLISTA_ESPERA,
+                error: ""                
             },            
             created: function() {
                 
@@ -105,9 +108,9 @@
                     
                     this.Total = this.CursosMatricules.length;                
                 },
-                EstilFila: function(HoraEntrada, TipusPagament) {                                        
+                EstilFila: function(HoraEntrada, Estat) {                                                            
                     if( HoraEntrada && HoraEntrada.length > 0 ) { return 'validador_arribat'; }
-                    else if (TipusPagament == this.TipusPagamentLlistaEspera) { return 'validador_falta_arribar_llista_espera'; }
+                    else if (Estat == this.ConstEstatLlistaEspera) { return 'validador_falta_arribar_llista_espera'; }
                     else return 'validador_falta_arribar';
                 },
                 ValidaCodi(text, fromQR) {
@@ -142,8 +145,51 @@
                         this.QRTextCopy = this.QRText;
                         this.QRText = '';
                     }).catch(E => { alert(E); });
-                }                    
-            }            
+                }
+/*
+                ,
+                async onInit (promise) {
+                    try {
+                        await promise
+                    } catch (error) {
+                        alert(error.name);
+                        if (error.name === 'NotAllowedError') {
+                        this.error = "ERROR: you need to grant camera access permisson"
+                        } else if (error.name === 'NotFoundError') {
+                        this.error = "ERROR: no camera on this device"
+                        } else if (error.name === 'NotSupportedError') {
+                        this.error = "ERROR: secure context required (HTTPS, localhost)"
+                        } else if (error.name === 'NotReadableError') {
+                        this.error = "ERROR: is the camera already in use?"
+                        } else if (error.name === 'OverconstrainedError') {
+                        this.error = "ERROR: installed cameras are not suitable"
+                        } else if (error.name === 'StreamApiNotSupportedError') {
+                        this.error = "ERROR: Stream API is not supported in this browser"
+                        }
+                    }
+                },
+                paintOutline (detectedCodes, ctx) {
+                    for (const detectedCode of detectedCodes) {
+                        const [ firstPoint, ...otherPoints ] = detectedCode.cornerPoints
+
+                        ctx.strokeStyle = "blue";
+
+                        ctx.beginPath();
+                        ctx.moveTo(firstPoint.x, firstPoint.y);
+                        for (const { x, y } of otherPoints) {
+                        ctx.lineTo(x, y);
+                        }
+                        ctx.lineTo(firstPoint.x, firstPoint.y);
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
+                },
+                DecodeQR(event) {
+                    this.QRText = event;
+                    this.ValidaCodi(this.QRText, true);
+                }
+*/                
+            }
         });
 
     </script>
