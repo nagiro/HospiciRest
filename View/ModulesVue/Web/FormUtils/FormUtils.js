@@ -25,6 +25,15 @@ Vue.component('form-utils', {
             ImageLoaded: false,
             ImageShow: false,
             ImageURL: {'url': '', 'hexfile': '', 'name': ''},
+            ImageName: "",
+
+            /* Variables per al cropping */
+            cropper: null, 
+            objectUrl: null,            
+            MostraModal: false, 
+            ImageData: {},
+            debouncedUpdatePreview: _.debounce(this.UpdatePreview, 257)
+
         }
     },        
     computed: {
@@ -81,14 +90,16 @@ Vue.component('form-utils', {
         },
         fileChange: function($val) {            
 
-            const files = $val.target.files
-            let filename = files[0].name
-            const fileReader = new FileReader()
+            const files = $val.target.files            
+            const fileReader = new FileReader();
+            
+            this.ImageName = files[0].name
+
             fileReader.addEventListener('load', () => {                 
                 this.ImageURL = fileReader.result                
                 this.ImageLoading = false;
                 this.ImageLoaded = true;
-                this.$emit('onchange', {'url': '', 'hexfile':this.ImageURL, 'name': filename})
+                this.$emit('onchange', {'url': '', 'hexfile':this.ImageURL, 'name': this.ImageName})
             })
             this.ImageLoading = true;
             fileReader.readAsDataURL(files[0])            
@@ -96,8 +107,68 @@ Vue.component('form-utils', {
         ReiniciaImatge: function(val) {
             this.ImageURL = "";
             this.ImageLoaded = false;
+        },
+        CarregaImatge: function(selectedFile) {
+            if(this.cropper) this.cropper.destroy();
+            if(this.objectUrl) { window.URL.revokeObjectURL(this.objectUrl); }
+            if(!selectedFile) { this.cropper = null; this.objectUrl = null; this.ImageURL = null; return; }
+            
+            let File = selectedFile.target.files[0];            
+            this.ImageName = File.name;
+            if (File) {
+                var reader = new FileReader();                        
+                reader.onload = (e) => {
+                this.objectUrl = e.target.result;                
+                this.MostraModal = true;
+                this.$nextTick(this.setupCropperInstance);            // Executa després d'un cicle de DOM. Primer carrego la imatge i després hi carrego el canvas
+                }
+
+                reader.readAsDataURL(File);
+            }                                         
+        },
+        setupCropperInstance() {            
+            let AspectRatio = 1;            
+            this.cropper = new Cropper(this.$refs.imatge, 
+                { 
+                    aspectRatio: AspectRatio, 
+                    crop: this.debouncedUpdatePreview 
+                }
+            ); 
+        },
+
+        UpdatePreview(event) {                     
+            this.ImageData = event.detail;
+            const canvas = this.cropper.getCroppedCanvas();            
+            this.ImageURL = canvas.toDataURL('image/png');                                     
+        },          
+
+        TancaModalImatge: function() {
+            this.MostraModal = false;
+        },
+        SaveCropImatge: function() {
+
+            const s = {width: 161, height: 90, minWidth: 200, minHeight: 200, maxWidth: 1096, maxHeight: 1096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
+            const m = {width: 161, height: 90, minWidth: 400, minHeight: 400, maxWidth: 2096, maxHeight: 2096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
+            const l = {width: 161, height: 90, minWidth: 400, minHeight: 400, maxWidth: 4096, maxHeight: 4096, fillColor: '#fff', imageSmoothingEnabled: false, imageSmoothingQuality: 'high' };
+            let parametresCropper = {};
+            parametresCropper = 'm';            
+            this.MostraModal = false;
+            this.ImageLoaded = true;
+            this.$emit('onchange', {'url': '', 'hexfile':this.ImageURL, 'name': this.ImageName})            
         }
+
     },
+
+
+
+
+
+
+
+
+
+
+
     template: `            
 
     <div :class="[groupclass, 'FormUtils']">        
@@ -224,26 +295,21 @@ Vue.component('form-utils', {
         <!-- ********************* -->
 
         <div v-if="fieldtype == 'file' || fieldtype == 'image'">
-            <label :for="id" class="form-label">{{title}}</label>            
+            <label :for="id" v-if="ImageLoaded" class="form-label">{{title}}</label>            
+            <label :for="id" v-if="!ImageLoaded" class="custom-file-label">{{title}}</label>            
 
-            <div v-if="ImageLoaded"
-                style="display: block; margin-top: 1vw;"
-                :class="elementclass" 
-            >
+            <div v-if="ImageLoaded" style="display: block; margin-top: 0vw;">
                 
-                <span v-if="ImageLoaded">Arxiu carregat</span>
-                <a  style="display: block; cursor: pointer" 
-                    @click="ReiniciaImatge"
-                    aria-label="Esborra arxiu"                    
-                    >
-                    Esborra
-                </a>
-            </div>
+                <div class="alert alert-success" style="margin-top: 1vw;" role="alert" v-if="ImageLoaded">
+                    Arxiu carregat correctament.    
+                </div>    
+                <a  style="display: block; cursor: pointer" @click="ReiniciaImatge" aria-label="Esborra arxiu"> Esborra </a>
+            </div>            
 
-            <div class="form-control" v-if="ImageLoading">Carregant l'arxiu</div>
-
+            <div class="form-control" v-if="ImageLoading">Carregant l'arxiu</div>            
             <input  v-if="!ImageLoading && !ImageLoaded"
                     type="file" 
+                    accept="document/pdf, document/word"
                     :class="elementclass" 
                     :placeholder="placeholder" 
                     :aria-label="title" 
@@ -253,10 +319,51 @@ Vue.component('form-utils', {
                     >
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
             <small class="form-text text-muted">{{helptext}}</small>                                    
-        </div>        
+        </div>
 
 
-                                                    
+        <!-- ********************* -->
+        <!-- ****** CROPPED ****** -->
+        <!-- ********************* -->
+
+        <div v-if="fieldtype == 'crop'">
+            <div style="height: 50px" v-if="ImageLoaded">
+                <img :src="ImageURL" style="height: 50px">
+                <i @click="ReiniciaImatge()" class="withHand fas fa-trash-alt"></i>                
+            </div>                         
+            <div v-else>
+                <input type="file" accept="image/png, image/jpeg" class="form-control" id="MidaImatge" @change="CarregaImatge($event)" >
+                <label class="custom-file-label" for="MidaImatge" >{{title}}</label>  
+                <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
+                <small class="form-text text-muted">{{helptext}}</small>                                    
+            </div>        
+
+            <div class="modalbox" v-if="MostraModal">
+                <table>
+                <tr><td><div style="border:1 px solid blue; background-color: black;">                        
+                            <img style="display: block;" :src="objectUrl" ref="imatge" /> 
+                        </div>                                            
+                    </td><td>
+                        <div style="border:1 px solid blue; background-color: black;">                        
+                            <img style="display: block;" :src="ImageURL" /> 
+                        </div>                                            
+                    </td>
+                </tr><tr>
+                    <td>
+                        <button v-on:click="TancaModalImatge()" class="btn btn-info">Torna</button>
+                        <button v-on:click="SaveCropImatge()" class="btn btn-success">Retalla-la!</button>
+                    </td>
+                    <td> &nbsp;</td>
+                </tr>                            
+                </table>
+            </div>  
+        </div>
+
+
+
+
+
+              
     </div>
 
 

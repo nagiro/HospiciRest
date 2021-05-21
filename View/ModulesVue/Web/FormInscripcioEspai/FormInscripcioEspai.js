@@ -57,9 +57,7 @@ Vue.component('form-inscripcio-espai', {
             @on-id-usuari-encrypted-loaded="OnUsuariLoaded">
         </form-usuari-auth>
 
-        <div 
-            v-if="Pas == 1 || Pas == 2"
-        >            
+        <div v-if="Pas == 1 || Pas == 2">            
         
             <div class="row">
                 <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Nom'" :title = "'Títol de l\\'activitat'" :value = "formValues.RESERVAESPAIS_Nom" @onkeyup="formValues.RESERVAESPAIS_Nom = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
@@ -133,7 +131,7 @@ Vue.component('form-inscripcio-espai', {
                 @isvalid="isValidFormEspais('RESERVAESPAIS_WebDescripcio', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'image'" :id = "'TMP_ArxiuImatge'" :title = "'Imatge per la web'" :valuefile = "formValues.TMP_ArxiuImatge" @onchange="formValues.TMP_ArxiuImatge = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils :fieldtype="'crop'" :id = "'TMP_ArxiuImatge'" :title = "'Imatge per la web'" :valuefile = "formValues.TMP_ArxiuImatge" @onchange="formValues.TMP_ArxiuImatge = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('TMP_ArxiuImatge', $event)"
                 >
                 </form-utils>                
@@ -141,7 +139,7 @@ Vue.component('form-inscripcio-espai', {
                 <form-utils :fieldtype="'file'" :id = "'TMP_ArxiuPdf'" :title = "'Arxiu PDF'" :valuefile = "formValues.TMP_ArxiuPdf" @onchange="formValues.TMP_ArxiuPdf = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('TMP_ArxiuPdf', $event)"
                 ></form-utils>                                
-        
+
                 <div v-if="isFormLoading && Pas == 1" class="alert alert-info">
                     Espereu un moment mentre guardem la petició d'espai.
                 </div>
