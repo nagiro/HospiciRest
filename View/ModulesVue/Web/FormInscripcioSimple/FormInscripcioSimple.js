@@ -117,7 +117,7 @@ Vue.component('form-inscripcio-simple', {
                     
             if(this.isAdmin) return true;
             else {               
-                if( DetallCurs && DetallCurs.CURSOS_VisibleWeb) {
+                if( DetallCurs ) {
                     //Existeix un curs on matricular-se
                     const DataIniciMatricula = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'Javascript');   // Funció const_and_helpers.js               
                     const DIM = ConvertirData(DetallCurs.CURSOS_DataInMatricula, 'TDMA');   // Funció const_and_helpers.js                               
@@ -343,7 +343,7 @@ Vue.component('form-inscripcio-simple', {
     },
     template: `            
 
-    <div v-if="DetallCurs.CURSOS_VisibleWeb == 1 || this.isAdmin">
+    <div>
         <div class="formulari-inscripcio">                        
 
             <h2>{{EtiquetaTitol(DetallCurs)}}</h2>
