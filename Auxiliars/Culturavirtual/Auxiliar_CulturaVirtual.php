@@ -66,22 +66,32 @@ class Auxiliar_CulturaVirtual {
 
     public function loadActivitatsFutures( $idS ) {
         $WQ = new WebQueries();
+        
+        // Carrego l'arxiu CSV on hi ah l'històric dels registres carregats ( id, hash, data )
         $FileCSV = $this->ReadFileCSV( $idS );
         
+        // Carrego les activitats del Site en qüestió
         $ROWS = $WQ->getActivitatsFuturesPerXML( $idS );                
+        //Converteixo el format agrupant per dates i marco si cal fer add o update segons arxiu CSV
         $LlistatActivitats = $this->MarcoAccioAFer( $FileCSV, $this->AgrupoActivitatsPerData( $ROWS ) );
 
+        // Per cada activitat
         foreach($LlistatActivitats as $Activitat) {                        
 
+            // Poso URL imatge i converteixo a format WP les dades
             $Imatge = $this->getImatgeUrl($Activitat['Imatge']);
             $ActivitatAGuardar = $this->addData($Activitat, $Imatge);                                    
             
+            // Carrego l'acció que toqui al WP
             $idWordPress = false;              
             if( $Activitat['TmpAccio'] == 'add' ) $idWordPress = $this->curlToLoad( $ActivitatAGuardar );            
-            elseif($ActivitatAGuardar['TmpAccio'] == 'update') $idWordPress = false;
+            elseif($Activitat['TmpAccio'] == 'update') $idWordPress = false;
             else $idWordPress = false;
                                                 
-            $FileCSV[$idWordPress] = $this->genCSVRow($idWordPress, $Activitat);            
+            // Guardo l'activitat que acabo de carregar al CSV amb el nou hash i data si l'acció no és nothing
+            if($Activitat['TmpAccio'] != 'nothing') { 
+                $FileCSV[$idWordPress] = $this->genCSVRow($idWordPress, $Activitat);            
+            }
 
         }
 
@@ -95,11 +105,18 @@ class Auxiliar_CulturaVirtual {
 
 
 
+    /**
+     * Funció que genera una línia CSV
+     */
     private function genCSVRow($id, $Activitat) {
         unset($Activitat['TmpAccio']);
         return array($id, hash('md5', json_encode($Activitat)), $Activitat['Dia']);
     }
 
+     /**
+     * Marco quina acció cal fer, si update, add o nothing
+     * Si el hash és diferent, farem un update, si no existeix un add i si el hash és igual i existeix, no fem res. 
+     */
     public function MarcoAccioAFer( $FileCSV, $LlistatActivitats ) {
         foreach($LlistatActivitats as $id => $Activitat) {                        
             // Si ja havíem entrat aquesta activitat
@@ -113,6 +130,9 @@ class Auxiliar_CulturaVirtual {
         return $LlistatActivitats;
     }
 
+    /**
+     * Comprar dos hash per veure si són iguals o no
+     */
     private function SonIguales($ActCSV, $Activitat ) {        
         unset($Activitat['TmpAccio']);
         return $ActCSV[1] == hash('md5', json_encode($Activitat));
@@ -140,7 +160,7 @@ class Auxiliar_CulturaVirtual {
 
     /**
      * Format del fitxer
-     * 0 => idActivitat, 1 => hash, 2 => DataFi
+     * 0 => idActivitat, 1 => hash, 2 => DataInici
      */
     private function WriteFileCSV( $idS, $Data ){
         $RET = array();
@@ -152,6 +172,9 @@ class Auxiliar_CulturaVirtual {
         return $RET;
     }
 
+    /**
+     * Converteix les dades de BDD a WP
+     */
     public function addData($R, $Imatge) {        
         return array(
             'title' => $R['tMig'],
