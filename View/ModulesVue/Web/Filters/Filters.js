@@ -202,9 +202,8 @@ Vue.component('filters-div', {
                     <option v-for="T of TagsDisponibles" :value="T[0]">{{ T[1] }}</option>
                 </select>
 
-                <div class="filtres_input_search">
-                    <label for="input_cerca" style="display:none">Cerca un text</label>
-                    <input type="text" id="input_cerca" v-model="TextCerca" class="filtres_form-control_input_text" placeholder="Escriu un text per buscar..." />
+                <div class="filtres_input_search">                    
+                    <input type="text" id="input_cerca" role="textbox" v-model="TextCerca" class="filtres_form-control_input_text" placeholder="Escriu un text per buscar..." aria-label="Escriu el text a buscar" />
                     <button @click="cercaText()">Cerca!</button>
                 </div>
             </div>

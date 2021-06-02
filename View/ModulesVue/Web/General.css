@@ -9,7 +9,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	outline: 0;
+	/* outline: auto !important;	*/
 	font-weight: inherit;
 	font-style: inherit;
 	font-family: inherit;
@@ -23,7 +23,7 @@ body {
 	line-height: 1;
 	color: black;
 	background: rgba(0,0,0,0.8);
-	font-family: 'Roboto', sans-serif; /* És la Roboto 400 */
+	font-family: 'Roboto', sans-serif; /* És la Roboto 400 */	
 }
 
 h1, h2, h3, a { font-family: 'Oswald', sans-serif; }
