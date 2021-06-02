@@ -166,7 +166,7 @@ Vue.component('banner-carrousel', {
             <div class="bc_menu" v-show="MenuObert">
 
                 <div class="bc_menu_text">
-                    <ul class="bc_menu_primer_nivell">
+                    <ul  v-if="Menu.length > 0" class="bc_menu_primer_nivell">
                         <li v-for="M0 of Menu">                        
                             
                             <a  :href="ObreMenu(M0, true)" 
@@ -175,7 +175,7 @@ Vue.component('banner-carrousel', {
                                 <i :class="IconaEnllac(M0)"></i>&nbsp; {{M0.Node.Nodes_TitolMenu}} 
                             </a>    
                                                         
-                            <ul class="bc_menu_altres_nivells">
+                            <ul v-if="M0.Fills.length > 0" class="bc_menu_altres_nivells">
                                 <li v-for=" M1 of M0.Fills" :hidden="!M0.Obert">
                                     <a  :href="ObreMenu(M1, true)" 
                                         class="bc_menu_enllac" 
@@ -183,7 +183,7 @@ Vue.component('banner-carrousel', {
                                         <i :class="IconaEnllac(M1)"></i>&nbsp; {{M1.Node.Nodes_TitolMenu}} 
                                     </a>    
                                     
-                                    <ul>
+                                    <ul  v-if="M1.Fills.length > 0">
                                         <li v-for="M2 of M1.Fills" :hidden="!M1.Obert">
                                             <a  :href="ObreMenu(M2, true)" 
                                                 class="bc_menu_enllac" 
