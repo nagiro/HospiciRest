@@ -43,9 +43,9 @@
     <script>CookieBoxConfig = { 
         content: { 
             title: 'Usem les cookies per a millorar la vostra experiència d\'usuari', 
-            content: 'En fer clic a qualsevol enllaç del lloc web, doneu el vostre consentiment explícit per a que les utilitzem.', 
+            content: 'El web de la Casa de Cultura de Girona utilitza cookies pròpies i de tercers amb finalitats analítiques i tècniques.', 
             accept: 'Accepto', 
-            learnMore: 'Més informació' }, 
+            learnMore: 'Si desitja més informació accedeixi a la nostra política de cookies' }, 
             backgroundColor: '#000000', 
             url: '/pagina/192/politica-de-cookies' }</script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookie-consent-box@2.3.1/dist/cookie-consent-box.min.css" />
