@@ -47,7 +47,7 @@
             accept: 'Accepto', 
             learnMore: 'Més informació' }, 
             backgroundColor: '#000000', 
-            url: '/pagina/115/cookies' }</script>
+            url: '/pagina/192/politica-de-cookies' }</script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookie-consent-box@2.3.1/dist/cookie-consent-box.min.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/cookie-consent-box@2.3.1/dist/cookie-consent-box.min.js"></script>    
 
