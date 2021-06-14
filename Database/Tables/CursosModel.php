@@ -39,7 +39,7 @@ class CursosModel extends BDD {
     }
 
     public function getCursId($OC) { return $OC[$this->gnfnwt('IdCurs')]; }
-    public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => intval($idCurs)) ); }    
+    public function getCursById($idCurs) { return $this->_getRowWhere( array( $this->gofnwt('IdCurs') => intval($idCurs), $this->gofnwt('IsActiu') => '1' ) ); }    
     public function getRowCicleId($CicleId) { return $this->_getRowWhere( array( $this->gofnwt('CicleId') => intval($CicleId)) ); }
     public function getRowActivitatId($ActivitatId) { return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($ActivitatId), $this->gofnwt('IsActiu') => '1', $this->gofnwt('Actiu') => '1') ); }    
     

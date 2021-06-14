@@ -329,7 +329,7 @@ class MyAPIWeb extends API
     }    
 
     protected function getCulturaVirtual() {
-        require_once AUXDIR . 'Culturavirtual\Auxiliar_CulturaVirtual.php';        
+        require_once AUXDIR . 'Culturavirtual/Auxiliar_CulturaVirtual.php';        
         if( isset($this->request['idS']) ) {
             $CV = new Auxiliar_CulturaVirtual();
             return array($CV->loadActivitatsFutures( $this->request['idS'] ), 200);
