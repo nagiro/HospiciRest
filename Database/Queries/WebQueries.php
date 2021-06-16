@@ -153,7 +153,7 @@ class WebQueries extends BDD {
            AND h.Activitats_ActivitatID = {$idA}
            AND h.site_id = 1
            AND he.actiu = 1
-           ORDER BY e.Nom asc, h.Dia asc, h.HoraInici asc
+           ORDER BY h.Dia asc, h.HoraInici asc
           ";
 
       return $SQL;
