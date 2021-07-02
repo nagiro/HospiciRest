@@ -2,10 +2,11 @@
 require_once DATABASEDIR . 'Tables/ActivitatsModel.php';
 
 
-class Auxiliar_CulturaVirtual {
+class Auxiliar_UploadFtp {
     
     public $FTP = array(
         'ip' => '80.34.222.61',
+        // 'ip' => '192.168.0.8',
         'port' => '30',
         'user' => 'casadecultura',
         'password' => '(ccg@#).',
@@ -17,17 +18,18 @@ class Auxiliar_CulturaVirtual {
     public function loadArxiusNous( $idS, $idNode ) {
         
         $conn = $this->ConnectaFTP();        
-        $baseUrl = DOCUMENTSDIR . '/' . $idNode . '/';
+        $baseUrl = DOCUMENTSDIR . $idNode . '/';
         $ftpUrl = $this->FTP['NodesUrl'][$idS][$idNode];
         $NewFiles = $this->getNewFiles( $conn , $baseUrl, $ftpUrl );
 
         $this->DownloadFiles( $conn, $NewFiles , $baseUrl, $ftpUrl );
 
         ftp_close($conn);
+        
     }
 
     function ConnectaFTP() {
-        $conn = ftp_connect($this->FTP['ip'], $this->FPT['port']);
+        $conn = ftp_connect($this->FTP['ip'], $this->FTP['port']);
         ftp_login($conn, $this->FTP['user'], $this->FTP['password']);
         return $conn;
     }
@@ -36,10 +38,14 @@ class Auxiliar_CulturaVirtual {
         $files = ftp_nlist($conn, $ftpUrl);
         $NewFiles = array();
         foreach( $files as $file ) {
-            $timeFtp = ftp_mdtm($conn, $ftpUrl . $file);
-            $timeLocal = filemtime( $baseUrl . $file );
-            if($timeLocal < $timeFtp ) $NewFiles[] = $file;
+            $f = basename($file);
+            $timeFtp = ftp_mdtm($conn, $ftpUrl . $f);
+            $timeLocal = 0;
+            if( file_exists( $baseUrl . $f ) ) $timeLocal = filemtime( $baseUrl . $f );            
+            if($timeLocal < $timeFtp ) $NewFiles[] = $f;
         }
+
+        return $NewFiles;
     }    
 
     function DownloadFiles( $conn, $NewFiles, $baseUrl, $ftpUrl ) {

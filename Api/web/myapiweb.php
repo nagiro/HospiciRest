@@ -338,6 +338,16 @@ class MyAPIWeb extends API
         }
     }
 
+    protected function getUploadFtp() {
+        require_once AUXDIR . 'UploadFtp/Auxiliar_UploadFtp.php';        
+        if( isset($this->request['idS']) && isset($this->request['node']) ) {
+            $CV = new Auxiliar_UploadFtp();
+            return array($CV->loadArxiusNous( $this->request['idS'], $this->request['node'] ), 200);
+        } else {
+            throw new Exception('No hi ha cap site i node amb aquesta codificació.');
+        }
+    }    
+
 
  }
 
