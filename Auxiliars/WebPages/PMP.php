@@ -21,8 +21,10 @@ function Mesos($mes) {
 
 $HTML = array();
 
-$URL = DOCUMENTSDIR . "160/";
-$ArxiusAMostrar = array_diff(scandir($URL, SCANDIR_SORT_DESCENDING), array('..', '.'));
+$DIR = DOCUMENTSDIR . "160/";
+$URL = DOCUMENTSURL . "160/";
+
+$ArxiusAMostrar = array_diff(scandir($DIR, SCANDIR_SORT_DESCENDING), array('..', '.'));
 sort($ArxiusAMostrar);
 // El format d'arxiu és PMPYYYYMM
 foreach($ArxiusAMostrar as $ArxiuAMostrar) {        
@@ -55,13 +57,13 @@ foreach($HTML as $year => $HtmlMonth) {
     foreach($HtmlMonth as $month => $File){                        
         $dom = new DOMDocument();
         $text = "";
-        if( $dom->loadHTML(file_get_contents($URL.'/'.$File)) ):
+        if( $dom->loadHTML(file_get_contents($DIR.'/'.$File)) ):
             $Tag = $dom->getElementsByTagName("h3");                    
             $Item = $Tag->item(0);                    
             $text = $Item->textContent;
         endif;
         
-        echo "<li> <a target=\"_NEW\" href=\"{$URL}{$File}\">". Mesos($month). "</a> </li>";
+        echo "<li> <a target=\"_NEW\" href=\"/{$URL}{$File}\">". Mesos($month). "</a> </li>";
     }    
     echo '</div>';
 }
