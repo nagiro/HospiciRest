@@ -63,7 +63,7 @@ foreach($HTML as $year => $HtmlMonth) {
             $text = $Item->textContent;
         endif;
         
-        echo "<li> <a target=\"_NEW\" href=\"/{$URL}{$File}\">". Mesos($month). "</a> </li>";
+        echo "<li> <a target=\"_NEW\" href=\"{$URL}{$File}\">". Mesos($month). "</a> </li>";
     }    
     echo '</div>';
 }
