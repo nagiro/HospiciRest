@@ -1,5 +1,6 @@
 <?php 
 require_once DATABASEDIR . 'Tables/ActivitatsModel.php';
+require_once DATABASEDIR . 'Tables/OptionsModel.php';
 
 
 class Auxiliar_UploadFtp {
@@ -13,7 +14,11 @@ class Auxiliar_UploadFtp {
         'NodesUrl' => array(1 => array( 1 => '/Actual/WEB/PMP/') )
     );
 
-    public function __construct() {}
+    public function __construct($FTP_Data, $idSite) {
+        $OM = new OptionsModel();
+        $this->FTP = json_decode($OM->getOption('AUX_UPLOADFTP', $idSite), true);
+        if($this->FTP === FALSE) throw new Exception()
+    }
 
     public function loadArxiusNous( $idS, $idNode ) {
         
@@ -56,7 +61,7 @@ class Auxiliar_UploadFtp {
     }
 
     function guardoLogError() {
-
+        
     }
 
 }
