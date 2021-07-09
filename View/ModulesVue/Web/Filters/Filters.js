@@ -234,8 +234,7 @@ Vue.component('filters-div', {
         <div class="filtres_mes-filtres-resta">
             <a class="filtres_mes-filtres-resta-element" v-for="T of TagsDisponibles" :href="getLinkTipus(T)">
                 {{ T[1] }}
-            </a>
-            <label for="InputTextCerca" style="display:none">Cerca un text</label>
+            </a>            
             <input type="text" v-model="TextCerca" id="InputTextCerca" placeholder="Cerca..." />
             <button class="btn btn-xs" id="InputTextBoto" @click="cercaText()">Cerca!</button>                                  
         </div>      
