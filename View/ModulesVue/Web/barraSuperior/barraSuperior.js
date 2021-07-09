@@ -40,6 +40,7 @@ Vue.component('barra-superior', {
             <a target="_new" href="whatsapp://send?text=Click a Whatsapp de la web&phone=+34691217259&abid=+34691217259" aria-label="Enllaç al Whatsapp"> <i class="fab fa-whatsapp"></i>&nbsp; 691 217 259 </a>       
             <a target="_new" class="withHand" @click="FormulariButlleti = true"  aria-label="Enllaç a alta butlletí"> <i class="fas fa-envelope-open-text"></i>&nbsp; Butlletí </a>                 
             <a target="_new" href="/pagina/141/reserva-d-espais" aria-label="Enllaç a reserva d'espais"> <i class="far fa-file-alt"></i>&nbsp; Reserva espais </a>                        
+            <a target="_new" href="/pagina/208/mapa-del-web" aria-label="Enllaç al mapa del web"> <i class="fa fa-map-signs" aria-hidden="true"></i>&nbsp; Mapa web </a>                        
         </nav>
     </section>
     
