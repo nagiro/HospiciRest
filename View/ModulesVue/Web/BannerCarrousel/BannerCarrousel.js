@@ -215,9 +215,9 @@ Vue.component('banner-carrousel', {
 
                 <div v-show="index == IndexPromocioActual" :style="PromocioHome.VisibleBackground" :class="PromocioHome.BannerImageID">
                     
-                    <a :href="PromocioHome.LinkPromocio" :class="PromocioHome.TextBannerID">
+                    <a v-if="WithTitle" :href="PromocioHome.LinkPromocio" :class="PromocioHome.TextBannerID">                        
                         <h1 v-if="WithTitle" class="bc_text_banner_titol"> {{ PromocioHome.PROMOCIONS_TITOL }} </h1>
-                        <h2 v-if="WithTitle" class="bc_text_banner_subtitol"> {{ PromocioHome.PROMOCIONS_SUBTITOL }} </h2>
+                        <h2 v-if="WithTitle" class="bc_text_banner_subtitol"> {{ PromocioHome.PROMOCIONS_SUBTITOL }} </h2>                        
                     </a>
                 </div>
             </div>

@@ -28,7 +28,7 @@ Vue.component('list-nodes', {
             
             <nav class="links_requadre">
                 <a :href="getLink(N)" v-for="N of Fills" class="link_enllac">
-                    <img class="link_imatge" :src="getUrlImatge(false, N.Nodes_idNodes)" @error="getUrlImatge(true, 0, $event)" />
+                    <img class="link_imatge" :src="getUrlImatge(false, N.Nodes_idNodes)" @error="getUrlImatge(true, 0, $event)" :alt="N.Nodes_TitolMenu" />
                     <span class="link_text" href="">{{N.Nodes_TitolMenu}}</span>
                 </a>
                 
