@@ -52,7 +52,7 @@ echo '</ul>';
 echo '<div class="tab-content" id="myTabContent">';
 foreach($HTML as $year => $HtmlMonth) {    
     
-    echo '<div class="tab-pane fade" id="A'.$year.'" role="tabpanel" aria-labelledby="A'.$year.'-tab" style="margin-top: 40px;">';
+    echo '<div class="tab-pane fade" id="A'.$year.'" role="tabpanel" aria-labelledby="A'.$year.'-tab" style="margin-top: 40px;"><ul>';
 
     foreach($HtmlMonth as $month => $File){                        
         $dom = new DOMDocument();
@@ -65,10 +65,10 @@ foreach($HTML as $year => $HtmlMonth) {
         
         echo "<li> <a target=\"_NEW\" href=\"{$URL}{$File}\">". Mesos($month). "</a> </li>";
     }    
-    echo '</div>';
+    echo '</ul></div>';
 }
 echo '</div>';
 
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 
 ?>
