@@ -112,13 +112,16 @@ function ValidaEmail(valor) {
     return test.test(valor);
   }
 
+
 function ValidaDNI(value) {
+    
     var validChars = 'TRWAGMYFPDXBNJZSQVHLCKET';
     var nifRexp = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
     var nieRexp = /^[XYZ]{1}[0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
     var str = value.toString().toUpperCase();
   
-    if (!nifRexp.test(str) && !nieRexp.test(str)) return false;
+    // Si el format no és nif o nie, pot ser cif... sinó és cif retornem false
+    if (!nifRexp.test(str) && !nieRexp.test(str)) return ValidaCIF(str);
   
     var nie = str
       .replace(/^[X]/, '0')
@@ -128,9 +131,62 @@ function ValidaDNI(value) {
     var letter = str.substr(-1);
     var charIndex = parseInt(nie.substr(0, 8)) % 23;
   
-    if (validChars.charAt(charIndex) === letter) return true;
-  
-    return false;
+    if (validChars.charAt(charIndex) === letter) return true;        
+    else return false;
+
+  }
+
+
+  function ValidaCIF( cif ) {
+    
+    var CIF_REGEX = /^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/;    
+    var match = cif.match( CIF_REGEX );
+
+    if( !match ) return false;
+
+    var letter  = match[1],
+        number  = match[2],
+        control = match[3];
+
+    var even_sum = 0;
+    var odd_sum = 0;
+    var n;
+
+    for ( var i = 0; i < number.length; i++) {
+      n = parseInt( number[i], 10 );
+
+      // Odd positions (Even index equals to odd position. i=0 equals first position)
+      if ( i % 2 === 0 ) {
+        // Odd positions are multiplied first.
+        n *= 2;
+
+        // If the multiplication is bigger than 10 we need to adjust
+        odd_sum += n < 10 ? n : n - 9;
+
+      // Even positions
+      // Just sum them
+      } else {
+        even_sum += n;
+      }
+
+    }
+
+    var control_digit = (10 - (even_sum + odd_sum).toString().substr(-1) );
+    var control_letter = 'JABCDEFGHI'.substr( control_digit, 1 );
+
+    // Control must be a digit
+    if ( letter.match( /[ABEH]/ ) ) {
+      return control == control_digit;
+
+    // Control must be a letter
+    } else if ( letter.match( /[KPQS]/ ) ) {
+      return control == control_letter;
+
+    // Can be either
+    } else {
+      return control == control_digit || control == control_letter;
+    }
+
   }
 
 // Horaris[] = { DIA, HORA, ESPAI }

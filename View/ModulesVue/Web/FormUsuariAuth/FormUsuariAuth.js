@@ -88,9 +88,9 @@ Vue.component('form-usuari-auth', {
         <div v-if="DNIFormVisible">                                        
             <div class="row">
                 <form-utils 
-                    :fieldtype="'input'" :id = "'DNI'" :title = "'DNI/NIE'" :value = "DNI" :helptext = "'Entreu el DNI/NIE'"                    
+                    :fieldtype="'input'" :id = "'DNI'" :title = "'DNI/NIE/CIF'" :value = "DNI" :helptext = "'Entreu el DNI/NIE'"                    
                     @onkeyup="DNI = $event" 
-                    :errors = "[[validaDNILocal(DNI), 'El DNI/NIE és incorrecte.']]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-6']"
+                    :errors = "[[validaDNILocal(DNI), 'El DNI/NIE/CIF és incorrecte.']]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-6']"
                 ></form-utils>                
                 <form-utils 
                     :fieldtype="'button'" :id = "'BDNI'" :title = "'Valida'"  :value = "''" :disabled = " ( validaDNILocal(DNI) || DNI.length == 0 )"
