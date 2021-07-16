@@ -1,4 +1,4 @@
-.SingleImage_requadre_imatge { position: relative; width: 24vw; min-height: 24vw; display: block; }
+.SingleImage_requadre_imatge { position: relative; width: 24vw; min-height: 24vw; display: block; cursor: pointer; }
 /* .SingleImage_tag {    position: absolute;    right: 0;    top: 0;    background-color: transparent;    width: 0px;    height: 0px;    border-left: 1.5vw solid;    border-right: 1.5vw solid;    border-top: 1.5vw solid;    border-bottom: 1.5vw solid;    /* borders per fer fletxa surt de single-list.component.ts   } */
 .SingleImage_tag { position: absolute; right: 0; top: 0; background-color: transparent; width: 3vw; height: 3vw;  }
 .SingleImage_tag > .fas { font-size: 3vw; color: darkred; }
@@ -12,7 +12,7 @@
 
 @media screen and (min-width: 300px) and (max-width: 1199px) {
   
-  .SingleImage_requadre_imatge { position: relative; width: 100%; min-height: 88vw; height: auto; }
+  .SingleImage_requadre_imatge { position: relative; width: 100%; min-height: 88vw; height: auto; cursor: pointer; }
 
   .SingleImage_tag { position: absolute; right: 6vw; top: 0vw; background-color: transparent; width: 3vw; height: 3vw;  }
   .SingleImage_tag > .fas { font-size: 9vw; color: darkred; }

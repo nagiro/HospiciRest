@@ -68,13 +68,17 @@ Vue.component('single-image', {
         NoExisteixImatge: function($event) {
             $event.target.style = 'background-color: black;';
             $event.target.src = '/WebFiles/Web/img/NoImage.jpg';
+        },
+        goTo: function($Where) {
+            console.log("GoTo");
+            window.location.href = this.getUrl( $Where );
         }
     },
     template: `        
 
     <!-- REQUADRE VERTICAL -->
     
-    <a :href="getUrl( ActivitatHome )" class="SingleImage_requadre_imatge" >
+    <div @click="goTo(ActivitatHome)" class="SingleImage_requadre_imatge" >
         <div class="SingleImage_tag" v-if="ActivitatHome.CategoriaVinculada != '0'" > <!-- :style="getTagStyle( ActivitatHome )" -->
             <i class="fas fa-bookmark"></i>
             <img :src="gUrlImatgeCategoriaVinculadaBlanca( ActivitatHome )" alt="Tag de categoria" />
@@ -82,7 +86,7 @@ Vue.component('single-image', {
         <img :src="gURLImatge( ActivitatHome )" class="SingleImage_requadre_imatge_img" @error="NoExisteixImatge($event)" :alt="ActivitatHome.NomActivitat.substring(0,100)" />
 
         <div class="SingleImage_requadre_text">
-            <p class="SingleImage_requadre_text_titol">{{ ActivitatHome.NomActivitat }}</p>
+            <p class="SingleImage_requadre_text_titol"><a :href="getUrl( ActivitatHome )">{{ ActivitatHome.NomActivitat }}</a></p>
             <div class="SingleImage_requadre_text_data">
                 <div class="SingleImage_requadre_text_data_calendari">
                     <i class="far fa-calendar"></i> {{ gTextDies( ActivitatHome ) }}
@@ -94,7 +98,7 @@ Vue.component('single-image', {
                 </div>
             </div>
         </div>
-    </a>    
+    </div>    
 
                 `
 });
