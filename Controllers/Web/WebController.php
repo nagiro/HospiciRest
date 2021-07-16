@@ -199,7 +199,8 @@ class WebController
             if ($F['type'] == 'CATEGORIA') { 
                 $CategoriesArray[] = $F['key'];
 
-                $F['Text'] = $this->hCercaArray($F['key'], $EXTRES['TipusActivitats']["Tipus"], 'idTipus')['tipusDesc'];                                 
+                $TMP = $this->hCercaArray($F['key'], $EXTRES['TipusActivitats']["Tipus"], 'idTipus');
+                $F['Text'] = (!is_null($TMP)) ? $TMP['tipusDesc'] : 'Totes';                                 
                 $EXTRES["Breadcumb"][] = array('Titol' => $F['Text'], "Link" => "/activitats/categoria/{$F['key']}/" . $this->aUrl($F['Text']) );                 
             }
 
