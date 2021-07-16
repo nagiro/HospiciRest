@@ -34,7 +34,7 @@
             <div v-for="ActivitatHome of WebStructure.Cicles">
                              
                 <article class="llistat_franja_titol">
-                    <h1 class="llistat_titol"> {{ ActivitatHome.NomActivitat }} </h1>
+                    <h2 class="llistat_titol"> {{ ActivitatHome.NomActivitat }} </h2>
                     <time class="llistat_dates" v-html="ResumDates()"></time>
                     <a target="_NEW" v-if="ActivitatHome.tmp_PDF.length > 0" :href="ActivitatHome.tmp_PDF">[Baixa't el pdf]</a>                                    
                     <article class="llistat_summary_text" v-html="ActivitatHome.Descripcio"></article>
@@ -51,7 +51,7 @@
                 </article>
             </div>
             <div v-if="WebStructure.Cicles && WebStructure.Cicles.length == 0">
-                <h1>Actualment no hi ha cap cicle per mostrar.</h1>
+                <h2>Actualment no hi ha cap cicle per mostrar.</h2>
             </div>
         </section>                
 
@@ -71,7 +71,7 @@
                                     :amb-titol="false">
                     </single-list>
                 </nav>
-                <h1 v-if="WebStructure.Activitats.length == 0"> No hi ha cap activitat per mostrar. </h1>
+                <h2 v-if="WebStructure.Activitats.length == 0"> No hi ha cap activitat per mostrar. </h2>
 
             </article>
 
