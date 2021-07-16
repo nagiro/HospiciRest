@@ -6,7 +6,7 @@
 /* .SingleImage_tag > img {    width: 2vw;    height: 2vw;    position: absolute;    top: -1vw;    right: -1vw;  } */
 .SingleImage_requadre_imatge_img { height: 24vw; width: 24vw; }      
 .SingleImage_requadre_text { display: flex; flex-wrap: wrap; position: absolute; bottom: 1vw; left: 1vw; right: 1vw; background-color: white; }
-.SingleImage_requadre_text_titol { font-size: 1rem;    font-weight: bold; border-bottom: 1px solid black; width: 100%; padding: 0.5vw; }
+.SingleImage_requadre_text_titol { font-size: 1rem;    font-weight: bold; border-bottom: 1px solid black; width: 100%; padding: 0.5vw; margin-bottom: 0px; }
 .SingleImage_requadre_text_data {  font-size: 0.8rem;    width: 45% ; border-right: 1px solid black; padding: 0.5vw;  }  
 .SingleImage_requadre_text_espai { font-size: 0.8rem;    width: 45%; padding: 0.5vw;  }
 

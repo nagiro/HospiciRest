@@ -79,10 +79,10 @@ Vue.component('single-image', {
             <i class="fas fa-bookmark"></i>
             <img :src="gUrlImatgeCategoriaVinculadaBlanca( ActivitatHome )" alt="Tag de categoria" />
         </div>
-        <img :src="gURLImatge( ActivitatHome )" class="SingleImage_requadre_imatge_img" @error="NoExisteixImatge($event)" :alt="ActivitatHome.NomActivitat" />
+        <img :src="gURLImatge( ActivitatHome )" class="SingleImage_requadre_imatge_img" @error="NoExisteixImatge($event)" :alt="ActivitatHome.NomActivitat.substring(0,100)" />
 
         <div class="SingleImage_requadre_text">
-            <div class="SingleImage_requadre_text_titol">{{ ActivitatHome.NomActivitat }}</div>
+            <p class="SingleImage_requadre_text_titol">{{ ActivitatHome.NomActivitat }}</p>
             <div class="SingleImage_requadre_text_data">
                 <div class="SingleImage_requadre_text_data_calendari">
                     <i class="far fa-calendar"></i> {{ gTextDies( ActivitatHome ) }}
