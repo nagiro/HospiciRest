@@ -25,9 +25,11 @@
 
         <filters-div v-if="Loaded && !Errors"></filters-div>
 
-        <!-- LLISTAT DE CICLES -->
+        <!-- LLISTAT DE CICLES -->        
 
         <section id="llistat_seccio_cicles" v-if="Loaded  && !Errors">
+        
+            <h1 v-if="WebStructure.Cicles && WebStructure.Cicles.length > 0">Llistat de cicles</h1>
 
             <div v-for="ActivitatHome of WebStructure.Cicles">
                              
@@ -56,7 +58,9 @@
         <!-- LLISTAT D'ACTIVITATS -->
 
         <section id="llistat_seccio_activitats" v-if="Loaded && !Errors && WebStructure.TipusActivitats">
-                             
+            
+            <h1 v-if="WebStructure.Activitats && WebStructure.Activitats.length > 0">Llistat d'activitats</h1>
+                                         
             <article class="llistat_franja_titol">
                 <!-- <h1 class="llistat_titol"> {{ WebStructure.FiltresAplicats[0].Text }} </h1> -->
                         
