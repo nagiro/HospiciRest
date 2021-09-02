@@ -12,7 +12,7 @@ if(isset($_GET['DNI'])):
     
     $DNI = trim(strtoupper($_GET['DNI']));
     $CM = new CursosModel();
-    $CURSOS = $CM->potMatricularSegonsRestriccio($DNI);
+    $CURSOS = $CM->potMatricularSegonsRestriccio($DNI, 0, 1);
     
     
     if(sizeof($CURSOS['CursosOk']) == 0) echo '<h2>No hem trobat cap constància del seu DNI.</h2>';

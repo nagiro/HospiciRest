@@ -121,11 +121,14 @@ class CursosModel extends BDD {
         }
     }
 
-    public function potMatricularSegonsRestriccio($DNI, $idCurs = 1) {
+    public function potMatricularSegonsRestriccio($DNI, $idCurs = 0, $idSite = 1) {
 
         //Carrego el curs i miro les dades.
         $OCurs = $this->getCursById($idCurs);
-        $idS = $OCurs[$this->gnfnwt('SiteId')];
+        
+        if($idCurs > 0) $idS = $OCurs[$this->gnfnwt('SiteId')];
+        else $idS = $idSite;
+
         $Return = array('IsOk' => false, 'CursosOk' => array());
         $EsRestringitExcel = $this->getIsRestringit( $OCurs, self::RESTRINGIT_EXCEL );
 
