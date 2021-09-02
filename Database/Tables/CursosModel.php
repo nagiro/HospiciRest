@@ -123,14 +123,12 @@ class CursosModel extends BDD {
 
     public function potMatricularSegonsRestriccio($DNI, $idCurs = 0, $idSite = 1) {
 
-        //Carrego el curs i miro les dades.
-        $OCurs = $this->getCursById($idCurs);
-        
-        if($idCurs > 0) $idS = $OCurs[$this->gnfnwt('SiteId')];
-        else $idS = $idSite;
+        //Carrego el curs i miro les dades.        
+        $OCurs = ($idCurs > 0) ? $this->getCursById($idCurs) : array();        
+        $idS = ($idCurs > 0) ? $OCurs[$this->gnfnwt('SiteId')] : $idSite;                
+        $EsRestringitExcel = ($idCurs == 0) ? true : $this->getIsRestringit( $OCurs, self::RESTRINGIT_EXCEL );
 
         $Return = array('IsOk' => false, 'CursosOk' => array());
-        $EsRestringitExcel = $this->getIsRestringit( $OCurs, self::RESTRINGIT_EXCEL );
 
         $file = AUXDIR . "Restriccions/Notes-{$idS}.csv";                 
 
