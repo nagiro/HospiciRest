@@ -121,7 +121,7 @@ class CursosModel extends BDD {
         }
     }
 
-    public function potMatricularSegonsRestriccio($DNI, $idCurs) {
+    public function potMatricularSegonsRestriccio($DNI, $idCurs = 1) {
 
         //Carrego el curs i miro les dades.
         $OCurs = $this->getCursById($idCurs);
