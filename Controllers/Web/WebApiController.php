@@ -54,11 +54,11 @@ class WebApiController
     /**
     * Funció que retorna els permisos d'un usuari en funció d'un curs. 
     */
-    public function getPermisosUsuariCursos($idUsuariDecrypted = 0, $idCurs = 0, $IsRestringit = 0) {
+    public function getPermisosUsuariCursos($DNI = 0, $idUsuariDecrypted = 0, $idCurs = 0, $IsRestringit = 0) {
         if($idCurs > 0) {
             $CM = new CursosModel();
             $MM = new MatriculesModel();
-            $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($idUsuariDecrypted, $idCurs);
+            $RET['PotMatricularCursRestringit'] = $CM->potMatricularSegonsRestriccio($DNI, $idCurs);
             $RET['HasUsuariMatriculaAAquestCurs'] = $MM->getUsuariHasMatricula($idCurs, $idUsuariDecrypted);
         }
         return $RET;

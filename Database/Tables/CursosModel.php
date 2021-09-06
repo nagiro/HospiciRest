@@ -136,7 +136,7 @@ class CursosModel extends BDD {
 
             $ArxiuCSV = fopen($file, "r");
             while (($datos = fgetcsv($ArxiuCSV, 1000, ";","'")) !== FALSE) {                
-                if(strtoupper($datos[4]) == $DNI) {                    
+                if(strtoupper($datos[4]) == strtoupper($DNI)) {                    
                     for($i = 15; $i < 25; $i = $i+2 ) {                        
                         if( !empty($datos[$i+1]) &&  intval($datos[$i+1]) > 0 ) {
                             if( $datos[$i+1] == $this->getCursId($OCurs) ) $Return['IsOk'] = true;                            

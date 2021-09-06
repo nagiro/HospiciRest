@@ -135,10 +135,11 @@ class MyAPIWeb extends API
     */
     protected function getPermisosUsuarisCursos() {
         $WAPI = new WebApiController();         
-        $idUsuariDecrypted = isset($this->request['IdUsuariEncrypted']) ? $WAPI->Decrypt($this->request['IdUsuariEncrypted']) : '';            
+        $DNI = isset($this->request['DNI']) ? $this->request['DNI'] : '';            
+        $IdUsuariDecrypted = isset($this->request['IdUsuariEncrypted']) ? $WAPI->Decrypt($this->request['IdUsuariEncrypted']) : '';            
         $idCurs = isset($this->request['idCurs']) ? $this->request['idCurs'] : '';            
         $IsRestringit = isset($this->request['IsRestringit']) ? $this->request['IsRestringit'] : '';            
-        $RET = $WAPI->getPermisosUsuariCursos($idUsuariDecrypted, $idCurs, $IsRestringit);
+        $RET = $WAPI->getPermisosUsuariCursos($DNI, $IdUsuariDecrypted, $idCurs, $IsRestringit);
         return array($RET, 200);
     }
 
@@ -347,6 +348,16 @@ class MyAPIWeb extends API
             throw new Exception('No hi ha cap site i node amb aquesta codificació.');
         }
     }    
+
+    protected function getEmailWufooEspais() {        
+        if( isset($this->request['idS']) ) {
+            // Capturo totes les activitats a 15 dies vista i reviso si ha firmat que ok a la reserva i si hi ha un Email al camp responsable. 
+            
+            return array($CV->loadArxiusNous( $this->request['node'] ), 200);
+        } else {
+            throw new Exception('No hi ha cap site i node amb aquesta codificació.');
+        }
+    }        
 
 
  }
