@@ -1,0 +1,106 @@
+<html>
+    <header>
+        
+        <meta charset="UTF-8">
+        
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <style>
+            label { font-weight: bold;}
+            h1 { font-weight: bolder; }
+            
+                        
+        </style>
+    </header>
+    <body>
+        <div class="marc" id="app">
+
+            <div class="container">
+                <h1>Carrega arxius a pàgines</h1>
+                <div class="large-12 medium-12 small-12 cell">
+
+                    <div style="padding:0.5vw;">
+                        <label>Pàgina on va l'arxiu</label>                    
+                        <select v-model="Pagina">
+                            <option v-for="p in OptionsPagines" :value="p.id">{{p.nom}}</option>
+                        </select>
+                    </div>                  
+
+                    <div style="padding:0.5vw;">
+                        <label>Arxiu a carregar</label>                    
+                        <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>                                    
+                    </div>
+
+                    <div style="padding:0.5vw;">
+                        <label>Usuari: </label><input type="text" v-model="Usuari" />
+                        <label>Password: </label><input type="password"  v-model="Contrasenya" />                  
+                    </div>
+                  
+                    <div style="padding:0.5vw;">
+                        <p v-if="NomArxiu.length > 0 && LoadOK"  style="background-color: lightseagreen; color:white; padding: 1vw;">
+                            Arxiu carregat correctament. <br />
+                            Url a l'arxiu: <a :href="URLArxiu">{{URLArxiu}}</a>
+                        </p>
+                        <p v-if="Errors.length > 0" style="background-color: darkred; color:white; padding: 1vw;">{{Errors}}</p>
+                    </div>
+                    <div style="padding:0.5vw;">
+                        <button @click="submitFile()" v-if="Pagina > 0 && NomArxiu.length > 0">Carrega l'arxiu</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+    </body>
+    <script>
+        var app = new Vue({
+                el: '#app',
+                data: {           
+                    SUBMIT_URL: 'http://localhost:8080/apiweb/UploadPaginaFileApi',
+                    // BASE_DIR: '/var/www/2020_api',
+                    BASE_DIR: 'C:/Users/Usuario/Documents/Code/HospiciRest',                    
+                    SITE_ID : 1,
+                    file: '',
+                    NomArxiu: '',
+                    URLArxiu: '',
+                    Usuari: '',
+                    Contrasenya: '',
+                    Pagina: 0,
+                    LoadOK: false, 
+                    OptionsPagines: [{ 'id': 160, 'nom': 'Període mig de pagament'}],                
+                    Errors: "",
+                },
+                created () {
+                    
+                },
+                methods: {                    
+                    submitFile(){                                            
+                        let formData = new FormData();                                                  
+                        formData.append('file', this.file);
+                        formData.append('NomArxiu', this.NomArxiu);       //Nom final de l'arxiu a guardar
+                        formData.append('Pagina', this.Pagina);                 //A quina carpeta interna del servidor ha d'anar
+                        formData.append('Usuari', this.Usuari);           //Usuari que carrega
+                        formData.append('Password', this.Contrasenya);    //Contrasenya del que carrega
+                        formData.append('SiteId', this.SITE_ID);
+                        
+                        axios.post( this.SUBMIT_URL, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+                            .then( (r) => { this.LoadOK = true; console.log(r); this.URLArxiu = 'https://www.casadecultura.cat/' + r.data; })
+                            .catch( (e) => { this.Errors = e.data; this.LoadOK = false; this.URLArxiu = ''; });
+                    },
+                    handleFileUpload(){
+                        this.file = this.$refs.file.files[0];                        
+                        let Extensio = this.file.name.split('.').pop();
+                        const Avui = new Date();                                                                                             
+                        
+                        // Donem el format pertinent per la pàgina que pertoqui
+                        if(this.Pagina == 160) {
+                            this.NomArxiu = 'PMP' + Avui.getFullYear() + (Avui.getMonth()-1).toString().padStart(2,'0') + '.' + Extensio;                        
+                            this.Dir = this.BASE_DIR + '/WebFiles/Documents/' + this.Pagina;
+                        }
+                    }
+                }
+        });            
+    </script>
+
+</html>

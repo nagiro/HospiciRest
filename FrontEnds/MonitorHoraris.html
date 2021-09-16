@@ -1,0 +1,236 @@
+<html>
+    <header>
+        
+        <meta charset="UTF-8">
+
+        <script src="https://kit.fontawesome.com/4479587b76.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');            
+
+            html,body { font-family: 'Roboto'; overflow: auto; margin: 0px; padding: 0px; background-color: black; box-sizing: border-box; color: black; font-size: 1vh; font-weight: bold; height: 100vh; }
+                        
+            .franja_superior { display: flex; }
+            .marc { margin: 1vh; background-color: white; height: 97vh; }
+
+            .titol { display: inline-flex;  background-color: black;  color: white; padding: 2vh; font-size:3vh; font-weight: bold; width: 27vw; }
+            .data { display: inline-flex; margin-left: 30vw; font-size:3vh; padding-top: 2vh; }
+            .hora { display: inline-flex; font-size:5vh; margin-left: 4vh; font-weight: bold;  padding-top: 1vh; }
+            
+            .taula_programacio { padding: 3vh; padding-top: 1vh; padding-bottom:0px; height: 44vh; }
+            .taules_inferiors { padding: 3vh; padding-top: 1vh; display: flex; justify-content: space-between; height: 32vh; }
+            .taula_cursos { display: inline-flex; height: fit-content;  }
+            .taula_exposicions { display: inline-flex; height: fit-content; }
+            .separacio_taules { width: 5vh; display: inline-flex;  height: fit-content; }
+
+            .franja_inferior { margin: 3vh; margin-top: 0.5vh; display: flex; background-color: gainsboro; justify-content: space-between; }
+            .franja_inferior > div { font-weight: bold; padding: 1vh; font-size: 2vh;  }
+            .news_quadrat { background-color: white; }
+            .news { font-size: 2vh; padding: 1vh; }
+                        
+            .taula { border-collapse: collapse; width: 100%; }                        
+            .taula td, th { text-align:left; padding: 1.8vh 1vh; font-size: 2vh; font-weight: bold; }
+            .taula th { padding-bottom: 0vh; }
+            .taula th { font-weight: bold; font-size:3vh; border-bottom: 1px solid }
+            .taula tbody > tr:nth-child(even) { background-color: gainsboro}            
+                        
+        </style>
+    </header>
+    <body>
+        <div class="marc" id="app">
+            <div class="franja_superior">            
+                <div class="titol" > Programació de la Casa de Cultura </div>
+                <div class="data" > {{DiaActual[0]}}, {{DiaActual[1]}} {{DiaActual[2]}} de {{DiaActual[3]}} </div>
+                <div class="hora" > {{Rellotge[0]}}.{{Rellotge[1]}}h </div>
+            </div>
+            <div class="taula_programacio">
+                <table class="taula">
+                    <thead>
+                    <tr>
+                        <th style="width: 75%">Programació</th>
+                        <th style="width: 10%; text-align:center;"><i class="far fa-clock"></i> Hora</th>
+                        <th style="width: 15%; text-align:center;"><i class="fas fa-map-marker-alt"></i> Ubicació</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr v-for="G of DadesHorarisGenerals">
+                        <td>{{G.titol}}&nbsp;</td>
+                        <td style="text-align:center;">{{G.hora_inici}}</td>
+                        <td style="text-align:center;">{{G.espais}}</td>
+                    </tr>
+                    
+                </tbody>
+                </table>
+            </div>
+
+
+            <div class="taules_inferiors">
+                <div class="taula_cursos">
+
+                    <table class="taula">
+                        <thead>
+                        <tr>
+                            <th style="width: 65vw">Activitats periòdiques / Cursos</th>
+                            <th style="width: 10vw; text-align:center;"><i class="far fa-clock"></i></th>
+                            <th style="width: 25vw; text-align:center;"><i class="fas fa-map-marker-alt"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="C of DadesHorarisCursos">
+                            <td>{{C.titol}}&nbsp;</td>
+                            <td style="text-align:center;">{{C.hora_inici}}</td>
+                            <td style="text-align:center;">{{C.espais}}</td>
+                        </tr>
+                        
+                    </tbody>
+                    </table>
+
+                </div>
+                
+                
+                <div class="separacio_taules">&nbsp;</div>
+                
+                
+                
+                <div class="taula_exposicions">
+                    <table class="taula">
+                        <thead>
+                        <tr>
+                            <th style="width: 65vw">Exposicions</th>
+                            <th style="width: 10vw; text-align: center;"><i class="far fa-calendar"></i></th>
+                            <th style="width: 25vw; text-align: center;"><i class="fas fa-map-marker-alt"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="E of DadesHorarisExposicions">
+                            <td>{{E.titol}}&nbsp;</td>
+                            <td style="text-align:center;">{{E.hora_inici}}</td>
+                            <td style="text-align:center;">{{E.espais}}</td>
+                        </tr>                                                
+                    </tbody>
+                    </table>
+
+                </div>
+
+
+
+            </div>
+
+            <div class="franja_inferior">
+                <div><i class="fas fa-phone"></i> 972 202 013</div>
+                <div><i class="fab fa-whatsapp"></i> 691 217 59</div>
+                <div><i class="far fa-envelope"></i> info@casadecultura.org</div>
+                <div><i class="fas fa-globe"></i> www.casadecultura.org</div>
+                <div>@casadeculturagi</div>
+                <div><i class="fab fa-instagram"></i></div>
+                <div><i class="fab fa-twitter"></i></div>
+                <div><i class="fab fa-youtube"></i></div>
+            </div>
+
+        </div>
+        
+    </body>
+    <script>
+        var app = new Vue({
+                el: '#app',
+                data: {
+                    DadesHorari: [],
+                    DadesHorarisGenerals: [],
+                    DadesHorarisCursos: [],
+                    DadesHorarisExposicions: [],
+                    Rellotge: [],
+                    DiaActual: [],
+                    timer: 0,
+                    timerRellotge: 0,
+                    E: {'titol':'', 'hora_inici':' ', 'espais':' '}
+                },
+                created () {
+                    this.getData();
+                    this.getDiaActual();
+                    this.ActualitzaHora();
+                    this.timer = setInterval(this.getData, 300000);
+                    this.timerRellotge = setInterval(this.ActualitzaHora, 1000);
+                },
+                methods: {
+                    getData: function() {
+                        let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS=1&XML=0';                        
+                        axios.get( AjaxUrl )
+                            .then( R => { this.TractaDades( R.data ); } )
+                            .catch( E => { alert(E); } );                               
+                    },
+                    ActualitzaHora: function(){
+                        let D = new Date();
+
+                        this.Rellotge[0] = D.getHours().toString().padStart(2, '0');                        
+                        this.Rellotge[1] = D.getMinutes().toString().padStart(2, '0');                                                
+                    },            
+                    getDiaActual: function() {
+                        let D = new Date();                        
+                        switch(D.getDay()) { case 0: this.DiaActual[0] = 'Diumenge'; break; case 1: this.DiaActual[0] = 'Dilluns'; break; case 2: this.DiaActual[0] = 'Dimarts'; break; case 3: this.DiaActual[0] = 'Dimecres'; break; case 4: this.DiaActual[0] = 'Dijous'; break; case 5: this.DiaActual[0] = 'Divendres'; break; case 6: this.DiaActual[0] = 'Dissabte'; break; }
+                        this.DiaActual[1] = D.getDate();
+                        switch( (D.getMonth()+1) ) { case 1: this.DiaActual[2] = 'de gener'; break; case 2: this.DiaActual[2] = 'de febrer'; break; case 3: this.DiaActual[2] = 'de març'; break; case 4: this.DiaActual[2] = 'd\'abril'; break; case 5: this.DiaActual[2] = 'de maig'; break; case 6: this.DiaActual[2] = 'de juny'; break; case 7: this.DiaActual[2] = 'de juliol'; break; case 8: this.DiaActual[2] = 'd\'agost'; break; case 9: this.DiaActual[2] = 'de setembre'; break; case 10: this.DiaActual[2] = 'd\'octubre'; break; case 11: this.DiaActual[2] = 'de novembre'; break; case 12: this.DiaActual[2] = 'de desembre'; break; }
+                        this.DiaActual[3] = D.getFullYear();
+                    },        
+                    TractaDades: function(Rows) {
+                        var today = new Date();                                                                  
+
+                        this.DadesHorarisExposicions = [this.E,this.E,this.E,this.E];
+                        this.DadesHorarisCursos = [this.E,this.E,this.E,this.E,];
+                        this.DadesHorarisGenerals = [this.E,this.E,this.E,this.E,this.E,this.E,];
+                        let iExposicions = 0;
+                        let iCursos = 0;
+                        let iGenerals = 0;
+
+                        for(Row of Rows){
+                            
+                            const DataInicialActivitat = Row.data_inicial.split('-');                            
+                            const HoraFinalActivitat = Row.hora_fi.split('.');                            
+
+                            // Si la data inicial i la data final són iguals i a més, és igual al dia d'avui, ho mostrem. ç                            
+                            if(                                 
+                                ( Row.data_inicial == Row.data_fi 
+                                    && parseInt(DataInicialActivitat[0]) == parseInt(today.getFullYear()) 
+                                    && parseInt(DataInicialActivitat[1]) == parseInt((today.getMonth()+1)) 
+                                    && parseInt(DataInicialActivitat[2]) == parseInt(today.getDate())                                     
+                                    && parseInt(HoraFinalActivitat[0]) > parseInt(today.getHours())
+                                )
+                            ) {
+
+                                // Deixo només un espai ( el primer )
+                                const T = Row.espais.split(',');
+                                Row.espais = T[0];
+
+                                const Categories = Row.categories.split('@');
+                                const isExposicio = (Categories.findIndex(X => (X == 46)) > -1);
+                                const isCurs = (Categories.findIndex(X => (X == 45)) > -1);
+
+                                // Retallo el títol si no hi cap
+                                
+                                if((isExposicio || isCurs) && Row.titol.length > 50) Row.titol = Row.titol.substring(0, 50) + '...';
+                                else if( Row.titol.length > 250 ) Row.titol = Row.titol.substring(0, 250) + '...';                                
+                                
+                                console.log(isExposicio, isCurs, Row.titol);
+
+                                if(isExposicio) {                                    
+                                    if(iExposicions < 4) this.DadesHorarisExposicions[iExposicions++] = Row;
+                                } 
+                                else if(isCurs){
+                                    if(iCursos < 4 ) this.DadesHorarisCursos[iCursos++] = Row;
+                                } 
+                                else {
+                                    if( iGenerals < 6 ) this.DadesHorarisGenerals[iGenerals++] = Row;
+                                } 
+                                
+                            }
+
+                        }                        
+                                                                        
+                    }
+                }
+            });            
+    </script>
+
+</html>

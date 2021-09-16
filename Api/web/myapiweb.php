@@ -339,6 +339,32 @@ class MyAPIWeb extends API
         }
     }
 
+
+    /**
+     * Cal entrar DNI + Contrasenya i si és correcte, llavors pots carregar un arxiu a downloads
+     */
+    protected function UploadPaginaFileApi() {
+
+        //Comprovem si l'usuari i contrasenya són correctes
+        if(!isset($this->request['post']['Usuari']) || !isset($this->request['post']['Password'])) 
+            return array("No s'ha entrat usuari o contrasenya", 400);
+        
+        // L'usuari és correcte i la contrasenya també
+        if(!$this->Auth->doLogin($this->request['post']['Usuari'], $this->request['post']['Password'], $this->request['post']['SiteId']))
+            return array("Autentificació fallida!", 400);
+        
+        //Comprovem que hem entrat un directori i nom d'arxiu. I que existex el directori. 
+        if(!isset($this->request['post']['Pagina']) || !isset($this->request['post']['NomArxiu']))
+            return array("Nom o directori incorrecte!", 400);
+                            
+        $WAPI = new WebApiController();
+        $RES = $WAPI->doUploadPaginaFile($this->request['post']['Pagina'] , $this->request['post']['NomArxiu'] , $this->request['files']['file']["tmp_name"] );
+        
+        if($RES[0]) return array($RES[1], 200);
+        else return array($RES[1], 400);            
+        
+    }    
+
     protected function getUploadFtp() {
         require_once AUXDIR . 'UploadFtp/Auxiliar_UploadFtp.php';        
         if( isset($this->request['idS']) && isset($this->request['node']) ) {

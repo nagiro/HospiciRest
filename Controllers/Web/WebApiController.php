@@ -763,6 +763,23 @@ class WebApiController
         return $EM->getEspaisDisponiblesSite($idSite);
     }
 
+    /**
+     * array(estat, urlArxiu | TextError )
+     */
+    public function doUploadPaginaFile($Pagina, $NomArxiu, $FileTmpName) {
+        
+        $ArxiuDesti = DOCUMENTSDIR . $Pagina . '/' . $NomArxiu;
+        $UrlDesti = DOCUMENTSURL . $Pagina . '/' . $NomArxiu;
+
+        // Si el directori no exiteix, el creem.
+        if(!file_exists(DOCUMENTSDIR . $Pagina)) mkdir(DOCUMENTSDIR . $Pagina);
+
+        // Si hi ha el directori, seguim amb la còpia de l'arxiu
+        if(move_uploaded_file($FileTmpName , $ArxiuDesti )) return array(true, $UrlDesti);
+        else array(false, "No he pogut carregar l'arxiu correctament.");
+        
+    }
+
     
     public function Encrypt($id) { return HelperForm_Encrypt($id); }
     public function Decrypt($id) { return HelperForm_Decrypt($id); }
