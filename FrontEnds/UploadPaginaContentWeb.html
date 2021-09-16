@@ -29,13 +29,24 @@
 
                     <div style="padding:0.5vw;">
                         <label>Arxiu a carregar</label>                    
-                        <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>                                    
+                        <input type="file" id="file" ref="file" @change="handleFileUpload()"/>                                    
+                    </div>
+
+                    <div style="padding:0.5vw;">
+                        <label>Any (4 xifres) </label><input type="text" v-model="Any" @change="handleFileUpload()" />
+                        -- <label>Mes (2 xifres) </label><input type="text" v-model="Mes" @change="handleFileUpload()" />
+                    </div>
+
+                    <div style="padding: 0.5vw">
+                        <label>Nom final: </label><span>{{NomArxiu}}</span>
                     </div>
 
                     <div style="padding:0.5vw;">
                         <label>Usuari: </label><input type="text" v-model="Usuari" />
                         <label>Password: </label><input type="password"  v-model="Contrasenya" />                  
                     </div>
+
+                    
                   
                     <div style="padding:0.5vw;">
                         <p v-if="NomArxiu.length > 0 && LoadOK"  style="background-color: lightseagreen; color:white; padding: 1vw;">
@@ -57,9 +68,7 @@
         var app = new Vue({
                 el: '#app',
                 data: {           
-                    SUBMIT_URL: 'http://localhost:8080/apiweb/UploadPaginaFileApi',
-                    // BASE_DIR: '/var/www/2020_api',
-                    BASE_DIR: 'C:/Users/Usuario/Documents/Code/HospiciRest',                    
+                    SUBMIT_URL: '/apiweb/UploadPaginaFileApi',                    
                     SITE_ID : 1,
                     file: '',
                     NomArxiu: '',
@@ -70,6 +79,8 @@
                     LoadOK: false, 
                     OptionsPagines: [{ 'id': 160, 'nom': 'Període mig de pagament'}],                
                     Errors: "",
+                    Any: '',
+                    Mes: ''
                 },
                 created () {
                     
@@ -85,18 +96,19 @@
                         formData.append('SiteId', this.SITE_ID);
                         
                         axios.post( this.SUBMIT_URL, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-                            .then( (r) => { this.LoadOK = true; console.log(r); this.URLArxiu = 'https://www.casadecultura.cat/' + r.data; })
+                            .then( (r) => { this.LoadOK = true; console.log(r); this.URLArxiu = 'https://www.casadecultura.cat' + r.data; })
                             .catch( (e) => { this.Errors = e.data; this.LoadOK = false; this.URLArxiu = ''; });
                     },
                     handleFileUpload(){
+
                         this.file = this.$refs.file.files[0];                        
                         let Extensio = this.file.name.split('.').pop();
-                        const Avui = new Date();                                                                                             
-                        
+
                         // Donem el format pertinent per la pàgina que pertoqui
-                        if(this.Pagina == 160) {
-                            this.NomArxiu = 'PMP' + Avui.getFullYear() + (Avui.getMonth()-1).toString().padStart(2,'0') + '.' + Extensio;                        
-                            this.Dir = this.BASE_DIR + '/WebFiles/Documents/' + this.Pagina;
+                        if(this.Pagina == 160) {    
+                            let DatesCorrectes = (this.Any.length == 4 && this.Mes.length == 2);
+                                DatesCorrectes = DatesCorrectes && (!isNaN(this.Any) && !isNaN(this.Mes));
+                            if( DatesCorrectes ) this.NomArxiu = 'PMP' + this.Any + this.Mes + '.' + Extensio;                                                        
                         }
                     }
                 }
