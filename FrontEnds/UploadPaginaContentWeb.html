@@ -96,7 +96,7 @@
                         formData.append('SiteId', this.SITE_ID);
                         
                         axios.post( this.SUBMIT_URL, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-                            .then( (r) => { this.LoadOK = true; console.log(r); this.URLArxiu = 'https://www.casadecultura.cat' + r.data; })
+                            .then( (r) => { this.LoadOK = true; this.URLArxiu = 'https://www.casadecultura.cat' + r.data; })
                             .catch( (e) => { this.Errors = e.data; this.LoadOK = false; this.URLArxiu = ''; });
                     },
                     handleFileUpload(){
