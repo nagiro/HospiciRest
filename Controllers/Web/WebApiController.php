@@ -776,7 +776,7 @@ class WebApiController
 
         // Si hi ha el directori, seguim amb la còpia de l'arxiu
         if(move_uploaded_file($FileTmpName , $ArxiuDesti )) return array(true, $UrlDesti);
-        else array(false, "No he pogut carregar l'arxiu correctament.");
+        else return array(false, "No he pogut carregar l'arxiu correctament.");
         
     }
 
