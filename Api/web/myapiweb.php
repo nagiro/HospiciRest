@@ -38,6 +38,20 @@ class MyAPIWeb extends API
         
     }
     
+    /**
+     * Funció que és cridada per guardar el formulari de Wufoo quan s'ha creat.
+     */
+    protected function GuardaFormulariWufoo() {
+        
+        // Si rebo un formulari de Wufoo, guardo el formulari                         
+        if($_POST['HandshakeKey'] == "CasaDeCultura.") {
+
+            require_once( DATABASEDIR . 'WufooClass.php' );                             
+            $WC = new WufooClass();
+            $WC->saveEntry( $_POST );
+        }        
+    }
+
     protected function GeneraResguard() {
         $WAPI = new WebApiController();
         $InscripcioCodificada = (isset($_GET['i'])) ? $_GET['i'] : '';        
@@ -365,6 +379,11 @@ class MyAPIWeb extends API
         
     }    
 
+     /**
+     * (Deprecated)
+     * Funció Upload per carregar arxius agafats del servidor de la CCG i carregar-los al web.
+     * Cal entrar DNI + Contrasenya i si és correcte, llavors pots carregar un arxiu a downloads
+     */
     protected function getUploadFtp() {
         require_once AUXDIR . 'UploadFtp/Auxiliar_UploadFtp.php';        
         if( isset($this->request['idS']) && isset($this->request['node']) ) {

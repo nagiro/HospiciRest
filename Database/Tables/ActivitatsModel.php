@@ -16,8 +16,8 @@ class ActivitatsModel extends BDD {
 
     public function __construct() {
 
-        $OldFields = array("actiu", "ActivitatID", "Categories", "Cicles_CicleID", "dComplet",           "dCurt",           "Definiciohoraris", "Descripcio", "dMig",           "Estat", "Imatge", "InfoPractica",       "isEntrada", "isImportant", "Nom", "Organitzador", "PDF", "Places", "Preu", "PreuReduit", "Publicable", "PublicaWEB",    "Responsable", "site_id", "tComplet",     "tCurt",     "TipusActivitat_idTipusActivitat", "tipusEnviament", "tMig", "ImatgeS", "ImatgeM", "ImatgeL");
-        $NewFields = array("Actiu", "ActivitatId", "Categories", "CiclesCicleId" , "DescripcioCompleta", "DescripcioCurta", "DefinicioHoraris", "Descripcio", "DescripcioMig",  "Estat", "Imatge", "InformacioPractica", "IsEntrada", "IsImportant", "Nom", "Organitzador", "Pdf", "Places", "Preu", "PreuReduit", "Publicable", "PublicableWeb", "Responsable", "SiteId",  "TitolComplet", "TitolCurt", "TipusActivitatId",                "TipusEnviament", "TitolMig", "ImatgeS", "ImatgeM", "ImatgeL");
+        $OldFields = array("actiu", "ActivitatID", "Categories", "Cicles_CicleID", "dComplet",           "dCurt",           "Definiciohoraris", "Descripcio", "dMig",           "Estat", "Imatge", "InfoPractica",       "isEntrada", "isImportant", "Nom", "Organitzador", "PDF", "Places", "Preu", "PreuReduit", "Publicable", "PublicaWEB",    "Responsable", "site_id", "tComplet",     "tCurt",     "TipusActivitat_idTipusActivitat", "tipusEnviament", "tMig", "ImatgeS", "ImatgeM", "ImatgeL", "WufooFormStatus");
+        $NewFields = array("Actiu", "ActivitatId", "Categories", "CiclesCicleId" , "DescripcioCompleta", "DescripcioCurta", "DefinicioHoraris", "Descripcio", "DescripcioMig",  "Estat", "Imatge", "InformacioPractica", "IsEntrada", "IsImportant", "Nom", "Organitzador", "Pdf", "Places", "Preu", "PreuReduit", "Publicable", "PublicableWeb", "Responsable", "SiteId",  "TitolComplet", "TitolCurt", "TipusActivitatId",                "TipusEnviament", "TitolMig", "ImatgeS", "ImatgeM", "ImatgeL", "WufooFormStatus");
         parent::__construct("activitats", "ACTIVITATS", $OldFields, $NewFields );
 
     }
@@ -26,6 +26,10 @@ class ActivitatsModel extends BDD {
         $O = $this->getDefaultObject();      
         $O[$this->gnfnwt('SiteId')] = $idS;
         $RET = array('ACTIVITAT' => $O, 'HORARIS' => array());
+    }
+
+    public function getActivitatByIdObject($idActivitat) {
+        return $this->_getRowWhere( array( $this->gofnwt('ActivitatId') => intval($idActivitat), $this->gofnwt('Actiu') => '1' ) ); 
     }
 
     public function getActivitatById($idA) {
@@ -271,6 +275,17 @@ class ActivitatsModel extends BDD {
         } else {
             return '';
         }
+    }
+
+    const WUFOO_RES = 0;
+    const WUFOO_ENVIAT = 1;
+    const WUFOO_CONTESTAT = 2;
+    public function getWufooStatus( $OA ) {
+        return $OA[ $this->gnfnwt('WufooFormStatus') ];
+    }
+    public function setWufooStatus( $NouEstat, $OA ) {
+        $OA[ $this->gnfnwt('WufooFormStatus') ] = $NouEstat;
+        return $this->doUpdate($OA);        
     }
 
     public function doUpdate($ActivitatDetall) {        
