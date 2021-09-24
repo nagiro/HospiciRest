@@ -787,8 +787,8 @@ class WebApiController
     
     public function doUploadFrontEnds($SiteId, $Tipus, $Dades, $Arxius) {
         
-        // $URL_DOWNLOADS_SITE = "/var/www/downloads/{$SiteId}/"; 
-        $URL_DOWNLOADS_SITE = "C:\Users\Usuario\Downloads/{$SiteId}/";
+        $URL_DOWNLOADS_SITE = "/var/www/downloads/{$SiteId}/"; 
+        //$URL_DOWNLOADS_SITE = "C:\Users\Usuario\Downloads/{$SiteId}/";
         $URL_WEB_TEMP = "https://www.casadecultura.cat/downloads/{$SiteId}/".session_id().'/';
         $URL_WEB_DOWNLOADS_SITE = "https://www.casadecultura.cat/downloads/{$SiteId}/";
         
