@@ -787,50 +787,69 @@ class WebApiController
     
     public function doUploadFrontEnds($SiteId, $Tipus, $Dades, $Arxius) {
                 
-        $URL_DOWNLOADS_SITE = "/var/www/downloads/{$SiteId}/";         
-        $URL_WEB_TEMP = "https://www.casadecultura.cat/downloads/{$SiteId}/tmp/".session_id().'/';
-        $URL_WEB_DOWNLOADS_SITE = "https://www.casadecultura.cat/downloads/{$SiteId}/";
+        $DIR_DOWNLOADS = "/var/www/downloads/";
+        // $DIR_DOWNLOADS = "C:\Users\Usuario\Downloads/";
+
+        $DIR_DOWNLOADS_SITE = $DIR_DOWNLOADS . $SiteId . "/";
+        $DIR_DOWNLOADS_TEMP = $DIR_DOWNLOADS_SITE . "tmp/".session_id().'/';
+
+        $URL_DOWNLOADS = "https://www.casadecultura.cat/downloads/";
+        // $URL_DOWNLOADS = "http://localhost:8080/downloads/";
+        $URL_DOWNLOADS_SITE = $URL_DOWNLOADS . $SiteId . "/";
+        $URL_DOWNLOADS_TEMP = $URL_DOWNLOADS_SITE . "tmp/".session_id().'/';
+        
         
         if($Tipus == 'NotaPremsaGenera' || $Tipus == 'NotaPremsaPublica') { 
                                 
             $TipusPublica = ($Tipus == 'NotaPremsaPublica');
 
-            // Creo el directori /tmp o bé esborro la sessió en qüestió... 
-            $URL_DOWNLOADS_TMP = $URL_DOWNLOADS_SITE . "tmp/". session_id();            
-            if(!file_exists($URL_DOWNLOADS_TMP)) mkdir($URL_DOWNLOADS_TMP, 0777, true);            
-            $URL_DOWNLOADS_TMP .= '/';
+            // Creo el directori /tmp o bé esborro la sessió en qüestió...             
+            if(!file_exists($DIR_DOWNLOADS_TEMP)) mkdir($DIR_DOWNLOADS_TEMP, 0777, true);                        
 
             $RET['UrlImatge'] = $this->convertFileNameToDate($Arxius[0]['name'] , $TipusPublica, !$TipusPublica );
             $RET['UrlNotaPremsa'] = $this->convertFileNameToDate($Arxius[1]['name'] , $TipusPublica, !$TipusPublica );
             $RET['UrlWeb'] = $this->convertFileNameToDate('NotaDePremsa.html' , $TipusPublica, !$TipusPublica );
                             
+            // Afegeixo la URL per mostarar al web
+            foreach($RET as $K=>$R) { 
+                $RET['Genera'][$K] = $URL_DOWNLOADS_TEMP . $R;                
+                $RET['Publica'][$K] = $URL_DOWNLOADS_SITE . $R;                
+            }
+
             if($Tipus == 'NotaPremsaGenera') {
                                     
                 //Esborro els arxius que hi pugui haver al temp
-                array_map( 'unlink', array_filter((array) glob($URL_DOWNLOADS_TMP."/*") ) );
+                array_map( 'unlink', array_filter((array) glob($DIR_DOWNLOADS_TEMP."/*") ) );
 
-                move_uploaded_file( $Arxius[1]['tmp_name'], $URL_DOWNLOADS_TMP . $RET['UrlImatge'] );
-                move_uploaded_file( $Arxius[0]['tmp_name'], $URL_DOWNLOADS_TMP . $RET['UrlNotaPremsa'] );
-                file_put_contents( $URL_DOWNLOADS_TMP . $RET['UrlWeb'] , $URL_DOWNLOADS_TMP . $Dades[0] );
+                move_uploaded_file( $Arxius[0]['tmp_name'], $DIR_DOWNLOADS_TEMP . $RET['UrlImatge'] );
+                move_uploaded_file( $Arxius[1]['tmp_name'], $DIR_DOWNLOADS_TEMP . $RET['UrlNotaPremsa'] );                
                 
-                // Afegeixo la URL per mostarar al web
-                foreach($RET as $K=>$R) $RET[$K] = $URL_WEB_TEMP . $R;                
+                $Html = str_replace( '@@URL_NOTA_WEB@@' , $RET['Genera']['UrlWeb'], $Dades[0] );         
+                $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $RET['Genera']['UrlNotaPremsa'], $Html );         
+                $Html = str_replace( '@@URL_IMATGE@@' , $RET['Genera']['UrlImatge'], $Html );         
+                $Html = str_replace( '&lt;' , "<", $Html );         
+                $Html = str_replace( '&gt;' , ">", $Html );                                                                         
+                file_put_contents( $DIR_DOWNLOADS_TEMP . 'NotaDePremsa.html' , $Html );                                
 
-                return array(200, $RET);
+                return array(200, array('Html' => $Html, 'Url' => $DIR_DOWNLOADS_TEMP . $RET['UrlWeb']));
 
             }
             if($Tipus == 'NotaPremsaPublica') {
                                 
-                $files = array_diff(scandir($URL_DOWNLOADS_TMP), array('.', '..'));
-                foreach($files as $file) rename($URL_DOWNLOADS_TMP . $file, $URL_DOWNLOADS_SITE . basename($file) );
+                $files = array_diff(scandir($DIR_DOWNLOADS_TEMP), array('.', '..','NotaDePremsa.html'));
+                foreach($files as $file) rename($DIR_DOWNLOADS_TEMP . $file, $DIR_DOWNLOADS_SITE . basename($file) );
+
+                $Html = str_replace( '@@URL_NOTA_WEB@@' , $RET['Publica']['UrlWeb'], $Dades[0] );         
+                $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $RET['Publica']['UrlNotaPremsa'], $Html );         
+                $Html = str_replace( '@@URL_IMATGE@@' , $RET['Publica']['UrlImatge'], $Html );         
+                $Html = str_replace( '&lt;' , "<", $Html );         
+                $Html = str_replace( '&gt;' , ">", $Html );                                                                         
+                file_put_contents( $DIR_DOWNLOADS_SITE . $RET['UrlWeb'] , $Html );                  
 
                 //Esborro el directori de la sessió
-                rmdir($URL_DOWNLOADS_TMP);
+                rmdir($DIR_DOWNLOADS_TEMP);                
 
-                // Afegeixo la URL per mostarar al web
-                foreach($RET as $K=>$R) $RET[$K] = $URL_WEB_DOWNLOADS_SITE . $R;
-
-                return array(200, $RET);
+                return array(200, array('Html' => $Html, 'Url' => $DIR_DOWNLOADS_TEMP . $RET['UrlWeb']));
 
             }
                                 

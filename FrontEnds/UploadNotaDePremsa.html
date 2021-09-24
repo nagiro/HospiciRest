@@ -40,11 +40,12 @@
                 <br />                                
                 <div v-if="Errors.length > 0" style="padding: 2vw; background-color: darkred; color:white;">{{Errors}}</div>
                 <br />
-                <input type="submit" v-if="!PublicaOk" @click="Update(false)" value="Genera" />
-                <input type="submit" v-if="!PublicaOk && UpdateOk" @click="Update(true)" value="Publica" />
+                <input type="submit" v-if="Estat != 2" @click="Update('Genera')" value="Genera" />
+                <input type="submit" v-if="Estat == 1" @click="Update('Publica')" value="Publica" />
+                <div v-if="Estat == 2">Nota de premsa publicada a: {{UrlPublicacio}}</div>
 
-            </div>
-            <div v-html="doc" v-if="UpdateOk"></div>                                                      
+            </div>            
+            <div v-html="doc"></div>                                                             
 
         </div>
         
@@ -53,40 +54,48 @@
         var app = new Vue({
                 el: '#app',
                 data: {       
-                    doc: '',    
+                    doc: '',        
+                    UrlPublicacio: '',                
                     titol: '',                    
                     text: '',
                     user: '',
                     password: '',
                     SUBMIT_URL: '/apiweb/UploadFrontEnds',                    
                     TEMPLATE_URL: 'http://www.casadecultura.cat/downloads/premsa/template.html',
-                    UpdateOk: false,
-                    PublicaOk: false,
+                    Estat: 0,       //0: Inicial, 1: He fet un enviament Update, 2: He fet un enviament Publicar                    
                     SITE_ID : 1,
                     file_imatge: '',
                     file_notapremsa: '',
-                    Errors: ''                                        
+                    Errors: '',
+                    BotoPremut: 'Genera',  // Genera o Publica
                 },
                 created () {},
                 
                 methods: {  
                         
-                    Update($Publica) {      
+                    Update(BotoPremut) {      
                         
-                        if($Publica) this.PublicaOk = false; 
-                        else this.UpdateOk = false;
-
+                        this.BotoPremut = BotoPremut;
                         this.Errors = '';
+
+                        if(BotoPremut == 'Genera') this.Estat = 0; 
+                        else if(BotoPremut == 'Publica') this.Estat = 1;
+                        
                         axios.get( this.TEMPLATE_URL )
                         .then( (r) => {                             
-                            this.doc = r.data;                                                                                                          
-                            this.doc = this.doc.replace('@@TITOL@@', this.titol);
-                            this.doc = this.doc.replace('@@TEXT@@', this.text);
-
-                            let formData = new FormData();                                                  
-                            if($Publica) formData.append('accio', 'NotaPremsaPublica');
-                            else formData.append('accio', 'NotaPremsaGenera');
                                                         
+                            let formData = new FormData();                                                  
+
+                            if(this.Estat == 0) {
+                                this.doc = r.data;                                                                                                          
+                                this.doc = this.doc.replace('@@TITOL@@', this.titol);
+                                this.doc = this.doc.replace('@@TEXT@@', this.text);
+                                this.docGenera = this.doc;
+                                formData.append('accio', 'NotaPremsaGenera');
+                            } else if(this.Estat == 1) {
+                                formData.append('accio', 'NotaPremsaPublica');
+                            }
+                                                                                                                                            
                             if(this.file_imatge == '') { alert('No has entrat cap imatge.'); return false; } else formData.append('file_imatge', this.file_imatge);                            
                             if(this.file_notapremsa == '') { alert('No has entrat la nota de premsa'); return false; } else formData.append('file_notapremsa', this.file_notapremsa);                            
                             if(this.doc == '') { alert('No has entrat el text web'); return false; } else formData.append('html', this.doc);                            
@@ -94,22 +103,19 @@
                             if(this.password == '') { alert('No has entrat la contrasenya'); return false; } else formData.append('Password', this.password);                                                        
 
                             formData.append('SiteId', 1);           //SiteId
-                            formData.append('Publica', $Publica);
+                            formData.append('Publica', (this.Estat == 1));
                             
                             axios.post( this.SUBMIT_URL, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
                                 .then( (r) => { 
-                                    //Aquí carrego els arxius i el text i retorna els enllaços disponibles                                                                        
-                                    this.doc = this.doc.replace( '@@URL_NOTA_WEB@@' , r.data.UrlWeb );         
-                                    this.doc = this.doc.replace( '@@DOWNLOAD_NOTA@@' , r.data.UrlNotaPremsa );
-                                    this.doc = this.doc.replace( '@@URL_IMATGE@@' , r.data.UrlImatge );          
-                                    this.doc = this.doc.replace( '&lt;', "<");
-                                    this.doc = this.doc.replace( '&gt;', ">");                                    
-                                    if(this.UpdateOk) this.PublicaOk = true;
-                                    this.UpdateOk = true;
+                                               
+                                    this.doc = r.data.Html;
+                                    this.UrlPublicacio = r.data.Url;
+                                    if(this.Estat == 1) this.Estat = 2;
+                                    else this.Estat = 1;
                                  })
-                                .catch( (e) => { this.Errors = e.response.data; this.UpdateOk = false; this.URLArxiu = ''; });
+                                .catch( (e) => { this.Errors = e.response.data; this.Estat = 0; this.URLArxiu = ''; });
                         })
-                        .catch( (e) => { this.Errors = e.response.data; this.UpdateOk = false; this.URLArxiu = ''; });
+                        .catch( (e) => { this.Errors = e.response.data; this.Estat = 0; this.URLArxiu = ''; });
                         
                     },
                     
