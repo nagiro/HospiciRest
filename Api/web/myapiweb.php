@@ -41,8 +41,7 @@ class MyAPIWeb extends API
     /**
      * Funció que és cridada per guardar el formulari de Wufoo quan s'ha creat.
      */
-    protected function GuardaFormulariWufoo() {
-        
+    protected function GuardaFormulariWufoo() {        
         // Si rebo un formulari de Wufoo, guardo el formulari                         
         if($_POST['HandshakeKey'] == "CasaDeCultura.") {
 
@@ -355,6 +354,44 @@ class MyAPIWeb extends API
 
 
     /**
+     * Funció Upload GENÈRICA per arxius dins de downloads ( Premsa, general... )
+     * Cal entrar DNI + Contrasenya i si és correcte, llavors pots carregar un arxiu a downloads
+     */
+    protected function UploadFrontEnds() {
+
+        //Miro quina acció he de fer... nota de premsa (np)
+        if(!isset($this->request['post']['accio'])) return array(400, "Acció incorrecta.");
+        $Accio = $this->request['post']['accio'];
+
+        //Miro quina acció he de fer... nota de premsa (np)
+        if(!isset($this->request['post']['SiteId'])) return array(400, "No hi ha un site correcte.");
+        $SiteId = $this->request['post']['SiteId'];
+
+        // L'usuari és correcte i la contrasenya també
+//        if(!$this->Auth->doLogin($this->request['post']['Usuari'], $this->request['post']['Password'], $this->request['post']['SiteId']))
+//            return array("Autentificació fallida!", 400);
+
+        $WAPI = new WebApiController();
+        if( $Accio == 'NotaPremsaGenera' ||  $Accio == 'NotaPremsaPublica' ) {
+
+            if(!isset($this->request['post']['html'])) return array("No hi ha l'html.", 400);
+            if(!isset($this->request['files']['file_imatge'])) return array("No hi ha cap imatge.", 400);
+            if(!isset($this->request['files']['file_notapremsa'])) return array("No hi ha cap arxiu de nota de premsa.",400);
+            $Dades = array($this->request['post']['html']);
+            $Arxius = array($this->request['files']['file_imatge'], $this->request['files']['file_notapremsa']);
+            $RES = $WAPI->doUploadFrontEnds( $SiteId, $Accio , $Dades , $Arxius );
+            
+        }
+        
+        
+                                                    
+        if($RES[0]) return array($RES[1], 200);
+        else return array($RES[1], 400);            
+        
+    }    
+
+    /**
+     * Funció Upload per carregar arxius en relació a Pàgines de la web
      * Cal entrar DNI + Contrasenya i si és correcte, llavors pots carregar un arxiu a downloads
      */
     protected function UploadPaginaFileApi() {

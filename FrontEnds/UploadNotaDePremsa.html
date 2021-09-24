@@ -1,0 +1,124 @@
+<html>
+    <header>
+        
+        <meta charset="UTF-8">
+        
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <style>
+            label { font-weight: bold;}
+            h1 { font-weight: bolder; }
+            .marc { display: flex; }
+            
+                        
+        </style>
+    </header>
+    <body>
+        <div class="marc" id="app">
+
+            <div style="width: 50vw;">                
+
+                <h1>FORMULARI PER ENVIAMENT DE PREMSA</h1>
+                            
+                <div>Títol:</div>
+                <div><input v-model="titol" style="width: 100%" /></div>
+
+                <div>Text:</div>
+                <div><textarea v-model="text" style="width: 100%; height: 50vh;"></textarea></div>
+                <br />
+                <div>Imatge (600x600px):</div><div><input @change="handleFileUpload" type="file" ref="file_image" name="imatge" /></div>
+                <br />
+                <div>Nota de premsa (pdf o docx):</div><div><input @change="handleFileUpload" type="file"  ref="file_news" name="nota" /></div>
+                <br />
+                <div style="display: flex">
+                    <div>&nbsp;Usuari:</div>
+                    <div><input type="text" v-model="user" style="width: 100%" /></div>
+                    <div>&nbsp;Contrasenya:</div>
+                    <div><input type="password" v-model="password" style="width: 100%" /></div>
+                </div>
+                <br />                                
+                <div v-if="Errors.length > 0" style="padding: 2vw; background-color: darkred; color:white;">{{Errors}}</div>
+                <br />
+                <input type="submit" v-if="!PublicaOk" @click="Update(false)" value="Genera" />
+                <input type="submit" v-if="!PublicaOk && UpdateOk" @click="Update(true)" value="Publica" />
+
+            </div>
+            <div v-html="doc" v-if="UpdateOk"></div>                                                      
+
+        </div>
+        
+    </body>
+    <script>
+        var app = new Vue({
+                el: '#app',
+                data: {       
+                    doc: '',    
+                    titol: '',                    
+                    text: '',
+                    user: '',
+                    password: '',
+                    SUBMIT_URL: '/apiweb/UploadFrontEnds',                    
+                    TEMPLATE_URL: 'http://www.casadecultura.cat/downloads/premsa/template.html',
+                    UpdateOk: false,
+                    PublicaOk: false,
+                    SITE_ID : 1,
+                    file_imatge: '',
+                    file_notapremsa: '',
+                    Errors: ''                                        
+                },
+                created () {},
+                
+                methods: {  
+                        
+                    Update($Publica) {      
+                        
+                        if($Publica) this.PublicaOk = false; 
+                        else this.UpdateOk = false;
+
+                        this.Errors = '';
+                        axios.get( this.TEMPLATE_URL )
+                        .then( (r) => {                             
+                            this.doc = r.data;                                                                                                          
+                            this.doc = this.doc.replace('@@TITOL@@', this.titol);
+                            this.doc = this.doc.replace('@@TEXT@@', this.text);
+
+                            let formData = new FormData();                                                  
+                            if($Publica) formData.append('accio', 'NotaPremsaPublica');
+                            else formData.append('accio', 'NotaPremsaGenera');
+                                                        
+                            if(this.file_imatge == '') { alert('No has entrat cap imatge.'); return false; } else formData.append('file_imatge', this.file_imatge);                            
+                            if(this.file_notapremsa == '') { alert('No has entrat la nota de premsa'); return false; } else formData.append('file_notapremsa', this.file_notapremsa);                            
+                            if(this.doc == '') { alert('No has entrat el text web'); return false; } else formData.append('html', this.doc);                            
+                            if(this.user == '') { alert('No has entrat el nom usuar'); return false; } else formData.append('Usuari', this.user);
+                            if(this.password == '') { alert('No has entrat la contrasenya'); return false; } else formData.append('Password', this.password);                                                        
+
+                            formData.append('SiteId', 1);           //SiteId
+                            formData.append('Publica', $Publica);
+                            
+                            axios.post( this.SUBMIT_URL, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+                                .then( (r) => { 
+                                    //Aquí carrego els arxius i el text i retorna els enllaços disponibles                                                                        
+                                    this.doc = this.doc.replace( '@@URL_NOTA_WEB@@' , r.data.UrlWeb );         
+                                    this.doc = this.doc.replace( '@@DOWNLOAD_NOTA@@' , r.data.UrlNotaPremsa );
+                                    this.doc = this.doc.replace( '@@URL_IMATGE@@' , r.data.UrlImatge );          
+                                    this.doc = this.doc.replace( '&lt;', "<");
+                                    this.doc = this.doc.replace( '&gt;', ">");                                    
+                                    if(this.UpdateOk) this.PublicaOk = true;
+                                    this.UpdateOk = true;
+                                 })
+                                .catch( (e) => { this.Errors = e.response.data; this.UpdateOk = false; this.URLArxiu = ''; });
+                        })
+                        .catch( (e) => { this.Errors = e.response.data; this.UpdateOk = false; this.URLArxiu = ''; });
+                        
+                    },
+                    
+                    handleFileUpload(){                                                    
+                        this.file_imatge = this.$refs.file_image.files[0];
+                        this.file_notapremsa = this.$refs.file_news.files[0];
+                    }
+                }
+        });            
+    </script>
+
+</html>

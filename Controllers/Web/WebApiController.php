@@ -779,7 +779,65 @@ class WebApiController
         else return array(false, "No he pogut carregar l'arxiu correctament.");
         
     }
+    
+    private function convertFileNameToDate($Filename, $toDate = false, $toSession = false) {
+        $path = pathinfo($Filename);
+        return date("YmdHis") . '.' . $path['extension'];
+    }
+    
+    public function doUploadFrontEnds($SiteId, $Tipus, $Dades, $Arxius) {
+        
+        // $URL_DOWNLOADS_SITE = "/var/www/downloads/{$SiteId}/"; 
+        $URL_DOWNLOADS_SITE = "C:\Users\Usuario\Downloads/{$SiteId}/";
+        $URL_WEB_TEMP = "https://www.casadecultura.cat/downloads/{$SiteId}/".session_id().'/';
+        $URL_WEB_DOWNLOADS_SITE = "https://www.casadecultura.cat/downloads/{$SiteId}/";
+        
+        if($Tipus == 'NotaPremsaGenera' || $Tipus == 'NotaPremsaPublica') { 
+                                
+            $TipusPublica = ($Tipus == 'NotaPremsaPublica');
 
+            // Creo el directori /tmp o bé esborro la sessió en qüestió... 
+            $URL_DOWNLOADS_TMP = $URL_DOWNLOADS_SITE . "tmp/". session_id();            
+            if(!file_exists($URL_DOWNLOADS_TMP)) mkdir($URL_DOWNLOADS_TMP, 0777, true);            
+            $URL_DOWNLOADS_TMP .= '/';
+
+            $RET['UrlImatge'] = $this->convertFileNameToDate($Arxius[0]['name'] , $TipusPublica, !$TipusPublica );
+            $RET['UrlNotaPremsa'] = $this->convertFileNameToDate($Arxius[1]['name'] , $TipusPublica, !$TipusPublica );
+            $RET['UrlWeb'] = $this->convertFileNameToDate('NotaDePremsa.html' , $TipusPublica, !$TipusPublica );
+                            
+            if($Tipus == 'NotaPremsaGenera') {
+                                    
+                //Esborro els arxius que hi pugui haver al temp
+                array_map( 'unlink', array_filter((array) glob($URL_DOWNLOADS_TMP."/*") ) );
+
+                move_uploaded_file( $Arxius[1]['tmp_name'], $URL_DOWNLOADS_TMP . $RET['UrlImatge'] );
+                move_uploaded_file( $Arxius[0]['tmp_name'], $URL_DOWNLOADS_TMP . $RET['UrlNotaPremsa'] );
+                file_put_contents( $URL_DOWNLOADS_TMP . $RET['UrlWeb'] , $URL_DOWNLOADS_TMP . $Dades[0] );
+                
+                // Afegeixo la URL per mostarar al web
+                foreach($RET as $K=>$R) $RET[$K] = $URL_WEB_TEMP . $R;                
+
+                return array(200, $RET);
+
+            }
+            if($Tipus == 'NotaPremsaPublica') {
+                                
+                $files = array_diff(scandir($URL_DOWNLOADS_TMP), array('.', '..'));
+                foreach($files as $file) rename($URL_DOWNLOADS_TMP . $file, $URL_DOWNLOADS_SITE . basename($file) );
+
+                //Esborro el directori de la sessió
+                rmdir($URL_DOWNLOADS_TMP);
+
+                // Afegeixo la URL per mostarar al web
+                foreach($RET as $K=>$R) $RET[$K] = $URL_WEB_DOWNLOADS_SITE . $R;
+
+                return array(200, $RET);
+
+            }
+                                
+        }        
+
+    }
     
     public function Encrypt($id) { return HelperForm_Encrypt($id); }
     public function Decrypt($id) { return HelperForm_Decrypt($id); }
