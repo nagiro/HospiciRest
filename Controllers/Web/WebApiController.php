@@ -793,7 +793,7 @@ class WebApiController
         $DIR_DOWNLOADS_SITE = $DIR_DOWNLOADS . $SiteId . "/";
         $DIR_DOWNLOADS_TEMP = $DIR_DOWNLOADS_SITE . "tmp/".session_id().'/';
 
-        $URL_DOWNLOADS = "https://www.casadecultura.cat/downloads/";
+        $URL_DOWNLOADS = "http://www.casadecultura.cat/downloads/";
         // $URL_DOWNLOADS = "http://localhost:8080/downloads/";
         $URL_DOWNLOADS_SITE = $URL_DOWNLOADS . $SiteId . "/";
         $URL_DOWNLOADS_TEMP = $URL_DOWNLOADS_SITE . "tmp/".session_id().'/';
