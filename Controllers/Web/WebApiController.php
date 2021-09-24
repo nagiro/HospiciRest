@@ -809,13 +809,7 @@ class WebApiController
             $RET['UrlImatge'] = $this->convertFileNameToDate($Arxius[0]['name'] , $TipusPublica, !$TipusPublica );
             $RET['UrlNotaPremsa'] = $this->convertFileNameToDate($Arxius[1]['name'] , $TipusPublica, !$TipusPublica );
             $RET['UrlWeb'] = $this->convertFileNameToDate('NotaDePremsa.html' , $TipusPublica, !$TipusPublica );
-                            
-            // Afegeixo la URL per mostarar al web
-            foreach($RET as $K=>$R) { 
-                $RET['Genera'][$K] = $URL_DOWNLOADS_TEMP . $R;                
-                $RET['Publica'][$K] = $URL_DOWNLOADS_SITE . $R;                
-            }
-
+                                        
             if($Tipus == 'NotaPremsaGenera') {
                                     
                 //Esborro els arxius que hi pugui haver al temp
@@ -824,9 +818,9 @@ class WebApiController
                 move_uploaded_file( $Arxius[0]['tmp_name'], $DIR_DOWNLOADS_TEMP . $RET['UrlImatge'] );
                 move_uploaded_file( $Arxius[1]['tmp_name'], $DIR_DOWNLOADS_TEMP . $RET['UrlNotaPremsa'] );                
                 
-                $Html = str_replace( '@@URL_NOTA_WEB@@' , $RET['Genera']['UrlWeb'], $Dades[0] );         
-                $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $RET['Genera']['UrlNotaPremsa'], $Html );         
-                $Html = str_replace( '@@URL_IMATGE@@' , $RET['Genera']['UrlImatge'], $Html );         
+                $Html = str_replace( '@@URL_NOTA_WEB@@' , $URL_DOWNLOADS_TEMP . 'NotaDePremsa.html', $Dades[0] );         
+                $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $URL_DOWNLOADS_TEMP . 'ArxiuNotaPremsa.html', $Html );         
+                $Html = str_replace( '@@URL_IMATGE@@' , $URL_DOWNLOADS_TEMP . 'ImatgeNotaPremsa.html', $Html );         
                 $Html = str_replace( '&lt;' , "<", $Html );         
                 $Html = str_replace( '&gt;' , ">", $Html );                                                                         
                 file_put_contents( $DIR_DOWNLOADS_TEMP . 'NotaDePremsa.html' , $Html );                                
@@ -836,12 +830,12 @@ class WebApiController
             }
             if($Tipus == 'NotaPremsaPublica') {
                                 
-                $files = array_diff(scandir($DIR_DOWNLOADS_TEMP), array('.', '..','NotaDePremsa.html'));
-                foreach($files as $file) rename($DIR_DOWNLOADS_TEMP . $file, $DIR_DOWNLOADS_SITE . basename($file) );
+                rename($DIR_DOWNLOADS_TEMP . 'ArxiuNotaPremsa.html', $DIR_DOWNLOADS_SITE . $RET['UrlNotaPremsa']);
+                rename($DIR_DOWNLOADS_TEMP . 'ImatgeNotaPremsa.html', $DIR_DOWNLOADS_SITE . $RET['UrlImatge']);                
 
-                $Html = str_replace( '@@URL_NOTA_WEB@@' , $RET['Publica']['UrlWeb'], $Dades[0] );         
-                $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $RET['Publica']['UrlNotaPremsa'], $Html );         
-                $Html = str_replace( '@@URL_IMATGE@@' , $RET['Publica']['UrlImatge'], $Html );         
+                $Html = str_replace( '@@URL_NOTA_WEB@@' , $URL_DOWNLOADS_SITE . $RET['Publica']['UrlWeb'], $Dades[0] );         
+                $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $URL_DOWNLOADS_SITE . $RET['Publica']['UrlNotaPremsa'], $Html );         
+                $Html = str_replace( '@@URL_IMATGE@@' , $URL_DOWNLOADS_SITE . $RET['Publica']['UrlImatge'], $Html );         
                 $Html = str_replace( '&lt;' , "<", $Html );         
                 $Html = str_replace( '&gt;' , ">", $Html );                                                                         
                 file_put_contents( $DIR_DOWNLOADS_SITE . $RET['UrlWeb'] , $Html );                  

@@ -88,9 +88,8 @@
 
                             this.doc = r.data;                                                                                                          
                             this.doc = this.doc.replace('@@TITOL@@', this.titol);
-                            this.doc = this.doc.replace('@@TEXT@@', this.text);
-                            this.docGenera = this.doc;
-                            
+                            this.doc = this.doc.replace('@@TEXT@@', this.text);                            
+
                             if(this.Estat == 0) {                                
                                 formData.append('accio', 'NotaPremsaGenera');
                             } else if(this.Estat == 1) {
