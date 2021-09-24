@@ -849,7 +849,7 @@ class WebApiController
                 //Esborro el directori de la sessió
                 rmdir($DIR_DOWNLOADS_TEMP);                
 
-                return array(200, array('Html' => $Html, 'Url' => $DIR_DOWNLOADS_TEMP . $RET['UrlWeb']));
+                return array(200, array('Html' => $Html, 'Url' => $URL_DOWNLOADS_SITE . $RET['UrlWeb']));
 
             }
                                 
