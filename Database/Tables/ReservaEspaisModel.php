@@ -120,7 +120,8 @@ class ReservaEspaisModel extends BDD {
         if( is_numeric( $id ) && $id > 0 ) $ORE[ $this->gnfnwt( self::ReservaEspaiId ) ] = $id;
         else throw new Exception('Hi ha hagut algun problema guardant la reserva.');
 
-        $ORE = $this->setCodi($ORE, $id . date('mY'));
+        $ORE = $this->setCodi($ORE, $id . date('mY'));        
+        $this->_doUpdate($ORE, array(self::ReservaEspaiId));
 
         return $ORE;
 

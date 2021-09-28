@@ -169,7 +169,7 @@ class BDD extends PDO {
 
     /**
      * NFWTAV: Objecte[NewFieldNameWithTable] => Value
-     * WhereArray: NewFieldName => Value
+     * WhereArray: array(NewFieldName)  -- Agafarà el valor del camp entrat als valors a fer update
      */
     public function _doUpdate($NFWTAV, $WhereArray) {
         //Carreguem els nous valors a guardar
