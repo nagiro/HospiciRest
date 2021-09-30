@@ -4,11 +4,20 @@ require_once BASEDIR."Database/DB.php";
 
 class SitesModel extends BDD {
     
+    const FIELD_SiteId = "SiteId";
+    const FIELD_Nom = "Nom";
+    const FIELD_Actiu = "Actiu";
+    const FIELD_Poble = "Poble";
+    const FIELD_LogoUrl = "LogoUrl";
+    const FIELD_WebUrl = "WebUrl";
+    const FIELD_Telefon = "Telefon";
+    const FIELD_Email = "Email";    
+
     public function __construct() {
         
                             
         $OldFields = array("site_id","nom","actiu","poble","logoUrl","webUrl","telefon","email");
-        $NewFields = array("SiteId", "Nom", "Actiu", "Poble", "LogoUrl", "WebUrl", "Telefon", "Email");
+        $NewFields = array( self::FIELD_SiteId, self::FIELD_Nom, self::FIELD_Actiu, self::FIELD_Poble, self::FIELD_LogoUrl, self::FIELD_WebUrl, self::FIELD_Telefon, self::FIELD_Email );
         parent::__construct("sites", "SITES", $OldFields, $NewFields );        
         
     }

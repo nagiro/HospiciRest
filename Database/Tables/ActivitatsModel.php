@@ -13,11 +13,45 @@ require_once BASEDIR."Database/DB.php";
 
 class ActivitatsModel extends BDD {
 
+    const FIELD_Actiu = "Actiu";
+    const FIELD_ActivitatId = "ActivitatId";
+    const FIELD_Categories = "Categories";
+    const FIELD_CiclesCicleId = "CiclesCicleId";
+    const FIELD_DescripcioCompleta = "DescripcioCompleta";
+    const FIELD_DescripcioCurta = "DescripcioCurta";
+    const FIELD_DefinicioHoraris = "DefinicioHoraris";
+    const FIELD_Descripcio = "Descripcio";
+    const FIELD_DescripcioMig = "DescripcioMig";
+    const FIELD_Estat = "Estat";
+    const FIELD_Imatge = "Imatge";
+    const FIELD_InformacioPractica = "InformacioPractica";
+    const FIELD_IsEntrada = "IsEntrada";
+    const FIELD_IsImportant = "IsImportant";
+    const FIELD_Nom = "Nom";
+    const FIELD_Organitzador = "Organitzador";
+    const FIELD_Pdf = "Pdf";
+    const FIELD_Places = "Places";
+    const FIELD_Preu = "Preu";
+    const FIELD_PreuReduit = "PreuReduit";
+    const FIELD_Publicable = "Publicable";
+    const FIELD_PublicableWeb = "PublicableWeb";
+    const FIELD_Responsable = "Responsable";
+    const FIELD_SiteId = "SiteId";
+    const FIELD_TitolComplet = "TitolComplet";
+    const FIELD_TitolCurt = "TitolCurt";
+    const FIELD_TipusActivitatId = "TipusActivitatId";
+    const FIELD_TipusEnviament = "TipusEnviament";
+    const FIELD_TitolMig = "TitolMig";
+    const FIELD_ImatgeS = "ImatgeS";
+    const FIELD_ImatgeM = "ImatgeM";
+    const FIELD_ImatgeL = "ImatgeL";
+    const FIELD_WufooFormStatus = "WufooFormStatus";
+    
 
     public function __construct() {
 
         $OldFields = array("actiu", "ActivitatID", "Categories", "Cicles_CicleID", "dComplet",           "dCurt",           "Definiciohoraris", "Descripcio", "dMig",           "Estat", "Imatge", "InfoPractica",       "isEntrada", "isImportant", "Nom", "Organitzador", "PDF", "Places", "Preu", "PreuReduit", "Publicable", "PublicaWEB",    "Responsable", "site_id", "tComplet",     "tCurt",     "TipusActivitat_idTipusActivitat", "tipusEnviament", "tMig", "ImatgeS", "ImatgeM", "ImatgeL", "WufooFormStatus");
-        $NewFields = array("Actiu", "ActivitatId", "Categories", "CiclesCicleId" , "DescripcioCompleta", "DescripcioCurta", "DefinicioHoraris", "Descripcio", "DescripcioMig",  "Estat", "Imatge", "InformacioPractica", "IsEntrada", "IsImportant", "Nom", "Organitzador", "Pdf", "Places", "Preu", "PreuReduit", "Publicable", "PublicableWeb", "Responsable", "SiteId",  "TitolComplet", "TitolCurt", "TipusActivitatId",                "TipusEnviament", "TitolMig", "ImatgeS", "ImatgeM", "ImatgeL", "WufooFormStatus");
+        $NewFields = array( self::FIELD_Actiu, self::FIELD_ActivitatId, self::FIELD_Categories, self::FIELD_CiclesCicleId, self::FIELD_DescripcioCompleta, self::FIELD_DescripcioCurta, self::FIELD_DefinicioHoraris, self::FIELD_Descripcio, self::FIELD_DescripcioMig, self::FIELD_Estat, self::FIELD_Imatge, self::FIELD_InformacioPractica, self::FIELD_IsEntrada, self::FIELD_IsImportant, self::FIELD_Nom, self::FIELD_Organitzador, self::FIELD_Pdf,         self::FIELD_Places, self::FIELD_Preu,         self::FIELD_PreuReduit, self::FIELD_Publicable,         self::FIELD_PublicableWeb, self::FIELD_Responsable,         self::FIELD_SiteId, self::FIELD_TitolComplet,         self::FIELD_TitolCurt, self::FIELD_TipusActivitatId,         self::FIELD_TipusEnviament, self::FIELD_TitolMig, self::FIELD_ImatgeS, self::FIELD_ImatgeM, self::FIELD_ImatgeL, self::FIELD_WufooFormStatus );
         parent::__construct("activitats", "ACTIVITATS", $OldFields, $NewFields );
 
     }
@@ -122,24 +156,103 @@ class ActivitatsModel extends BDD {
         
     }
 
-    public function genXML(){
-/*
-        $this->setLayout(null);
-        $this->setTemplate(null);
-        $LOH = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,false);
+    public function getActivitatsFranja( $idS, $DataInicial, $DataFinal ) {    
+        
+        $HM = new HorarisModel(); $HEM = new HorarisEspaisModel(); 
+        $EM = new EspaisModel(); $TAM = new TipusActivitatsModel();
+        $CM = new CiclesModel();
+        $WA = array();
+
+        $SQL = "
+                Select {$HM->getSelectFieldsNames()},{$EM->getSelectFieldsNames()},{$this->getSelectFieldsNames()}, 
+                        {$TAM->gnfnwt(TipusActivitatsModel::FIELD_Nom)}, {$CM->gnfnwt(CiclesModel::FIELD_Tmig)}
+                from {$this->getTableName()} 
+                LEFT JOIN {$HM->getTableName()} ON ( {$this->getOldFieldNameWithTable('ActivitatId')} = {$HM->getOldFieldNameWithTable('ActivitatId')} )
+                LEFT JOIN {$HEM->getTableName()} ON ( {$HM->getOldFieldNameWithTable('HorariId')} = {$HEM->getOldFieldNameWithTable('HorariId')} )
+                LEFT JOIN {$EM->getTableName()} ON ( {$EM->getOldFieldNameWithTable('EspaiId')} = {$HEM->getOldFieldNameWithTable('EspaiId')} )
+                LEFT JOIN {$TAM->getTableName()} ON ( {$TAM->getOldFieldNameWithTable(TipusActivitatsModel::FIELD_IdTipusActivitat)} = {$this->getOldFieldNameWithTable(self::FIELD_TipusActivitatId)} )
+                LEFT JOIN {$CM->getTableName()} ON ( {$CM->getOldFieldNameWithTable(CiclesModel::FIELD_IdCicle)} = {$this->getOldFieldNameWithTable(self::FIELD_CiclesCicleId)} )
+                where 
+                         {$this->getOldFieldNameWithTable('SiteId')} = :site_id
+                AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
+                AND      {$HM->getOldFieldNameWithTable('Dia')} > :DataInicial
+                AND      {$HM->getOldFieldNameWithTable('Dia')} < :DataFinal
+                AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                                                 
+                ORDER BY {$HM->getOldFieldNameWithTable('Dia')} asc
+            ";
+
+        $SQLW = array('site_id'=>$idS, 'DataInicial' => $DataInicial, 'DataFinal' => $DataFinal );        
+                
+        return $this->runQuery($SQL, array_merge( $SQLW , $WA ) );
+        
+    }    
+
+    /**
+     * Funció complement de getActivitatsFranja
+     */
+    private function getHorarisFromActivitat($LOA, $idA) {
+        $RET = array('DiaMax' => '0000-00-00', 'DiaMin' => '0000-00-00', 'HoraInici' => '00:00');
+        foreach($LOA as $OA) {
+            if($OA[ HorarisModel::FIELD_ActivitatId] == $idA){
+                if($OA[ HorarisModel::FIELD_Dia] > $RET['DiaMax']) $RET['DiaMax'] = $OA[ HorarisModel::FIELD_Dia];
+                if($OA[ HorarisModel::FIELD_Dia] < $RET['DiaMin']) $RET['DiaMin'] = $OA[ HorarisModel::FIELD_Dia];
+                $RET['HoraInici'] = $OA[ HorarisModel::FIELD_HoraInici ];
+            }
+        }
+        return $RET;
+    }
+
+    public function genXML( $DataInicial, $DataFinal, $SiteId ){
+        
+        $LOA = $this->getActivitatsFranja( $SiteId, $DataInicial, $DataFinal );
+        $HM = new HorarisModel(); $TAM = new TipusActivitatsModel(); $CM = new CiclesModel();
+
+        $PerTractarXML = array();
+        $idAntActivitat = 0;
+        // Per totes les activitats
+        foreach($LOA as $OA) {
+            
+            $idA = $this->gnfnwt(self::FIELD_ActivitatId);
+
+            if($idA != $idAntActivitat) {
+                
+                $PerTractarXML[$this->gnfnwt(self::FIELD_ActivitatId)] = $OA;
+                $T = $this->getHorarisFromActivitat($LOA, $idA);
+                    
+                $PerTractarXML["data_inicial"] = $T["DiaMin"];
+                $PerTractarXML["data_fi"] = $T["DiaMax"];
+                $PerTractarXML["tipus_activitat"] = $OA[$TAM->gnfnwt(TipusActivitatsModel::FIELD_Nom)];
+                $PerTractarXML["cicle"] = $OA[$CM->gnfnwt(CiclesModel::FIELD_Tmig)];
+
+                $PerTractarXML["tipologia"] = $T["DiaMax"];     //Categories
+                $PerTractarXML["importancia"] = $T["DiaMax"];   //
+                $PerTractarXML["titol"] = $T["DiaMax"];
+                $PerTractarXML["text"] = $T["DiaMax"];
+                $PerTractarXML["url"] = $T["DiaMax"];
+                $PerTractarXML["hora_inici"] = $T["DiaMax"];
+                $PerTractarXML["hora_fi"] = $T["DiaMax"];
+                $PerTractarXML["espais"] = $T["DiaMax"];
+                $PerTractarXML["organitzador"] = $T["DiaMax"];
+                $PerTractarXML["info_practica"] = $T["DiaMax"];
+                $PerTractarXML["url_img_s"] = $T["DiaMax"];
+                $PerTractarXML["url_img_m"] = $T["DiaMax"];
+                $PerTractarXML["url_img_l"] = $T["DiaMax"];
+
+            }
+
+            $idAntActivitat = $this->gnfnwt(self::FIELD_ActivitatId);
+        }        
                     
         //Creem l'objecte XML
-        $i = 1;  
         $document = "<document>\n";                    
-        foreach($LOH as $OH):
-                                                        
-            $OA = $OH->getActivitats();
-            $LE = $OH->getArrayEspais();
-                                                                                                            
+        foreach($PerTractarXML as $O):
+
+            //Consulto el tipus d'activitat
+
             $document .= "<caixa>\n";
-            $document .= "  <data_inicial>".$OA->getPrimerHorari()->getDia('Y-m-d')."</data_inicial>\n";
-            $document .= "  <data_fi>".$OA->getUltimHorari()->getDia('Y-m-d')."</data_fi>\n";
-            $document .= "  <tipus_activitat>".$OA->getNomTipusActivitat()."</tipus_activitat>\n";
+            $document .= "  <data_inicial>".$O["DiaInicial"]."</data_inicial>\n";
+            $document .= "  <data_fi>".$O["DiaFinal"]."</data_fi>\n";
+            $document .= "  <tipus_activitat>".$this->gnfnwt(self::FIELD_TipusActivitatId)."</tipus_activitat>\n";
             $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>\n";
             $document .= "  <tipologia>".$OA->getCategories()."</tipologia>\n";
             $document .= "  <importancia>".$OA->getImportancia()."</importancia>\n";                        
@@ -158,7 +271,7 @@ class ActivitatsModel extends BDD {
                                                                                                                                     
         endforeach;            
         $document .= "</document>\n";                  
-*/
+
     }
 
     /**

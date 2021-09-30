@@ -15,8 +15,8 @@
     <meta name="robots" content="index" />
     <meta name="robots" content="follow"/>
     
-    <title>Casa de Cultura de Girona</title>        
-    <link rel="icon" href="/WebFiles/Web/img/LogoCCG.jpg" />
+    <title><?php echo $Data['HeaderData']['Nom']; ?></title>        
+    <link rel="icon" href="<?php echo $Data['HeaderData']['ImgUrl']; ?>" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="/View/Styles/bootstrap_4.3.1.css" />

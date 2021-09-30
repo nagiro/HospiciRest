@@ -9,10 +9,39 @@ class CursosModel extends BDD {
     const RESTRINGIT_NOMES_UNA    = "2";    
     const RESTRINGIT_NOMES_UN_COP = "3";    
 
+    const FIELD_IdCurs = "IdCurs";
+    const FIELD_TitolCurs = "TitolCurs";
+    const FIELD_IsActiu = "IsActiu";
+    const FIELD_Places = "Places";
+    const FIELD_Codi = "Codi";
+    const FIELD_Descripcio = "Descripcio";
+    const FIELD_Preu = "Preu";
+    const FIELD_Horaris = "Horaris";
+    const FIELD_Categoria = "Categoria";
+    const FIELD_OrdreSortida = "OrdreSortida";
+    const FIELD_DataAparicio = "DataAparicio";
+    const FIELD_DataDesaparicio = "DataDesaparicio";
+    const FIELD_DataInMatricula = "DataInMatricula";
+    const FIELD_DataFiMatricula = "DataFiMatricula";
+    const FIELD_DataInici = "DataInici";
+    const FIELD_VisibleWeb = "VisibleWeb";
+    const FIELD_SiteId = "SiteId";
+    const FIELD_Actiu = "Actiu";
+    const FIELD_CicleId = "CicleId";
+    const FIELD_ActivitatId = "ActivitatId";
+    const FIELD_Pdf = "Pdf";
+    const FIELD_ADescomptes = "ADescomptes";
+    const FIELD_PagamentExtern = "PagamentExtern";
+    const FIELD_PagamentIntern = "PagamentIntern";
+    const FIELD_IsRestringit = "IsRestringit";
+    const FIELD_DadesExtres = "DadesExtres";
+    const FIELD_Teatre = "Teatre";
+
+
     public function __construct() {
         
         $OldFields = array('idCursos', 'TitolCurs', 'isActiu', 'Places',  'Codi', 'Descripcio','Preu', 'Horaris' ,'Categoria', 'OrdreSortida', 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWEB', 'site_id', 'actiu', 'cicle_id', 'activitat_id' ,'PDF', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'isRestringit' ,'DadesExtres', 'Teatre');
-        $NewFields = array("IdCurs", "TitolCurs", "IsActiu", "Places" , "Codi", "Descripcio", "Preu", "Horaris", "Categoria",  "OrdreSortida", 'DataAparicio', 'DataDesaparicio', 'DataInMatricula', 'DataFiMatricula', 'DataInici', 'VisibleWeb', 'SiteId', 'Actiu', 'CicleId', 'ActivitatId' ,'Pdf', 'ADescomptes' ,'PagamentExtern' ,'PagamentIntern' ,'IsRestringit' ,'DadesExtres', 'Teatre');        
+        $NewFields = array(self::FIELD_IdCurs,	self::FIELD_TitolCurs,	self::FIELD_IsActiu,	self::FIELD_Places,	self::FIELD_Codi,	self::FIELD_Descripcio,	self::FIELD_Preu,	self::FIELD_Horaris,	self::FIELD_Categoria,	self::FIELD_OrdreSortida,	self::FIELD_DataAparicio,	self::FIELD_DataDesaparicio,	self::FIELD_DataInMatricula,	self::FIELD_DataFiMatricula,	self::FIELD_DataInici,	self::FIELD_VisibleWeb,	self::FIELD_SiteId,	self::FIELD_Actiu,	self::FIELD_CicleId,	self::FIELD_ActivitatId,	self::FIELD_Pdf,	self::FIELD_ADescomptes,	self::FIELD_PagamentExtern,	self::FIELD_PagamentIntern,	self::FIELD_IsRestringit,	self::FIELD_DadesExtres,	self::FIELD_Teatre );        
         parent::__construct("cursos", "CURSOS", $OldFields, $NewFields );
 
     }

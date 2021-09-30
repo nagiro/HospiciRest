@@ -5,11 +5,16 @@ require_once BASEDIR."Database/DB.php";
 
 class TipusActivitatsModel extends BDD {
 
+    const FIELD_IdTipusActivitat = "IdTipusActivitat";
+    const FIELD_Nom = "Nom";
+    const FIELD_CategoriaVinculada = "CategoriaVinculada";
+    const FIELD_SiteId  = "SiteId ";
+    const FIELD_Actiu = "Actiu";
 
     public function __construct() {
         
         $OldFields = array('idTipusActivitat', 'Nom', 'CategoriaVinculada', 'site_id',  'actiu');
-        $NewFields = array("IdTipusActivitat", "Nom", "CategoriaVinculada", "SiteId" , "Actiu");        
+        $NewFields = array(self::FIELD_IdTipusActivitat, self::FIELD_Nom, self::FIELD_CategoriaVinculada, self::FIELD_SiteId , self::FIELD_Actiu );        
         parent::__construct("tipusactivitat", "TIPUS_ACTIVITATS", $OldFields, $NewFields );
 
     }

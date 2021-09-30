@@ -10,7 +10,7 @@ class MainModule {
     public $Router; 
     public $Auth;
     public $WebController;
-    public $Html;     
+    public $Html;         
 
     public function __construct() {
         
@@ -49,16 +49,21 @@ class MainModule {
 
     private function executeOpenUrlView($url) {                                        
         
+        $Data = array();
+        $Data['HeaderData'] = $this->setHeaderData('Casa de Cultura', '/WebFiles/Web/img/LogoCCG.jpg');        
+
         switch($url[0]) {
             case '': 
-                $this->getModuleContent('HtmlHeaderWeb.php');
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);
                 $Data = $this->WebController->ViewHome();                                
                 // $this->getModuleContent('Web/home.php', base64_encode(json_encode($Data)) ); 
                 $this->getModuleContent('Web/home.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            
+            // Inscripcions de la Casa de Cultura
             case 'inscripcio':
-                $this->getModuleContent('HtmlHeaderWeb.php');                
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);                
                 // $T = $this->Auth->EncodeToken(1, 1, 1);
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
                 $this->Auth->DecodeToken($Token);
@@ -66,68 +71,87 @@ class MainModule {
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+            
+            // Inscripcions de l'Hospici
             // host/inscripcions/{idCurs}/token/{token}
             // host/inscripcions/llistat/0/Casa_de_cultura_riudellots
-            case 'inscripcions':
-                $this->getModuleContent('HtmlHeaderWeb.php');                                
-                
+            case 'inscripcions':                                
                 //Mirem i avaluem els paràmetres de la URL
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : '';
                 if($Token != '') $this->Auth->DecodeToken($Token);
                 $Lloc = ( isset( $url[1] ) && $url[1] == 'llistat' && isset( $url[2] ) ) ? $url[2] : 0;
                 
                 // Si accedim a un lloc específic, llistem tots els cursos. Altrament mostrem el curs en qüestió
-                if($Lloc == 0) $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token, true );
-                elseif($Lloc > 0) $Data = $this->WebController->viewCursosSites( $Lloc );
+                if($Lloc == 0) {                    
+                    $Data = $this->WebController->viewDetall( 0 , $url[1], $this->Auth->getSiteIdIfAdmin(), $Token, true );                    
+                    $CM = new CursosModel();
+                    $Lloc = (isset($Data['Curs'][0][$CM->gnfnwt(CursosModel::FIELD_SiteId)])) ? $Data['Curs'][0][$CM->gnfnwt(CursosModel::FIELD_SiteId)] : 1;
+                    $Data['HeaderData'] = $this->setHeaderData(null, null, $this->WebController->getSiteInfo($Lloc));
+                } elseif($Lloc > 0) {                                        
+                    $Data = $this->WebController->viewCursosSites( $Lloc );
+                    $Data['HeaderData'] = $this->setHeaderData(null, null, $this->WebController->getSiteInfo($Lloc) );
+                }
 
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);                                
                 $this->getModuleContent('Web/inscripcions_sites.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;            
+
+            // Detall de pàgina de la Casa de Cultura de Girona
             case 'detall':
-                $this->getModuleContent('HtmlHeaderWeb.php');
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);
                 $Token = ( isset( $url[2] ) && $url[2] == 'token' && isset( $url[3] ) ) ? $url[3] : ''; 
                 $this->Auth->DecodeToken($Token);
                 $Data = $this->WebController->viewDetall( $url[1] , 0 , $this->Auth->getSiteIdIfAdmin(), $Token, false );
                 $this->getModuleContent('Web/detall.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+
+            // Cicles de la Casa de Cultura             
             case 'cicles':
-                $this->getModuleContent('HtmlHeaderWeb.php');
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);
                 $Data = $this->WebController->viewCicles($url[1]);
                 $this->getModuleContent('Web/llistat.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+
+            // Activitats de pàgina de la Casa de Cultura de Girona
             case 'activitats':
-                $this->getModuleContent('HtmlHeaderWeb.php');
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);
                 // Tipus de filtres... 
                 $Filtres = $this->WebController->getUrlToFilters($url);                                                                                                        
                 $Data = $this->WebController->viewActivitats( $Filtres );
                 $this->getModuleContent('Web/llistat.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+
+            // Pàgina html de nodes estàndard de la Casa de Cultura de Girona
             case 'pagina': 
-                $this->getModuleContent('HtmlHeaderWeb.php');                                
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);                                
                 $Data = $this->WebController->viewPagina( $url[1] );
                 $this->getModuleContent('Web/pagina.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
+
+            // Validador d'entrades de la Casa de Cultura de Girona
             case 'validador':
                 if(!isset($url[1])) throw new Exception("Has d'entrar el codi d'entitat.");
                 if(!is_numeric($url[1])) throw new Exception("Has d'entrar el codi d'entitat correcte."); 
                 $idS = strval( $url[1] );
                 $Data = $this->WebController->getActivitatsDiaValidar( $idS );
-                $this->getModuleContent('HtmlHeaderWeb.php');       
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);       
                 $this->getModuleContent('Web/validador.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
             break;
-            case 'espais':                
-                
-                $Data = array();
 
+            // Gestió d'espais de l'Hospici
+            case 'espais':                
+                                
                 // espais/llistat/:idSite/:TextNomSite
                 if($url[1] == 'llistat'):
                     $Data['EspaisDisponibles'] = $this->WebController->getEspaisDisponibles($url[2]);
                     $Data['Site'] = $this->WebController->getSiteInfo($url[2]);
+                    $Data['HeaderData'] = $this->setHeaderData(null, null, $Data['Site']);
                 
                 // espais/detall/:idEspai/:TextEspai
                 elseif($url[1] == 'detall'):
@@ -136,15 +160,33 @@ class MainModule {
                     $SiteId = $Data['EspaiDetall']['Detall']['ESPAIS_SiteId'];
                     $Data['Site'] = $this->WebController->getSiteInfo($SiteId);                    
                     $Data['LlistaEspaisDisponiblesForm'] = $this->WebController->getEspaisDisponibles($SiteId, true);
-                endif;
-                
-                $this->getModuleContent('HtmlHeaderWeb.php');                                                
+                    $Data['HeaderData'] = $this->setHeaderData(null, null, $Data['Site']);
+                endif;                                
+
+                $this->getModuleContent('HtmlHeaderWeb.php', $Data);                                                
                 $this->getModuleContent('Web/espais_sites.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                
                 
             break;            
         }         
         
+    }
+
+    /**
+     * Funció que carrega un títol, imgUrl pels headers de la web.
+    */
+    private function setHeaderData($Titol, $ImgUrl, $SiteObject = null) {
+        require_once DATABASEDIR.'Tables/SitesModel.php';
+        $SM = new SitesModel();
+
+        if(is_null($Titol) && is_null($ImgUrl)) {
+            return array(
+                'Nom' => $SiteObject[$SM->gnfnwt( SitesModel::FIELD_Nom)], 
+                'ImgUrl' => $SiteObject[$SM->gnfnwt( SitesModel::FIELD_LogoUrl )] );
+        }
+        else {
+            return array('Nom' => $Titol, 'ImgUrl' => $ImgUrl);
+        }
     }
 
     private function executeAdminView() {
