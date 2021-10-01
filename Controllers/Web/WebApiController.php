@@ -865,33 +865,32 @@ class WebApiController
     public function doControlHorari( $idS, $idU, $accio, $MesAny = '' ) {
         
         $MonthYear = date('mY');
-        if(!empty($MesAny)) $MonthYear = $MesAny;
+        if( ! empty($MesAny) ) $MonthYear = $MesAny;
 
+        $ModeIdle = ($accio == 'idle');
+        
         $UrlArxiu = DATABASEDIR . 'DbFiles/ControlHorari/' . $idU . '-' . $MonthYear.'.json';        
         $Return = array('Dia' => 0, 'Setmana' => 0, 'Mes' => 0, 'Error' => '', 'MesMostrat' => date('m'), 'EstatBoto' => '', 'DetallHores' => array());
         
-        $File = array(); $ArxiuInexistent = false;
-        if(!file_exists($UrlArxiu)) {            
-            if($accio != 'idle') {
-                $File[] = array('Data'=>date('Y-m-d'), 'HoraInici' => date('H:i:s'), 'HoraFi' => '', 'Total' => 0);                         
-                $UltimaEntrada = end($File);
-                $IndexUE = array_key_last($File);
-            }
-            $ArxiuInexistent = true;
-        } else {
-            $File = json_decode(file_get_contents($UrlArxiu), true);
-        }
+        $File = array(); $ArxiuInexistent = false;        
+        if( ! file_exists($UrlArxiu) ) $ArxiuInexistent = true;
+        else $File = json_decode(file_get_contents($UrlArxiu), true);
         
         $UltimaEntrada = end($File);
         $IndexUE = array_key_last($File);
+        $isHoraFinalBuida = (isset($UltimaEntrada['HoraFi']) && $UltimaEntrada['HoraFi'] == '');
+        $isDataIgualAvui = ( $UltimaEntrada['Data'] == date('Y-m-d') );
         
-        if($accio != 'idle') {
-            //Si la hora final no és buida, vol dir que marco la hora final                    
-            if( $UltimaEntrada['HoraFi'] != '' ) { 
+        if( ! $ModeIdle ) {
+                        
+            if( ! $isHoraFinalBuida || $ArxiuInexistent ) { 
+
+                // Si hora final no és buida, creem una línia nova
                 $File[] = array('Data'=>date('Y-m-d'), 'HoraInici' => date('H:i:s'), 'HoraFi' => '', 'Total' => 0); 
                 $UltimaEntrada = end($File);
                 $IndexUE = array_key_last($File);
-            } else if($UltimaEntrada['HoraFi'] == '' && $UltimaEntrada['Data'] == date('Y-m-d') && !$ArxiuInexistent) { 
+
+            } else if( $isHoraFinalBuida && $isDataIgualAvui ) { 
                 
                 $File[$IndexUE]['HoraFi'] = date('H:i:s'); 
                 $datetimeObj1 = new DateTime( $UltimaEntrada['Data'] . ' ' . $UltimaEntrada['HoraInici'] );
@@ -899,7 +898,7 @@ class WebApiController
                 $interval = $datetimeObj1->diff($datetimeObj2);
                 $File[$IndexUE]["Total"] = ($interval->format('%a')*24*60) + ($interval->format('%h')*60) + $interval->format('%i');
 
-            } else if($UltimaEntrada['HoraFi'] == '' && $UltimaEntrada['Data'] != date('Y-m-d')) { $UltimaEntrada['DataFi'] = '23:59:59'; }
+            } else if( $isHoraFinalBuida && !$isDataIgualAvui ) { $File[$IndexUE]['HoraFi'] = '23:59:59'; }
 
             file_put_contents($UrlArxiu, json_encode($File));
 
@@ -918,8 +917,9 @@ class WebApiController
             if($Setmana == date('W')) $Return['Setmana'] += $Row['Total'];
 
         }                                
-            
-        $Return['EstatBoto'] = ($File[$IndexUE]['HoraFi'] == '' ) ? 'off' : 'on';            
+        
+        $is_Existeix_HoraFi_i_es_buida = (isset($File[$IndexUE]['HoraFi']) && $File[$IndexUE]['HoraFi'] == '' );
+        $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
         $Return['DetallHores'] = $File;
 
         return $Return;
