@@ -441,6 +441,26 @@ class MyAPIWeb extends API
         }
     }        
 
+    /**
+     * Funció que entra un Site i un Usuari i retorna hores treballades per dia, setmana, mes i any.
+     * A més pot portar una acció = on / off / idle
+     *
+     * @return void
+     */
+    protected function apiControlHorari() {        
+        if( isset($this->request['idS']) && isset($this->request['idU']) && isset($this->request['accio']) 
+            && ( $this->request['accio'] == 'idle' || $this->request['accio'] == 'on' || $this->request['accio'] == 'off')
+            && ( is_numeric($this->request['idS']) && is_numeric($this->request['idU']) && $this->request['idS'] > 0 && $this->request['idU'] > 0 )
+        ) {
+            
+            $WAPI = new WebApiController();                        
+            return array($WAPI->doControlHorari( $this->request['idS'], $this->request['idU'], $this->request['accio'], $this->request['MesAny'] ), 200);
+            
+        } else {
+            throw new Exception('Paràmetres incorrectes.');
+        }
+    }            
+
 
  }
 
