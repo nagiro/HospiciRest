@@ -874,6 +874,8 @@ class WebApiController
         if(!file_exists($UrlArxiu)) {            
             if($accio != 'idle') {
                 $File[] = array('Data'=>date('Y-m-d'), 'HoraInici' => date('H:i:s'), 'HoraFi' => '', 'Total' => 0);                         
+                $UltimaEntrada = end($File);
+                $IndexUE = array_key_last($File);
             }
             $ArxiuInexistent = true;
         } else {
