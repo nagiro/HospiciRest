@@ -253,7 +253,7 @@ class ActivitatsModel extends BDD {
 
             }
 
-            $idAntActivitat = $this->gnfnwt(self::FIELD_ActivitatId);
+            $idAntActivitat = $OA[$this->gnfnwt(self::FIELD_ActivitatId)];
         }
         
         $document .= "</document>\n";                            

@@ -134,7 +134,7 @@
                             .then( (r) => { 
                                 
                                 let Template = r.data;                                
-                                let GeneratedHTML = this.GeneraHTMLFromXML(XML, 1);                                
+                                let GeneratedHTML = this.GeneraHTMLFromXML(XML, 1);
                                 GeneratedHTML += this.GeneraHTMLFromXML(XML, 2);
                                 GeneratedHTML += this.GeneraHTMLFromXML(XML, 3);
                                 
@@ -145,23 +145,24 @@
                                 this.HTMLVal = Template;
 
                              })
-                            .catch( (e) => { console.log(e); this.Errors = e.response.data; } );
+//                            .catch( (e) => { console.log(e); this.Errors = e; } );
                     },
                     GeneraHTMLFromXML(XML, Nivell) {
                    
                         parser = new DOMParser();                        
-                        let XMLStructured = parser.parseFromString(XML,"text/xml");
+                        let XMLStructured = parser.parseFromString(XML, "text/html");
                         let Col1 = ''; let Col2 = ''; let HTML = '';
-                        
-                        for(Caixa of XMLStructured.getElementsByTagName("document")[0].childNodes) {
+                        console.log('ChildNodes', XMLStructured.getElementsByTagName("document")[0].childNodes);                           
+                        for(Caixa of XMLStructured.getElementsByTagName("document")[0].childNodes) { 
+                            
                             if(Caixa.nodeType == 1) {
-                                
+
                                 const EsExposicio = (this.getText(Caixa, 'tipus_activitat') == 'Exposició');
                                 const SeleccionaFiltre = ((( Nivell > 0 && !EsExposicio ) && this.getText(Caixa, 'importancia') == Nivell) || (Nivell == 0 && EsExposicio));
-
+                                
                                 if( SeleccionaFiltre && Col1 == '') Col1 = Caixa;
                                 else if( SeleccionaFiltre && Col2 == '') Col2 = Caixa;
-                                
+                                                                                                
                                 if( Col1 != '' && Col2 != ''){
                                     HTML = HTML + this.generaFila2Col(Nivell, Col1, Col2);
                                     Col1 = ''; Col2 = '';
@@ -196,57 +197,63 @@
 
                     generaFila2Col(Nivell, Caixa1, Caixa2) {                        
 
-                        let RET = "";
+                        let RET = "";                        
 
-                        // Si el nivell no és 3, i per tant porta imatge
-                        if(Nivell != 3) {
-                            let i1 = false; let i2 = false;
-                            if( Nivell == 1 || Nivell == 0) {
-                                i1 = this.getText(Caixa1, 'url_img_m');
-                                i2 = this.getText(Caixa2, 'url_img_m');
-                            } else {
-                                i1 = this.getText(Caixa1, 'url_img_s');
-                                i2 = this.getText(Caixa2, 'url_img_s');
-                            }
-                            
-                            RET += '<tr><td><img width="260px" height="260px" src="' + i1 + '" /></td>';
-                            RET += '<td width="20px"></td>';
-                            if(i2 && i2.length > 0) RET += '<td><img width="260px" height="260px" src="' + i2 + '" /></td>';
-                            RET += '</tr>';
+                        // Si el nivell no és 3, i per tant porta imatge                        
+                        let i1 = false; let i2 = false;
+                        if( Nivell == 1 || Nivell == 0) {
+                            i1 = this.getText(Caixa1, 'url_img_m');
+                            i2 = this.getText(Caixa2, 'url_img_m');
+                        } else if(Nivell == 2) {
+                            i1 = this.getText(Caixa1, 'url_img_s');
+                            i2 = this.getText(Caixa2, 'url_img_s');
+                        } 
+                        
+                        if( i1 !== false ) RET += '<tr><td><img width="260px" height="260px" src="' + i1 + '" /></td>';
+                        else RET += '<tr><td width="260px">&nbsp;</td>';
 
-                            let Cicle1 = this.getText(Caixa1, 'cicle');
-                            let Cicle2 = this.getText(Caixa2, 'cicle');
-                            if( Cicle1.indexOf('Activitats fora de cicle') !== false) Cicle1 = '';
-                            if( Cicle2.indexOf('Activitats fora de cicle') !== false) Cicle2 = '';                                                                                    
+                        RET += '<td width="20px"></td>';
 
-                            const Text1 = this.getText(Caixa1, 'text').substr(0,200);
-                            const Text2 = this.getText(Caixa2, 'text').substr(0,200);
-                            let linia1 = '<div class="text"> ' + Text1 + '... <br /><br /> <a href="' + this.getText(Caixa1, 'url') + '"> + llegir més </a> </div>';
-                            let linia2 = '<div class="text"> ' + Text2 + '... <br /><br /> <a href="' + this.getText(Caixa2, 'url') + '">  + llegir més  </a> </div>';
-                            if(Text1 == '') linia1 = '';
-                            if(Text2 == '') linia2 = '';
+                        if( i2 !== false && i2 !== '' ) RET += '<td><img width="260px" height="260px" src="' + i2 + '" /></td>';
+                        else RET += '<td width="260px">&nbsp;</td>';
 
-                            RET += '<tr><td>';
-                            RET += '<span class="h1"> ' + this.getText(Caixa1, 'titol') + ' </span>';
-                            RET += '<hr />';
-                            RET += '<span class="h2"> ' + this.getText(Caixa1, 'tipus_activitat') + ' </span>';
-                            RET += '<span class="h2"> ' + this.generaData( this.getText(Caixa1, 'data_inicial'), this.getText(Caixa1, 'data_fi'), this.getText(Caixa1, 'hora_inici') ) + ' </span>';
-                            RET += ( Cicle1 != '' ) ? '<span class="h3"> Dins el cicle <i>' + Cicle1 + '</i></span>':'';
-                            RET += ( this.getText(Caixa1, 'organitzador') != '') ? '<span class="h4"> Organitzat per <i>' + this.getText(Caixa1, 'organitzador') + '</i></span>':'';
-                            RET += linia1 + '</td><td width="20px"></td><td>';
+                        RET += '</tr>';
 
+                        let Cicle1 = this.getText(Caixa1, 'cicle');
+                        let Cicle2 = this.getText(Caixa2, 'cicle');
+                        if( Cicle1.indexOf('Activitats fora de cicle') !== false) Cicle1 = '';
+                        if( Cicle2.indexOf('Activitats fora de cicle') !== false) Cicle2 = '';                                                                                    
+
+                        const Text1 = this.getText(Caixa1, 'text').substr(0,200);
+                        const Text2 = this.getText(Caixa2, 'text').substr(0,200);
+                        let linia1 = '<div class="text"> ' + Text1 + '... <br /><br /> <a href="' + this.getText(Caixa1, 'url') + '"> + llegir més </a> </div>';
+                        let linia2 = '<div class="text"> ' + Text2 + '... <br /><br /> <a href="' + this.getText(Caixa2, 'url') + '">  + llegir més  </a> </div>';
+                        if(Text1 == '') linia1 = '';
+                        if(Text2 == '') linia2 = '';
+
+                        RET += '<tr><td>';
+                        RET += '<span class="h1"> ' + this.getText(Caixa1, 'titol') + ' </span>';
+                        RET += '<hr />';
+                        RET += '<span class="h2"> ' + this.getText(Caixa1, 'tipus_activitat') + ' </span>';
+                        RET += '<span class="h2"> ' + this.generaData( this.getText(Caixa1, 'data_inicial'), this.getText(Caixa1, 'data_fi'), this.getText(Caixa1, 'hora_inici') ) + ' </span>';
+                        RET += ( Cicle1 != '' ) ? '<span class="h3"> Dins el cicle <i>' + Cicle1 + '</i></span>':'';
+                        RET += ( this.getText(Caixa1, 'organitzador') != '') ? '<span class="h4"> Organitzat per <i>' + this.getText(Caixa1, 'organitzador') + '</i></span>':'';
+                        RET += linia1 + '</td><td width="20px"></td><td>';
+
+                        if( linia2 != '') {
                             RET += '<span class="h1"> ' + this.getText(Caixa2, 'titol') + ' </span>';
                             RET += '<hr />';
                             RET += '<span class="h2"> ' + this.getText(Caixa2, 'tipus_activitat') + ' </span>';
                             RET += '<span class="h2"> ' + this.generaData( this.getText(Caixa2, 'data_inicial'), this.getText(Caixa2, 'data_fi'), this.getText(Caixa2, 'hora_inici') ) + ' </span>';                            
                             RET += ( Cicle2 ) ? '<span class="h3"> Dins el cicle <i>' + Cicle2 + '</i></span>':'';
                             RET += ( this.getText(Caixa2, 'organitzador') != '') ? '<span class="h4"> Organitzat per <i>' + this.getText(Caixa2, 'organitzador') + '</i></span>':'';
-                            RET += linia2 + '</td></tr>';
-                            RET += '<tr><td colspan="3" height="30px"></td></tr>';
-
-                            return RET;
-
                         }
+                        RET += linia2 + '</td></tr>';
+                        RET += '<tr><td colspan="3" height="30px"></td></tr>';
+
+                        return RET;
+
+                    
                         
                     }                    
                 }
