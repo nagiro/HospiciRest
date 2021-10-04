@@ -4,10 +4,19 @@ require_once BASEDIR."Database/DB.php";
 
 class EspaisModel extends BDD {
 
+    const FIELD_Actiu = "Actiu";
+    const FIELD_Descripcio = "Descripcio";
+    const FIELD_EspaiId = "EspaiId";
+    const FIELD_IsLlogable = "IsLlogable";
+    const FIELD_Nom = "Nom";
+    const FIELD_Ordre = "Ordre";
+    const FIELD_SiteId = "SiteId";
+    
+
     public function __construct() {
 
         $OldFields = array("actiu", "descripcio", "EspaiID", "isLlogable", "Nom", "Ordre", "site_id");
-        $NewFields = array("Actiu", "Descripcio", "EspaiId", "IsLlogable", "Nom", "Ordre", "SiteId");
+        $NewFields = array(self::FIELD_Actiu,	self::FIELD_Descripcio,	self::FIELD_EspaiId,	self::FIELD_IsLlogable,	self::FIELD_Nom,	self::FIELD_Ordre,	self::FIELD_SiteId    );
         parent::__construct("espais", "ESPAIS", $OldFields, $NewFields );                        
 
     }

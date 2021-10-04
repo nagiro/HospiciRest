@@ -13,8 +13,7 @@
             label { font-weight: bold;}
             h1 { font-weight: bolder; }
             .marc { display: flex; }
-            
-                        
+                                    
         </style>
     </header>
     <body>
@@ -26,50 +25,50 @@
                     
                             <h1>GENERA BUTLLETÍ</h1>
 
-                        <div class="row">
-                            <div class="col">
-                                <label>Data inici</label>
-                                <vuejs-datepicker v-model="DataInici" style="width: 100%;"></vuejs-datepicker>
+                            <div class="row">
+                                <div class="col">
+                                    <label>Data inici</label>
+                                    <vuejs-datepicker v-model="DataInici" style="width: 100%;"></vuejs-datepicker>
+                                </div>
+                                <div class="col">
+                                    <label>Data fi</label>
+                                    <vuejs-datepicker v-model="DataFi" style="width: 100%;"></vuejs-datepicker>
+                                </div>
                             </div>
-                            <div class="col">
-                                <label>Data fi</label>
-                                <vuejs-datepicker v-model="DataFi" style="width: 100%;"></vuejs-datepicker>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col">
-                                <label>XML</label>
-                                <textarea v-model="XML" style="width: 100%; height: 50vh;"></textarea>
-                            </div>                        
-                        </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label>XML</label>
+                                    <textarea v-model="XML" style="width: 100%; height: 50vh;"></textarea>
+                                </div>                        
+                            </div>
 
-                        <div class="row">
-                            <div class="col">
-                                <label>Usuari</label>
-                                <input type="text" v-model="User" style="width: 100%;" />
-                            </div>
-                            <div class="col">
-                                <label>Contrasenya</label>
-                                <input type="password" v-model="Password" style="width: 100%" />
-                            </div>
-                        </div>                    
+                            <div class="row">
+                                <div class="col">
+                                    <label>Usuari</label>
+                                    <input type="text" v-model="User" style="width: 100%;" />
+                                </div>
+                                <div class="col">
+                                    <label>Contrasenya</label>
+                                    <input type="password" v-model="Password" style="width: 100%" />
+                                </div>
+                            </div>                    
                         
-                        <div class="row" style="margin-top: 2vw;">
-                            <div class="col">                    
-                                <input type="submit" @click="CarregaXML()" value="Carrega XML" style="width: 100%;" />
-                            </div>
-                            <div class="col">
-                                <input type="submit" @click="Regenera()" value="Actualitza" style="width: 100%;" />
-                            </div>
-                            <div class="col">
-                                <input type="submit" @click="GuardaButlleti()" value="Guarda" style="width: 100%;" />
-                            </div>
-                        </div>                    
+                            <div class="row" style="margin-top: 2vw;">
+                                <div class="col">                    
+                                    <input type="submit" @click="CarregaXML()" value="Carrega XML" style="width: 100%;" />
+                                </div>
+                                <div class="col">
+                                    <input type="submit" @click="generaHTML(XML)" value="Actualitza" style="width: 100%;" />
+                                </div>
+                                <div class="col">
+                                    <input type="submit" @click="GuardaButlleti()" value="Guarda" style="width: 100%;" />
+                                </div>
+                            </div>                    
                         
-                        <div v-if="Errors.length > 0" style="padding: 2vw; background-color: darkred; color:white;">
-                            {{Errors}}
-                        </div>
+                            <div v-if="Errors.length > 0" style="padding: 2vw; background-color: darkred; color:white;">
+                                {{Errors}}
+                            </div>
 
                     </div>
                     <div class="col" v-html="HTMLVal"></div>
@@ -123,7 +122,7 @@
                         // Quan carrego l'XML ja envio les URL que necessitaré posteriors.
                         axios.post( this.URL_GETXML, formData)
                         .then( (r) => {
-                            this.XML = r.data.XML;                                                        
+                            this.XML = r.data;                               
                             const GeneratedHTML = this.generaHTML(this.XML);                            
                         })
                         .catch( (e) => { this.Errors = e.response.data; } );

@@ -439,7 +439,25 @@ class MyAPIWeb extends API
         } else {
             throw new Exception('No hi ha cap site i node amb aquesta codificació.');
         }
-    }        
+    }    
+
+    /**
+     * 
+     */
+    protected function getXMLActivitats() {
+
+        if( isset($this->request['post']['DataInici']) 
+            &&  isset($this->request['post']['DataFi'])
+            &&  isset($this->request['post']['SiteId'])
+        ) {
+            $WAPI = new WebApiController();
+            $WAPI->getXMLActivitats(
+                $this->request['post']['DataInici'], 
+                $this->request['post']['DataFi'], 
+                $this->request['post']['SiteId'] );
+        }
+        
+    }
 
     /**
      * Funció que entra un Site i un Usuari i retorna hores treballades per dia, setmana, mes i any.

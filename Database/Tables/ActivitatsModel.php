@@ -156,16 +156,20 @@ class ActivitatsModel extends BDD {
         
     }
 
-    public function getActivitatsFranja( $idS, $DataInicial, $DataFinal ) {    
+    public function getActivitatsFranja( $idS, $DataInicial, $DataFinal, $PublicableWeb = true ) {    
         
         $HM = new HorarisModel(); $HEM = new HorarisEspaisModel(); 
         $EM = new EspaisModel(); $TAM = new TipusActivitatsModel();
         $CM = new CiclesModel();
         $WA = array();
+        $W = "";
+        $W .= ($PublicableWeb) ? " AND {$this->getOldFieldNameWithTable(self::FIELD_PublicableWeb)} = 1" : " AND {$this->getOldFieldNameWithTable(self::FIELD_PublicableWeb)} = 0";        
+
 
         $SQL = "
                 Select {$HM->getSelectFieldsNames()},{$EM->getSelectFieldsNames()},{$this->getSelectFieldsNames()}, 
-                        {$TAM->gnfnwt(TipusActivitatsModel::FIELD_Nom)}, {$CM->gnfnwt(CiclesModel::FIELD_Tmig)}
+                        {$TAM->gsfn(TipusActivitatsModel::FIELD_Nom)}, {$CM->gsfn(CiclesModel::FIELD_Tmig)},
+                        {$CM->gsfn(EspaisModel::FIELD_Nom)} 
                 from {$this->getTableName()} 
                 LEFT JOIN {$HM->getTableName()} ON ( {$this->getOldFieldNameWithTable('ActivitatId')} = {$HM->getOldFieldNameWithTable('ActivitatId')} )
                 LEFT JOIN {$HEM->getTableName()} ON ( {$HM->getOldFieldNameWithTable('HorariId')} = {$HEM->getOldFieldNameWithTable('HorariId')} )
@@ -177,7 +181,8 @@ class ActivitatsModel extends BDD {
                 AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
                 AND      {$HM->getOldFieldNameWithTable('Dia')} > :DataInicial
                 AND      {$HM->getOldFieldNameWithTable('Dia')} < :DataFinal
-                AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                                                 
+                AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                      
+                {$W}                                           
                 ORDER BY {$HM->getOldFieldNameWithTable('Dia')} asc
             ";
 
@@ -191,12 +196,14 @@ class ActivitatsModel extends BDD {
      * Funció complement de getActivitatsFranja
      */
     private function getHorarisFromActivitat($LOA, $idA) {
-        $RET = array('DiaMax' => '0000-00-00', 'DiaMin' => '0000-00-00', 'HoraInici' => '00:00');
+        $RET = array('DiaMax' => '0000-00-00', 'DiaMin' => '9999-99-99', 'Espais' => array());
+        $OM = new HorarisModel(); $EM = new EspaisModel();
+
         foreach($LOA as $OA) {
-            if($OA[ HorarisModel::FIELD_ActivitatId] == $idA){
-                if($OA[ HorarisModel::FIELD_Dia] > $RET['DiaMax']) $RET['DiaMax'] = $OA[ HorarisModel::FIELD_Dia];
-                if($OA[ HorarisModel::FIELD_Dia] < $RET['DiaMin']) $RET['DiaMin'] = $OA[ HorarisModel::FIELD_Dia];
-                $RET['HoraInici'] = $OA[ HorarisModel::FIELD_HoraInici ];
+            if($OA[ $OM->gnfnwt( HorarisModel::FIELD_ActivitatId ) ] == $idA){
+                if($OA[ $OM->gnfnwt( HorarisModel::FIELD_Dia )] > $RET['DiaMax']) $RET['DiaMax'] = $OA[ $OM->gnfnwt( HorarisModel::FIELD_Dia )];
+                if($OA[ $OM->gnfnwt( HorarisModel::FIELD_Dia )] < $RET['DiaMin']) $RET['DiaMin'] = $OA[ $OM->gnfnwt( HorarisModel::FIELD_Dia )];                
+                $RET['Espais'][$OA[ $EM->gnfnwt( EspaisModel::FIELD_Nom ) ]] = $OA[ $EM->gnfnwt( EspaisModel::FIELD_Nom ) ];
             }
         }
         return $RET;
@@ -204,6 +211,8 @@ class ActivitatsModel extends BDD {
 
     public function genXML( $DataInicial, $DataFinal, $SiteId ){
         
+        $document = "<document>\n";
+
         $LOA = $this->getActivitatsFranja( $SiteId, $DataInicial, $DataFinal );
         $HM = new HorarisModel(); $TAM = new TipusActivitatsModel(); $CM = new CiclesModel();
 
@@ -212,66 +221,54 @@ class ActivitatsModel extends BDD {
         // Per totes les activitats
         foreach($LOA as $OA) {
             
-            $idA = $this->gnfnwt(self::FIELD_ActivitatId);
+            $idA = $OA[$this->gnfnwt(self::FIELD_ActivitatId)];
 
             if($idA != $idAntActivitat) {
                 
-                $PerTractarXML[$this->gnfnwt(self::FIELD_ActivitatId)] = $OA;
+                $document .= "<caixa>";
+
+                // $PerTractarXML[$this->gnfnwt(self::FIELD_ActivitatId)] = $OA;
                 $T = $this->getHorarisFromActivitat($LOA, $idA);
                     
                 $PerTractarXML["data_inicial"] = $T["DiaMin"];
                 $PerTractarXML["data_fi"] = $T["DiaMax"];
                 $PerTractarXML["tipus_activitat"] = $OA[$TAM->gnfnwt(TipusActivitatsModel::FIELD_Nom)];
                 $PerTractarXML["cicle"] = $OA[$CM->gnfnwt(CiclesModel::FIELD_Tmig)];
+                $PerTractarXML["tipologia"] = $OA[$this->gnfnwt(self::FIELD_Categories)];
+                $PerTractarXML["importancia"] = $this->isImportant($OA);
+                $PerTractarXML["titol"] = $OA[$this->gnfnwt(self::FIELD_TitolMig)];
+                $PerTractarXML["text"] = $OA[$this->gnfnwt(self::FIELD_DescripcioMig)];
+                $PerTractarXML["url"] = "https://www.casadecultura.cat/detall/".$idA;
+                $PerTractarXML["hora_inici"] = $OA[$HM->gnfnwt(HorarisModel::FIELD_HoraInici)];
+                $PerTractarXML["hora_fi"] = $OA[$HM->gnfnwt(HorarisModel::FIELD_HoraFi)];
+                $PerTractarXML["espais"] = implode(',', $T["Espais"]);
+                $PerTractarXML["organitzador"] = $OA[$this->gnfnwt(self::FIELD_Organitzador)];
+                $PerTractarXML["info_practica"] = $OA[$this->gnfnwt(self::FIELD_InformacioPractica)];
+                $PerTractarXML["url_img_s"] = "https://www.casadecultura.cat/images/activitats/A-".$idA."-XL.jpg";
+                $PerTractarXML["url_img_m"] = "https://www.casadecultura.cat/images/activitats/A-".$idA."-L.jpg";
+                $PerTractarXML["url_img_l"] = "https://www.casadecultura.cat/images/activitats/A-".$idA."-M.jpg";
 
-                $PerTractarXML["tipologia"] = $T["DiaMax"];     //Categories
-                $PerTractarXML["importancia"] = $T["DiaMax"];   //
-                $PerTractarXML["titol"] = $T["DiaMax"];
-                $PerTractarXML["text"] = $T["DiaMax"];
-                $PerTractarXML["url"] = $T["DiaMax"];
-                $PerTractarXML["hora_inici"] = $T["DiaMax"];
-                $PerTractarXML["hora_fi"] = $T["DiaMax"];
-                $PerTractarXML["espais"] = $T["DiaMax"];
-                $PerTractarXML["organitzador"] = $T["DiaMax"];
-                $PerTractarXML["info_practica"] = $T["DiaMax"];
-                $PerTractarXML["url_img_s"] = $T["DiaMax"];
-                $PerTractarXML["url_img_m"] = $T["DiaMax"];
-                $PerTractarXML["url_img_l"] = $T["DiaMax"];
+                foreach($PerTractarXML as $Tag => $V) $document .= "  <{$Tag}>{$V}</{$Tag}>\n";
+                $document .= "</caixa>\n";                
 
             }
 
             $idAntActivitat = $this->gnfnwt(self::FIELD_ActivitatId);
-        }        
-                    
-        //Creem l'objecte XML
-        $document = "<document>\n";                    
-        foreach($PerTractarXML as $O):
+        }
+        
+        $document .= "</document>\n";                            
 
-            //Consulto el tipus d'activitat
+        echo $document;
 
-            $document .= "<caixa>\n";
-            $document .= "  <data_inicial>".$O["DiaInicial"]."</data_inicial>\n";
-            $document .= "  <data_fi>".$O["DiaFinal"]."</data_fi>\n";
-            $document .= "  <tipus_activitat>".$this->gnfnwt(self::FIELD_TipusActivitatId)."</tipus_activitat>\n";
-            $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>\n";
-            $document .= "  <tipologia>".$OA->getCategories()."</tipologia>\n";
-            $document .= "  <importancia>".$OA->getImportancia()."</importancia>\n";                        
-            $document .= "  <titol>".$OA->getTmig()."</titol>\n";
-            $document .= "  <text>".strip_tags(html_entity_decode($OA->getDmig()))."</text>\n";
-            $document .= "  <url>".$this->getController()->genUrl('@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() , true )."</url>\n";
-            $document .= "  <hora_inici>".$OH->getHorainici("H.i")."</hora_inici>\n";
-            $document .= "  <hora_fi>".$OH->getHorafi("H.i")."</hora_fi>\n";
-            $document .= "  <espais>".implode(",",$LE)."</espais>\n";
-            $document .= "  <organitzador>".html_entity_decode( $OA->getOrganitzador() )."</organitzador>\n";
-            $document .= "  <info_practica>".strip_tags( html_entity_decode( $OA->getInfopractica() ) )."</info_practica>\n";
-            $document .= "  <url_img_s>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-M.jpg</url_img_s>\n";
-            $document .= "  <url_img_m>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-L.jpg</url_img_m>\n";
-            $document .= "  <url_img_l>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-XL.jpg</url_img_l>\n";                                                
-            $document .= "</caixa>\n";                                                                                                
-                                                                                                                                    
-        endforeach;            
-        $document .= "</document>\n";                  
+    }
 
+    private function isImportant($OA) {
+        $cat = $OA[$this->gnfnwt(self::FIELD_Categories)];
+
+        if( substr_count($cat, '54') || substr_count($cat, '50') ) return 3;
+        if( substr_count($cat, '53') || substr_count($cat, '47') ) return 2;
+        if( substr_count($cat, '52') || substr_count($cat, '49') ) return 1;        
+        
     }
 
     /**

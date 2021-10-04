@@ -815,8 +815,8 @@ class WebApiController
                 //Esborro els arxius que hi pugui haver al temp
                 array_map( 'unlink', array_filter((array) glob($DIR_DOWNLOADS_TEMP."/*") ) );
 
-                move_uploaded_file( $Arxius[0]['tmp_name'], $DIR_DOWNLOADS_TEMP . $RET['UrlImatge'] );
-                move_uploaded_file( $Arxius[1]['tmp_name'], $DIR_DOWNLOADS_TEMP . $RET['UrlNotaPremsa'] );                
+                move_uploaded_file( $Arxius[0]['tmp_name'], $DIR_DOWNLOADS_TEMP . 'ImatgeNotaPremsa.html' );
+                move_uploaded_file( $Arxius[1]['tmp_name'], $DIR_DOWNLOADS_TEMP . 'ArxiuNotaPremsa.html' );                
                 
                 $Html = str_replace( '@@URL_NOTA_WEB@@' , $URL_DOWNLOADS_TEMP . 'NotaDePremsa.html', $Dades[0] );         
                 $Html = str_replace( '@@DOWNLOAD_NOTA@@' , $URL_DOWNLOADS_TEMP . 'ArxiuNotaPremsa.html', $Html );         
