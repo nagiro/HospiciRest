@@ -217,13 +217,15 @@ class ActivitatsModel extends BDD {
         $HM = new HorarisModel(); $TAM = new TipusActivitatsModel(); $CM = new CiclesModel();
 
         $PerTractarXML = array();
+        $ActivitatsTractades = array();
         $idAntActivitat = 0;
         // Per totes les activitats
         foreach($LOA as $OA) {
             
             $idA = $OA[$this->gnfnwt(self::FIELD_ActivitatId)];
+            $ActivitatsTractades[ $idA ] = $idA;
 
-            if($idA != $idAntActivitat) {
+            if( !array_key_exists( $idA, $ActivitatsTractades ) ) {
                 
                 $document .= "<caixa>";
 
@@ -252,8 +254,7 @@ class ActivitatsModel extends BDD {
                 $document .= "</caixa>\n";                
 
             }
-
-            $idAntActivitat = $OA[$this->gnfnwt(self::FIELD_ActivitatId)];
+            
         }
         
         $document .= "</document>\n";                            
