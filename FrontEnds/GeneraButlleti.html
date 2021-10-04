@@ -1,0 +1,258 @@
+<html>
+    <header>
+        
+        <meta charset="UTF-8">
+        
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/vuejs-datepicker"></script>        
+
+        <style>
+            label { font-weight: bold;}
+            h1 { font-weight: bolder; }
+            .marc { display: flex; }
+            
+                        
+        </style>
+    </header>
+    <body>
+        <div class="marc" id="marc">
+
+            <div class="container">                
+                <div class="row">
+                    <div class="col">
+                
+                        <h1>GENERA BUTLLETÍ</h1>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>Data inici</label>
+                                <vuejs-datepicker v-model="DataInici" style="width: 100%;"></vuejs-datepicker>
+                            </div>
+                            <div class="col">
+                                <label>Data fi</label>
+                                <vuejs-datepicker v-model="DataFi" style="width: 100%;"></vuejs-datepicker>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>XML</label>
+                                <textarea v-model="XML" style="width: 100%; height: 50vh;"></textarea>
+                            </div>                        
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>Usuari</label>
+                                <input type="text" v-model="User" style="width: 100%;" />
+                            </div>
+                            <div class="col">
+                                <label>Contrasenya</label>
+                                <input type="password" v-model="Password" style="width: 100%" />
+                            </div>
+                        </div>                    
+                        
+                        <div class="row" style="margin-top: 2vw;">
+                            <div class="col">                    
+                                <input type="submit" @click="CarregaXML()" value="Carrega XML" style="width: 100%;" />
+                            </div>
+                            <div class="col">
+                                <input type="submit" @click="Regenera()" value="Actualitza" style="width: 100%;" />
+                            </div>
+                            <div class="col">
+                                <input type="submit" @click="GuardaButlleti()" value="Guarda" style="width: 100%;" />
+                            </div>
+                        </div>                    
+                        
+                        <div v-if="Errors.length > 0" style="padding: 2vw; background-color: darkred; color:white;">
+                            {{Errors}}
+                        </div>
+
+                    </div>
+                    <div class="col" v-html="HTMLVal"></div>
+                    
+                </div>                  
+            </div>                                    
+        </div>
+        
+    </body>
+    
+<script type="application/javascript">
+
+        var app = new Vue({
+                el: '#marc',  
+                components: { vuejsDatepicker },
+                data: {       
+                    XML: '', 
+                    HTMLVal: '',
+                    Estat: '', 
+                    Errors: '',
+
+                    DataInici: '',
+                    DataFi: '',
+                    User: '',
+                    Password: '',
+
+                    TEMPLATE_URL: 'http://www.casadecultura.cat/downloads/butlleti/template.html',
+                    URL_GETXML : '/apiweb/getXMLActivitats',
+                },          
+                created() {
+                    let Today = [new Date().getFullYear(), new Date().getMonth() +1 , new Date().getDate()];
+                    this.DataInici = Today.join('-', Today);
+                                        
+                    let T = new Date();
+                    T.setDate( new Date().getDate() + 7 );
+                    
+                    let OneWeek = [ T.getFullYear(), T.getMonth()+1 , T.getDate() ];
+                    this.DataFi = OneWeek.join('-', OneWeek);
+                    
+                },                      
+                methods: {  
+     
+                    CarregaXML() {      
+                                        
+                        //Carrego l'XML
+                        let formData = new FormData();
+                        formData.append('DataInici', this.DataInici);
+                        formData.append('DataFi', this.DataFi);
+                        formData.append('SiteId', 1);
+
+                        // Quan carrego l'XML ja envio les URL que necessitaré posteriors.
+                        axios.post( this.URL_GETXML, formData)
+                        .then( (r) => {
+                            this.XML = r.data.XML;                                                        
+                            const GeneratedHTML = this.generaHTML(this.XML);                            
+                        })
+                        .catch( (e) => { this.Errors = e.response.data; } );
+                                                                        
+                    },
+                    generaHTML(XML) {
+                        
+                        axios.get( this.TEMPLATE_URL )
+                            .then( (r) => { 
+                                
+                                let Template = r.data;                                
+                                let GeneratedHTML = this.GeneraHTMLFromXML(XML, 1);                                
+                                GeneratedHTML += this.GeneraHTMLFromXML(XML, 2);
+                                GeneratedHTML += this.GeneraHTMLFromXML(XML, 3);
+                                
+                                let GeneratedHtmlExpos = this.GeneraHTMLFromXML(XML, 0);
+                                
+                                Template = Template.replace("@@CONTENT@@", GeneratedHTML);
+                                Template = Template.replace("@@CONTENT_EXPOSICIONS@@", GeneratedHtmlExpos);                                
+                                this.HTMLVal = Template;
+
+                             })
+                            .catch( (e) => { console.log(e); this.Errors = e.response.data; } );
+                    },
+                    GeneraHTMLFromXML(XML, Nivell) {
+                   
+                        parser = new DOMParser();                        
+                        let XMLStructured = parser.parseFromString(XML,"text/xml");
+                        let Col1 = ''; let Col2 = ''; let HTML = '';
+                        
+                        for(Caixa of XMLStructured.getElementsByTagName("document")[0].childNodes) {
+                            if(Caixa.nodeType == 1) {
+                                
+                                const EsExposicio = (this.getText(Caixa, 'tipus_activitat') == 'Exposició');
+                                const SeleccionaFiltre = ((( Nivell > 0 && !EsExposicio ) && this.getText(Caixa, 'importancia') == Nivell) || (Nivell == 0 && EsExposicio));
+
+                                if( SeleccionaFiltre && Col1 == '') Col1 = Caixa;
+                                else if( SeleccionaFiltre && Col2 == '') Col2 = Caixa;
+                                
+                                if( Col1 != '' && Col2 != ''){
+                                    HTML = HTML + this.generaFila2Col(Nivell, Col1, Col2);
+                                    Col1 = ''; Col2 = '';
+                                }
+                            }
+                        }
+                        
+                        if( Col1 != '' && Col2 == '' ) HTML += this.generaFila2Col( Nivell , Col1 , Col2 );
+
+                        return HTML; 
+
+                    },
+                    generaData(DataInicial, DataFinal, Hora) {
+                        if(DataInicial && DataFinal && Hora) {
+                            let DIP = DataInicial.split('-');
+                            let DFP = DataFinal.split('-');
+                            const Dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
+                            const NomDiaIncial = Dies[new Date(DIP[0], (DIP[1] - 1 ), DIP[2]).getDay()];                        
+
+                            if(DIP == DFP) return NomDiaInicial + ' ' + DIP[2] + ' a les ' + Hora + ' h';
+                            else return 'Del ' + DIP[2]+'/'+DIP[1] + ' al ' + DFP[2]+'/'+DFP[1] + ' a les ' + Hora + ' h';
+                        } else {
+                            return '';
+                        }
+                        
+                    },
+                    getText(Caixa, Nom) {                        
+                        if( Caixa && Caixa.getElementsByTagName(Nom) && Caixa.getElementsByTagName(Nom)[0] && Caixa.getElementsByTagName(Nom)[0].textContent )
+                            return Caixa.getElementsByTagName(Nom)[0].textContent;
+                        else return '';
+                    },
+
+                    generaFila2Col(Nivell, Caixa1, Caixa2) {                        
+
+                        let RET = "";
+
+                        // Si el nivell no és 3, i per tant porta imatge
+                        if(Nivell != 3) {
+                            let i1 = false; let i2 = false;
+                            if( Nivell == 1 || Nivell == 0) {
+                                i1 = this.getText(Caixa1, 'url_img_m');
+                                i2 = this.getText(Caixa2, 'url_img_m');
+                            } else {
+                                i1 = this.getText(Caixa1, 'url_img_s');
+                                i2 = this.getText(Caixa2, 'url_img_s');
+                            }
+                            
+                            RET += '<tr><td><img width="260px" height="260px" src="' + i1 + '" /></td>';
+                            RET += '<td width="20px"></td>';
+                            if(i2 && i2.length > 0) RET += '<td><img width="260px" height="260px" src="' + i2 + '" /></td>';
+                            RET += '</tr>';
+
+                            let Cicle1 = this.getText(Caixa1, 'cicle');
+                            let Cicle2 = this.getText(Caixa2, 'cicle');
+                            if( Cicle1.indexOf('Activitats fora de cicle') !== false) Cicle1 = '';
+                            if( Cicle2.indexOf('Activitats fora de cicle') !== false) Cicle2 = '';                                                                                    
+
+                            const Text1 = this.getText(Caixa1, 'text').substr(0,200);
+                            const Text2 = this.getText(Caixa2, 'text').substr(0,200);
+                            let linia1 = '<div class="text"> ' + Text1 + '... <br /><br /> <a href="' + this.getText(Caixa1, 'url') + '"> + llegir més </a> </div>';
+                            let linia2 = '<div class="text"> ' + Text2 + '... <br /><br /> <a href="' + this.getText(Caixa2, 'url') + '">  + llegir més  </a> </div>';
+                            if(Text1 == '') linia1 = '';
+                            if(Text2 == '') linia2 = '';
+
+                            RET += '<tr><td>';
+                            RET += '<span class="h1"> ' + this.getText(Caixa1, 'titol') + ' </span>';
+                            RET += '<hr />';
+                            RET += '<span class="h2"> ' + this.getText(Caixa1, 'tipus_activitat') + ' </span>';
+                            RET += '<span class="h2"> ' + this.generaData( this.getText(Caixa1, 'data_inicial'), this.getText(Caixa1, 'data_fi'), this.getText(Caixa1, 'hora_inici') ) + ' </span>';
+                            RET += ( Cicle1 != '' ) ? '<span class="h3"> Dins el cicle <i>' + Cicle1 + '</i></span>':'';
+                            RET += ( this.getText(Caixa1, 'organitzador') != '') ? '<span class="h4"> Organitzat per <i>' + this.getText(Caixa1, 'organitzador') + '</i></span>':'';
+                            RET += linia1 + '</td><td width="20px"></td><td>';
+
+                            RET += '<span class="h1"> ' + this.getText(Caixa2, 'titol') + ' </span>';
+                            RET += '<hr />';
+                            RET += '<span class="h2"> ' + this.getText(Caixa2, 'tipus_activitat') + ' </span>';
+                            RET += '<span class="h2"> ' + this.generaData( this.getText(Caixa2, 'data_inicial'), this.getText(Caixa2, 'data_fi'), this.getText(Caixa2, 'hora_inici') ) + ' </span>';                            
+                            RET += ( Cicle2 ) ? '<span class="h3"> Dins el cicle <i>' + Cicle2 + '</i></span>':'';
+                            RET += ( this.getText(Caixa2, 'organitzador') != '') ? '<span class="h4"> Organitzat per <i>' + this.getText(Caixa2, 'organitzador') + '</i></span>':'';
+                            RET += linia2 + '</td></tr>';
+                            RET += '<tr><td colspan="3" height="30px"></td></tr>';
+
+                            return RET;
+
+                        }
+                        
+                    }                    
+                }
+        });            
+       
+    </script>
+
+</html>

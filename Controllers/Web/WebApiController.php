@@ -880,6 +880,8 @@ class WebApiController
         $IndexUE = array_key_last($File);
         $isHoraFinalBuida = (isset($UltimaEntrada['HoraFi']) && $UltimaEntrada['HoraFi'] == '');
         $isDataIgualAvui = ( $UltimaEntrada['Data'] == date('Y-m-d') );
+        $UltimaPrimeraDataiHora = $UltimaEntrada['Data'] . ' ' . $UltimaEntrada['HoraInici'];
+        $DataiHoraAra = date('Y-m-d H:i:s');
         
         if( ! $ModeIdle ) {
                         
@@ -891,12 +893,9 @@ class WebApiController
                 $IndexUE = array_key_last($File);
 
             } else if( $isHoraFinalBuida && $isDataIgualAvui ) { 
-                
-                $File[$IndexUE]['HoraFi'] = date('H:i:s'); 
-                $datetimeObj1 = new DateTime( $UltimaEntrada['Data'] . ' ' . $UltimaEntrada['HoraInici'] );
-                $datetimeObj2 = new DateTime( $UltimaEntrada['Data'] . ' ' . $File[$IndexUE]['HoraFi'] );
-                $interval = $datetimeObj1->diff($datetimeObj2);
-                $File[$IndexUE]["Total"] = ($interval->format('%a')*24*60) + ($interval->format('%h')*60) + $interval->format('%i');
+                               
+                $File[$IndexUE]['HoraFi'] = date('H:i:s');
+                $File[$IndexUE]["Total"] = $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra );
 
             } else if( $isHoraFinalBuida && !$isDataIgualAvui ) { $File[$IndexUE]['HoraFi'] = '23:59:59'; }
 
@@ -921,8 +920,21 @@ class WebApiController
         $is_Existeix_HoraFi_i_es_buida = (isset($File[$IndexUE]['HoraFi']) && $File[$IndexUE]['HoraFi'] == '' );
         $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
         $Return['DetallHores'] = $File;
+        $Return['TempsActualTreballat'] = ($is_Existeix_HoraFi_i_es_buida) ? $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra ) : 0;
 
         return $Return;
+    }
+
+    private function DiferenciaEntreHores($H1, $H2) {
+        $datetimeObj1 = new DateTime( $H1 );
+        $datetimeObj2 = new DateTime( $H2 );
+        $interval = $datetimeObj1->diff($datetimeObj2);
+        return ($interval->format('%a')*24*60) + ($interval->format('%h')*60) + $interval->format('%i');
+    }
+
+    public function getXMLActivitats($DataInicial, $DataFinal, $SiteId) {
+        $AM = new ActivitatsModel();
+        $AM->genXML($DataInicial, $DataFinal, $SiteId);
     }
     
     public function Encrypt($id) { return HelperForm_Encrypt($id); }
