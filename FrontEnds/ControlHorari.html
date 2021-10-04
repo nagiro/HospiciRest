@@ -32,6 +32,10 @@
                           <h5 class="card-title">Hores treballades</h5>
                           <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
+                                De l'últim inici fins ara
+                              <span class="badge bg-primary rounded-pill">{{HoresTreballadesActualment}} min. / {{(HoresTreballadesActualment/60).toFixed(1)}} h</span>
+                            </li>                            
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                                 Avui has treballat
                               <span class="badge bg-primary rounded-pill">{{HoresAvui}} min. / {{(HoresAvui/60).toFixed(1)}} h</span>
                             </li>
@@ -103,7 +107,8 @@
                     HoresAvui: 0,
                     HoresSetmana: 0,
                     HoresMes: 0,
-                    DetallHores: []
+                    DetallHores: [],
+                    HoresTreballadesActualment: 0,
 
                 },
                 created () {
@@ -131,6 +136,7 @@
                                 this.HoresMes = r.data.Mes;
                                 this.BotoEstat = r.data.EstatBoto;
                                 this.DetallHores = r.data.DetallHores;
+                                this.HoresTreballadesActualment = r.data.TempsActualTreballat;
 
                             })
                             .catch( (e) => { });                    

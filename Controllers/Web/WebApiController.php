@@ -895,7 +895,7 @@ class WebApiController
             } else if( $isHoraFinalBuida && $isDataIgualAvui ) { 
                                
                 $File[$IndexUE]['HoraFi'] = date('H:i:s');
-                $File[$IndexUE]["Total"] = $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra );
+                $File[$IndexUE]['Total'] = $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra );
 
             } else if( $isHoraFinalBuida && !$isDataIgualAvui ) { $File[$IndexUE]['HoraFi'] = '23:59:59'; }
 
@@ -907,9 +907,9 @@ class WebApiController
         foreach($File as $Row) {                
             
             $RowTime = strtotime($Row['Data']);
-            $Setmana = date("W", $RowTime);
-            $Mes = date("m", $RowTime);
-            $Dia = date("d", $RowTime);
+            $Setmana = date('W', $RowTime);
+            $Mes = date('m', $RowTime);
+            $Dia = date('d', $RowTime);
 
             if($Dia == date('d')) $Return['Dia'] += $Row['Total'];
             if($Mes == date('m')) $Return['Mes'] += $Row['Total'];
@@ -921,6 +921,7 @@ class WebApiController
         $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
         $Return['DetallHores'] = $File;
         $Return['TempsActualTreballat'] = ($is_Existeix_HoraFi_i_es_buida) ? $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra ) : 0;
+        $File[$IndexUE]['Total'] += $Return['TempsActualTreballat'];
         $Return['Dia'] += $Return['TempsActualTreballat'];
         $Return['Mes'] += $Return['TempsActualTreballat'];
         $Return['Setmana'] += $Return['TempsActualTreballat'];
