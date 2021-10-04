@@ -222,10 +222,11 @@ class ActivitatsModel extends BDD {
         // Per totes les activitats
         foreach($LOA as $OA) {
             
-            $idA = $OA[$this->gnfnwt(self::FIELD_ActivitatId)];
-            $ActivitatsTractades[ $idA ] = $idA;
+            $idA = $OA[$this->gnfnwt(self::FIELD_ActivitatId)];            
 
             if( !array_key_exists( $idA, $ActivitatsTractades ) ) {
+                
+                $ActivitatsTractades[ $idA ] = $idA;
                 
                 $document .= "<caixa>";
 
