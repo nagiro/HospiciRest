@@ -921,6 +921,9 @@ class WebApiController
         $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
         $Return['DetallHores'] = $File;
         $Return['TempsActualTreballat'] = ($is_Existeix_HoraFi_i_es_buida) ? $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra ) : 0;
+        $Return['Dia'] += $Return['TempsActualTreballat'];
+        $Return['Mes'] += $Return['TempsActualTreballat'];
+        $Return['Setmana'] += $Return['TempsActualTreballat'];
 
         return $Return;
     }
