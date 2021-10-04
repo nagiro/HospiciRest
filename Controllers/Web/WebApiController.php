@@ -919,12 +919,12 @@ class WebApiController
         
         $is_Existeix_HoraFi_i_es_buida = (isset($File[$IndexUE]['HoraFi']) && $File[$IndexUE]['HoraFi'] == '' );
         $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
-        $Return['DetallHores'] = $File;
         $Return['TempsActualTreballat'] = ($is_Existeix_HoraFi_i_es_buida) ? $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra ) : 0;
         $File[$IndexUE]['Total'] += $Return['TempsActualTreballat'];
         $Return['Dia'] += $Return['TempsActualTreballat'];
         $Return['Mes'] += $Return['TempsActualTreballat'];
         $Return['Setmana'] += $Return['TempsActualTreballat'];
+        $Return['DetallHores'] = $File;
 
         return $Return;
     }
