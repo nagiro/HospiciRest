@@ -885,18 +885,23 @@ class WebApiController
         
         if( ! $ModeIdle ) {
                         
+            // Hem de crear una nova línia: Hora final ja està plena, arxiu no existeix o data diferent i hora final plena.
             if( ! $isHoraFinalBuida || $ArxiuInexistent ) { 
 
-                // Si hora final no és buida, creem una línia nova
+                // Si hora final no és buida, creem una entrada nova línia nova
                 $File[] = array('Data'=>date('Y-m-d'), 'HoraInici' => date('H:i:s'), 'HoraFi' => '', 'Total' => 0); 
                 $UltimaEntrada = end($File);
                 $IndexUE = array_key_last($File);
+                $UltimaPrimeraDataiHora = $UltimaEntrada['Data'] . ' ' . $UltimaEntrada['HoraInici'];
 
+                // Hora final buida i data és la d'avui, tanquem la jornada
             } else if( $isHoraFinalBuida && $isDataIgualAvui ) { 
                                
                 $File[$IndexUE]['HoraFi'] = date('H:i:s');
                 $File[$IndexUE]['Total'] = $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra );
+                $isHoraFinalBuida = false;
 
+                // La data canvia però la hora final és buida... llavors marquem data màxima del dia i ho deixem per iniciar
             } else if( $isHoraFinalBuida && !$isDataIgualAvui ) { $File[$IndexUE]['HoraFi'] = '23:59:59'; }
 
             file_put_contents($UrlArxiu, json_encode($File));
