@@ -137,6 +137,7 @@
         var app = new Vue({
                 el: '#app',
                 data: {
+                    idS: 1,
                     DadesHorari: [],
                     DadesHorarisGenerals: [],
                     DadesHorarisCursos: [],
@@ -148,15 +149,21 @@
                     E: {'titol':'', 'hora_inici':' ', 'espais':' '}
                 },
                 created () {
+                    
+                    const queryString = window.location.search;
+                    const urlParams = new URLSearchParams(queryString);
+                    
+                    this.idS = urlParams.get('idS');
+
                     this.getData();
                     this.getDiaActual();
                     this.ActualitzaHora();
                     this.timer = setInterval(this.getData, 300000);
-                    this.timerRellotge = setInterval(this.ActualitzaHora, 1000);                    
+                    this.timerRellotge = setInterval(this.ActualitzaHora, 1000);                                        
                 },
                 methods: {
                     getData: function() {
-                        let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS=1&XML=0';                        
+                        let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
                         axios.get( AjaxUrl )
                             .then( R => { this.TractaDades( R.data ); } )
                             .catch( E => { alert(E); } );                               
