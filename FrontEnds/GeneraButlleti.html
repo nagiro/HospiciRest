@@ -59,15 +59,19 @@
                                     <input type="submit" @click="CarregaXML()" value="Carrega XML" style="width: 100%;" />
                                 </div>
                                 <div class="col">
-                                    <input type="submit" @click="generaHTML(XML)" value="Actualitza" style="width: 100%;" />
+                                    <input type="submit" @click="generaHTML(XML, UrlWeb)" value="Actualitza" style="width: 100%;" />
                                 </div>
                                 <div class="col">
                                     <input type="submit" @click="GuardaButlleti()" value="Guarda" style="width: 100%;" />
                                 </div>
                             </div>                    
                         
-                            <div v-if="Errors.length > 0" style="padding: 2vw; background-color: darkred; color:white;">
+                            <div v-if="Errors.length > 0" style="margin-top: 2vw; padding: 2vw; background-color: darkred; color:white;">
                                 {{Errors}}
+                            </div>
+
+                            <div v-if="Estat == 'html_saved'" style="margin-top: 2vw; padding: 2vw; background-color: darkseagreen; color:black;">
+                                Arxiu generat a: <a :href="UrlWeb">{{UrlWeb}}</a>
                             </div>
 
                     </div>
@@ -86,9 +90,11 @@
                 components: { vuejsDatepicker },
                 data: {       
                     XML: '', 
+                    UrlWeb: '',
                     HTMLVal: '',
-                    Estat: '', 
+                    Estat: 'inici',      // 'inici', 'xml_loaded', 'html_saved'  
                     Errors: '',
+                    SiteId: 1,
 
                     DataInici: '',
                     DataFi: '',
@@ -117,42 +123,46 @@
                         let formData = new FormData();
                         formData.append('DataInici', this.DataInici);
                         formData.append('DataFi', this.DataFi);
-                        formData.append('SiteId', 1);
+                        formData.append('SiteId', this.SiteId);
+                        formData.append('Action', 'load');
 
                         // Quan carrego l'XML ja envio les URL que necessitaré posteriors.
                         axios.post( this.URL_GETXML, formData)
                         .then( (r) => {
-                            this.XML = r.data;                               
-                            const GeneratedHTML = this.generaHTML(this.XML);                            
+                            this.XML = r.data.document;                               
+                            this.UrlWeb = r.data.UrlWeb;
+                            const GeneratedHTML = this.generaHTML(this.XML, this.UrlWeb);
+                            this.Estat = 'xml_loaded';
                         })
                         .catch( (e) => { this.Errors = e.response.data; } );
                                                                         
                     },
-                    generaHTML(XML) {
+                    generaHTML(XML, UrlWeb) {
                         
                         axios.get( this.TEMPLATE_URL )
                             .then( (r) => { 
                                 
-                                let Template = r.data;                                
+                                let Template = r.data;
                                 let GeneratedHTML = this.GeneraHTMLFromXML(XML, 1);
                                 GeneratedHTML += this.GeneraHTMLFromXML(XML, 2);
                                 GeneratedHTML += this.GeneraHTMLFromXML(XML, 3);
                                 
                                 let GeneratedHtmlExpos = this.GeneraHTMLFromXML(XML, 0);
                                 
+                                Template = Template.replace("@@WEB_URL@@", UrlWeb);
                                 Template = Template.replace("@@CONTENT@@", GeneratedHTML);
                                 Template = Template.replace("@@CONTENT_EXPOSICIONS@@", GeneratedHtmlExpos);                                
                                 this.HTMLVal = Template;
 
                              })
-//                            .catch( (e) => { console.log(e); this.Errors = e; } );
+                            .catch( (e) => { this.Errors = e.response.data; } );
                     },
                     GeneraHTMLFromXML(XML, Nivell) {
                    
                         parser = new DOMParser();                        
                         let XMLStructured = parser.parseFromString(XML, "text/html");
                         let Col1 = ''; let Col2 = ''; let HTML = '';
-                        console.log('ChildNodes', XMLStructured.getElementsByTagName("document")[0].childNodes);                           
+                        
                         for(Caixa of XMLStructured.getElementsByTagName("document")[0].childNodes) { 
                             
                             if(Caixa.nodeType == 1) {
@@ -181,7 +191,8 @@
                             let DFP = DataFinal.split('-');
                             const Dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
                             const NomDiaIncial = Dies[new Date(DIP[0], (DIP[1] - 1 ), DIP[2]).getDay()];                        
-
+                            Hora = Hora.split(':').splice(0,2).join(':');                            
+                            
                             if(DIP == DFP) return NomDiaInicial + ' ' + DIP[2] + ' a les ' + Hora + ' h';
                             else return 'Del ' + DIP[2]+'/'+DIP[1] + ' al ' + DFP[2]+'/'+DFP[1] + ' a les ' + Hora + ' h';
                         } else {
@@ -251,11 +262,26 @@
                         RET += linia2 + '</td></tr>';
                         RET += '<tr><td colspan="3" height="30px"></td></tr>';
 
-                        return RET;
-
-                    
+                        return RET;                    
                         
-                    }                    
+                    },
+                    GuardaButlleti() {
+                        //Guardo el butlletí
+                        let formData = new FormData();
+                        formData.append('Html', this.HTMLVal);
+                        formData.append('User', this.User);
+                        formData.append('Password', this.Password);                        
+                        formData.append('SiteId', this.SiteId);
+                        formData.append('Action', 'save');
+
+                        axios.post( this.URL_GETXML, formData)
+                        .then( (r) => {
+                            this.Estat = 'html_saved';
+                        })
+                        .catch( (e) => { this.Errors = e.response.data; } );
+
+
+                    }      
                 }
         });            
        

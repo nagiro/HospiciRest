@@ -446,16 +446,35 @@ class MyAPIWeb extends API
      */
     protected function getXMLActivitats() {
 
-        if( isset($this->request['post']['DataInici']) 
-            &&  isset($this->request['post']['DataFi'])
-            &&  isset($this->request['post']['SiteId'])
-        ) {
+        $RET = array();
+
+        $Action = (isset($this->request['post']['Action'])) ? $this->request['post']['Action'] : '';
+        $DataInici = (isset($this->request['post']['DataInici'])) ? $this->request['post']['DataInici'] : '';
+        $DataFi = (isset($this->request['post']['DataFi'])) ? $this->request['post']['DataFi'] : '';
+        $SiteId = (isset($this->request['post']['SiteId'])) ? $this->request['post']['SiteId'] : '';
+        $User = (isset($this->request['post']['User'])) ? $this->request['post']['User'] : '';
+        $Password = (isset($this->request['post']['Password'])) ? $this->request['post']['Password'] : '';
+        $Html = (isset($this->request['post']['Html'])) ? $this->request['post']['Html'] : '';
+
+        if( $Action != '' && $SiteId != '' ) {
+            
             $WAPI = new WebApiController();
-            $WAPI->getXMLActivitats(
-                $this->request['post']['DataInici'], 
-                $this->request['post']['DataFi'], 
-                $this->request['post']['SiteId'] );
+            try {
+                if( $Action == 'load' ) {
+                    if( $DataInici == '' || $DataFi == '') return array('Paràmetres incorrectes', 400);
+                    $RET = $WAPI->getXMLActivitats( $DataInici,  $DataFi, $SiteId );
+                } elseif( $Action == 'save' ) {
+                    if( $User == '' || $Password == '' || $Html == '') return array('Paràmetres incorrectes', 400);
+                    if(!$this->Auth->doLogin( $User, $Password, $SiteId ) ) return array("Autentificació fallida!", 400);                
+                    else {
+                        $RET = $WAPI->saveButlleti( $Html, $SiteId );
+                    }
+                }
+            } catch (Exception $e) { return array($e->getMessage(), 500); }
+            
         }
+
+        return array($RET, 200);
         
     }
 

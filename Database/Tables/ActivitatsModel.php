@@ -227,10 +227,9 @@ class ActivitatsModel extends BDD {
             if( !array_key_exists( $idA, $ActivitatsTractades ) ) {
                 
                 $ActivitatsTractades[ $idA ] = $idA;
-                
-                $document .= "<caixa>";
 
-                // $PerTractarXML[$this->gnfnwt(self::FIELD_ActivitatId)] = $OA;
+                $document .= "<caixa>";
+                
                 $T = $this->getHorarisFromActivitat($LOA, $idA);
                     
                 $PerTractarXML["data_inicial"] = $T["DiaMin"];
@@ -258,9 +257,9 @@ class ActivitatsModel extends BDD {
             
         }
         
-        $document .= "</document>\n";                            
+        $document .= "</document>\n";                                            
 
-        echo $document;
+        return $document;
 
     }
 

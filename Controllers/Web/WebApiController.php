@@ -942,8 +942,30 @@ class WebApiController
     }
 
     public function getXMLActivitats($DataInicial, $DataFinal, $SiteId) {
+        
         $AM = new ActivitatsModel();
-        $AM->genXML($DataInicial, $DataFinal, $SiteId);
+        
+        $Document = $AM->genXML($DataInicial, $DataFinal, $SiteId);
+        $UrlWebFile = $this->saveButlleti("NewFile", $SiteId);         
+        
+        return array('document' => $Document, 'UrlWeb' => $UrlWebFile);
+
+    }
+
+    public function saveButlleti( $HTML, $SiteId ) {
+
+        $DirWebFile = DOCUMENTSDIR . "Butlletins/{$SiteId}/";
+        $UrlWebFile = IMATGES_URL_BASE . DOCUMENTSURL . "Butlletins/{$SiteId}/";
+
+        if(!file_exists($DirWebFile)) mkdir($DirWebFile, 0777, true);
+        
+        $DataNameTemp = date('dmY'); 
+        $DirWebFile .= "Butlleti".$DataNameTemp.".html";
+        $UrlWebFile .= "Butlleti".$DataNameTemp.".html";
+
+        if(file_put_contents( $DirWebFile, $HTML ) === false) throw new Exception("No he pogut crear l'arxiu butlletí consultable al web");
+        else return $UrlWebFile;        
+        
     }
     
     public function Encrypt($id) { return HelperForm_Encrypt($id); }
