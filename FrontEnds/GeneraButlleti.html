@@ -118,7 +118,9 @@
                 methods: {  
      
                     CarregaXML() {      
-                                        
+                        
+                        this.Errors = "";
+
                         //Carrego l'XML
                         let formData = new FormData();
                         formData.append('DataInici', this.DataInici);
@@ -139,6 +141,8 @@
                     },
                     generaHTML(XML, UrlWeb) {
                         
+                        this.Errors = "";
+
                         axios.get( this.TEMPLATE_URL )
                             .then( (r) => { 
                                 
@@ -266,6 +270,9 @@
                         
                     },
                     GuardaButlleti() {
+                        
+                        this.Errors = "";
+                        
                         //Guardo el butlletí
                         let formData = new FormData();
                         formData.append('Html', this.HTMLVal);
