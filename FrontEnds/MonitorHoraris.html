@@ -42,8 +42,8 @@
         <div class="marc" id="app">
             <div class="franja_superior">            
                 <div class="titol" > Programació de la Casa de Cultura </div>
-                <div class="data" > {{DiaActual[0]}}, {{DiaActual[1]}} {{DiaActual[2]}} de {{DiaActual[3]}} </div>
-                <div class="hora" > {{Rellotge[0]}}.{{Rellotge[1]}}h </div>
+                <div class="data" > {{DiaActual}} </div>
+                <div class="hora" > {{Rellotge}}h </div>
             </div>
             <div class="taula_programacio">
                 <table class="taula">
@@ -141,8 +141,8 @@
                     DadesHorarisGenerals: [],
                     DadesHorarisCursos: [],
                     DadesHorarisExposicions: [],
-                    Rellotge: [],
-                    DiaActual: [],
+                    Rellotge: "",
+                    DiaActual: "",
                     timer: 0,
                     timerRellotge: 0,
                     E: {'titol':'', 'hora_inici':' ', 'espais':' '}
@@ -152,7 +152,7 @@
                     this.getDiaActual();
                     this.ActualitzaHora();
                     this.timer = setInterval(this.getData, 300000);
-                    this.timerRellotge = setInterval(this.ActualitzaHora, 1000);
+                    this.timerRellotge = setInterval(this.ActualitzaHora, 1000);                    
                 },
                 methods: {
                     getData: function() {
@@ -162,17 +162,16 @@
                             .catch( E => { alert(E); } );                               
                     },
                     ActualitzaHora: function(){
-                        let D = new Date();
-
-                        this.Rellotge[0] = D.getHours().toString().padStart(2, '0');                        
-                        this.Rellotge[1] = D.getMinutes().toString().padStart(2, '0');                                                
+                        let D = new Date();                        
+                        this.Rellotge = D.getHours().toString().padStart(2, '0') + '.' + D.getMinutes().toString().padStart(2, '0');
+                        console.log(this.Rellotge);
                     },            
                     getDiaActual: function() {
                         let D = new Date();                        
-                        switch(D.getDay()) { case 0: this.DiaActual[0] = 'Diumenge'; break; case 1: this.DiaActual[0] = 'Dilluns'; break; case 2: this.DiaActual[0] = 'Dimarts'; break; case 3: this.DiaActual[0] = 'Dimecres'; break; case 4: this.DiaActual[0] = 'Dijous'; break; case 5: this.DiaActual[0] = 'Divendres'; break; case 6: this.DiaActual[0] = 'Dissabte'; break; }
-                        this.DiaActual[1] = D.getDate();
-                        switch( (D.getMonth()+1) ) { case 1: this.DiaActual[2] = 'de gener'; break; case 2: this.DiaActual[2] = 'de febrer'; break; case 3: this.DiaActual[2] = 'de març'; break; case 4: this.DiaActual[2] = 'd\'abril'; break; case 5: this.DiaActual[2] = 'de maig'; break; case 6: this.DiaActual[2] = 'de juny'; break; case 7: this.DiaActual[2] = 'de juliol'; break; case 8: this.DiaActual[2] = 'd\'agost'; break; case 9: this.DiaActual[2] = 'de setembre'; break; case 10: this.DiaActual[2] = 'd\'octubre'; break; case 11: this.DiaActual[2] = 'de novembre'; break; case 12: this.DiaActual[2] = 'de desembre'; break; }
-                        this.DiaActual[3] = D.getFullYear();
+                        switch(D.getDay()) { case 0: this.DiaActual = 'Diumenge'; break; case 1: this.DiaActual = 'Dilluns'; break; case 2: this.DiaActual = 'Dimarts'; break; case 3: this.DiaActual = 'Dimecres'; break; case 4: this.DiaActual = 'Dijous'; break; case 5: this.DiaActual = 'Divendres'; break; case 6: this.DiaActual = 'Dissabte'; break; }
+                        this.DiaActual += ', ' + D.getDate() + ' ';
+                        switch( (D.getMonth()+1) ) { case 1: this.DiaActual += 'de gener'; break; case 2: this.DiaActual += 'de febrer'; break; case 3: this.DiaActual += 'de març'; break; case 4: this.DiaActual += 'd\'abril'; break; case 5: this.DiaActual += 'de maig'; break; case 6: this.DiaActual += 'de juny'; break; case 7: this.DiaActual += 'de juliol'; break; case 8: this.DiaActual += 'd\'agost'; break; case 9: this.DiaActual += 'de setembre'; break; case 10: this.DiaActual += 'd\'octubre'; break; case 11: this.DiaActual += 'de novembre'; break; case 12: this.DiaActual += 'de desembre'; break; }
+                        this.DiaActual += ' de ' + D.getFullYear();
                     },        
                     TractaDades: function(Rows) {
                         var today = new Date();                                                                  
@@ -210,9 +209,7 @@
                                 // Retallo el títol si no hi cap
                                 
                                 if((isExposicio || isCurs) && Row.titol.length > 50) Row.titol = Row.titol.substring(0, 50) + '...';
-                                else if( Row.titol.length > 250 ) Row.titol = Row.titol.substring(0, 250) + '...';                                
-                                
-                                console.log(isExposicio, isCurs, Row.titol);
+                                else if( Row.titol.length > 250 ) Row.titol = Row.titol.substring(0, 250) + '...';                                                                                               
 
                                 if(isExposicio) {                                    
                                     if(iExposicions < 4) this.DadesHorarisExposicions[iExposicions++] = Row;
