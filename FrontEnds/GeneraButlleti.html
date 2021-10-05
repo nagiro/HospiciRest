@@ -113,6 +113,11 @@
                     
                     let OneWeek = [ T.getFullYear(), T.getMonth()+1 , T.getDate() ];
                     this.DataFi = OneWeek.join('-', OneWeek);
+
+                    const queryString = window.location.search;
+                    const urlParams = new URLSearchParams(queryString);
+                    
+                    this.SiteId = urlParams.get('idS');
                     
                 },                      
                 methods: {  
