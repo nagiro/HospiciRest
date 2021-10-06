@@ -21,8 +21,8 @@
             
             .taula_programacio { padding: 3vh; padding-top: 1vh; padding-bottom:0px; height: 44vh; }
             .taules_inferiors { padding: 3vh; padding-top: 1vh; display: flex; justify-content: space-between; height: 32vh; }
-            .taula_cursos { display: inline-flex; height: fit-content;  }
-            .taula_exposicions { display: inline-flex; height: fit-content; }
+            .taula_cursos {   }
+            .taula_exposicions {  }
             .separacio_taules { width: 5vh; display: inline-flex;  height: fit-content; }
 
             .franja_inferior { margin: 3vh; margin-top: 0.5vh; display: flex; background-color: gainsboro; justify-content: space-between; }
@@ -35,7 +35,10 @@
             .taula th { padding-bottom: 0vh; }
             .taula th { font-weight: bold; font-size:3vh; border-bottom: 1px solid }
             .taula tbody > tr:nth-child(even) { background-color: gainsboro}            
-                        
+
+            .textTrans { opacity: 1; transition: opacity 1s; }
+            .textTrans:hover { opacity: 0; }
+            
         </style>
     </header>
     <body>
@@ -56,20 +59,21 @@
                 </thead>
                 <tbody>
 
-                    <tr v-for="G of DadesHorarisGenerals">
-                        <td>{{G.titol}}&nbsp;</td>
-                        <td style="text-align:center;">{{G.hora_inici}}</td>
-                        <td style="text-align:center;">{{G.espais}}</td>
+                    <tr v-for="G of DadesHorarisGenerals[Pagines[0].Actual]">
+                        <td class="textTrans" :style="[{'opacity': Pagines[0].Opacity}]">{{G.titol}}&nbsp;</td>
+                        <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[0].Opacity}]">{{G.hora_inici}}</td>
+                        <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[0].Opacity}]">{{G.espais}}</td>
                     </tr>
                     
                 </tbody>
                 </table>
+                <div style="display:flex; justify-content: flex-end"> <div v-for="(i, index) of (Pagines[0].Total + 1)" :style="setStyle(0, index)"> &nbsp; </div> </div>                
             </div>
 
 
             <div class="taules_inferiors">
                 <div class="taula_cursos">
-
+                    
                     <table class="taula">
                         <thead>
                         <tr>
@@ -79,22 +83,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="C of DadesHorarisCursos">
-                            <td>{{C.titol}}&nbsp;</td>
-                            <td style="text-align:center;">{{C.hora_inici}}</td>
-                            <td style="text-align:center;">{{C.espais}}</td>
-                        </tr>
+                                                
+                            <tr v-for="C of DadesHorarisCursos[Pagines[1].Actual]">
+                                <td class="textTrans" :style="[{'opacity': Pagines[1].Opacity}]">{{C.titol}}&nbsp;</td>
+                                <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[1].Opacity}]">{{C.hora_inici}}</td>
+                                <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[1].Opacity}]">{{C.espais}}</td>
+                            </tr>                        
                         
                     </tbody>
                     </table>
+                    <div style="display:flex;  justify-content: flex-end;"> <div v-for="(i, index) of (Pagines[1].Total + 1)" :style="setStyle(1, index)"> &nbsp; </div> </div>                
 
                 </div>
                 
                 
                 <div class="separacio_taules">&nbsp;</div>
                 
-                
-                
+                                
                 <div class="taula_exposicions">
                     <table class="taula">
                         <thead>
@@ -105,13 +110,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="E of DadesHorarisExposicions">
-                            <td>{{E.titol}}&nbsp;</td>
-                            <td style="text-align:center;">{{E.hora_inici}}</td>
-                            <td style="text-align:center;">{{E.espais}}</td>
+                        <tr v-for="E of DadesHorarisExposicions[Pagines[2].Actual]">
+                            <td class="textTrans" :style="[{'opacity': Pagines[1].Opacity}]">{{E.titol}}&nbsp;</td>
+                            <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[1].Opacity}]">{{E.hora_inici}}</td>
+                            <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[1].Opacity}]">{{E.espais}}</td>
                         </tr>                                                
                     </tbody>
                     </table>
+                    <div style="display:flex;  justify-content: flex-end;"> <div v-for="(i, index) of (Pagines[2].Total + 1)" :style="setStyle(2, index)"> &nbsp; </div> </div>                
 
                 </div>
 
@@ -142,10 +148,13 @@
                     DadesHorarisGenerals: [],
                     DadesHorarisCursos: [],
                     DadesHorarisExposicions: [],
+                    Pagines: [{Total: 0, Actual: 0, Opacity: 1},{Total: 0, Actual: 0, Opacity: 1},{Total: 0, Actual: 0, Opacity: 1}],   // Pàgines General, Cursos, Exposicions
                     Rellotge: "",
                     DiaActual: "",
                     timer: 0,
                     timerRellotge: 0,
+                    timerPagines: 0,
+                    timerTrans: 0,
                     E: {'titol':'', 'hora_inici':' ', 'espais':' '}
                 },
                 created () {
@@ -160,18 +169,42 @@
                     this.ActualitzaHora();
                     this.timer = setInterval(this.getData, 300000);
                     this.timerRellotge = setInterval(this.ActualitzaHora, 1000);                                        
+                    this.timerPagines = setInterval(this.doPageJump, 10000);
                 },
                 methods: {
+                    sleep(segons) {
+                        return new Promise(resolve => setTimeout(resolve, segons*1000));
+                    },                    
+                    async doPageJump() {
+                        for(let i = 0; i < 3; i++) {
+                            this.Pagines[i].Opacity = 0;
+                            await this.sleep(1);
+                            if( this.Pagines[ i ].Actual == this.Pagines[ i ].Total ) this.Pagines[ i ].Actual = 0;
+                            else this.Pagines[ i ].Actual++;
+                            await this.sleep(0);
+                            this.Pagines[i].Opacity = 1;
+                        }                                                                                                
+                    },
+                    setStyle: function(Pagina, Index) {
+                        let estil = 'width: 2vw; height: 1hw; margin-left: 0.5vw; margin-top: 0.5vw;';
+                        
+                        if(this.Pagines[Pagina].Actual != Index) estil += 'background-color: aliceblue;' 
+                        else estil += 'background-color: gray;' 
+                        
+                        return estil; 
+                    },
                     getData: function() {
-                        let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
-                        axios.get( AjaxUrl )
+                        let AjaxUrl = 'http://sites.hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
+                        // let AjaxUrl = 'http://localhost:8087/WebFiles/test.json';
+                        
+                        axios.get( AjaxUrl )                        
                             .then( R => { this.TractaDades( R.data ); } )
                             .catch( E => { alert(E); } );                               
+      
                     },
                     ActualitzaHora: function(){
                         let D = new Date();                        
-                        this.Rellotge = D.getHours().toString().padStart(2, '0') + '.' + D.getMinutes().toString().padStart(2, '0');
-                        console.log(this.Rellotge);
+                        this.Rellotge = D.getHours().toString().padStart(2, '0') + '.' + D.getMinutes().toString().padStart(2, '0');                        
                     },            
                     getDiaActual: function() {
                         let D = new Date();                        
@@ -183,9 +216,9 @@
                     TractaDades: function(Rows) {
                         var today = new Date();                                                                  
 
-                        this.DadesHorarisExposicions = [this.E,this.E,this.E,this.E];
-                        this.DadesHorarisCursos = [this.E,this.E,this.E,this.E,];
-                        this.DadesHorarisGenerals = [this.E,this.E,this.E,this.E,this.E,this.E,];
+                        this.DadesHorarisExposicions.push([this.E,this.E,this.E,this.E]);
+                        this.DadesHorarisCursos.push([this.E,this.E,this.E,this.E]);
+                        this.DadesHorarisGenerals.push([this.E,this.E,this.E,this.E,this.E,this.E]);
                         let iExposicions = 0;
                         let iCursos = 0;
                         let iGenerals = 0;
@@ -217,20 +250,40 @@
                                 
                                 if((isExposicio || isCurs) && Row.titol.length > 50) Row.titol = Row.titol.substring(0, 50) + '...';
                                 else if( Row.titol.length > 250 ) Row.titol = Row.titol.substring(0, 250) + '...';                                                                                               
-
+                                
                                 if(isExposicio) {                                    
-                                    if(iExposicions < 4) this.DadesHorarisExposicions[iExposicions++] = Row;
+                                    if( iExposicions == 4 ) { 
+                                        this.DadesHorarisExposicions.push([this.E,this.E,this.E,this.E]); 
+                                        iExposicions = 0; 
+                                        this.Pagines[2].Total++; 
+                                    }
+                                    this.DadesHorarisExposicions[ this.Pagines[2].Total ][ iExposicions++ ] = Row;
                                 } 
                                 else if(isCurs){
-                                    if(iCursos < 4 ) this.DadesHorarisCursos[iCursos++] = Row;
+                                    if( iCursos == 4 ) { 
+                                        this.DadesHorarisCursos.push([this.E,this.E,this.E,this.E]); 
+                                        iCursos = 0; 
+                                        this.Pagines[1].Total++; 
+                                    }
+                                    this.DadesHorarisCursos[ this.Pagines[1].Total ][ iCursos++ ] = Row;
+
                                 } 
-                                else {
-                                    if( iGenerals < 6 ) this.DadesHorarisGenerals[iGenerals++] = Row;
+                                else {                                    
+
+                                    if( iGenerals == 6 ) {                                         
+                                        this.DadesHorarisGenerals.push([this.E, this.E,  this.E,  this.E,  this.E,  this.E]);                                         
+                                        iGenerals = 0; 
+                                        this.Pagines[0].Total++; 
+                                    }
+                                    this.DadesHorarisGenerals[ this.Pagines[0].Total ][ iGenerals++ ] = Row;
+                                                                        
                                 } 
                                 
                             }
 
-                        }                        
+                        }    
+                        
+                        console.log(this.DadesHorarisGenerals);
                                                                         
                     }
                 }
