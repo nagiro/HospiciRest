@@ -880,6 +880,8 @@ class WebApiController
             foreach($DadesForm as $Key => $Row) {
                 if($Row['HoraFi'] != '') {
                     $DadesForm[$Key]['Total'] = $this->DiferenciaEntreHores( $Row['Data'] . ' ' . $Row['HoraInici'] , $Row['Data'] . ' ' . $Row['HoraFi'] );
+                } else {
+                    $DadesForm[$Key]['Total'] = 0;
                 }
             }
             if(file_put_contents($UrlArxiu, json_encode($DadesForm)) === FALSE) throw new Exception('Problema guardant');
