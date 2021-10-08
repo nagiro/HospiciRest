@@ -210,6 +210,16 @@
                     },
                     doSave() {
 
+                        // Quan guardo he d'ordenar que la data i horainicial vagin per ordre                         
+                        this.DetallHores.sort(
+                        function(a,b) {
+                            if (a.Data < b.Data) return -1;
+                            if (a.Data > b.Data) return 1;
+                            if (a.Data == b.Data && a.HoraInici < b.HoraInici ) return -1;
+                            if (a.Data == b.Data && a.HoraInici > b.HoraInici ) return 1;
+                            return 0;
+                        });
+
                         this.showModal = false;
 
                         let F = new FormData();
@@ -242,7 +252,10 @@
 
                         if(this.IndexElement == -1) { 
                             
-                            this.DetallHores.push({'Data': new Date().toString(), 'HoraInici': new Date().getHours().toString() + ':' + new Date().getMinutes().toString(), 'HoraFi': new Date().getHours().toString() + ':' + new Date().getMinutes().toString(), 'Total': 0}); 
+                            const dia = moment(new Date()).format('YYYY-MM-DD');
+                            const horaInici = moment(new Date()).format('HH:mm');
+                            const horaFi = moment(new Date()).format('HH:mm');
+                            this.DetallHores.push({'Data': dia, 'HoraInici': horaInici, 'HoraFi': horaFi, 'Total': 0}); 
                             this.IndexElement = this.DetallHores.length - 1;
                             this.AddNewOne = true;
                         }
