@@ -485,14 +485,23 @@ class MyAPIWeb extends API
      * @return void
      */
     protected function apiControlHorari() {        
-        if( isset($this->request['idS']) && isset($this->request['idU']) && isset($this->request['accio']) 
-            && ( $this->request['accio'] == 'idle' || $this->request['accio'] == 'on' || $this->request['accio'] == 'off')
-            && ( is_numeric($this->request['idS']) && is_numeric($this->request['idU']) && $this->request['idS'] > 0 && $this->request['idU'] > 0 )
-        ) {
-            
+
+        $idS = ( isset($this->request['idS']) && is_numeric($this->request['idS'] ) ) ? $this->request['idS'] : 0;
+        $idU = ( isset($this->request['idU']) && is_numeric($this->request['idS'] ) ) ? $this->request['idU'] : 0;
+        $Accio = isset($this->request['accio']) ? $this->request['accio'] : '';
+        $MesAny = isset($this->request['mesAny']) ? $this->request['mesAny'] : '';
+
+        $idS = isset($this->request['post']['idS']) ? $this->request['post']['idS'] : $idS;
+        $idU = isset($this->request['post']['idU']) ? $this->request['post']['idU'] : $idU;
+        $Accio = isset($this->request['post']['accio']) ? $this->request['post']['accio'] : $Accio;        
+        $MesAny = isset($this->request['post']['mesAny']) ? $this->request['post']['mesAny'] : '';
+        $DadesFormulari = isset($this->request['post']['Dades']) ? json_decode($this->request['post']['Dades'], true) : array();
+
+        if( $idS > 0 && $idU > 0 && ( $Accio == 'idle' || $Accio == 'on' || $Accio == 'off' || $Accio == 'save') ) {
+
             $WAPI = new WebApiController();                        
-            return array($WAPI->doControlHorari( $this->request['idS'], $this->request['idU'], $this->request['accio'], $this->request['MesAny'] ), 200);
-            
+            return array($WAPI->doControlHorari( $idS, $idU, $Accio, $MesAny, $DadesFormulari ), 200);
+
         } else {
             throw new Exception('Paràmetres incorrectes.');
         }

@@ -862,16 +862,27 @@ class WebApiController
      * @param [type] $accio
      * @return void
      */
-    public function doControlHorari( $idS, $idU, $accio, $MesAny = '' ) {
+    public function doControlHorari( $idS, $idU, $accio, $MesAny = '', $DadesForm = array() ) {
         
         $MonthYear = date('mY');
         if( ! empty($MesAny) ) $MonthYear = $MesAny;
 
         $ModeIdle = ($accio == 'idle');
+        $ModeSave = ($accio == 'save');        
         
         $UrlArxiu = DATABASEDIR . 'DbFiles/ControlHorari/' . $idU . '-' . $MonthYear.'.json';        
         $Return = array('Dia' => 0, 'Setmana' => 0, 'Mes' => 0, 'Error' => '', 'MesMostrat' => date('m'), 'EstatBoto' => '', 'DetallHores' => array());
         
+        // Si estic guardant, primer guardo i després carrego la informació
+        if($ModeSave && sizeof($DadesForm) > 0) {
+            
+            // Calculem els totals i ho guardem
+            foreach($DadesForm as $Key => $Row) {
+                $DadesForm[$Key]['Total'] = $this->DiferenciaEntreHores( $Row['Data'] . ' ' . $Row['HoraInici'] , $Row['Data'] . ' ' . $Row['HoraFi'] );
+            }
+            if(file_put_contents($UrlArxiu, json_encode($DadesForm)) === FALSE) throw new Exception('Problema guardant');
+        }
+
         $File = array(); $ArxiuInexistent = false;        
         if( ! file_exists($UrlArxiu) ) $ArxiuInexistent = true;
         else $File = json_decode(file_get_contents($UrlArxiu), true);
@@ -881,15 +892,15 @@ class WebApiController
         $isHoraFinalBuida = (isset($UltimaEntrada['HoraFi']) && $UltimaEntrada['HoraFi'] == '');
         $isDataIgualAvui = ( $UltimaEntrada['Data'] == date('Y-m-d') );
         $UltimaPrimeraDataiHora = $UltimaEntrada['Data'] . ' ' . $UltimaEntrada['HoraInici'];
-        $DataiHoraAra = date('Y-m-d H:i:s');
+        $DataiHoraAra = date('Y-m-d H:i');
         
-        if( ! $ModeIdle ) {
+        if( ! $ModeIdle && ! $ModeSave ) {
                         
             // Hem de crear una nova línia: Hora final ja està plena, arxiu no existeix o data diferent i hora final plena.
             if( ! $isHoraFinalBuida || $ArxiuInexistent ) { 
 
                 // Si hora final no és buida, creem una entrada nova línia nova
-                $File[] = array('Data'=>date('Y-m-d'), 'HoraInici' => date('H:i:s'), 'HoraFi' => '', 'Total' => 0); 
+                $File[] = array('Data'=>date('Y-m-d'), 'HoraInici' => date('H:i'), 'HoraFi' => '', 'Total' => 0); 
                 $UltimaEntrada = end($File);
                 $IndexUE = array_key_last($File);
                 $UltimaPrimeraDataiHora = $UltimaEntrada['Data'] . ' ' . $UltimaEntrada['HoraInici'];
@@ -897,32 +908,32 @@ class WebApiController
                 // Hora final buida i data és la d'avui, tanquem la jornada
             } else if( $isHoraFinalBuida && $isDataIgualAvui ) { 
                                
-                $File[$IndexUE]['HoraFi'] = date('H:i:s');
+                $File[$IndexUE]['HoraFi'] = date('H:i');
                 $File[$IndexUE]['Total'] = $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra );
                 $isHoraFinalBuida = false;
 
                 // La data canvia però la hora final és buida... llavors marquem data màxima del dia i ho deixem per iniciar
-            } else if( $isHoraFinalBuida && !$isDataIgualAvui ) { $File[$IndexUE]['HoraFi'] = '23:59:59'; }
+            } else if( $isHoraFinalBuida && ! $isDataIgualAvui ) { $File[$IndexUE]['HoraFi'] = '23:59'; }
 
-            file_put_contents($UrlArxiu, json_encode($File));
+            if( file_put_contents($UrlArxiu, json_encode($File)) === FALSE) throw new Exception("Problema guardant.");
 
-        }
+        }        
                     
-        //Ara calculo quantes hores ha fet cada empleat per Dia, Setmana, Mes
+        //Ara calculo quantes hores ha fet cada empleat per Dia, Setmana, Mes i comprovo que els totals són correctes. 
         foreach($File as $Row) {                
             
             $RowTime = strtotime($Row['Data']);
             $Setmana = date('W', $RowTime);
             $Mes = date('m', $RowTime);
-            $Dia = date('d', $RowTime);
+            $Dia = date('d', $RowTime);            
 
             if($Dia == date('d')) $Return['Dia'] += $Row['Total'];
             if($Mes == date('m')) $Return['Mes'] += $Row['Total'];
             if($Setmana == date('W')) $Return['Setmana'] += $Row['Total'];
-
+            
         }                                
         
-        $is_Existeix_HoraFi_i_es_buida = (isset($File[$IndexUE]['HoraFi']) && $File[$IndexUE]['HoraFi'] == '' );
+        $is_Existeix_HoraFi_i_es_buida = ( isset($File[$IndexUE]['HoraFi']) && $File[$IndexUE]['HoraFi'] == '' );
         $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
         $Return['TempsActualTreballat'] = ($is_Existeix_HoraFi_i_es_buida) ? $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra ) : 0;
         $File[$IndexUE]['Total'] += $Return['TempsActualTreballat'];
