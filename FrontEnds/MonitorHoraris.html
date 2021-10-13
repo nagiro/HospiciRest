@@ -201,8 +201,8 @@
                         return estil; 
                     },
                     getData: function() {
-                        // let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
-                        let AjaxUrl = 'http://localhost:8080/WebFiles/test.json';
+                        let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
+                        // let AjaxUrl = 'http://localhost:8080/WebFiles/test.json';
                         
                         axios.get( AjaxUrl )                        
                             .then( R => { this.TractaDades( R.data ); } )
