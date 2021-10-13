@@ -181,12 +181,14 @@
                     },                    
                     async doPageJump() {
                         for(let i = 0; i < 3; i++) {
-                            this.Pagines[i].Opacity = 0;
-                            await this.sleep(1);
-                            if( this.Pagines[ i ].Actual == this.Pagines[ i ].Total ) this.Pagines[ i ].Actual = 0;
-                            else this.Pagines[ i ].Actual++;
-                            await this.sleep(0);
-                            this.Pagines[i].Opacity = 1;
+                            if( this.Pagines[i].Total == 1 ) {
+                                this.Pagines[i].Opacity = 0;
+                                await this.sleep(1);
+                                if( this.Pagines[ i ].Actual == this.Pagines[ i ].Total ) this.Pagines[ i ].Actual = 0;
+                                else this.Pagines[ i ].Actual++;
+                                await this.sleep(0);
+                                this.Pagines[i].Opacity = 1;
+                            }
                         }                                                                                                
                     },
                     setStyle: function(Pagina, Index) {
@@ -199,7 +201,7 @@
                     },
                     getData: function() {
                         let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
-                        // let AjaxUrl = 'http://localhost:8087/WebFiles/test.json';
+                        // let AjaxUrl = 'http://localhost:8080/WebFiles/test.json';
                         
                         axios.get( AjaxUrl )                        
                             .then( R => { this.TractaDades( R.data ); } )
@@ -219,9 +221,12 @@
                     },        
                     TractaDades: function(Rows) {
                         var today = new Date();                                                                  
-
+                        
+                        this.DadesHorarisExposicions = [];
                         this.DadesHorarisExposicions.push([this.E,this.E,this.E,this.E]);
+                        this.DadesHorariCursos = [];
                         this.DadesHorarisCursos.push([this.E,this.E,this.E,this.E]);
+                        this.DadesHorarisGenerals = [];
                         this.DadesHorarisGenerals.push([this.E,this.E,this.E,this.E,this.E,this.E]);
                         let iExposicions = 0;
                         let iCursos = 0;
@@ -231,27 +236,28 @@
                             
                             const DataInicialActivitat = Row.data_inicial.split('-');                            
                             const HoraFinalActivitat = Row.hora_fi.split('.');                            
+                            const HoraInicialActivitat = Row.hora_inici.split('.');                            
+                            const isDataActivitatIgualDataAvui = parseInt(DataInicialActivitat[0]) == parseInt(today.getFullYear()) && parseInt(DataInicialActivitat[1]) == parseInt((today.getMonth()+1)) && parseInt(DataInicialActivitat[2]) == parseInt(today.getDate());
+                            const isHoraActivitatVisible = parseInt(HoraInicialActivitat[0]) > parseInt(today.getHours() - 2) && parseInt(HoraInicialActivitat[0]) < parseInt(today.getHours() + 2);
 
-                            // Si la data inicial i la data final són iguals i a més, és igual al dia d'avui, ho mostrem. ç                            
+                            // Deixo només un espai ( el primer )
+                            const T = Row.espais.split(',');
+                            Row.espais = T[0];
+
+                            const Categories = Row.categories.split('@');
+                            const isExposicio = (Categories.findIndex(X => (X == 46)) > -1);
+                            const isCurs = (Categories.findIndex(X => (X == 45)) > -1);
+
+
+                            // Si la data inicial i la data final són iguals i a més, és igual al dia d'avui, ho mostrem.
                             if(                                 
                                 ( Row.data_inicial == Row.data_fi 
-                                    && parseInt(DataInicialActivitat[0]) == parseInt(today.getFullYear()) 
-                                    && parseInt(DataInicialActivitat[1]) == parseInt((today.getMonth()+1)) 
-                                    && parseInt(DataInicialActivitat[2]) == parseInt(today.getDate())                                     
-                                    && parseInt(HoraFinalActivitat[0]) > parseInt(today.getHours())
+                                    && isDataActivitatIgualDataAvui           
+                                    && ( isHoraActivitatVisible || isExposicio )
                                 )
                             ) {
 
-                                // Deixo només un espai ( el primer )
-                                const T = Row.espais.split(',');
-                                Row.espais = T[0];
-
-                                const Categories = Row.categories.split('@');
-                                const isExposicio = (Categories.findIndex(X => (X == 46)) > -1);
-                                const isCurs = (Categories.findIndex(X => (X == 45)) > -1);
-
-                                // Retallo el títol si no hi cap
-                                
+                                // Retallo el títol si no hi cap                                
                                 if((isExposicio || isCurs) && Row.titol.length > 50) Row.titol = Row.titol.substring(0, 50) + '...';
                                 else if( Row.titol.length > 250 ) Row.titol = Row.titol.substring(0, 250) + '...';                                                                                               
                                 
@@ -286,9 +292,7 @@
                             }
 
                         }    
-                        
-                        console.log(this.DadesHorarisGenerals);
-                                                                        
+                                                                                                                    
                     }
                 }
             });            
