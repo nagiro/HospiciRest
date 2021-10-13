@@ -223,11 +223,9 @@
                     TractaDades: function(Rows) {
                         var today = new Date();                                                                  
                         
-                        this.DadesHorarisExposicions = [];
-                        this.DadesHorarisExposicions.push([this.E,this.E,this.E,this.E]);
-                        this.DadesHorariCursos = [];
-                        this.DadesHorarisCursos.push([this.E,this.E,this.E,this.E]);
-                        this.DadesHorarisGenerals = [];
+                        this.Pagines = [{Total: 0, Actual: 0, Opacity: 1},{Total: 0, Actual: 0, Opacity: 1},{Total: 0, Actual: 0, Opacity: 1}];
+                        this.DadesHorarisExposicions.push([this.E,this.E,this.E,this.E]);                        
+                        this.DadesHorarisCursos.push([this.E,this.E,this.E,this.E]);                        
                         this.DadesHorarisGenerals.push([this.E,this.E,this.E,this.E,this.E,this.E]);
                         let iExposicions = 0;
                         let iCursos = 0;
@@ -252,8 +250,7 @@
 
                             // Si la data inicial i la data final són iguals i a més, és igual al dia d'avui, ho mostrem.
                             if(                                 
-                                ( Row.data_inicial == Row.data_fi 
-                                    && isDataActivitatIgualDataAvui           
+                                ( Row.data_inicial == Row.data_fi && isDataActivitatIgualDataAvui           
                                     && ( isHoraActivitatVisible || isExposicio )
                                 )
                             ) {
