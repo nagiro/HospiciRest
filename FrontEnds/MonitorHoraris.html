@@ -111,9 +111,9 @@
                     </thead>
                     <tbody>
                         <tr v-for="E of DadesHorarisExposicions[Pagines[2].Actual]">
-                            <td class="textTrans" :style="[{'opacity': Pagines[1].Opacity}]">{{E.titol}}&nbsp;</td>
-                            <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[1].Opacity}]">{{E.hora_inici}}</td>
-                            <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[1].Opacity}]">{{E.espais}}</td>
+                            <td class="textTrans" :style="[{'opacity': Pagines[2].Opacity}]">{{E.titol}}&nbsp;</td>
+                            <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[2].Opacity}]">{{E.hora_inici}}</td>
+                            <td class="textTrans" :style="[{'text-align':'center'}, {'opacity': Pagines[2].Opacity}]">{{E.espais}}</td>
                         </tr>                                                
                     </tbody>
                     </table>
@@ -180,8 +180,9 @@
                         return new Promise(resolve => setTimeout(resolve, segons*1000));
                     },                    
                     async doPageJump() {
+                        
                         for(let i = 0; i < 3; i++) {
-                            if( this.Pagines[i].Total == 1 ) {
+                            if( this.Pagines[i].Total > 0 ) {
                                 this.Pagines[i].Opacity = 0;
                                 await this.sleep(1);
                                 if( this.Pagines[ i ].Actual == this.Pagines[ i ].Total ) this.Pagines[ i ].Actual = 0;
@@ -200,8 +201,8 @@
                         return estil; 
                     },
                     getData: function() {
-                        let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
-                        // let AjaxUrl = 'http://localhost:8080/WebFiles/test.json';
+                        // let AjaxUrl = 'https://hospici.cat/web/GetActXML?IDS='+this.idS+'&XML=0';                        
+                        let AjaxUrl = 'http://localhost:8080/WebFiles/test.json';
                         
                         axios.get( AjaxUrl )                        
                             .then( R => { this.TractaDades( R.data ); } )
