@@ -121,13 +121,13 @@
                     
                     this.video = this.$refs.video;
                     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                        navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { exact: "environment" } } }).then(stream => {
                             video.srcObject = stream;
                                 video.play();
                                 video.onplay = function () {};
                                 video.play();
                                 requestAnimationFrame(this.tick);
-                        });
+                        }).catch(function(err) { console.log(err); alert(err.message + err.constraint); });
                     }
                 
                     this.isScanning = !this.isScanning;
