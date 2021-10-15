@@ -11,6 +11,7 @@
         .validador_falten { margin-top: 2vw; }
         .qrcode-stream-wrapper { width: 20% !important; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
 </head>
 <body>
@@ -24,10 +25,17 @@
             <h2>{{CursosAEscollir[CursEscollit]}}</h2>
 
             <div class="validador_box">
-                <label for="EntradaDades">Codi entrada</label>
-                <!-- <qrcode-stream @init="onInit" :key="_uid" :track="paintOutline" @decode="DecodeQR($event)"></qrcode-stream>                        -->
+                <label for="EntradaDades">Codi entrada</label>                
                 <input style="width: 70%" type="text" v-model="QRText" id="EntradaDades" v-on:keyup.13="ValidaCodi($event, true)" />
                 <button @click="ValidaCodi($event, true)">Valida</button>
+            </div>
+
+            <div style="margin-top: 1vw;">
+                <div id="camera" v-show="isScanning">            
+                    <div> <video style="display:none" ref="video" id="video" width="100%" height="100%" autoplay/> </div>            
+                    <canvas ref="canvas" id="canvas" width="100px" height="100px" />            
+                </div>
+                <button @click="Escaneja()" :class="(isScanning) ? 'btn btn-success' : 'btn btn-info'">{{(isScanning) ? 'Atura escaneig' : 'Escaneja'}}</button>
             </div>
 
             <div class="validador_resposta" :class="VRC">                            
@@ -64,6 +72,7 @@
 
 
   <script>
+        
         var vm2 = new Vue({
         
             el: '#validador',        
@@ -81,20 +90,93 @@
                 Entrats: 0, 
                 Totals: 0,
                 ConstEstatLlistaEspera: CONST_ESTAT_LLISTA_ESPERA,
-                error: ""                
+                error: "",                
+
+
+                video: {},
+                canvas: {},
+                captures: [],
+                LastCodeReaded: "",
+                isScanning: false,                
+                
             },            
             created: function() {
                 
-                let T = '';
-                this.CursosMatriculesRaw = <?php echo $Data ?>;
+                let T = '';                                
+                const D = <?php echo $Data ?>;                
+                this.CursosMatriculesRaw = D.Llistat;
                 
                 for(E of this.CursosMatriculesRaw) {                    
                     if(E.TitolCurs != T) this.CursosAEscollir.push(E.TitolCurs); 
                     T = E.TitolCurs;
                 }                                
+
             },
+
+            mounted() {},
+
             computed: {},
             methods: {
+                Escaneja() {                                        
+                    
+                    this.video = this.$refs.video;
+                    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                            video.srcObject = stream;
+                                video.play();
+                                video.onplay = function () {};
+                                video.play();
+                                requestAnimationFrame(this.tick);
+                        });
+                    }
+                
+                    this.isScanning = !this.isScanning;
+                    requestAnimationFrame(this.tick);
+
+                },
+                drawLine(begin, end, color) {
+
+                    this.context.beginPath();
+                    this.context.moveTo(begin.x, begin.y);
+                    this.context.lineTo(end.x, end.y);
+                    this.context.lineWidth = 4;
+                    this.context.strokeStyle = color;
+                    this.context.stroke();
+
+                },
+                tick() {        
+                    
+                    this.canvas = this.$refs.canvas;                    
+                    this.canvas.height = 200; //this.video.height;
+                    this.canvas.width = 200; //this.video.width;                    
+                    this.context = this.canvas.getContext("2d");             
+                    this.context.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);       
+                    
+                    var imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                    var code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    if( code ) {                        
+                        
+                        if( code.data != this.LastCodeReaded ) { 
+                            this.LastCodeReaded = code.data;
+                            this.QRText = code.data;
+                            this.ValidaCodi(this.QRText, true);                            
+                        }
+
+                        this.drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+                        this.drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+                        this.drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+                        this.drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+
+                    } else {
+
+                        this.QRText = "";
+
+                    }
+
+                    if(this.isScanning) requestAnimationFrame(this.tick);
+
+                },
                 EsculloCurs: function() {                    
                     NomCurs = this.CursosAEscollir[this.CursEscollit];                                        
                     this.CursosMatricules = [];                    
@@ -146,49 +228,7 @@
                         this.QRText = '';
                     }).catch(E => { alert(E); });
                 }
-/*
-                ,
-                async onInit (promise) {
-                    try {
-                        await promise
-                    } catch (error) {
-                        alert(error.name);
-                        if (error.name === 'NotAllowedError') {
-                        this.error = "ERROR: you need to grant camera access permisson"
-                        } else if (error.name === 'NotFoundError') {
-                        this.error = "ERROR: no camera on this device"
-                        } else if (error.name === 'NotSupportedError') {
-                        this.error = "ERROR: secure context required (HTTPS, localhost)"
-                        } else if (error.name === 'NotReadableError') {
-                        this.error = "ERROR: is the camera already in use?"
-                        } else if (error.name === 'OverconstrainedError') {
-                        this.error = "ERROR: installed cameras are not suitable"
-                        } else if (error.name === 'StreamApiNotSupportedError') {
-                        this.error = "ERROR: Stream API is not supported in this browser"
-                        }
-                    }
-                },
-                paintOutline (detectedCodes, ctx) {
-                    for (const detectedCode of detectedCodes) {
-                        const [ firstPoint, ...otherPoints ] = detectedCode.cornerPoints
 
-                        ctx.strokeStyle = "blue";
-
-                        ctx.beginPath();
-                        ctx.moveTo(firstPoint.x, firstPoint.y);
-                        for (const { x, y } of otherPoints) {
-                        ctx.lineTo(x, y);
-                        }
-                        ctx.lineTo(firstPoint.x, firstPoint.y);
-                        ctx.closePath();
-                        ctx.stroke();
-                    }
-                },
-                DecodeQR(event) {
-                    this.QRText = event;
-                    this.ValidaCodi(this.QRText, true);
-                }
-*/                
             }
         });
 

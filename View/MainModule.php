@@ -138,7 +138,7 @@ class MainModule {
                 if(!isset($url[1])) throw new Exception("Has d'entrar el codi d'entitat.");
                 if(!is_numeric($url[1])) throw new Exception("Has d'entrar el codi d'entitat correcte."); 
                 $idS = strval( $url[1] );
-                $Data = $this->WebController->getActivitatsDiaValidar( $idS );
+                $Data['Llistat'] = $this->WebController->getActivitatsDiaValidar( $idS );
                 $this->getModuleContent('HtmlHeaderWeb.php', $Data);       
                 $this->getModuleContent('Web/validador.php', json_encode($Data) ); 
                 $this->getModuleContent('HtmlFooterWeb.php');                

@@ -888,7 +888,7 @@ class WebApiController
         }
 
         $File = array(); $ArxiuInexistent = false;        
-        if( ! file_exists($UrlArxiu) ) $ArxiuInexistent = true;
+        if( ! file_exists($UrlArxiu) ){ $ArxiuInexistent = true; } 
         else $File = json_decode(file_get_contents($UrlArxiu), true);
         
         $UltimaEntrada = end($File);
