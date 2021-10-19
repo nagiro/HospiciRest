@@ -44,7 +44,13 @@ class WebController
         // Trec les activitats de properes activitats que tenen més d'un dia o que són cicles. 
         $E["ProperesActivitats"] = array();
         foreach($TEMP as $EL) {
-            if($EL["Dia"] == $EL["DiaMax"]) $E["ProperesActivitats"][] = $EL;            
+            // if($EL["Dia"] == $EL["DiaMax"])                             
+            if(
+                    stripos($EL['Categories'], '59') !== FALSE
+                &&  stripos($EL['Categories'], '46') !== FALSE
+                &&  stripos($EL['Categories'], '56') !== FALSE
+            )
+                $E["ProperesActivitats"][] = $EL;            
         }
          
         return $E;
