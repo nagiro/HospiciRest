@@ -12,7 +12,7 @@
         .Detall_Llistat_Imatges { display: flex; list-style: none; width: 100%; justify-content: left; flex-flow: wrap; }
         .Detall_Llistat_Imatges li { padding:2vw; }
         .Detall_Llistat_Imatges img { transition: transform .2s; width: 10vw; }
-        .Detall_Llistat_Imatges .imatge_gran {  transform: scale(5); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .Detall_Llistat_Imatges .imatge_gran { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(5); z-index: 99; }
         .Detall_Llistat_Imatges .imatge_petita {  transform: scale(1);  }
 
         .LlistatHoritzontal { display: flex; list-style: none; width: 100%; justify-content: space-between; flex-flow: wrap; }
@@ -45,10 +45,10 @@
             <h1>Espais disponibles de {{DetallSite.SITES_Nom}}</h1>                        
 
             <nav class="LlistatHoritzontal">                                    
-                <a  v-for="Espai of LlistatEspais"  target="_new" :href="'/espais/detall/' + Espai.ESPAIS_EspaiId">
+                <a v-for="Espai of LlistatEspais"  target="_new" :href="'/espais/detall/' + Espai.ESPAIS_EspaiId">
                     <span>{{Espai.ESPAIS_Nom}}</span>                    
                     <img :src="Espai.Imatges.ImatgesS[0]" />
-                </a>                                
+                </a>
             </nav>
                             
         </section>  
@@ -62,7 +62,7 @@
             <p>
                 <ul class="Detall_Llistat_Imatges">
                     <li v-for="(I, index) of EspaiImatges.ImatgesL">
-                        <img :class="getClassImatge" @click="ClicaImatge()" :src="I" />                    
+                        <img :class="getClassImatge" @click="ClicaImatge()" :src="I" />
                     </li>
                 </ul>
             </p>
