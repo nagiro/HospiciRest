@@ -12,6 +12,7 @@
         .Detall_Llistat_Imatges { display: flex; list-style: none; width: 100%; justify-content: left; flex-flow: wrap; }
         .Detall_Llistat_Imatges li { padding:2vw; }
         .Detall_Llistat_Imatges img { transition: transform .2s; width: 10vw; }
+        .Detall_Llistat_Imatges img:hover { cursor: pointer;  }
         .Detall_Llistat_Imatges .imatge_gran { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(5); z-index: 99; }
         .Detall_Llistat_Imatges .imatge_petita {  transform: scale(1);  }
 
@@ -62,7 +63,10 @@
             <p>
                 <ul class="Detall_Llistat_Imatges">
                     <li v-for="(I, index) of EspaiImatges.ImatgesL">
-                        <img :class="getClassImatge" @click="ClicaImatge()" :src="I" />
+                        <img    v-if="( IndexImatgeVisible == index && getClassImatge == 'imatge_gran' ) || getClassImatge == 'imatge_petita' " 
+                                :class="getClassImatge" 
+                                @click="ClicaImatge(index)" :src="I" 
+                        />
                     </li>
                 </ul>
             </p>
@@ -114,6 +118,7 @@
                 AtributsCalendari: [],    
                 LlistaEspaisDisponiblesForm: [],   // Carrega quan carrega la pàgina en detall
                 IdSite: 0, 
+                IndexImatgeVisible: 0,
 
                 DetallSite: {},
                 LlistatEspais: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
@@ -173,8 +178,9 @@
                 }
             },
             methods: {
-                ClicaImatge() {
+                ClicaImatge(index) {
                     this.ImatgeGran = !this.ImatgeGran;
+                    this.IndexImatgeVisible = index;
                 },
                 
                 getOcupacio(DataCalendari) {
