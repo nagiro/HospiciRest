@@ -1,0 +1,209 @@
+{
+  "Estils" : [
+    {
+      "padding-left": "3vw",
+      "padding-right": "3vw",
+      "padding-top": "0vw",
+      "padding-bottom": "1vw"
+    },
+    {
+      "padding-left": "1vw",
+      "padding-right": "1vw",
+      "padding-top": "0.5vw",
+      "padding-bottom": "0.5vw"
+    },
+    {
+      "padding-left": "20vw",
+      "padding-right": "auto",
+      "padding-top": "0vw",
+      "padding-bottom": "1vw"
+    }
+  ],
+  "Seients": 
+  [
+    [
+      { "tipus": "text", "text": "ESCENARI", "fila": 0, "seient": 0, "Estil": 2 }
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 1", "fila": 1, "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 1, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 1, "Estil": 1 }
+      
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 2", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 2, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 2, "Estil": 1 }
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 3", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 3, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 3, "Estil": 1 }
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 4", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 4, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 4, "Estil": 1 }
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 5", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 5, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 5, "Estil": 1 }
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 6", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 6, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 6, "Estil": 1 }      
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 7", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 7, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 7, "Estil": 1 }      
+    ],
+    [   
+      { "tipus": "fila", "text": "Fila 8", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 8, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 8, "Estil": 1 }      
+    ],                        
+    [   
+      { "tipus": "fila", "text": "Fila 9", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 9, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 9, "Estil": 1 }      
+    ],                        
+    [   
+      { "tipus": "fila", "text": "Fila 10", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 10, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 10, "Estil": 1 }      
+    ],                        
+    [   
+      { "tipus": "fila", "text": "Fila 11", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 11, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 11, "Estil": 1 }      
+    ],                        
+    [   
+      { "tipus": "fila", "text": "Fila 12", "Estil": 0 },
+      { "tipus": "loc", "seient": 12, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 11, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 10, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 9, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 8, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 7, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 6, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 5, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 4, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 3, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 2, "fila": 12, "Estil": 1 },
+      { "tipus": "loc", "seient": 1, "fila": 12, "Estil": 1 }      
+    ]  
+  ]
+}
