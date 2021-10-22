@@ -105,15 +105,11 @@
                     TEMPLATE_URL: 'https://www.casadecultura.cat/downloads/butlleti/template.html',
                     URL_GETXML : '/apiweb/getXMLActivitats',
                 },          
-                created() {
-                    let Today = [new Date().getFullYear(), new Date().getMonth() +1 , new Date().getDate()];
-                    this.DataInici = Today.join('-', Today);
-                                        
-                    let T = new Date();
-                    T.setDate( new Date().getDate() + 7 );
-                    
-                    let OneWeek = [ T.getFullYear(), T.getMonth()+1 , T.getDate() ];
-                    this.DataFi = OneWeek.join('-', OneWeek);
+                created() {                    
+
+                    this.DataInici = new Date();
+                    this.DataFi = new Date();                    
+                    this.DataFi.setDate( new Date().getDate() + 7 );
 
                     const queryString = window.location.search;
                     const urlParams = new URLSearchParams(queryString);
@@ -122,15 +118,22 @@
                     
                 },                      
                 methods: {  
-     
+                    ConvertData(Date, ToBDD = true) {       
+                                                             
+                        if(ToBDD) return [Date.getFullYear(), Date.getMonth() + 1, Date.getDate()].join('-');
+                        else { 
+                            let DataArray = Date.split('-');
+                            return new Date(DataArray[0], DataArray[1]-1, DataArray[2]);                            
+                        }                                     
+                    },
                     CarregaXML() {      
                         
                         this.Errors = "";
 
                         //Carrego l'XML
                         let formData = new FormData();
-                        formData.append('DataInici', this.DataInici);
-                        formData.append('DataFi', this.DataFi);
+                        formData.append('DataInici', this.ConvertData(this.DataInici));
+                        formData.append('DataFi', this.ConvertData(this.DataFi));
                         formData.append('SiteId', this.SiteId);
                         formData.append('Action', 'load');
 
@@ -165,7 +168,7 @@
                                 this.HTMLVal = Template;
 
                              })
-                            .catch( (e) => { this.Errors = e.response.data; } );
+                            // .catch( (e) => { this.Errors = e.response.data; } );
                     },
                     GeneraHTMLFromXML(XML, Nivell) {
                    
@@ -200,10 +203,9 @@
                             let DIP = DataInicial.split('-');
                             let DFP = DataFinal.split('-');
                             const Dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
-                            const NomDiaIncial = Dies[new Date(DIP[0], (DIP[1] - 1 ), DIP[2]).getDay()];                        
-                            Hora = Hora.split(':').splice(0,2).join(':');                            
-                            
-                            if(DIP == DFP) return NomDiaInicial + ' ' + DIP[2] + ' a les ' + Hora + ' h';
+                            const NomDiaInicial = Dies[new Date(DIP[0], (DIP[1] - 1 ), DIP[2]).getDay()];                        
+                            Hora = Hora.split(':').splice(0,2).join(':');                                                        
+                            if(DataInicial === DataFinal) return NomDiaInicial + ' ' + DIP[2] + ' a les ' + Hora + ' h';
                             else return 'Del ' + DIP[2]+'/'+DIP[1] + ' al ' + DFP[2]+'/'+DFP[1] + ' a les ' + Hora + ' h';
                         } else {
                             return '';

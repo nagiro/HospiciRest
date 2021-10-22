@@ -176,13 +176,23 @@ class ActivitatsModel extends BDD {
                 LEFT JOIN {$EM->getTableName()} ON ( {$EM->getOldFieldNameWithTable('EspaiId')} = {$HEM->getOldFieldNameWithTable('EspaiId')} )
                 LEFT JOIN {$TAM->getTableName()} ON ( {$TAM->getOldFieldNameWithTable(TipusActivitatsModel::FIELD_IdTipusActivitat)} = {$this->getOldFieldNameWithTable(self::FIELD_TipusActivitatId)} )
                 LEFT JOIN {$CM->getTableName()} ON ( {$CM->getOldFieldNameWithTable(CiclesModel::FIELD_IdCicle)} = {$this->getOldFieldNameWithTable(self::FIELD_CiclesCicleId)} )
-                where 
-                         {$this->getOldFieldNameWithTable('SiteId')} = :site_id
-                AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
-                AND      {$HM->getOldFieldNameWithTable('Dia')} > :DataInicial
-                AND      {$HM->getOldFieldNameWithTable('Dia')} < :DataFinal
-                AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                      
-                {$W}                                           
+                WHERE 
+                    {$this->getOldFieldNameWithTable('ActivitatId')} in 
+                        (Select {$this->getOldFieldNameWithTable('ActivitatId')}
+                            from {$this->getTableName()} 
+                            LEFT JOIN {$HM->getTableName()} ON ( {$this->getOldFieldNameWithTable('ActivitatId')} = {$HM->getOldFieldNameWithTable('ActivitatId')} )
+                            LEFT JOIN {$HEM->getTableName()} ON ( {$HM->getOldFieldNameWithTable('HorariId')} = {$HEM->getOldFieldNameWithTable('HorariId')} )
+                            LEFT JOIN {$EM->getTableName()} ON ( {$EM->getOldFieldNameWithTable('EspaiId')} = {$HEM->getOldFieldNameWithTable('EspaiId')} )
+                            LEFT JOIN {$TAM->getTableName()} ON ( {$TAM->getOldFieldNameWithTable(TipusActivitatsModel::FIELD_IdTipusActivitat)} = {$this->getOldFieldNameWithTable(self::FIELD_TipusActivitatId)} )
+                            LEFT JOIN {$CM->getTableName()} ON ( {$CM->getOldFieldNameWithTable(CiclesModel::FIELD_IdCicle)} = {$this->getOldFieldNameWithTable(self::FIELD_CiclesCicleId)} )
+                            where 
+                                     {$this->getOldFieldNameWithTable('SiteId')} = :site_id
+                            AND      {$this->getOldFieldNameWithTable('Actiu')} = 1                
+                            AND      {$HM->getOldFieldNameWithTable('Dia')} > :DataInicial
+                            AND      {$HM->getOldFieldNameWithTable('Dia')} < :DataFinal
+                            AND      {$HM->getOldFieldNameWithTable('Actiu')} = 1                      
+                            {$W} 
+                        )                                           
                 ORDER BY {$HM->getOldFieldNameWithTable('Dia')} asc
             ";
 
