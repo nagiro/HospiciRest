@@ -197,13 +197,16 @@
                         this.EspaiHorarisOcupats = X.data;                        
                         for(HO of this.EspaiHorarisOcupats){
 
-                            let D = HO.HORARIS_Dia.split('-');
+                            let D = HO.HORARIS_Dia.split('-');                            
+                            const HoraInici = String(HO.HORARIS_HoraPre).slice(0,-3);
+                            const HoraFi = String(HO.HORARIS_HoraPost).slice(0,-3);
+                            
                             this.AtributsCalendari.push(
                                 { 
                                     key: String(HO.HORARIS_Dia) + String(HO.HORARIS_HoraPost), 
                                     dot: true, 
                                     popover: { 
-                                        label: 'De ' + String(HO.HORARIS_HoraPre) + ' a ' + String(HO.HORARIS_HoraPost)
+                                        label: 'De ' + HoraInici + ' a ' + HoraFi
                                     }, 
                                     dates: new Date(D[0],(D[1]-1),D[2],0,0,0,0)
                                 }
