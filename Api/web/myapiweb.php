@@ -494,7 +494,7 @@ class MyAPIWeb extends API
         $idS = isset($this->request['post']['idS']) ? $this->request['post']['idS'] : $idS;
         $idU = isset($this->request['post']['idU']) ? $this->request['post']['idU'] : $idU;
         $Accio = isset($this->request['post']['accio']) ? $this->request['post']['accio'] : $Accio;        
-        $MesAny = isset($this->request['post']['mesAny']) ? $this->request['post']['mesAny'] : '';
+        $MesAny = isset($this->request['post']['mesAny']) ? $this->request['post']['mesAny'] : $MesAny;
         $DadesFormulari = isset($this->request['post']['Dades']) ? json_decode($this->request['post']['Dades'], true) : array();
 
         if( $idS > 0 && $idU > 0 && ( $Accio == 'idle' || $Accio == 'on' || $Accio == 'off' || $Accio == 'save') ) {

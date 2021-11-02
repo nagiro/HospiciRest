@@ -266,8 +266,9 @@
                     loadData(idS, idU, accio = 'idle', mesAny = '') {
                         
                         if(mesAny == '') { this.mesAny = (new Date().getMonth()+1).toString() + (new Date().getFullYear()).toString(); }
+                        else { this.mesAny = mesAny; }
                         
-                        const Url = this.SUBMIT_URL + '?idS=' + idS + '&idU=' + idU + '&accio=' + accio + '&MesAny=' + this.mesAny;
+                        const Url = this.SUBMIT_URL + '?idS=' + idS + '&idU=' + idU + '&accio=' + accio + '&mesAny=' + this.mesAny;
                         // r = array('Dia' => 0, 'Setmana' => 0, 'Mes' => 0, 'Error' => '', 'MesMostrat' => date('m'), 'EstatBoto' => '');
                         axios.get( Url )
                             .then( (r) => { this.getLoadDataResponse(r) })
@@ -288,6 +289,7 @@
                         this.loadData(this.IDS, this.IDU, 'off');                 
                     },
                     Consulta() {
+       
                         if( ( this.ConsultaAny.length == 4 && this.ConsultaMes.length == 2 && !isNaN(this.ConsultaAny) && !isNaN(this.ConsultaMes) )
                             || ( this.ConsultaAny.length == 0 && this.ConsultaMes.length == 0 )
                         ) {
