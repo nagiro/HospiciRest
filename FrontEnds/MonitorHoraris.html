@@ -128,7 +128,7 @@
             <div class="franja_inferior">
                 <div style="width: 48vw; display: flex; justify-content:space-between;"  >
                     <div><i class="fas fa-phone"></i> 972 202 013</div>
-                    <div><i class="fab fa-whatsapp"></i> 691 217 59</div>
+                    <div><i class="fab fa-whatsapp"></i> 691 217 259</div>
                     <div><i class="far fa-envelope"></i> info@casadecultura.org</div>
                     <div><i class="fas fa-globe"></i> www.casadecultura.org</div>
                 </div>
@@ -237,7 +237,11 @@
                             const HoraFinalActivitat = Row.hora_fi.split('.');                            
                             const HoraInicialActivitat = Row.hora_inici.split('.');                            
                             const isDataActivitatIgualDataAvui = parseInt(DataInicialActivitat[0]) == parseInt(today.getFullYear()) && parseInt(DataInicialActivitat[1]) == parseInt((today.getMonth()+1)) && parseInt(DataInicialActivitat[2]) == parseInt(today.getDate());
-                            const isHoraActivitatVisible = parseInt(HoraInicialActivitat[0]) > parseInt(today.getHours() - 2) && parseInt(HoraInicialActivitat[0]) < parseInt(today.getHours() + 2);
+                            
+                            const isMati = ( today.getHours() <= 12 );
+                            const isActivitatAlMati = parseInt(HoraInicialActivitat[0]) < 12;
+                            const isActivitatEnMarxa = today.getHours() < HoraFinalActivitat[0];
+                            const isHoraActivitatVisible = ( isMati && isActivitatAlMati && isActivitatEnMarxa ) || ( !isMati && !isActivitatAlMati && isActivitatEnMarxa );
 
                             // Deixo només un espai ( el primer )
                             const T = Row.espais.split(',');
