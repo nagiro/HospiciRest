@@ -106,7 +106,13 @@
                             <span class="input-group-text">Mes / Any</span>
                             <input type="text" v-model="ConsultaMes" v-mask="'##'" @change="Consulta()" class="form-control">
                             <input type="text" v-model="ConsultaAny" v-mask="'####'" @change="Consulta()" class="form-control">
+                            <button type="button" class="btn btn-success" class="form-control" @click="Imprimeix()">Descarrega full</button>
                           </div>                          
+                          <br />
+                          <div class="alert alert-success" role="alert" v-if="PdfUrl.length > 0">
+                            <a target="_blank" :href="PdfUrl">Baixa't l'arxiu</a>
+                          </div>                          
+                          
                           <table class="table">
                             <thead>
                               <tr>                                
@@ -190,6 +196,7 @@
                     showModal: false,
                     IndexElement: '',
                     AddNewOne: false,
+                    PdfUrl: ''
 
                 },
                 created () {
@@ -263,11 +270,9 @@
                         this.showModal = true; 
 
                     },                
-                    loadData(idS, idU, accio = 'idle', mesAny = '') {
+                    loadData(idS, idU, accio = 'idle') {
                         
-                        if(mesAny == '') { this.mesAny = (new Date().getMonth()+1).toString() + (new Date().getFullYear()).toString(); }
-                        else { this.mesAny = mesAny; }
-                        
+                        if(this.mesAny == '') { this.mesAny = (new Date().getMonth()+1).toString() + (new Date().getFullYear()).toString(); }                                                
                         const Url = this.SUBMIT_URL + '?idS=' + idS + '&idU=' + idU + '&accio=' + accio + '&mesAny=' + this.mesAny;
                         // r = array('Dia' => 0, 'Setmana' => 0, 'Mes' => 0, 'Error' => '', 'MesMostrat' => date('m'), 'EstatBoto' => '');
                         axios.get( Url )
@@ -281,6 +286,7 @@
                         this.BotoEstat = r.data.EstatBoto;
                         this.DetallHores = r.data.DetallHores;
                         this.HoresTreballadesActualment = r.data.TempsActualTreballat;
+                        this.PdfUrl = r.data.PdfUrl;
                     },
                     Inicia() {
                         this.loadData(this.IDS, this.IDU, 'on');                 
@@ -288,12 +294,18 @@
                     Para() {
                         this.loadData(this.IDS, this.IDU, 'off');                 
                     },
+                    Imprimeix() {
+                        this.loadData(this.IDS, this.IDU, 'pdf');
+                    },
                     Consulta() {
-       
+                        
+                        this.mesAny = '';
+                        
                         if( ( this.ConsultaAny.length == 4 && this.ConsultaMes.length == 2 && !isNaN(this.ConsultaAny) && !isNaN(this.ConsultaMes) )
                             || ( this.ConsultaAny.length == 0 && this.ConsultaMes.length == 0 )
                         ) {
-                            this.loadData(this.IDS, this.IDU, 'idle', (this.ConsultaMes.toString()+this.ConsultaAny.toString()));
+                            this.mesAny = this.ConsultaMes.toString() + this.ConsultaAny.toString();    
+                            this.loadData(this.IDS, this.IDU, 'idle');
                         }
                     }             
                 }

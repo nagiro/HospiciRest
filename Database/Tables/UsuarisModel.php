@@ -45,6 +45,7 @@ class UsuarisModel extends BDD {
     }    
     public function getEmail($OU) { return $OU[$this->gnfnwt('Email')]; }
     public function getId($OU) { return $OU[$this->gnfnwt('IdUsuari')]; }
+    public function getNomComplet($OU) { return $OU[$this->gnfnwt('Cog1')].' '.$OU[$this->gnfnwt('Cog2')].', '.$OU[$this->gnfnwt('Nom')]; }
 
     public function getUsuariRow($W) { return $this->_getRowWhere($W); }
     public function getUsuariId($Id) { return $this->_getRowWhere( array($this->gofnwt('IdUsuari') => $Id) ); }                

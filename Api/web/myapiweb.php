@@ -371,7 +371,7 @@ class MyAPIWeb extends API
 //        if(!$this->Auth->doLogin($this->request['post']['Usuari'], $this->request['post']['Password'], $this->request['post']['SiteId']))
 //            return array("Autentificació fallida!", 400);
 
-        $WAPI = new WebApiController();
+        $FAPI = new FrontApiController();
         if( $Accio == 'NotaPremsaGenera' ||  $Accio == 'NotaPremsaPublica' ) {
 
             if(!isset($this->request['post']['html'])) return array("No hi ha l'html.", 400);
@@ -379,7 +379,7 @@ class MyAPIWeb extends API
             if(!isset($this->request['files']['file_notapremsa'])) return array("No hi ha cap arxiu de nota de premsa.",400);
             $Dades = array($this->request['post']['html']);
             $Arxius = array($this->request['files']['file_imatge'], $this->request['files']['file_notapremsa']);
-            $RES = $WAPI->doUploadFrontEnds( $SiteId, $Accio , $Dades , $Arxius );
+            $RES = $FAPI->doUploadFrontEnds( $SiteId, $Accio , $Dades , $Arxius );
             
         }
         
@@ -407,9 +407,9 @@ class MyAPIWeb extends API
         //Comprovem que hem entrat un directori i nom d'arxiu. I que existex el directori. 
         if(!isset($this->request['post']['Pagina']) || !isset($this->request['post']['NomArxiu']))
             return array("Nom o directori incorrecte!", 400);
-                            
-        $WAPI = new WebApiController();
-        $RES = $WAPI->doUploadPaginaFile($this->request['post']['Pagina'] , $this->request['post']['NomArxiu'] , $this->request['files']['file']["tmp_name"] );
+                                    
+        $FAPI = new FrontApiController();
+        $RES = $FAPI->doUploadPaginaFile($this->request['post']['Pagina'] , $this->request['post']['NomArxiu'] , $this->request['files']['file']["tmp_name"] );
         
         if($RES[0]) return array($RES[1], 200);
         else return array($RES[1], 400);            
@@ -458,16 +458,16 @@ class MyAPIWeb extends API
 
         if( $Action != '' && $SiteId != '' ) {
             
-            $WAPI = new WebApiController();
+            $FAPI = new FrontApiController();
             try {
                 if( $Action == 'load' ) {
                     if( $DataInici == '' || $DataFi == '') return array('Paràmetres incorrectes', 400);
-                    $RET = $WAPI->getXMLActivitats( $DataInici,  $DataFi, $SiteId );
+                    $RET = $FAPI->getXMLActivitats( $DataInici,  $DataFi, $SiteId );
                 } elseif( $Action == 'save' ) {
                     if( $User == '' || $Password == '' || $Html == '') return array('Paràmetres incorrectes', 400);
                     if(!$this->Auth->doLogin( $User, $Password, $SiteId ) ) return array("Autentificació fallida!", 400);                
                     else {
-                        $RET = $WAPI->saveButlleti( $Html, $SiteId );
+                        $RET = $FAPI->saveButlleti( $Html, $SiteId );
                     }
                 }
             } catch (Exception $e) { return array($e->getMessage(), 500); }
@@ -497,10 +497,10 @@ class MyAPIWeb extends API
         $MesAny = isset($this->request['post']['mesAny']) ? $this->request['post']['mesAny'] : $MesAny;
         $DadesFormulari = isset($this->request['post']['Dades']) ? json_decode($this->request['post']['Dades'], true) : array();
 
-        if( $idS > 0 && $idU > 0 && ( $Accio == 'idle' || $Accio == 'on' || $Accio == 'off' || $Accio == 'save') ) {
+        if( $idS > 0 && $idU > 0 && ( $Accio == 'pdf' || $Accio == 'idle' || $Accio == 'on' || $Accio == 'off' || $Accio == 'save') ) {
 
-            $WAPI = new WebApiController();                        
-            return array($WAPI->doControlHorari( $idS, $idU, $Accio, $MesAny, $DadesFormulari ), 200);
+            $FAPI = new FrontApiController();                        
+            return array($FAPI->doControlHorari( $idS, $idU, $Accio, $MesAny, $DadesFormulari ), 200);
 
         } else {
             throw new Exception('Paràmetres incorrectes.');
