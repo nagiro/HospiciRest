@@ -117,7 +117,7 @@ class FrontApiController
         $ModePdf = ($accio == 'pdf');     
         
         $UrlArxiu = DATABASEDIR . 'DbFiles/ControlHorari/' . $idU . '-' . $MonthYear.'.json';        
-        $Return = array('Dia' => 0, 'Setmana' => 0, 'Mes' => 0, 'Error' => '', 'EstatBoto' => '', 'DetallHores' => array());
+        $Return = array('Dia' => 0, 'Setmana' => 0, 'Mes' => 0, 'Error' => '', 'EstatBoto' => '', 'DetallHores' => array(), 'TotalDies' => 0);
         
         // Si estic guardant, primer guardo i després carrego la informació
         if($ModeSave && sizeof($DadesForm) > 0) {
@@ -170,20 +170,22 @@ class FrontApiController
         }        
                     
         //Ara calculo quantes hores ha fet cada empleat per Dia, Setmana, Mes i comprovo que els totals són correctes. 
+        $T = array();
         foreach($File as $Row) {                
             
             $RowTime = strtotime($Row['Data']);
             $Setmana = date('W', $RowTime);            
             $Dia = date('d', $RowTime);            
+            $T[$Dia] = $Dia;
 
             if($Dia == date('d')) $Return['Dia'] += $Row['Total'];            
-            if($Setmana == date('W')) $Return['Setmana'] += $Row['Total'];
+            if($Setmana == date('W')) $Return['Setmana'] += $Row['Total'];            
             
             // No miro el mes, perquè els arxius ja van per mensualitats
             $Return['Mes'] += $Row['Total'];            
             
-        }                                
-        
+        }                     
+                
         $is_Existeix_HoraFi_i_es_buida = ( isset($File[$IndexUE]['HoraFi']) && $File[$IndexUE]['HoraFi'] == '' );
         $Return['EstatBoto'] = ( $is_Existeix_HoraFi_i_es_buida ) ? 'off' : 'on';            
         $Return['TempsActualTreballat'] = ($is_Existeix_HoraFi_i_es_buida) ? $this->DiferenciaEntreHores( $UltimaPrimeraDataiHora , $DataiHoraAra ) : 0;
@@ -193,6 +195,7 @@ class FrontApiController
         $Return['Setmana'] += $Return['TempsActualTreballat'];
         $Return['DetallHores'] = $File;
         $Return['PdfUrl'] = '';
+        $Return['TotalDies'] = sizeof($T);
 
         if( $ModePdf ){
 
@@ -214,10 +217,18 @@ class FrontApiController
                             </tr>';
             endforeach;
 
+            $TotalHoresMes = round( intval( $Return[ 'Mes' ] ) / 60 , 1 );
+            $MitjanaHoresMes = round( ( intval( $Return[ 'Mes' ] ) / 60 ) / $Return['TotalDies'] , 1 );
             $HTML = '
             <img width="200px" src="http://www.casadecultura.cat/WebFiles/Web/img/LogoCCG.jpg" />
             <br /><br /><br /><br />
-            <table style="width:100%"><tr><td><strong>Treballador</strong></td><td>'.$NomUsuari.'</td><td><strong>Total hores mes</strong></td><td>'. round( intval( $Return[ 'Mes' ] ) / 60 , 1 ) .'h</td></tr></table>            
+            <table style="width:100%">
+                <tr>
+                    <td><strong>Treballador</strong></td><td>'.$NomUsuari.'</td>
+                    <td><strong>Total hores mes</strong></td>
+                    <td>'. $TotalHoresMes .'h / '.$MitjanaHoresMes.'h/dia</td>                                        
+                </tr>
+            </table>            
             <br /><br />
             <table style="border-collapse: collapse; width: 100%;" border="1">
             <tbody>
