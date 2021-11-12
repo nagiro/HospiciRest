@@ -226,7 +226,7 @@ class FrontApiController
                 <tr>
                     <td><strong>Treballador</strong></td><td>'.$NomUsuari.'</td>
                     <td><strong>Total hores mes</strong></td>
-                    <td>'. $TotalHoresMes .'h / '.$MitjanaHoresMes.'h/dia</td>                                        
+                    <td>'. $TotalHoresMes .'h - '.$MitjanaHoresMes.'h/dia</td>                                        
                 </tr>
             </table>            
             <br /><br />
