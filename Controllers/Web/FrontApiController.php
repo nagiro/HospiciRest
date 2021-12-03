@@ -169,14 +169,12 @@ class FrontApiController
 
         }        
                     
-        //Ara calculo quantes hores ha fet cada empleat per Dia, Setmana, Mes i comprovo que els totals són correctes. 
-        $T = array();
+        //Ara calculo quantes hores ha fet cada empleat per Dia, Setmana, Mes i comprovo que els totals són correctes.         
         foreach($File as $Row) {                
             
             $RowTime = strtotime($Row['Data']);
             $Setmana = date('W', $RowTime);            
-            $Dia = date('d', $RowTime);            
-            $T[$Dia] = $Dia;
+            $Dia = date('d', $RowTime);                        
 
             if($Dia == date('d')) $Return['Dia'] += $Row['Total'];            
             if($Setmana == date('W')) $Return['Setmana'] += $Row['Total'];            
@@ -194,8 +192,7 @@ class FrontApiController
         $Return['Mes'] += $Return['TempsActualTreballat'];
         $Return['Setmana'] += $Return['TempsActualTreballat'];
         $Return['DetallHores'] = $File;
-        $Return['PdfUrl'] = '';
-        $Return['TotalDies'] = sizeof($T);
+        $Return['PdfUrl'] = '';        
 
         if( $ModePdf ){
 
@@ -217,8 +214,7 @@ class FrontApiController
                             </tr>';
             endforeach;
 
-            $TotalHoresMes = round( intval( $Return[ 'Mes' ] ) / 60 , 1 );
-            $MitjanaHoresMes = round( ( intval( $Return[ 'Mes' ] ) / 60 ) / $Return['TotalDies'] , 1 );
+            $TotalHoresMes = round( intval( $Return[ 'Mes' ] ) / 60 , 1 );            
             $HTML = '
             <img width="200px" src="http://www.casadecultura.cat/WebFiles/Web/img/LogoCCG.jpg" />
             <br /><br /><br /><br />

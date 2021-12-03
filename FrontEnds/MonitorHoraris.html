@@ -221,12 +221,17 @@
                         this.DiaActual += ' de ' + D.getFullYear();
                     },        
                     TractaDades: function(Rows) {
-                        var today = new Date();                                                                  
+                        var today = new Date();
                         
                         this.Pagines = [{Total: 0, Actual: 0, Opacity: 1},{Total: 0, Actual: 0, Opacity: 1},{Total: 0, Actual: 0, Opacity: 1}];
+                        this.DadesHorarisExposicions = [];
+                        this.DadesHorarisCursos = [];
+                        this.DadesHorarisGenerals = [];
+
                         this.DadesHorarisExposicions.push([this.E,this.E,this.E,this.E]);                        
                         this.DadesHorarisCursos.push([this.E,this.E,this.E,this.E]);                        
                         this.DadesHorarisGenerals.push([this.E,this.E,this.E,this.E,this.E,this.E]);
+                        
                         let iExposicions = 0;
                         let iCursos = 0;
                         let iGenerals = 0;
