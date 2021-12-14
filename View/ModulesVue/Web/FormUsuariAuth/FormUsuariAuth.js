@@ -26,7 +26,10 @@ Vue.component('form-usuari-auth', {
             Loading: false,
             DNIFormVisible: true,
             DadesFormVisible: false,
-            DNI: ''            
+            DNI: '' ,
+            AcceptoCondicions: false,
+            MostraCondicions: false,
+            isFormValid: false,
         }
     },    
     computed: {},
@@ -55,7 +58,8 @@ Vue.component('form-usuari-auth', {
             for(E of Object.keys(this.formErrors)) {
                 if(!this.formErrors[E]) { this.isFormValid = false; return; }
             }
-            this.isFormValid = true;                        
+            if(this.AcceptoCondicions) this.isFormValid = true;                        
+            else this.isFormValid = false;
             return;
             
         },
@@ -201,7 +205,24 @@ Vue.component('form-usuari-auth', {
             ></form-utils>                        
                    
         </div>
-        <div class="row" v-if="DadesFormVisible">
+        <div class="row" v-if="DadesFormVisible">            
+            <div class="col-lg-12">
+                <input type="checkbox" v-model="AcceptoCondicions"/> Accepto les <a @click="MostraCondicions = true" style="cursor: pointer">condicions legals</a> de l'hospici.
+
+                <div v-if="MostraCondicions" style="margin-top: 20px; padding-left: 40px; display: block;">
+                    <div style="font-weight:bold;">Condicions legals</div>
+                    <br>
+                    Clicant al botó "Segueix..." Les seves dades personals seran incorporades al fitxer Usuaris, creat per la Fundació Casa de Cultura de Girona amb la finalitat de gestionar les inscripcions als cursos, activitats i reserves d'espais a través del portal Hospici. Entenem que, omplint aquest formulari, ens atorga el seu consentiment per a portar a terme aquest tractament. En qualsevol moment pot exercir els seus drets d'accés, rectificació, oposició al tractament i cancel·lació adreçant-se a la Casa de Cultura de Girona.
+                    <br><br>
+                    El portal Hospici és un servei en línia de gestió d'entitats culturals ofert per la Casa de Cultura de Girona i destinat a oferir la gestió de cursos, espais i activitats a Centres Culturals i Ajuntaments. La Casa de Cultura de Girona n'és la responsable del fitxer però la gestió la realitzarà l'entitat on vostè estigui realitzant la transacció. 
+                    <br><br>
+                    La seva informació només estarà disponible per a les entitats amb les quals vostè hagi tingut alguna relació transaccional. Un cop realitzada l'alta, vostè podrà consultar, modificar i demanar la cancel·lació de les seves dades en qualsevol moment contactant amb la Casa de Cultura de Girona. 
+                    <br><br>
+                    Responsable: Casa de Cultura de Girona - NIF: G17759887 - Adreça: Plaça Hospital 6 - Telèfon: 972202013 - Correu electrònic: informatica@casadecultura.cat
+                </div>                
+            </div>
+        </div>
+        <div class="row" v-if="DadesFormVisible">            
             <form-utils 
                 :fieldtype="'button'" 
                 :id = "'BSEGUEIX'" 
