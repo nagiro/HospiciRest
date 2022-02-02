@@ -301,7 +301,7 @@
                         
                         this.mesAny = '';
                         
-                        if( ( this.ConsultaAny.length == 4 && this.ConsultaMes.length == 2 && !isNaN(this.ConsultaAny) && !isNaN(this.ConsultaMes) )
+                        if( ( this.ConsultaAny.length == 4 && this.ConsultaMes.length > 0 && !isNaN(this.ConsultaAny) && !isNaN(this.ConsultaMes) )
                             || ( this.ConsultaAny.length == 0 && this.ConsultaMes.length == 0 )
                         ) {
                             this.mesAny = this.ConsultaMes.toString() + this.ConsultaAny.toString();    
