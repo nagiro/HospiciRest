@@ -104,8 +104,25 @@
                           <h5 class="card-title">Detall hores</h5>                          
                           <div class="input-group">
                             <span class="input-group-text">Mes / Any</span>
-                            <input type="text" v-model="ConsultaMes" v-mask="'##'" @change="Consulta()" class="form-control">
-                            <input type="text" v-model="ConsultaAny" v-mask="'####'" @change="Consulta()" class="form-control">
+                            <select v-model="ConsultaMes" @change="Consulta()" class="form-control">
+                                <option value="1">Gener</option>
+                                <option value="2">Febrer</option>
+                                <option value="3">Març</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maig</option>
+                                <option value="6">Juny</option>
+                                <option value="7">Juliol</option>
+                                <option value="8">Agost</option>
+                                <option value="9">Setembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">Desembre</option>
+                            </select>
+                            <select v-model="ConsultaAny" @change="Consulta()" class="form-control">
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>                                
+                            </select>                            
                             <button type="button" class="btn btn-success" class="form-control" @click="Imprimeix()">Descarrega full</button>
                           </div>                          
                           <br />
