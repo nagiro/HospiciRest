@@ -90,6 +90,7 @@ Vue.component('form-inscripcio-simple', {
     methods: {
         EtiquetaTitol: function(DetallCurs) {                    
             if( DetallCurs.CURSOS_Categoria == '29' && DetallCurs.CURSOS_PagamentExtern.includes( CONST_PAGAMENT_TARGETA ) ) return 'Compra una entrada';
+            else if( DetallCurs.CURSOS_Categoria == '67' && DetallCurs.CURSOS_PagamentExtern.includes( CONST_PAGAMENT_TARGETA ) ) return 'Compra';
             else if( DetallCurs.CURSOS_Categoria == '29' && !DetallCurs.CURSOS_PagamentExtern.includes( CONST_PAGAMENT_TARGETA ) ) return 'Reserva una entrada';
             else return 'Inscriu-te a l\'activitat';
         },
