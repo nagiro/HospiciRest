@@ -86,6 +86,18 @@
                 :espaisdisponibles = "LlistaEspaisDisponiblesForm"
             >
             </form-inscripcio-espai>
+            
+            <div style="margin-top:1vw; font-size: 10px;">
+            <b style="margin-bottom: 1vw;">Informació bàsica de protecció de dades</b>
+            <ul>
+                <li /><b>Responsable del tractament</b>: Fundació Casa de Cultura de Girona.
+                <li /><b>Finalitat</b>: proporcionar informació sobre serveis, activitats o esdeveniments.
+                <li /><b>Legitimació</b>: consentiment de la persona interessada. La persona interessada pot revocar el seu consentiment en qualsevol moment.
+                <li /><b>Destinataris</b>: les dades no es comuniquen a altres persones.
+                <li /><b>Drets de les persones interessades</b>: es poden exercir els drets d’accés, rectificació, supressió, oposició al tractament i sol·licitud de la limitació del tractament adreçant-se a la Fundació Casa de Cultura de Girona.
+                <li />Podeu consultar la informació addicional i detallada sobre protecció de dades en aquest <a href="https://www.casadecultura.cat">enllaç</a>            
+            </ul>
+            </div>
 
             
             
