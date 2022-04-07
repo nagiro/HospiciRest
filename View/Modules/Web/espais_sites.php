@@ -88,7 +88,7 @@
             </form-inscripcio-espai>
             
             <div style="margin-top:1vw; font-size: 10px;">
-            <b style="margin-bottom: 1vw;">Informació bàsica de protecció de dades</b>
+            <div style="margin-bottom: 1vw;"><b>Informació bàsica de protecció de dades</b></div>
             <ul>
                 <li /><b>Responsable del tractament</b>: Fundació Casa de Cultura de Girona.
                 <li /><b>Finalitat</b>: proporcionar informació sobre serveis, activitats o esdeveniments.
