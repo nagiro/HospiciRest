@@ -233,9 +233,10 @@ class WebApiController
         $LlistatMatricules = $CM->getMatriculesByCursAndUserData($idActivitatCurs);        
         foreach($LlistatMatricules as $OM):
             $index = "F: ".$OM['Fila'].' | S: '.$OM['Seient'];
-            if(isset($SeientsIOcupacions[$index])):
+            if(isset($SeientsIOcupacions[$index])):                
                  $SeientsIOcupacions[$index]['Ocupat'] = true;
                  $SeientsIOcupacions[$index]['Dades'] = $OM['Cog1'] . ' ' . $OM['Cog2'].', '.$OM['Nom'] . ' - '.$OM['Email'].' - '.$OM['Telefon'];                 
+                 if(isset($OM['Comentari'])) $SeientsIOcupacions[$index]['Dades'] .= ' | ' . $OM['Comentari'];
             endif;
         endforeach;
 
