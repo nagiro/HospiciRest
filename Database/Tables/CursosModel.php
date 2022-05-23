@@ -106,7 +106,7 @@ class CursosModel extends BDD {
                 AND      {$this->getOldFieldNameWithTable('DataFiMatricula')} >= :Data1
 --                AND      {$this->getOldFieldNameWithTable('DataInMatricula')} <= :Data2
                 AND      {$this->getOldFieldNameWithTable('VisibleWeb')} = 1
-                ORDER BY {$this->getOldFieldNameWithTable('DataInici')} asc
+                ORDER BY {$this->getOldFieldNameWithTable(self::FIELD_Categoria)} asc, {$this->getOldFieldNameWithTable('DataInici')} asc
             ";
 
     $SQLW = array('site_id'=>$SiteId, 'Data1' => $DataInicial /*, 'Data2' => $DataInicial */);        
