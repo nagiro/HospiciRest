@@ -11,7 +11,7 @@ Vue.component('form-usuari-auth', {
                 Email: '',
                 Municipi: '',
                 Genere: '',
-                AnyNaixement: ''
+                AnyNaixement: '',                
             },
             formErrors: {                                
                 Nom: true,
@@ -21,7 +21,7 @@ Vue.component('form-usuari-auth', {
                 Email: true,
                 Municipi: true,
                 Genere: true,
-                AnyNaixement: true
+                AnyNaixement: true,
             },
             Loading: false,
             DNIFormVisible: true,
@@ -30,6 +30,7 @@ Vue.component('form-usuari-auth', {
             AcceptoCondicions: false,
             MostraCondicions: false,
             isFormValid: false,
+            NoDni : false,
         }
     },    
     computed: {},
@@ -42,7 +43,7 @@ Vue.component('form-usuari-auth', {
             this.$emit('on-id-usuari-encrypted-loaded', IdUsuariEncrypted);
         },        
         validaDNILocal: function() {
-            return !ValidaDNI(this.DNI);
+            return !ValidaDNI(this.DNI, this.NoDni);
         },
         submitDNI: function() {                      
             this.Loading = true;
@@ -94,13 +95,19 @@ Vue.component('form-usuari-auth', {
                 <form-utils 
                     :fieldtype="'input'" :id = "'DNI'" :title = "'DNI/NIE/CIF'" :value = "DNI" :helptext = "'Entreu el DNI/NIE'"                    
                     @onkeyup="DNI = $event" 
-                    :errors = "[[validaDNILocal(DNI), 'El DNI/NIE/CIF és incorrecte.']]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-6']"
+                    :errors = "[[validaDNILocal(), 'El DNI/NIE/CIF és incorrecte.']]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-6']"
                 ></form-utils>                
                 <form-utils 
-                    :fieldtype="'button'" :id = "'BDNI'" :title = "'Valida'"  :value = "''" :disabled = " ( validaDNILocal(DNI) || DNI.length == 0 )"
+                    :fieldtype="'button'" :id = "'BDNI'" :title = "'Valida'"  :value = "''" :disabled = " ( validaDNILocal() || DNI.length == 0 )"
                     :groupclass="['col-lg-2', 'col-3']"                    
                     @onButtonPress = "submitDNI()"
                     ></form-utils>                
+
+            </div>
+            <div class="row">
+                <input style="margin-left: 1vw" type="checkbox" v-model="NoDni">
+                    &nbsp; <span style="font-size:0.7rem">No disposo de DNI/NIE/CIF, però tinc passaport </span>
+                </input>
             </div>
         </div>    
                 

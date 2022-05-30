@@ -43,6 +43,9 @@ class WebApiController
     public function ExisteixDNI($DNI = '') {
         $UM = new UsuarisModel();                
         
+        //Limitem el DNI ( per si entra un passaport a 12 caràcters que és el màxim de la intranet )
+        $DNI = substr($DNI, 0, 12);
+        
         $DNI = strtoupper($DNI);
         $idUsuari = $UM->ExisteixDNI($DNI);
         $RET['ExisteixDNI'] = ($idUsuari > 0);
@@ -469,6 +472,9 @@ class WebApiController
     public function NouUsuari($DNI, $Nom, $Cog1, $Cog2, $Email, $Telefon, $Municipi, $Genere, $AnyNaixement) {
         
         $UM = new UsuarisModel();
+
+        //Limitem el DNI ( per si entra un passaport a 12 caràcters que és el màxim de la intranet )
+        $DNI = substr($DNI, 0, 12);
         
         $OU = array();        
         $OU = $UM->getUsuariDNI($DNI);

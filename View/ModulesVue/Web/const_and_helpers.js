@@ -113,8 +113,11 @@ function ValidaEmail(valor) {
   }
 
 
-function ValidaDNI(value) {
+function ValidaDNI(value, NoDni = false) {
     
+    // Si no tenim DNI, enviem el passaport I VALIDEM automàticament amb més de 8 caràcters    
+    if (NoDni && value.length > 8) return true;
+
     var validChars = 'TRWAGMYFPDXBNJZSQVHLCKET';
     var nifRexp = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
     var nieRexp = /^[XYZ]{1}[0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
