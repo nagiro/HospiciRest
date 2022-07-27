@@ -84,6 +84,8 @@
             </nav>
         </div>        
 
+        <div id="home_requadres"><img src="http://www.ddgi.cat/ddgi/docNivell/200-anys/200_anys_casa_cultura.jpg" width="100%"></div>
+
         <footer id="home_footer">            
             
             <div>
