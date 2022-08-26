@@ -221,7 +221,7 @@ Vue.component('form-utils', {
                     <option v-for="o of options" :value="o.id">{{o.text}}</option>
             </select>
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
-            <small class="form-text text-muted">{{helptext}}</small>            
+            <small class="form-text text-muted">{{helptext}}</small>                        
         </div>        
 
         <!-- *************************** -->
@@ -244,8 +244,7 @@ Vue.component('form-utils', {
                 <label class="form-check-label" for="flexCheckDefault">{{o.text}}</label>
             </div>
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
-            <small class="form-text text-muted">{{helptext}}</small>                                                   
-            {{checklist}}
+            <small class="form-text text-muted">{{helptext}}</small>                                                               
         </div>        
 
         <!-- ****************** -->
