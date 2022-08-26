@@ -5,7 +5,7 @@ Vue.component('form-utils', {
         title: String,
         fieldtype: String,
         value: { default: () => "", type: String },         // Quan és un valor únic i no objecte
-        checklist: { default: () => [], type: Array },  // Sempre usem aquest si és un valor múltiple
+        valorinicial: { default: () => [], type: Array },   // Sempre usem aquest si és un valor múltiple
         valuefile: { default: () => {}, type: Object},      // Sempre usem aquest si és un arxiu que carreguem
         helptext: { default: '', type: String },
         placeholder: { default: '', type: String },         
@@ -18,6 +18,7 @@ Vue.component('form-utils', {
     },          
     data: function() {        
         return {
+            checklist: this.valorinicial,
             HiHaError: false,
             Errors: [],            
             ImageLoading: false,
@@ -244,6 +245,7 @@ Vue.component('form-utils', {
             </div>
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
             <small class="form-text text-muted">{{helptext}}</small>                                                   
+            {{checklist}}
         </div>        
 
         <!-- ****************** -->

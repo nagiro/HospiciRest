@@ -96,7 +96,7 @@ Vue.component('form-inscripcio-espai', {
                     :fieldtype="'multipleselect'" 
                     :id = "'RESERVAESPAIS_EspaisSolicitats'" 
                     :title = "'Espais sol·licitats'" 
-                    :checklist = "[espaiescollit]"                     
+                    :valorinicial = "[espaiescollit]"                                         
                     :options="espaisdisponibles" 
                     :errors = "[]" 
                     :sterrors = "['Required']" 
