@@ -89,6 +89,7 @@
                 :estats = "FormulariReservaEspaiEstats"
                 :espaisdisponibles = "LlistaEspaisDisponiblesForm"
                 :tipusactivitatsdisponibles = "LlistatTipusActivitatSite"
+                :espaiescollit = "EspaiDetall.ESPAIS_EspaiId"
             >
             </form-inscripcio-espai>
             

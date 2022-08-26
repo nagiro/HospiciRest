@@ -5,7 +5,7 @@ Vue.component('form-utils', {
         title: String,
         fieldtype: String,
         value: { default: () => "", type: String },         // Quan és un valor únic i no objecte
-        valuemultiple: { default: () => [], type: Array },  // Sempre usem aquest si és un valor múltiple
+        checklist: { default: () => [], type: Array },  // Sempre usem aquest si és un valor múltiple
         valuefile: { default: () => {}, type: Object},      // Sempre usem aquest si és un arxiu que carreguem
         helptext: { default: '', type: String },
         placeholder: { default: '', type: String },         
@@ -19,8 +19,7 @@ Vue.component('form-utils', {
     data: function() {        
         return {
             HiHaError: false,
-            Errors: [],
-            CheckList: [],            
+            Errors: [],            
             ImageLoading: false,
             ImageLoaded: false,
             ImageShow: false,
@@ -48,8 +47,8 @@ Vue.component('form-utils', {
 
                 if(VP == 'Required') {
                     if(this.fieldtype == 'multipleselect') 
-                        if(!this.valuemultiple) this.Errors.push('El camp és obligatori');
-                        else if(this.valuemultiple.length == 0 ) this.Errors.push("El camp és obligatori.");                    
+                        if(!this.checklist) this.Errors.push('El camp és obligatori');
+                        else if(this.checklist.length == 0 ) this.Errors.push("El camp és obligatori.");                    
                     
                     if(this.fieldtype !== 'multipleselect')
                         if(!this.value) this.Errors.push("El camp és obligatori.");                                                
@@ -79,7 +78,7 @@ Vue.component('form-utils', {
         },
         inputChange: function($val) {
             if(this.fieldtype == 'multipleselect'){                
-                this.$emit('onchange', this.CheckList);
+                this.$emit('onchange', this.checklist);
             } else {                                
                 this.$emit('onchange', $val.target.value);
             }
@@ -240,13 +239,12 @@ Vue.component('form-utils', {
                     :aria-label="o.text" 
                     :aria-describedby="o.text"
                     @change="inputChange" 
-                    v-model="CheckList" >
+                    v-model="checklist" >
                 <label class="form-check-label" for="flexCheckDefault">{{o.text}}</label>
             </div>
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
-            <small class="form-text text-muted">{{helptext}}</small>                                        
+            <small class="form-text text-muted">{{helptext}}</small>                                                   
         </div>        
-
 
         <!-- ****************** -->
         <!-- ***** DATE ****** -->

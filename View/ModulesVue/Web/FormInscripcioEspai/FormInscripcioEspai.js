@@ -5,6 +5,7 @@ Vue.component('form-inscripcio-espai', {
         estats: Array,       //Els estats que pot tenir una reserva
         espaisdisponibles: Array,
         tipusactivitatsdisponibles: Array,
+        espaiescollit: Number,
     
     },          
     created: function() {
@@ -89,13 +90,13 @@ Vue.component('form-inscripcio-espai', {
                 ></form-utils>                
                 <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_PrevisioAssistents'" :title = "'Previsió d\\'assistents'" :value = "formValues.RESERVAESPAIS_PrevisioAssistents" @onkeyup="formValues.RESERVAESPAIS_PrevisioAssistents = $event" :errors = "[]" :sterrors = "['Required', 'Number']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_PrevisioAssistents', $event)"
-                ></form-utils>                
-
+                ></form-utils>                                
+                
                 <form-utils 
                     :fieldtype="'multipleselect'" 
                     :id = "'RESERVAESPAIS_EspaisSolicitats'" 
                     :title = "'Espais sol·licitats'" 
-                    :valuemultiple = "formValues.RESERVAESPAIS_EspaisSolicitats"                     
+                    :checklist = "[espaiescollit]"                     
                     :options="espaisdisponibles" 
                     :errors = "[]" 
                     :sterrors = "['Required']" 
