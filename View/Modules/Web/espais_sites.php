@@ -34,10 +34,6 @@
     <main id="detall" class="page">
                   
         <show-errors style="padding-top:2vw;" v-if="Errors" :errors="WebStructure.Errors"></show-errors>
-
-        <nav>                                    
-            <a target="_new" :href="'/espais/llistat/' + DetallSite.SITES_SiteId + '/' + DetallSite.SITES_Nom" style="cursor: pointer"> &lt;&lt; Torna a tots els espais </a>
-        </nav>
             
         <!-- LListat de cursos disponibles -->
 
@@ -62,6 +58,10 @@
         <!-- Petició -->
         <section class="detall_bloc" v-if="Loaded && !Errors && EspaiDetall">            
             
+            <nav>                                    
+                <a target="_new" :href="'/espais/llistat/' + DetallSite.SITES_SiteId + '/' + DetallSite.SITES_Nom" style="cursor: pointer"> &lt;&lt; Torna a tots els espais </a>
+            </nav>
+
             <h1 id="detall_titol"> {{ EspaiDetall.ESPAIS_Nom }} </h1>            
             <h2>Descripció de l'espai</h2>
             <p>
