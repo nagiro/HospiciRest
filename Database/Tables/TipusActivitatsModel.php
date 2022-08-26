@@ -35,6 +35,7 @@ class TipusActivitatsModel extends BDD {
         $Options = array();
         foreach($this->getTipusActius($idS) as $OT):
             $Options[] = new OptionClass($OT[$this->gnfnwt('IdTipusActivitat')], $OT[$this->gnfnwt('Nom')]);
+            usort($Options, function($a, $b) { return ($b->text < $a->text); });
         endforeach;
         return $Options;
     }
@@ -42,8 +43,8 @@ class TipusActivitatsModel extends BDD {
     public function getTipusActius($SiteId) { 
         return $this->_getRowWhere( 
             array( 
-                $this->gofnwt('SiteId') => intval($SiteId),                 
-                $this->gofnwt('Actiu') => intval(1)
+                $this->gofnwt(self::FIELD_SiteId ) => intval($SiteId),                 
+                $this->gofnwt(self::FIELD_Actiu) => intval(1)
             ), true ); 
     }
 

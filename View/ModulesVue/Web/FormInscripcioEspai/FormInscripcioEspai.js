@@ -3,7 +3,8 @@ Vue.component('form-inscripcio-espai', {
     props: { 
         formdata: Object,
         estats: Array,       //Els estats que pot tenir una reserva
-        espaisdisponibles: Array
+        espaisdisponibles: Array,
+        tipusactivitatsdisponibles: Array,
     
     },          
     created: function() {
@@ -106,15 +107,15 @@ Vue.component('form-inscripcio-espai', {
                 <form-utils :fieldtype="'textarea'" :id = "'RESERVAESPAIS_Comentaris'" :title = "'Breu descripció de l\\'acte i comentaris'" :value = "formValues.RESERVAESPAIS_Comentaris" @onkeyup="formValues.RESERVAESPAIS_Comentaris = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Comentaris', $event)"
                 ></form-utils>                
-
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_TipusActe'" :title = "'Tipus d\\'acte'" :value = "formValues.RESERVAESPAIS_TipusActe" @onkeyup="formValues.RESERVAESPAIS_TipusActe = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
-                @isvalid="isValidFormEspais('RESERVAESPAIS_TipusActe', $event)"
-                ></form-utils>                
+                
+                <form-utils :fieldtype="'select'" :id = "'RESERVAESPAIS_TipusActe'" :title = "'Tipus d\\'acte'" :value = "formValues.RESERVAESPAIS_TipusActe" @onchange="formValues.RESERVAESPAIS_TipusActe = $event" :options="tipusactivitatsdisponibles" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                @isvalid="isValidFormEspais('RESERVAESPAIS_EsCicle', $event)"
+                ></form-utils>            
 
                 <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Organitzadors'" :title = "'Entitat organitzadora'" :value = "formValues.RESERVAESPAIS_Organitzadors" @onkeyup="formValues.RESERVAESPAIS_Organitzadors = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Organitzadors', $event)"
                 ></form-utils>                
-
+                
                 <form-utils :fieldtype="'select'" :id = "'RESERVAESPAIS_EsCicle'" :title = "'És un cicle?'" :value = "formValues.RESERVAESPAIS_EsCicle" @onchange="formValues.RESERVAESPAIS_EsCicle = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_EsCicle', $event)"
                 ></form-utils>                

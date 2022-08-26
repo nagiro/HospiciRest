@@ -156,7 +156,7 @@ Vue.component('form-inscripcio-simple', {
         doAccioRepetit: function($accio) { 
             switch($accio) {
                 case 'Baixa': 
-                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'I' : this.IdUsuariEncrypted, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'B'}})
+                    axios.get( CONST_api_web + '/AccionsEntrades', {'params': {'I' : this.IdUsuariEncrypted, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'B'}})
                     .then( R => { 
                         this.Alert.Missatge = R.data + " inscripció/ns donades de baixa correctament. Gràcies per avisar-nos.";
                         this.Alert.Class = 'col-12 alert alert-success';
@@ -172,7 +172,7 @@ Vue.component('form-inscripcio-simple', {
                     this.Pas = 2;
                 break;
                 case 'Reenviar':
-                    axios.get( CONST_api_web + '/AccionsExisteixDNI', {'params': {'I' : this.IdUsuariEncrypted, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'R'}})
+                    axios.get( CONST_api_web + '/AccionsEntrades', {'params': {'I' : this.IdUsuariEncrypted, 'C' : this.DetallCurs.CURSOS_IdCurs, 'A' : 'R'}})
                     .then( R => { 
                         this.Alert.Missatge = R.data + " inscripció/ns reenviades correctament al seu correu. Si no les ha rebut, faci'ns ho saber.";
                         this.Alert.Class = 'col-12 alert alert-success';

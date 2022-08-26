@@ -4,15 +4,15 @@ require_once BASEDIR."Database/DB.php";
 
 class OptionClass {
     public $id = '';
-    public $nom = '';
+    public $text = '';
 
-    public function __construct($id, $nom) {
+    public function __construct($id, $text) {
         $this->id = $id; 
-        $this->nom = $nom;
+        $this->text = $text;
     }
 
-    public function getJson() {
-        return json_encode(array('id' => $id, 'nom' => $nom));
+    public function getJson($id, $text) {
+        return json_encode(array('id' => $id, 'text' => $text));
     }
 }
 

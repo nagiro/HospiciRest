@@ -160,6 +160,8 @@ class MainModule {
                     $SiteId = $Data['EspaiDetall']['Detall']['ESPAIS_SiteId'];
                     $Data['Site'] = $this->WebController->getSiteInfo($SiteId);                    
                     $Data['LlistaEspaisDisponiblesForm'] = $this->WebController->getEspaisDisponibles($SiteId, true);
+                    $TAMO = new TipusActivitatsModel();                    
+                    $Data['SiteTipusActivitats'] = $TAMO->getTipusActivitatsSelect($SiteId);
                     $Data['HeaderData'] = $this->setHeaderData(null, null, $Data['Site']);
                 endif;                                
 

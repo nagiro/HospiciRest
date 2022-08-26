@@ -88,6 +88,7 @@
                 :formdata = "FormulariReservaEspai"
                 :estats = "FormulariReservaEspaiEstats"
                 :espaisdisponibles = "LlistaEspaisDisponiblesForm"
+                :tipusactivitatsdisponibles = "LlistatTipusActivitatSite"
             >
             </form-inscripcio-espai>
             
@@ -137,6 +138,7 @@
                 IndexImatgeVisible: 0,
 
                 DetallSite: {},
+                LlistatTipusActivitatSite: [],
                 LlistatEspais: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
                 MostraDetall: false,                         
                 UrlActual: '',         //Url actual de la finestra
@@ -164,18 +166,20 @@
                     }                    
                                      
 
-                    //Paràmetre usat per llistar espais             
+                    //Paràmetre usat pel detall d'espais
                     
                     if(this.WebStructure.EspaiDetall && this.WebStructure.EspaiDetall.Detall) {
                         this.EspaiDetall = this.WebStructure.EspaiDetall.Detall;                                                
                         this.EspaiImatges = this.WebStructure.EspaiDetall.Imatges;                        
-                        this.DetallSite = this.WebStructure.Site;                                                                             
+                        this.DetallSite = this.WebStructure.Site; 
                         this.IdSite = this.DetallSite.SITES_SiteId;
                         
                         this.FormulariReservaEspai = this.WebStructure.FormulariReservaEspai.FORM;
                         this.FormulariReservaEspaiEstats = JSON.parse(this.WebStructure.FormulariReservaEspai.ESTATS);
+                        this.LlistatTipusActivitatSite = this.WebStructure.SiteTipusActivitats;                        
 
                         this.LlistaEspaisDisponiblesForm = this.WebStructure.LlistaEspaisDisponiblesForm;                                             
+                        
                     }   
 
 
