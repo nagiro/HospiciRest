@@ -755,11 +755,29 @@ class WebApiController
 
         // Treballem el que rebem de reserva espai, per adaptar-ho a la nostra base de dades. Els camps múltiples els convertim a @ i els arxius els guardem. 
         $REM = new ReservaEspaisModel();        
+        
+        $PrimerEspaiEscollit = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::EspaisSolicitats)][0];
+
         $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);
-                
+        
         $ORE = $REM->insert($FormulariReservaEspai);
 
         HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $REM->getReservaEspaiId($ORE, $REM->getReservaEspaiId($ORE) ) );
+
+        //Envio un email a administració perquè puguin estar al cas que s'ha fet una reserva        
+        $EM = new EspaisModel();        
+        $OE = $EM->getEspaiDetall($PrimerEspaiEscollit);
+        $idS = $EM->getSiteId($OE);
+        
+        $OM = new OptionsModel();
+        $Email = $OM->getOption('MAIL_SECRETARIA', $idS);        
+        
+        $Titol = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Nom)];        
+        $Codi = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Codi)];        
+        $Organitzadors = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Organitzadors)];
+        $HTML = "S'ha registrat una nova reserva d'espai a l'Hospici amb el codi <b>{$Codi}</b> organitzada per <b>{$Organitzadors}</b> amb el títol <b>{$Titol}</b>  ";
+
+        $this->SendEmail($Email, 'informatica@casadecultura.cat', "Nova reserva d'espai", $HTML);
 
         return $ORE;
 

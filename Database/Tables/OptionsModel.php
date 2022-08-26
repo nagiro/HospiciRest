@@ -25,9 +25,13 @@ class OptionsModel extends BDD {
     }
 
     public function getOption($id, $SiteId) {
-        $RET = $this->_getRowWhere( array( $this->gofnwt('IdOption') => $id, $this->gofnwt('SiteId') => $SiteId ) );        
+        $RET = $this->_getRowWhere( array( $this->gofnwt('IdOption') => $id, $this->gofnwt('SiteId') => $SiteId ) );                
         if(sizeof($RET) > 0) return $RET['OPTIONS_Valor'];
-        else return false;
+        else {
+            $RET = $this->_getRowWhere( array( $this->gofnwt('IdOption') => $id, $this->gofnwt('SiteId') => 1 ) );                
+            if(sizeof($RET) > 0) return $RET['OPTIONS_Valor'];
+            else return false;        
+        }
     }
 
 }
