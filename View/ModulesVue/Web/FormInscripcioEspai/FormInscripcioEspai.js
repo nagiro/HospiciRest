@@ -5,11 +5,12 @@ Vue.component('form-inscripcio-espai', {
         estats: Array,       //Els estats que pot tenir una reserva
         espaisdisponibles: Array,
         tipusactivitatsdisponibles: Array,
-        espaiescollit: Number,
-    
+        espaiescollit: Number,            
     },          
     created: function() {
-        this.formErrors = const_and_helpers_iniciaErrors(this.formErrors);        // Funció que inicia tots els errors a 0
+        this.formErrors = const_and_helpers_iniciaErrors(this.formErrors);        // Funció que inicia tots els errors a 0        
+        this.formdata.RESERVAESPAIS_EspaisSolicitats = [this.espaiescollit];        
+        this.formValues.RESERVAESPAIS_EspaisSolicitats = [this.espaiescollit];        
     },
     data: function() {
         return {            
@@ -19,7 +20,7 @@ Vue.component('form-inscripcio-espai', {
             isFormValid: false,            
             formValues: Vue.util.extend({}, this.formdata),
             formErrors: Vue.util.extend({}, this.formdata),
-            Pas: 0            
+            Pas: 0,            
         }
     },    
     computed: {},
