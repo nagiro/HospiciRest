@@ -77,19 +77,19 @@
                           <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 De l'últim inici fins ara
-                              <span class="badge bg-primary rounded-pill">{{HoresTreballadesActualment}} min. / {{(HoresTreballadesActualment/60).toFixed(1)}} h</span>
+                              <span class="badge bg-primary rounded-pill">{{HoresTreballadesActualment}} min. / {{formatHoresMinuts(HoresTreballadesActualment)}}</span>
                             </li>                            
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 Avui has treballat
-                              <span class="badge bg-primary rounded-pill">{{HoresAvui}} min. / {{(HoresAvui/60).toFixed(1)}} h</span>
+                              <span class="badge bg-primary rounded-pill">{{HoresAvui}} min. / {{formatHoresMinuts(HoresAvui)}}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 Aquesta setmana has treballat
-                              <span class="badge bg-primary rounded-pill">{{HoresSetmana}} min. / {{(HoresSetmana/60).toFixed(1)}} h</span>
+                              <span class="badge bg-primary rounded-pill">{{HoresSetmana}} min. / {{formatHoresMinuts(HoresSetmana)}}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 Aquest mes has treballat
-                              <span class="badge bg-primary rounded-pill">{{HoresMes}} min. / {{(HoresMes/60).toFixed(1)}} h </span>
+                              <span class="badge bg-primary rounded-pill">{{HoresMes}} min. / {{formatHoresMinuts(HoresMes)}} </span>
                             </li>
                           </ul>
                           
@@ -145,7 +145,7 @@
                                 <td>{{DH.Data}}</td>
                                 <td>{{DH.HoraInici}}</td>
                                 <td>{{DH.HoraFi}}</td>
-                                <td>{{DH.Total}} min. / {{(DH.Total/60).toFixed(1)}} h</td>
+                                <td>{{DH.Total}} min. / {{formatHoresMinuts(DH.Total)}}</td>
                                 <td> <button class="btn btn-xs btn-warning" @click="doEditaElement(index)">Edita</button> </tr>
                               </tr>
                               <tr>                                
@@ -229,6 +229,9 @@
                     }
                 },
                 methods: {    
+                    formatHoresMinuts($hora) {
+                        return Math.floor(($hora/60)) + "h " + ($hora % 60).toFixed(0) + " min.";
+                    },
                     setData($event, IndexElement) {
                         this.DetallHores[IndexElement].Data = moment($event).format('YYYY-MM-DD');
                     },
