@@ -33,25 +33,26 @@
         <breadcumb-div v-if="Loaded && !Errors" :breadcumb-data = 'WebStructure.Breadcumb'></breadcumb-div>
 
         <show-errors v-if="Errors" :errors="WebStructure.Errors"></show-errors>
-
+        
         <section id="detall_bloc" v-if="Loaded && !Errors && DetallActivitat">
             <div id="detall_franja_titol">
+                <div style="color: white; font-size:30px; padding: 30px; background-color: red;" v-if="DataJaPassada()" >Activitat ja realitzada</div>    
                 <h1 id="detall_titol"> {{ DetallActivitat.ACTIVITATS_TitolMig }} </h1>
-                <time id="detall_dates" v-html="ResumDates()"></time>                
+                <time id="detall_dates" v-html="ResumDates()"></time>                                
                 <details id="detall_horaris">
                     <summary>+ veure en detall dates</summary>
                     <ul v-for="M of carregaDetallHoraris()" class="detall_horaris_mesos">
                         <div class="detall_horaris_mesos_titol">{{M.Nom}}</div>
                         <li v-for="D of M.Dies" :class="getClassDia(D)">                            
                             <div v-if="!D.HIHAACTIVITAT" class="detall_horaris_dia_NA">{{D.DIA}}</div>
-                            <a v-if="D.HIHAACTIVITAT" @click="mostraDetallDia(D)" class="detall_horaris_dia_A">{{D.DIA}}</a>
-                        </li>
+                            <a v-if="D.HIHAACTIVITAT" @click="mostraDetallDia(D)" class="detall_horaris_dia_A">{{D.DIA}}</a>                            
+                        </li>                        
                     
                     </ul>
                     
                     <div class="cartellLlocHora" v-html="Horaris_i_llocs"></div>
-                </details>
-                
+                    
+                </details>            
             </div>
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
@@ -200,7 +201,11 @@
                     return Ret;
                 }                
             },
-            methods: {                                                            
+            methods: {      
+                DataJaPassada: function() {
+                    const UltimaData = ConvertirData(this.WebStructure.Horaris[ this.WebStructure.Horaris.length - 1 ].DIA, 'Javascript');                    
+                    return (UltimaData < new Date());
+                },                                                   
                 veureDetallHoraris: function() {
                     this.MostraDetall = !this.MostraDetall;                
                 },                
