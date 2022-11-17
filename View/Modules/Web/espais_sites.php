@@ -90,6 +90,7 @@
                 :espaisdisponibles = "LlistaEspaisDisponiblesForm"
                 :tipusactivitatsdisponibles = "LlistatTipusActivitatSite"
                 :espaiescollit = "EspaiDetall.ESPAIS_EspaiId"
+                :formularicampsvisibles = "FormulariCampsVisibles"
             >
             </form-inscripcio-espai>
             
@@ -135,6 +136,7 @@
                 DiaEscollit: null,     
                 AtributsCalendari: [],    
                 LlistaEspaisDisponiblesForm: [],   // Carrega quan carrega la pàgina en detall
+                FormulariCampsVisibles: {},
                 IdSite: 0, 
                 IndexImatgeVisible: 0,
 
@@ -180,6 +182,8 @@
                         this.LlistatTipusActivitatSite = this.WebStructure.SiteTipusActivitats;                        
 
                         this.LlistaEspaisDisponiblesForm = this.WebStructure.LlistaEspaisDisponiblesForm;                                             
+                        
+                        this.FormulariCampsVisibles = JSON.parse(this.WebStructure.FormulariReservaEspai.FORMULARI_CAMPS_VISIBLES);                        
                         
                     }   
 

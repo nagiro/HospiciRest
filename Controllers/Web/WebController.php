@@ -2,7 +2,9 @@
 
 require_once DATABASEDIR . 'Queries/WebQueries.php';
 require_once DATABASEDIR . 'Tables/CursosModel.php';
+require_once DATABASEDIR . 'Tables/OptionsModel.php';
 require_once CONTROLLERSDIR.'FileController.php';
+
 
 class WebController
 {
@@ -504,11 +506,13 @@ class WebController
 
     }    
 
-    public function getFormulariReservaEspai($idEspai) {
+    public function getFormulariReservaEspai($idEspai, $SiteId) {
         require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
         $REM = new ReservaEspaisModel();
         $ORE = $REM->getEmptyObject($idEspai);
-        return array('FORM'=>$ORE, 'ESTATS' => $REM->getEstatsForForm()); 
+        $OM = new OptionsModel();
+        $Camps = $OM->getOption("FORMULARI_CAMPS_VISIBLES", $SiteId);
+        return array('FORM'=>$ORE, 'ESTATS' => $REM->getEstatsForForm(), 'FORMULARI_CAMPS_VISIBLES' => $Camps); 
     }
 
  }

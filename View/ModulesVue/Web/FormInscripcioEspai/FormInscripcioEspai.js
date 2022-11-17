@@ -6,8 +6,14 @@ Vue.component('form-inscripcio-espai', {
         espaisdisponibles: Array,
         tipusactivitatsdisponibles: Array,
         espaiescollit: Number,            
+        formularicampsvisibles: Object,
     },          
     created: function() {
+        // Trec els camps que entro i que no són visibles
+        // FORMULARI CAMPS VISIBLES ES CARREGA DE LES OPCIONS DE LA INTRNAET
+        for(let i in this.formErrors) {        
+            if(this.formularicampsvisibles[i] == 0) delete this.formErrors[i];
+        }                
         this.formErrors = const_and_helpers_iniciaErrors(this.formErrors);        // Funció que inicia tots els errors a 0        
         this.formdata.RESERVAESPAIS_EspaisSolicitats = [this.espaiescollit];        
         this.formValues.RESERVAESPAIS_EspaisSolicitats = [this.espaiescollit];        
@@ -63,37 +69,40 @@ Vue.component('form-inscripcio-espai', {
         <div v-if="Pas == 1 || Pas == 2">            
         
             <div class="row">
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Nom'" :title = "'Títol de l\\'activitat'" :value = "formValues.RESERVAESPAIS_Nom" @onkeyup="formValues.RESERVAESPAIS_Nom = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Nom == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_Nom'" :title = "'Títol de l\\'activitat'" :value = "formValues.RESERVAESPAIS_Nom" @onkeyup="formValues.RESERVAESPAIS_Nom = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Nom', $event)"
                 ></form-utils>                
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_DataActivitat'" :title = "'Proposta de dates per l\\'activitat'" :value = "formValues.RESERVAESPAIS_DataActivitat" @onkeyup="formValues.RESERVAESPAIS_DataActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_DataActivitat == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_DataActivitat'" :title = "'Proposta de dates per l\\'activitat'" :value = "formValues.RESERVAESPAIS_DataActivitat" @onkeyup="formValues.RESERVAESPAIS_DataActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_DataActivitat', $event)"
                 ></form-utils>
 
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_HorariActivitat'" :title = "'Proposta d\\'horaris per l\\'activitat'" :value = "formValues.RESERVAESPAIS_HorariActivitat" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_HorariActivitat'" :title = "'Proposta d\\'horaris per l\\'activitat'" :value = "formValues.RESERVAESPAIS_HorariActivitat" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_HorariActivitat', $event)"
                 ></form-utils>                
                 
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Representacio'" :title = "'A quina entitat representa?'" :value = "formValues.RESERVAESPAIS_Representacio" @onkeyup="formValues.RESERVAESPAIS_Representacio = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Representacio == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_Representacio'" :title = "'A quina entitat representa?'" :value = "formValues.RESERVAESPAIS_Representacio" @onkeyup="formValues.RESERVAESPAIS_Representacio = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Representacio', $event)"
                 ></form-utils>
 
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Responsable'" :title = "'Nom del coordinador?'" :value = "formValues.RESERVAESPAIS_Responsable" @onkeyup="formValues.RESERVAESPAIS_Responsable = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Responsable == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_Responsable'" :title = "'Nom del coordinador?'" :value = "formValues.RESERVAESPAIS_Responsable" @onkeyup="formValues.RESERVAESPAIS_Responsable = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Responsable', $event)"
                 ></form-utils>
                 
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_TelefonResponsable'" :title = "'Telèfon del coordinador'" :value = "formValues.RESERVAESPAIS_TelefonResponsable" @onkeyup="formValues.RESERVAESPAIS_TelefonResponsable = $event" :errors = "[]" :sterrors = "['Required', 'Telefon']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_TelefonResponsable == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_TelefonResponsable'" :title = "'Telèfon del coordinador'" :value = "formValues.RESERVAESPAIS_TelefonResponsable" @onkeyup="formValues.RESERVAESPAIS_TelefonResponsable = $event" :errors = "[]" :sterrors = "['Required', 'Telefon']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_TelefonResponsable', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_PersonalAutoritzat'" :title = "'Nom i telèfon del personal de suport el dia de l activitat'" :value = "formValues.RESERVAESPAIS_PersonalAutoritzat" @onkeyup="formValues.RESERVAESPAIS_PersonalAutoritzat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_PersonalAutoritzat == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_PersonalAutoritzat'" :title = "'Nom i telèfon del personal de suport el dia de l activitat'" :value = "formValues.RESERVAESPAIS_PersonalAutoritzat" @onkeyup="formValues.RESERVAESPAIS_PersonalAutoritzat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_PersonalAutoritzat', $event)"
                 ></form-utils>                
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_PrevisioAssistents'" :title = "'Previsió d\\'assistents'" :value = "formValues.RESERVAESPAIS_PrevisioAssistents" @onkeyup="formValues.RESERVAESPAIS_PrevisioAssistents = $event" :errors = "[]" :sterrors = "['Required', 'Number']" :groupclass="['col-lg-6', 'col-12']"
+                
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_PrevisioAssistents == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_PrevisioAssistents'" :title = "'Previsió d\\'assistents'" :value = "formValues.RESERVAESPAIS_PrevisioAssistents" @onkeyup="formValues.RESERVAESPAIS_PrevisioAssistents = $event" :errors = "[]" :sterrors = "['Required', 'Number']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_PrevisioAssistents', $event)"
                 ></form-utils>                                
                 
                 <form-utils 
+                    v-if="formularicampsvisibles.RESERVAESPAIS_EspaisSolicitats == 1"
                     :fieldtype="'multipleselect'" 
                     :id = "'RESERVAESPAIS_EspaisSolicitats'" 
                     :title = "'Espais sol·licitats'" 
@@ -106,40 +115,40 @@ Vue.component('form-inscripcio-espai', {
                     @isvalid="isValidFormEspais('RESERVAESPAIS_EspaisSolicitats', $event)"
                 ></form-utils>                        
 
-                <form-utils :fieldtype="'textarea'" :id = "'RESERVAESPAIS_Comentaris'" :title = "'Breu descripció de l\\'acte i comentaris'" :value = "formValues.RESERVAESPAIS_Comentaris" @onkeyup="formValues.RESERVAESPAIS_Comentaris = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Comentaris == 1" :fieldtype="'textarea'" :id = "'RESERVAESPAIS_Comentaris'" :title = "'Breu descripció de l\\'acte i comentaris'" :value = "formValues.RESERVAESPAIS_Comentaris" @onkeyup="formValues.RESERVAESPAIS_Comentaris = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Comentaris', $event)"
                 ></form-utils>                
                 
-                <form-utils :fieldtype="'select'" :id = "'RESERVAESPAIS_TipusActe'" :title = "'Tipus d\\'acte'" :value = "formValues.RESERVAESPAIS_TipusActe" @onchange="formValues.RESERVAESPAIS_TipusActe = $event" :options="tipusactivitatsdisponibles" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_TipusActe == 1" :fieldtype="'select'" :id = "'RESERVAESPAIS_TipusActe'" :title = "'Tipus d\\'acte'" :value = "formValues.RESERVAESPAIS_TipusActe" @onchange="formValues.RESERVAESPAIS_TipusActe = $event" :options="tipusactivitatsdisponibles" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_EsCicle', $event)"
                 ></form-utils>            
 
-                <form-utils :fieldtype="'input'" :id = "'RESERVAESPAIS_Organitzadors'" :title = "'Entitat organitzadora'" :value = "formValues.RESERVAESPAIS_Organitzadors" @onkeyup="formValues.RESERVAESPAIS_Organitzadors = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Organitzadors == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_Organitzadors'" :title = "'Entitat organitzadora'" :value = "formValues.RESERVAESPAIS_Organitzadors" @onkeyup="formValues.RESERVAESPAIS_Organitzadors = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Organitzadors', $event)"
                 ></form-utils>                
                 
-                <form-utils :fieldtype="'select'" :id = "'RESERVAESPAIS_EsCicle'" :title = "'És un cicle?'" :value = "formValues.RESERVAESPAIS_EsCicle" @onchange="formValues.RESERVAESPAIS_EsCicle = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_EsCicle == 1" :fieldtype="'select'" :id = "'RESERVAESPAIS_EsCicle'" :title = "'És un cicle?'" :value = "formValues.RESERVAESPAIS_EsCicle" @onchange="formValues.RESERVAESPAIS_EsCicle = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_EsCicle', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'select'" :id = "'RESERVAESPAIS_IsEnregistrable'" :title = "'Cal enregistrar-lo?'" :value = "formValues.RESERVAESPAIS_IsEnregistrable" @onchange="formValues.RESERVAESPAIS_IsEnregistrable = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_IsEnregistrable == 1" :fieldtype="'select'" :id = "'RESERVAESPAIS_IsEnregistrable'" :title = "'Cal enregistrar-lo?'" :value = "formValues.RESERVAESPAIS_IsEnregistrable" @onchange="formValues.RESERVAESPAIS_IsEnregistrable = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_IsEnregistrable', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'select'" :id = "'RESERVAESPAIS_HasDifusio'" :title = "'Cal fer difusió?'" :value = "formValues.RESERVAESPAIS_HasDifusio" @onchange="formValues.RESERVAESPAIS_HasDifusio = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HasDifusio == 1" :fieldtype="'select'" :id = "'RESERVAESPAIS_HasDifusio'" :title = "'Cal fer difusió?'" :value = "formValues.RESERVAESPAIS_HasDifusio" @onchange="formValues.RESERVAESPAIS_HasDifusio = $event" :options="OpcionsSiNo" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-4', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_HasDifusio', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'textarea'" :id = "'RESERVAESPAIS_WebDescripcio'" :title = "'Descripció per la web'" :value = "formValues.RESERVAESPAIS_WebDescripcio" @onkeyup="formValues.RESERVAESPAIS_WebDescripcio = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-12', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_WebDescripcio == 1" :fieldtype="'textarea'" :id = "'RESERVAESPAIS_WebDescripcio'" :title = "'Descripció per la web'" :value = "formValues.RESERVAESPAIS_WebDescripcio" @onkeyup="formValues.RESERVAESPAIS_WebDescripcio = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-12', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_WebDescripcio', $event)"
                 ></form-utils>                
 
-                <form-utils :fieldtype="'crop'" :id = "'TMP_ArxiuImatge'" :title = "'Imatge per la web'" :valuefile = "formValues.TMP_ArxiuImatge" @onchange="formValues.TMP_ArxiuImatge = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.TMP_ArxiuImatge == 1" :fieldtype="'crop'" :id = "'TMP_ArxiuImatge'" :title = "'Imatge per la web'" :valuefile = "formValues.TMP_ArxiuImatge" @onchange="formValues.TMP_ArxiuImatge = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('TMP_ArxiuImatge', $event)"
                 >
                 </form-utils>                
 
-                <form-utils :fieldtype="'file'" :id = "'TMP_ArxiuPdf'" :title = "'Arxiu PDF'" :valuefile = "formValues.TMP_ArxiuPdf" @onchange="formValues.TMP_ArxiuPdf = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.TMP_ArxiuPdf == 1" :fieldtype="'file'" :id = "'TMP_ArxiuPdf'" :title = "'Arxiu PDF'" :valuefile = "formValues.TMP_ArxiuPdf" @onchange="formValues.TMP_ArxiuPdf = $event" :errors = "[]" :sterrors = "[]" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('TMP_ArxiuPdf', $event)"
                 ></form-utils>                                
 
