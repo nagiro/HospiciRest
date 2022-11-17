@@ -203,8 +203,9 @@
             },
             methods: {      
                 DataJaPassada: function() {
-                    const UltimaData = ConvertirData(this.WebStructure.Horaris[ this.WebStructure.Horaris.length - 1 ].DIA, 'Javascript');                    
-                    return (UltimaData < new Date());
+                    const UltimaData = ConvertirData(this.WebStructure.Horaris[ this.WebStructure.Horaris.length - 1 ].DIA, 'Javascript');
+                    var date = new Date();
+                    return (UltimaData < date.setDate(date.getDate() + 1));
                 },                                                   
                 veureDetallHoraris: function() {
                     this.MostraDetall = !this.MostraDetall;                
