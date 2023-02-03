@@ -32,7 +32,9 @@
             <h1 v-if="WebStructure.Cicles && WebStructure.Cicles.length > 0">Llistat de cicles</h1>
 
             <div v-for="ActivitatHome of WebStructure.Cicles">
-                             
+                
+                <div style="color: white; font-size:30px; padding: 30px; background-color: red;" v-if="DataJaPassada()" >Cicle ja realitzat</div>    
+
                 <article class="llistat_franja_titol">
                     <h2 class="llistat_titol"> {{ ActivitatHome.NomActivitat }} </h2>
                     <time class="llistat_dates" v-html="ResumDates()"></time>
@@ -118,6 +120,13 @@
                     return AF;
                 },
                 ResumDates: function() {                
+                },
+                DataJaPassada: function() {
+                    $DataObject = ConvertirData(this.WebStructure.Cicles[0].DiaMax, 'Object');
+                    
+                    if( $DataObject.any < new Date().getFullYear() ) return true;
+                    else if( $DataObject.mes < ( (new Date().getMonth()) - 1 ) ) return true;
+                    else return false;
                 }
             }
         });
