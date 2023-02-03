@@ -32,11 +32,12 @@
             <h1 v-if="WebStructure.Cicles && WebStructure.Cicles.length > 0">Llistat de cicles</h1>
 
             <div v-for="ActivitatHome of WebStructure.Cicles">
-                
-                <div style="color: white; font-size:30px; padding: 30px; background-color: red;" v-if="DataJaPassada()" >Cicle ja realitzat</div>    
-
+                                
                 <article class="llistat_franja_titol">
                     <h2 class="llistat_titol"> {{ ActivitatHome.NomActivitat }} </h2>
+
+                    <div style="color: white; font-size:30px; padding: 30px; background-color: red; text-align:center; margin-top: 20px; margin-bottom: 20px;" v-if="DataJaPassada()" >Cicle ja realitzat</div>    
+
                     <time class="llistat_dates" v-html="ResumDates()"></time>
                     <a target="_NEW" v-if="ActivitatHome.tmp_PDF.length > 0" :href="ActivitatHome.tmp_PDF">[Baixa't el pdf]</a>                                    
                     <article class="llistat_summary_text" v-html="ActivitatHome.Descripcio"></article>
