@@ -23,8 +23,8 @@ var apiUrl = '/'
 var vm = new Vue({
   el: '#loginComponent',
   data: { 
-    dni: '40359575A', 
-    password: '40359575A' , 
+    dni: '', 
+    password: '' , 
     idsite: 1, 
     promocions: {}, 
     usuari: {}, 
