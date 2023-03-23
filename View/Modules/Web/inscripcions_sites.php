@@ -80,7 +80,7 @@
             <div id="detall_franja_titol">
                 <h1 id="detall_titol"> {{ DetallCurs.CURSOS_TitolCurs }} </h1>                                
                 <h2>Organitzat per {{ DetallSite.SITES_Nom }}</h2>
-                <h3>Dia {{getDataFormatada(DetallCurs.CURSOS_DataInici, true)}} | {{ DetallCurs.CURSOS_Horaris }}</h3>                
+                <h3>Data d'inici {{getDataFormatada(DetallCurs.CURSOS_DataInici, true)}} | {{ DetallCurs.CURSOS_Horaris }}</h3>                
             </div>
             <article id="detall_requadre_detall">            
                 <h2 class="titol_text">DESCRIPCIÓ DE L'ACTIVITAT</h2>
