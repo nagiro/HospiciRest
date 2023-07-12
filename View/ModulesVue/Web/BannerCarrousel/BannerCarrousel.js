@@ -206,7 +206,7 @@ Vue.component('banner-carrousel', {
             </div>
                     
             <a class="bc_img_logo_anchor" href="/" aria="Enllaç a inici">
-                <img src="/WebFiles/Web/img/LogoCCG.jpg" class="bc_img_logo" alt="Logo de la Casa de Cultura" height="50%" style="margin-top: 20px;" />
+                <img src="/WebFiles/Web/img/LogoCCG.jpg" class="bc_img_logo" alt="Logo de la Casa de Cultura" style="margin-top: 20px; height:50% " />
             </a>           
 
             <div class="bc_roller" v-for="(PromocioHome, index) of TotesPromocions">
