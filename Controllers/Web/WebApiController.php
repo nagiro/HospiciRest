@@ -147,7 +147,7 @@ class WebApiController
                 $DisplayLocalitat = ($LocalitatText == '-----') ? 'none' : 'block';
                 
                 $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
-                $HTML = str_replace('@@DESCRIPCIO', $OCurs['CURSOS_Descripcio'], $HTML);
+                $HTML = str_replace('@@DESCRIPCIO@@', $OCurs['CURSOS_Descripcio'], $HTML);
                 $HTML = str_replace('@@DESCRIPCIO_HORARIS@@', $OCurs['CURSOS_Horaris'], $HTML);
                 $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
                 $HTML = str_replace('@@LLOC@@', 'Casa de Cultura de Girona', $HTML);
