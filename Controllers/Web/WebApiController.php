@@ -147,6 +147,7 @@ class WebApiController
                 $DisplayLocalitat = ($LocalitatText == '-----') ? 'none' : 'block';
                 
                 $HTML = str_replace('@@ACTIVITAT@@', $OCurs['CURSOS_TitolCurs'], $HTML);
+                $HTML = str_replace('@@DESCRIPCIO', $OCurs['CURSOS_Descripcio'], $HTML);
                 $HTML = str_replace('@@DESCRIPCIO_HORARIS@@', $OCurs['CURSOS_Horaris'], $HTML);
                 $HTML = str_replace('@@HORARI@@', $OCurs['CURSOS_DataInici'], $HTML);
                 $HTML = str_replace('@@LLOC@@', 'Casa de Cultura de Girona', $HTML);
@@ -157,8 +158,7 @@ class WebApiController
                 $HTML = str_replace('@@DESCOMPTE@@', $MatriculesModel->getDescompteString($OMatricula), $HTML);
                 $HTML = str_replace('@@QR_IMATGE@@', IMATGES_URL_BASE . IMATGES_URL_INSCRIPCIONS . $NumeroInscripcio . '.png', $HTML);
                 $HTML = str_replace('@@QR_TEXT@@', $NumeroInscripcio, $HTML);            
-                $HTML = str_replace('@@DISPLAY_LOCALITAT@@', $DisplayLocalitat, $HTML);            
-                
+                $HTML = str_replace('@@DISPLAY_LOCALITAT@@', $DisplayLocalitat, $HTML);
 
                 $Import_total_a_pagar += $OMatricula[$MatriculesModel->gnfnwt('Pagat')];
                     
