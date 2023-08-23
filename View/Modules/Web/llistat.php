@@ -36,7 +36,7 @@
                 <article class="llistat_franja_titol">
                     <h2 class="llistat_titol"> {{ ActivitatHome.NomActivitat }} </h2>
 
-                    <div style="color: white; font-size:30px; padding: 30px; background-color: red; text-align:center; margin-top: 20px; margin-bottom: 20px;" v-if="DataJaPassada()" >Cicle ja realitzat</div>    
+                    <div style="color: white; font-size:30px; padding: 30px; background-color: red; text-align:center; margin-top: 20px; margin-bottom: 20px;" v-if="DataVigent()" >Cicle ja realitzat</div>    
 
                     <time class="llistat_dates" v-html="ResumDates()"></time>
                     <a target="_NEW" v-if="ActivitatHome.tmp_PDF.length > 0" :href="ActivitatHome.tmp_PDF">[Baixa't el pdf]</a>                                    
@@ -122,12 +122,13 @@
                 },
                 ResumDates: function() {                
                 },
-                DataJaPassada: function() {
-                    $DataObject = ConvertirData(this.WebStructure.Cicles[0].DiaMax, 'Object');
-                    
-                    if( $DataObject.any < new Date().getFullYear() ) return true;
-                    else if( $DataObject.mes < ( (new Date().getMonth()) - 1 ) ) return true;
-                    else return false;
+                DataVigent: function() {
+
+                    $DataObject = ConvertirData(this.WebStructure.Cicles[0].DiaMax, 'Javascript');
+                    DataActual = new Date();
+                                        
+                    return ( $DataObject < DataActual );
+                                        
                 }
             }
         });
