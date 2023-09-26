@@ -243,8 +243,8 @@
                             const HoraInicialActivitat = Row.hora_inici.split('.');                            
                             const isDataActivitatIgualDataAvui = parseInt(DataInicialActivitat[0]) == parseInt(today.getFullYear()) && parseInt(DataInicialActivitat[1]) == parseInt((today.getMonth()+1)) && parseInt(DataInicialActivitat[2]) == parseInt(today.getDate());
                             
-                            const isMati = ( today.getHours() <= 15 );
-                            const isActivitatAlMati = parseInt(HoraInicialActivitat[0]) < 15;
+                            const isMati = ( today.getHours() <= 14 );
+                            const isActivitatAlMati = parseInt(HoraInicialActivitat[0]) < 14;
                             const isActivitatEnMarxa = today.getHours() < HoraFinalActivitat[0];
                             const isHoraActivitatVisible = ( isMati && isActivitatAlMati && isActivitatEnMarxa ) || ( !isMati && !isActivitatAlMati && isActivitatEnMarxa );
 
