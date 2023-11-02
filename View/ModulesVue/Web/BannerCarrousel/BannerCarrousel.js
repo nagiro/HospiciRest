@@ -67,7 +67,7 @@ Vue.component('banner-carrousel', {
                 this.VesAPromocio( index ); 
                 index++;
                 this.gMouCarrousel( index );
-            }, 5000);
+            }, 2000);
 
         },
         setImageStyle: function(PromocioActual) {                            

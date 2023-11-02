@@ -67,7 +67,7 @@
         </single-list>
 
         <single-list v-if="Loaded" 
-            :input-titol="'TOTES LES ACTIVITATS'" 
+            :input-titol="'AGENDA'" 
             :input-color="'#E9C46A'" 
             :input-dades="WebStructure.ProperesActivitats" 
             :gen-link="'/activitats'"
