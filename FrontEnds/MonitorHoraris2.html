@@ -243,7 +243,9 @@
                             
                             // Si la data inicial i la data final són iguals i a més, és igual al dia d'avui, ho mostrem.                            
                             const HIA = parseInt(HoraInicialActivitat[0]);
-                            const isActivitatVisibleHorari = ( HIA > today.getHours() && ((HIA < today.getHours()+5) || ( ( today.getHours() + 5 ) > 12 ) ) );
+                            const HFA = parseInt(HoraFinalActivitat[0]);
+                            const isActivitatVisibleHorari = ( HIA < ( parseInt(today.getHours()) + 5) && HFA >= parseInt(today.getHours()) );
+                            console.log(HIA, (parseInt(today.getHours()) + 5), HFA, parseInt(today.getHours()) );
 
                             if( isDataActivitatIgualDataAvui && isActivitatVisibleHorari ) {
 
