@@ -21,8 +21,6 @@
             
             .taula_programacio { padding: 3vh; padding-top: 1vh; padding-bottom:0px; height: 44vh; }
             .taules_inferiors { padding: 3vh; padding-top: 1vh; display: flex; justify-content: space-between; height: 77vh; }
-            .taula_cursos {   }
-            .taula_exposicions {  }
             .separacio_taules { width: 5vh; display: inline-flex;  height: fit-content; }
 
             .franja_inferior { margin: 3vh; margin-top: 0.5vh; display: flex; background-color: gainsboro; justify-content: space-between; }
@@ -31,10 +29,11 @@
             .news { font-size: 2vh; padding: 1vh; }
                         
             .taula { border-collapse: collapse; width: 100%; }                        
-            .taula td, th { text-align:left; padding: 1.8vh 1vh; font-size: 2vh; font-weight: bold; }
+            .taula td, th { text-align:left; padding: 2vh 1vh; font-size: 2vh; font-weight: bold; height: 10vh; }
             .taula th { padding-bottom: 0vh; }
-            .taula th { font-weight: bold; font-size:3vh; border-bottom: 1px solid }
-            .taula tbody > tr:nth-child(even) { background-color: gainsboro}            
+            .taula th { font-weight: bold; font-size:4vh; border-bottom: 1px solid }
+            .taula tbody > tr:nth-child(odd) { background-color: white; border-bottom: 1px solid black; border-radius:10px; }
+            .taula tbody > tr:nth-child(even) { background-color: rgb(245, 245, 245); border-bottom: 1px solid black; border-radius:10px;}            
 
             .textTrans { opacity: 1; transition: opacity 1s; }
             .textTrans:hover { opacity: 0; }
@@ -55,7 +54,7 @@
                     <table class="taula">
                         <thead>
                         <tr>
-                            <th style="width: 65vw">Planta 1 <span style="font-style: normal; color:gray; font-size:14px;">(Aules A, B, Magna, Seminari i Exposicions)</span></th>
+                            <th style="width: 65vw; font-size: 10vh; ">P1 </th>
                             <th style="width: 10vw; text-align:left;"><!-- <i class="far fa-clock"></i> --></th>
                             <th style="width: 25vw; text-align:left;"><!-- <i class="fas fa-map-marker-alt"></i> --></th>
                         </tr>
@@ -65,7 +64,7 @@
                             <tr v-for="C of DadesP1[Pagines[0].Actual]">
                                 <td class="textTrans" :style="[{'opacity': Pagines[0].Opacity}]">{{C.titol}}&nbsp;</td>
                                 <td class="textTrans" :style="[{'text-align':'left'}, {'opacity': Pagines[0].Opacity}]">{{C.hora_inici}}</td>
-                                <td class="textTrans" :style="[{'text-align':'left'}, {'opacity': Pagines[0].Opacity}]"><img :src="C.fletxa" width="20px" />&nbsp;&nbsp;{{C.espais}}</td>
+                                <td class="textTrans" :style="[{'text-align':'left'}, {'opacity': Pagines[0].Opacity}]"><img v-if="C.fletxa" :src="C.fletxa" width="20px" />&nbsp;&nbsp;{{C.espais}}</td>
                             </tr>                        
                         
                     </tbody>
@@ -82,7 +81,7 @@
                     <table class="taula">
                         <thead>
                         <tr>
-                            <th style="width: 65vw">Planta 2 <span style="font-style: normal; color:gray; font-size:14px;">(Aules 1 a 7 | Fundació Fita | CPNL)</span></th>
+                            <th style="width: 65vw; font-size: 10vh; ">P2</th>
                             <th style="width: 10vw; text-align: left;"><!-- <i class="far fa-calendar"></i> --></th>
                             <th style="width: 25vw; text-align: left;"><!-- <i class="fas fa-map-marker-alt"></i> --></th>
                         </tr>
@@ -91,7 +90,7 @@
                         <tr v-for="E of DadesP2[Pagines[1].Actual]">
                             <td class="textTrans" :style="[{'opacity': Pagines[1].Opacity}]">{{E.titol}}&nbsp;</td>
                             <td class="textTrans" :style="[{'text-align':'left'}, {'opacity': Pagines[1].Opacity}]">{{E.hora_inici}}</td>
-                            <td class="textTrans" :style="[{'text-align':'left'}, {'opacity': Pagines[1].Opacity}]"><img :src="E.fletxa" width="20px" />&nbsp;&nbsp;{{E.espais}}</td>
+                            <td class="textTrans" :style="[{'text-align':'left'}, {'opacity': Pagines[1].Opacity}]"><img v-if="E.fletxa" :src="E.fletxa" width="20px" />&nbsp;&nbsp;{{E.espais}}</td>
                         </tr>                                                
                     </tbody>
                     </table>
@@ -134,7 +133,7 @@
                     Taules: 2,
                     Rellotge: "",
                     DiaActual: "",
-                    Paginacio: 12,
+                    Paginacio: 6,
                     timer: 0,
                     timerRellotge: 0,
                     timerPagines: 0,
@@ -207,8 +206,8 @@
                         this.DadesP1 = [];
                         this.DadesP2 = [];
 
-                        this.DadesP1.push([this.E,this.E,this.E,this.E]);                        
-                        this.DadesP2.push([this.E,this.E,this.E,this.E]);                                                
+                        this.DadesP1.push([this.E,this.E,this.E,this.E,this.E,this.E]);                        
+                        this.DadesP2.push([this.E,this.E,this.E,this.E,this.E,this.E]);                                                
                         
                         let iP1 = 0;
                         let iP2 = 0;                              
@@ -224,7 +223,7 @@
 
                             const HoraFinalActivitat = Row.hora_fi.split('.');
                             const HoraInicialActivitat = Row.hora_inici.split('.');                            
-                            const isDataActivitatIgualDataAvui = ( today <= DataFinalActivitat ) && (today >= DataInicialActivitat);
+                            let isDataActivitatIgualDataAvui = ( today <= DataFinalActivitat ) && (today >= DataInicialActivitat);
 
                             // Deixo només un espai ( el primer )
                             const T = Row.espais.split(',');
@@ -244,9 +243,8 @@
                             // Si la data inicial i la data final són iguals i a més, és igual al dia d'avui, ho mostrem.                            
                             const HIA = parseInt(HoraInicialActivitat[0]);
                             const HFA = parseInt(HoraFinalActivitat[0]);
-                            const isActivitatVisibleHorari = ( HIA < ( parseInt(today.getHours()) + 5) && HFA >= parseInt(today.getHours()) );
-                            console.log(HIA, (parseInt(today.getHours()) + 5), HFA, parseInt(today.getHours()) );
-
+                            let isActivitatVisibleHorari = ( HIA < ( parseInt(today.getHours()) + 5) && HFA >= parseInt(today.getHours()) );                            
+                            
                             if( isDataActivitatIgualDataAvui && isActivitatVisibleHorari ) {
 
                                 if(isP1) {                                    
@@ -272,7 +270,7 @@
                                 }                                 
                             }
 
-                        }                                                                                                                                                                
+                        }                          
                     }
                 }
             });            

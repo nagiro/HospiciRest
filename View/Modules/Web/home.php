@@ -88,14 +88,13 @@
             
             <div>
                 <p>Plaça de l'Hospital 6 <br/> 17002 Girona</p>
-                <p>info@casadecultura.cat <br/> 972202013 </p> 
+                <p>casacultura@ddgi.cat <br/> 972202013 </p> 
             </div>           
             <nav>
                 <a href="/pagina/186/intranet-hospici">Intranet</a>
-                <a href="/pagina/154/portal-de-transparencia">Portal de transparència</a>
-                <a href="/pagina/194/sala-de-premsa">Sala de premsa</a>
-                <a href="/pagina/140/tramits-i-espais">Tràmits i espais</a>
-                <a href="/pagina/190/informacio-legal">Informació legal</a>                
+                <a href="https://seu.ddgi.cat/web/transparencia">Portal de transparència</a>                
+                <a href="/pagina/140/tramits">Tràmits i espais</a>
+                <a href="https://seu.ddgi.cat/web/nivell/755/s-1/avis-legal">Informació legal</a>                
             </nav> 
         </footer>
 
