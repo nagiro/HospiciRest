@@ -2,7 +2,7 @@
     "Estils" : [
       { "padding-left": "5vw", "padding-right": "5vw", "padding-top": "0px", "padding-bottom": "0.5vw" },
       { "padding-left": "0.5vw", "padding-right": "0.5vw", "padding-top": "0.5vw", "padding-bottom": "0.5vw" },
-      { "padding-left": "23vw", "padding-right": "5vw", "padding-top": "0px", "padding-bottom": "0.5vw" }
+      { "padding-left": "32vw", "padding-right": "5vw", "padding-top": "0px", "padding-bottom": "0.5vw" }
     ],
     "Seients": 
     [
@@ -10,7 +10,7 @@
         { "tipus": "text", "text": "ESCENARI", "fila": 0, "seient": 0, "Estil": 2 }
       ],
       [   
-        { "tipus": "fila", "text": "Fila 1", "fila": 1, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 01", "fila": 1, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 1, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 1, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 1, "Estil": 1 },
@@ -38,7 +38,7 @@
         { "tipus": "loc", "seient": 22, "fila": 1, "Estil": 1 },
         { "tipus": "loc", "seient": 24, "fila": 1, "Estil": 1 }          
       ],
-      [{ "tipus": "fila", "text": "Fila 2", "fila": 2, "Estil": 0, "Padding": 1 },      
+      [{ "tipus": "fila", "text": "Fila 02", "fila": 2, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 2, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 2, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 2, "Estil": 1 },
@@ -67,7 +67,7 @@
         { "tipus": "loc", "seient": 24, "fila": 2, "Estil": 1 }              
       ],
   [   
-        { "tipus": "fila", "text": "Fila 3", "fila": 3, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 03", "fila": 3, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 3, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 3, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 3, "Estil": 1 },
@@ -96,7 +96,7 @@
         { "tipus": "loc", "seient": 24, "fila": 3, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 4", "fila": 4, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 04", "fila": 4, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 4, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 4, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 4, "Estil": 1 },
@@ -125,7 +125,7 @@
         { "tipus": "loc", "seient": 24, "fila": 4, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 5", "fila": 5, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 05", "fila": 5, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 5, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 5, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 5, "Estil": 1 },
@@ -154,7 +154,7 @@
         { "tipus": "loc", "seient": 24, "fila": 5, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 6", "fila": 6, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 06", "fila": 6, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 6, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 6, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 6, "Estil": 1 },
@@ -183,7 +183,7 @@
         { "tipus": "loc", "seient": 24, "fila": 6, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 7", "fila": 7, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 07", "fila": 7, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 7, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 7, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 7, "Estil": 1 },
@@ -212,7 +212,7 @@
         { "tipus": "loc", "seient": 24, "fila": 7, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 8", "fila": 8, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 08", "fila": 8, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 8, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 8, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 8, "Estil": 1 },
@@ -241,7 +241,7 @@
         { "tipus": "loc", "seient": 24, "fila": 8, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 9", "fila": 9, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 09", "fila": 9, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 23, "fila": 9, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 9, "Estil": 1 },
         { "tipus": "loc", "seient": 19, "fila": 9, "Estil": 1 },
@@ -269,8 +269,11 @@
         { "tipus": "loc", "seient": 22, "fila": 9, "Estil": 1 },
         { "tipus": "loc", "seient": 24, "fila": 9, "Estil": 1 }          
       ],
+      [
+        { "tipus": "text", "text": "PRIMER PIS", "fila": 10, "seient": 0, "Estil": 2 }
+      ],
   [   
-        { "tipus": "fila", "text": "Fila 1 (1r Pis)", "fila": 11, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 11", "fila": 11, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 25, "fila": 11, "Estil": 1 },
         { "tipus": "loc", "seient": 23, "fila": 11, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 11, "Estil": 1 },
@@ -301,7 +304,7 @@
         { "tipus": "loc", "seient": 26, "fila": 11, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 2 (1r Pis)", "fila": 12, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 12", "fila": 12, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 25, "fila": 12, "Estil": 1 },
         { "tipus": "loc", "seient": 23, "fila": 12, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 12, "Estil": 1 },
@@ -332,7 +335,7 @@
         { "tipus": "loc", "seient": 26, "fila": 12, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 3 (1r Pis)", "fila": 13, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 13", "fila": 13, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 25, "fila": 13, "Estil": 1 },
         { "tipus": "loc", "seient": 23, "fila": 13, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 13, "Estil": 1 },
@@ -363,7 +366,7 @@
         { "tipus": "loc", "seient": 26, "fila": 13, "Estil": 1 }          
       ],
       [   
-        { "tipus": "fila", "text": "Fila 4 (1r Pis)", "fila": 14, "Estil": 0, "Padding": 1 },      
+        { "tipus": "fila", "text": "Fila 14", "fila": 14, "Estil": 0, "Padding": 1 },      
         { "tipus": "loc", "seient": 25, "fila": 14, "Estil": 1 },
         { "tipus": "loc", "seient": 23, "fila": 14, "Estil": 1 },
         { "tipus": "loc", "seient": 21, "fila": 14, "Estil": 1 },
