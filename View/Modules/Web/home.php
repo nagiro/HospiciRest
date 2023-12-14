@@ -18,10 +18,7 @@
     </style>
 
 </head>
-<body>
-    <div class="FranjaDiputacio">
-        <img alt="Logo de la Diputació de Girona" src="/WebFiles/Web/img/LogoDiputacioSuperior.png">
-    </div>
+<body>    
     <div id="home" class="page">
 
         <barra-superior></barra-superior>
