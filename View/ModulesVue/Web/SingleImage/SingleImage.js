@@ -65,7 +65,7 @@ Vue.component('single-image', {
         },
         gTextHores: function( ActivitatHome ) {            
             if(this.InputTitol == 'EXPOSICIONS') {
-                return "De les " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + ' a les ' + ConvertirHora(ActivitatHome.HoraFi, 'THM');
+                return "De " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + ' a ' + ConvertirHora(ActivitatHome.HoraFi, 'THM');
             } else {
                 return "A les " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + 'h';
             }
