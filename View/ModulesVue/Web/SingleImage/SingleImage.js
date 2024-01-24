@@ -2,6 +2,7 @@
 Vue.component('single-image', {
     props: {        
         InputColor: String, 
+        InputTitol: String,
         InputDades: Object        
     },          
     data: function() {
@@ -63,7 +64,11 @@ Vue.component('single-image', {
             }            
         },
         gTextHores: function( ActivitatHome ) {            
-            return "A les " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + 'h';
+            if(this.InputTitol == 'EXPOSICIONS') {
+                return "De les " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + ' a les ' + ConvertirHora(ActivitatHome.HoraFi, 'THM');
+            } else {
+                return "A les " + ConvertirHora(ActivitatHome.HoraInici, 'THM') + 'h';
+            }
         },        
         NoExisteixImatge: function($event) {
             $event.target.style = 'background-color: black;';

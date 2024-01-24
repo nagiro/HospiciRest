@@ -100,7 +100,7 @@ Vue.component('single-list', {
             <nav class="SingleList_quadricula" v-if="!gQuantesActivitatsHaTrobat == 0">
                 <div v-for="(LlistatActivitatsHome, PagActual) of TotesDadesPaginades" class="SingleList_ImatgeBlock" v-if="MostroBloc(PagActual)">
                     <div v-for="ActivitatHome of LlistatActivitatsHome" class="SingleList_Imatge">
-                        <single-image :InputColor="InputColor" :InputDades="ActivitatHome"></single-image>
+                        <single-image :InputColor="InputColor" :InputDades="ActivitatHome" :InputTitol="InputTitol"></single-image>
                     </div>
                 </div>
             </nav>
