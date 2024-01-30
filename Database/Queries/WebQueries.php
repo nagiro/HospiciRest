@@ -45,8 +45,8 @@ class WebQueries extends BDD {
     }
 
                                         
-    public function getActivitatsHome($Cat, $Dia, $DiaF, $Site, $Activa = true, $ArrayCicles = array(), $TagsVinculatsArray = array(), $ParaulesCerca = array() ) { 
-        return $this->runQuery( $this->getSQLActivitatsHome( $Cat , $Dia, $DiaF, $Site, $Activa, $ArrayCicles, $TagsVinculatsArray, $ParaulesCerca) , array());
+    public function getActivitatsHome($Cat, $Dia, $DiaF, $Site, $Activa = true, $ArrayCicles = array(), $TagsVinculatsArray = array(), $ParaulesCerca = array(), $Detalls = false ) { 
+        return $this->runQuery( $this->getSQLActivitatsHome( $Cat , $Dia, $DiaF, $Site, $Activa, $ArrayCicles, $TagsVinculatsArray, $ParaulesCerca, $Detalls) , array());
     }
 
     public function getCiclesHome($idC = 0, $DataInicial = '', $DataFinal = '') {        
@@ -187,7 +187,8 @@ class WebQueries extends BDD {
         $actiu = 1, 
         $CiclesArray = array(),
         $TagsVinculatsArray = array(),
-        $ParaulesCerca = array()
+        $ParaulesCerca = array(),
+        $Detalls = false
         ){
         
         $SQL = " SELECT a.ActivitatID as idActivitat,
@@ -201,6 +202,9 @@ class WebQueries extends BDD {
                 e.Nom as NomEspai,
                 (Select max(h.Dia) as DiaMax from horaris h where h.Activitats_ActivitatID = a.ActivitatID and h.actiu = 1) as DiaMax, 
                 ta.CategoriaVinculada as CategoriaVinculada ";
+        
+        if($Detalls) $SQL .= ", a.dMig as DescripcioActivitat, a.Organitzador as Organitzador, a.InfoPractica as InfoPractica ";
+
         $SQL .= "
                 FROM activitats a LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID)
                 LEFT JOIN horarisespais he ON (he.Horaris_HorarisID = h.HorarisID)

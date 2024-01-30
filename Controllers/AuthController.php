@@ -9,6 +9,8 @@ class AuthController {
     public $idUsuari; 
     public $idSite; 
     public $isAdmin;
+    public $UM;
+    public $TokenArray;
 
     public function __construct() {        
         if(session_status() != PHP_SESSION_ACTIVE) session_start();

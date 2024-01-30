@@ -11,6 +11,7 @@ class MainModule {
     public $Auth;
     public $WebController;
     public $Html;         
+    public $Data;
 
     public function __construct() {
         
@@ -117,12 +118,29 @@ class MainModule {
 
             // Activitats de pàgina de la Casa de Cultura de Girona
             case 'activitats':
+
                 $this->getModuleContent('HtmlHeaderWeb.php', $Data);
-                // Tipus de filtres... 
-                $Filtres = $this->WebController->getUrlToFilters($url);                                                                                                        
-                $Data = $this->WebController->viewActivitats( $Filtres );
-                $this->getModuleContent('Web/llistat.php', json_encode($Data) ); 
+
+                if($url[1] == 'llistat') {
+                    
+                    // $Filtres[] = array('type' => 'DATA_INICIAL', 'key' => date('Y-m-d', time()));                    
+                    $Filtres = array();
+                    $idS = isset($url[2]) && is_numeric($url[2]) ? intval($url[2]) : 1;                                                            
+                    $Data = $this->WebController->viewActivitats( $Filtres, $idS );                                        
+                    $Data['Site'] = $this->WebController->getSiteInfo($url[2]);                    
+                    $this->getModuleContent('Web/activitats_sites.php', json_encode($Data) ); 
+                                
+                } else {
+
+                    $this->getModuleContent('HtmlHeaderWeb.php', $Data);
+                    $Filtres = $this->WebController->getUrlToFilters($url);
+                    $Data = $this->WebController->viewActivitats( $Filtres );
+                    $this->getModuleContent('Web/llistat.php', json_encode($Data) ); 
+                    
+                }
+
                 $this->getModuleContent('HtmlFooterWeb.php');                
+
             break;
 
             // Pàgina html de nodes estàndard de la Casa de Cultura de Girona

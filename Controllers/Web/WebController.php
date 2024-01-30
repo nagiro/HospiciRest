@@ -189,7 +189,7 @@ class WebController
      * 
      */    
 
-     public function viewActivitats( $Filtres ) {
+     public function viewActivitats( $Filtres, $SiteId = 1 ) {
         
         $CategoriesVinculades = array(1 => 'Artística', 2 => 'Curs', 3 => 'Familiar', 4 => 'Científica', 5 => 'Exposició', 6 => 'Humanitats', 7 => 'Música', 8 => 'Conferència', 11 => 'Tecnològica');
         $TotsElsTipus = true;
@@ -242,7 +242,7 @@ class WebController
         endforeach;                                                              
 
         if(sizeof($ParaulesCerca) > 0) $EXTRES['Nodes'] = $this->WebQueries->getNodesCerca( $ParaulesCerca );                                            
-        $EXTRES['Activitats'] = $this->WebQueries->getActivitatsHome( $CategoriesArray, $this->DataAvui, $this->DataFi, 1, true, array(), $TagsVinculatsArray, $ParaulesCerca );
+        $EXTRES['Activitats'] = $this->WebQueries->getActivitatsHome( $CategoriesArray, $this->DataAvui, $this->DataFi, $SiteId, true, array(), $TagsVinculatsArray, $ParaulesCerca, ($SiteId > 0) );
         
         $Text = $EXTRES['Breadcumb'][sizeof($EXTRES['Breadcumb']) - 1]['Titol'];
         $EXTRES['Promocions'] = $this->WebQueries->getPromocions(true, 'CERCA', $Text, 'A', 0 );                
