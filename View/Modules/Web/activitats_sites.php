@@ -84,7 +84,7 @@
                 </template>
 
                 <tr v-if="LlistatActivitats.length == 0">
-                    <td colspan="4">Actualment no hi ha cap inscripció activa.</td>
+                    <td colspan="4">Actualment no hi ha cap activitat pública per consultar.</td>
                 </tr>
 
             </table>            
