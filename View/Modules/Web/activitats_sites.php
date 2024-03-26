@@ -132,6 +132,7 @@
                     //Paràmetre usat per llistar cursos
                     if(this.WebStructure.Activitats) {                        
                         this.LlistatActivitats = this.WebStructure.Activitats;                        
+                        this.doOrdenaLlistatActivitats();
                         this.LlistatActivitats.forEach(element => {
                             Vue.set(element, 'MostraDetall', false);  
                         });                        
@@ -155,10 +156,29 @@
                 getDataFormatada: function(DataInici, textFormat) {
                     return (!textFormat) ? ConvertirData( DataInici, 'TDM' ) : ConvertirData( DataInici, 'Text' );
                 },
+                getHoraFormatada: function(Hora, textFormat) {
+                    return Hora.slice(0,5);                    
+                },
                 onImgError: function() {
                     this.MostroImatge = false;
-                }
+                }, 
+                doOrdenaLlistatActivitats: function() {
+                    
+                    this.LlistatActivitats.sort((a, b) => {
+  
+                            // Primera prioritat: posar nulls al principi
+                        if (a.DiaMax === null || b.DiaMax === null) return -1;                                                                        
+                        return a.Dia > b.Dia ? 1 : -1;                           
+                        
+                        return 0;
 
+                    });
+
+                    const ara = new Date();                        
+                    const avuiFormatat = ara.toISOString().split('T')[0]; 
+                    this.LlistatActivitats = this.LlistatActivitats.filter( a => a.Dia >= avuiFormatat );                                        
+
+                }
             }
         });
 
