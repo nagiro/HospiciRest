@@ -25,7 +25,7 @@
         #Taula_Llistat_Cursos { width: 100%; border-collapse: collapse;  }
         #Taula_Llistat_Cursos td { padding: 0.5vw; border-bottom: 1px solid black;  }
         #Taula_Llistat_Cursos th { padding: 0.5vw; font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid gray; }
-
+        
     </style>
 
 </head>
@@ -45,6 +45,14 @@
                 <img :src="DetallSite.SITES_LogoUrl" alt="Logo de l'entitat" />
             </div>
 
+            <div class="container py-6">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-primary" @click="mesAnterior">&#8592;</button>
+                    <h2>{{ mesActual }}</h2>
+                    <button class="btn btn-primary" @click="mesSeguent">&#8594;</button>
+                </div>                    
+            </div>
+
             <h1>{{DetallSite.SITES_Nom}}</h1>            
 
             <table id="Taula_Llistat_Cursos">                
@@ -55,7 +63,7 @@
                     <th>Lloc</th>                    
                 </tr>
 
-                <template v-for="A of LlistatActivitats">
+                <template v-for="A of LlistatActivitatsMostra">
                     <tr>                    
                         <td>                                                                    
                             <a style="cursor: pointer" @click="A.MostraDetall = !A.MostraDetall">{{A.NomActivitat}}</a>
@@ -83,7 +91,7 @@
 
                 </template>
 
-                <tr v-if="LlistatActivitats.length == 0">
+                <tr v-if="LlistatActivitatsMostra.length == 0">
                     <td colspan="4">Actualment no hi ha cap activitat pública per consultar.</td>
                 </tr>
 
@@ -97,6 +105,7 @@
 
 
   <script>
+        
         var vm2 = new Vue({
         
             el: '#detall',        
@@ -107,6 +116,7 @@
                 DetallActivitat: {},    //Objecte activitat                
                 DetallSite: {},
                 LlistatActivitats: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                
+                LlistatActivitatsMostra: [],
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
                 Anys: [], 
@@ -114,7 +124,8 @@
                 Dies: [],
                 DiesMes: [],
                 UrlActual: '',         //Url actual de la finestra
-                MostroImatge: true
+                MostroImatge: true,
+                dataActual: new Date(), // Calendari                
 
             },            
             filters: {
@@ -132,10 +143,12 @@
                     //Paràmetre usat per llistar cursos
                     if(this.WebStructure.Activitats) {                        
                         this.LlistatActivitats = this.WebStructure.Activitats;                        
-                        this.doOrdenaLlistatActivitats();
+                        this.doOrdenaLlistatActivitats();                        
                         this.LlistatActivitats.forEach(element => {
                             Vue.set(element, 'MostraDetall', false);  
-                        });                        
+                        });            
+                        this.$set(this.LlistatActivitatsMostra, []);            
+                        this.LlistatActivitats.forEach(E => this.LlistatActivitatsMostra.push(E));                                                
                         this.DetallSite = this.WebStructure.Site;                        
                     }                    
                                      
@@ -146,7 +159,12 @@
                 }
                 
             },
-            computed: {},
+            computed: {
+                mesActual() {                    
+                    return this.dataActual.toLocaleDateString('ca-ES', { month: 'long', year: 'numeric' });
+                }
+                
+            },
             methods: {
                 EsOberta: function(DataInici) {
                     let D = ConvertirData( DataInici, 'Javascript' );
@@ -165,19 +183,38 @@
                 doOrdenaLlistatActivitats: function() {
                     
                     this.LlistatActivitats.sort((a, b) => {
-  
-                            // Primera prioritat: posar nulls al principi
-                        if (a.DiaMax === null || b.DiaMax === null) return -1;                                                                        
-                        return a.Dia > b.Dia ? 1 : -1;                           
+                          
+                        if( a.DiaMax === a.Dia && b.DiaMax !== b.Dia ) return -1;
+                        if( a.DiaMax !== a.Dia && b.DiaMax === b.Dia ) return 1;
+
+                        if( a.DiaMax === a.Dia && b.DiaMax === b.Dia ) return (a.Dia < b.Dia) ? -1 : 1;
+                        if( a.DiaMax !== a.Dia && b.DiaMax !== b.Dia ) return (a.Dia < b.Dia) ? -1 : 1;
                         
                         return 0;
 
                     });
-
-                    const ara = new Date();                        
-                    const avuiFormatat = ara.toISOString().split('T')[0]; 
-                    this.LlistatActivitats = this.LlistatActivitats.filter( a => a.Dia >= avuiFormatat );                                        
-
+                                        
+                },
+                mesAnterior() {
+                    this.dataActual = new Date(this.dataActual.getFullYear(), this.dataActual.getMonth() - 1, 1);
+                    this.doCanvi();
+                },
+                mesSeguent() {
+                    this.dataActual = new Date(this.dataActual.getFullYear(), this.dataActual.getMonth() + 1, 1);
+                    this.doCanvi();
+                },                
+                doCanvi() {                                        
+                    const AnyFiltre = this.dataActual.getFullYear();
+                    const MesFiltre = this.dataActual.getMonth()+1;                    
+                    
+                    this.LlistatActivitatsMostra = this.LlistatActivitats.filter(a => {                        
+                        let AnyI = parseInt(a['Dia'].substr(0,4));
+                        let MesI = parseInt(a['Dia'].substr(5,2));
+                        let AnyF = parseInt(a['DiaMax'].substr(0,4));
+                        let MesF = parseInt(a['DiaMax'].substr(5,2));                        
+                        let OK = ( MesI <= MesFiltre && MesF >= MesFiltre && AnyI <= AnyFiltre && AnyF >= AnyFiltre );
+                        return OK;
+                    });
                 }
             }
         });
