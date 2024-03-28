@@ -267,6 +267,27 @@ Vue.component('form-utils', {
             <small class="form-text text-muted">{{helptext}}</small>            
         </div>        
 
+        <!-- ****************** -->
+        <!-- ***** TIME ****** -->
+        <!-- ****************** -->
+
+        <div v-if="fieldtype == 'time'">
+            <label :for="id" class="form-label">{{title}}</label>
+            <input  type="time" 
+                    :class="elementclass" 
+                    :placeholder="placeholder" 
+                    :aria-label="title" 
+                    :aria-describedby="title"
+                    :id="id"
+                    :value="value"
+                    @change="inputChange"
+                    @keyup="inputKeyup"
+                    >
+            <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
+            <small class="form-text text-muted">{{helptext}}</small>            
+        </div>        
+
+
         <!-- ********************* -->
         <!-- ***** TEXTAREA ****** -->
         <!-- ********************* -->

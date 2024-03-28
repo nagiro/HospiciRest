@@ -76,8 +76,15 @@ Vue.component('form-inscripcio-espai', {
                 <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_DataActivitat == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_DataActivitat'" :title = "'Proposta de dates per l\\'activitat'" :value = "formValues.RESERVAESPAIS_DataActivitat" @onkeyup="formValues.RESERVAESPAIS_DataActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_DataActivitat', $event)"
                 ></form-utils>
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_DataActivitat == 2" :fieldtype="'date'" :id = "'RESERVAESPAIS_DataActivitat'" :title = "'Proposta de dates per l\\'activitat'" :value = "formValues.RESERVAESPAIS_DataActivitat" @onkeyup="formValues.RESERVAESPAIS_DataActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                @isvalid="isValidFormEspais('RESERVAESPAIS_DataActivitat', $event)"
+                ></form-utils>
 
                 <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_HorariActivitat'" :title = "'Proposta d\\'horaris per l\\'activitat'" :value = "formValues.RESERVAESPAIS_HorariActivitat" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                @isvalid="isValidFormEspais('RESERVAESPAIS_HorariActivitat', $event)"
+                ></form-utils>                
+                
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2" :fieldtype="'time'" :id = "'RESERVAESPAIS_HorariActivitat'" :title = "'Proposta d\\'horaris per l\\'activitat'" :value = "formValues.RESERVAESPAIS_HorariActivitat" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_HorariActivitat', $event)"
                 ></form-utils>                
                 
@@ -115,7 +122,7 @@ Vue.component('form-inscripcio-espai', {
                     @isvalid="isValidFormEspais('RESERVAESPAIS_EspaisSolicitats', $event)"
                 ></form-utils>                        
 
-                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Comentaris == 1" :fieldtype="'textarea'" :id = "'RESERVAESPAIS_Comentaris'" :title = "'Breu descripció de l\\'acte i comentaris'" :value = "formValues.RESERVAESPAIS_Comentaris" @onkeyup="formValues.RESERVAESPAIS_Comentaris = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
+                <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Comentaris == 1" :fieldtype="'textarea'" :id = "'RESERVAESPAIS_Comentaris'" :title = "'Breu descripció de l\\'acte, material necessari i comentaris'" :value = "formValues.RESERVAESPAIS_Comentaris" @onkeyup="formValues.RESERVAESPAIS_Comentaris = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Comentaris', $event)"
                 ></form-utils>                
                 
