@@ -39,7 +39,7 @@
             
         <!-- LListat de cursos disponibles -->
 
-        <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos">
+        <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos.length > 0">
 
             <div id="detall_imatge_entitat">                
                 <img :src="DetallSite.SITES_LogoUrl" alt="Logo de l'entitat" />
@@ -213,7 +213,7 @@
                         for(let C of this.WebStructure.LlistatCursos){
                             if(C.CURSOS_Categoria == 71) this.LlistatEquipaments.push(C);
                             else this.LlistatCursos.push(C);
-                        }                        
+                        }                                             
                         this.DetallSite = this.WebStructure.Site;                        
                     }                    
                                      
