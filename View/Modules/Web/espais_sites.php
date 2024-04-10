@@ -48,7 +48,7 @@
             <nav class="LlistatHoritzontal">                                    
                 <a v-for="Espai of LlistatEspais"  target="_new" :href="'/espais/detall/' + Espai.ESPAIS_EspaiId">
                     <span>{{Espai.ESPAIS_Nom}}</span>                    
-                    <img :src="Espai.Imatges.ImatgesS[0]" />
+                    <img :src="Espai.Imatges.ImatgesL[0]" />
                 </a>
             </nav>
                             
