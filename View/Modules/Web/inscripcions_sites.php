@@ -5,7 +5,7 @@
         #detall_requadre_detall { border: 1px solid black; padding: 2vw; margin-top: 4vw; font-size: 1rem }        
         #detall_requadre_info { border: 1px solid black; padding: 2vw; margin-top: 2vw; font-size: 1rem; }
         .detall_bloc h1 { font-size: 3rem; margin-bottom: 2vw; margin-top: 4vw; }
-        .detall_bloc h2 { font-size: 1.5rem; margin-bottom: 1vw; margin-top: 3vw; }
+        .detall_bloc h2 { font-size: 2rem; margin-bottom: 1vw; margin-top: 3vw; }
         .detall_bloc h3 { font-size: 1.3rem; margin-bottom: 1vw; margin-top: 3vw; }        
             
         #detall_horaris { display: relative; margin-top: 1.5vw; text-align: center; }
@@ -46,31 +46,67 @@
             </div>
 
             <h1>{{DetallSite.SITES_Nom}}</h1>            
+            
+            <hr style="margin-top: 3rem;">
 
-            <table id="Taula_Llistat_Cursos">                
-                <tr>
-                    <th>Activitat</th>
-                    <th>Període d'inscripció</th>
-                    <th>Inici activitat</th>
-                    <th>Horaris</th>
-                    <th>Preu</th>
-                </tr>
+            <h2>Activitats</h2>            
 
-                <tr v-for="Curs of LlistatCursos" >
-                    <td>                                                
-                        <a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>                        
-                    </td>
-                    <td>
-                        De <i>{{getDataFormatada(Curs.CURSOS_DataInMatricula, true)}}</i> a <i>{{getDataFormatada(Curs.CURSOS_DataFiMatricula, true)}}</i> 
-                    </td>                    
-                    <td>{{getDataFormatada(Curs.CURSOS_DataInici, true)}}</td>
-                    <td>{{Curs.CURSOS_Horaris}}</td>
-                    <td>{{Curs.CURSOS_Preu}}€</td>
-                </tr>
-                <tr v-if="LlistatCursos.length == 0">
-                    <td colspan="4">Actualment no hi ha cap inscripció activa.</td>
-                </tr>
-            </table>            
+            <article>
+                <table id="Taula_Llistat_Cursos">                
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Període d'inscripció</th>
+                        <th>Inici activitat</th>
+                        <th>Horaris</th>
+                        <th>Preu</th>
+                    </tr>
+
+                    <tr v-for="Curs of LlistatCursos" >
+                        <td>                                                
+                            <a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>                        
+                        </td>
+                        <td style="width: 17rem">
+                            De <i>{{getDataFormatada(Curs.CURSOS_DataInMatricula, true)}}</i> a <i>{{getDataFormatada(Curs.CURSOS_DataFiMatricula, true)}}</i> 
+                        </td>                    
+                        <td style="width: 10rem">{{getDataFormatada(Curs.CURSOS_DataInici, true)}}</td>
+                        <td style="width: 10rem">{{Curs.CURSOS_Horaris}}</td>
+                        <td>{{Curs.CURSOS_Preu}}€</td>
+                    </tr>
+                    <tr v-if="LlistatCursos.length == 0">
+                        <td colspan="4">Actualment no hi ha cap inscripció activa.</td>
+                    </tr>
+                </table>            
+            </article>
+
+            <hr style="margin-top: 3rem;">
+
+            <article v-if="LlistatEquipaments.length > 0"> <!--   -->
+
+                <h2>Ús d'equipaments</h2>            
+
+                <table id="Taula_Llistat_Cursos">                
+                    <tr>
+                        <th>Equipament</th>
+                        <th>Període d'inscripció</th>
+                        <th>Inici activitat</th>
+                        <th>Horaris</th>
+                        <th>Preu</th>
+                    </tr>
+
+                    <tr v-for="Curs of LlistatEquipaments" >
+                        <td>                                                
+                            <a target="_new" :href="'/inscripcions/' + Curs.CURSOS_IdCurs">{{Curs.CURSOS_TitolCurs}}</a>                        
+                        </td>
+                        <td>
+                            De <i>{{getDataFormatada(Curs.CURSOS_DataInMatricula, true)}}</i> a <i>{{getDataFormatada(Curs.CURSOS_DataFiMatricula, true)}}</i> 
+                        </td>                    
+                        <td>{{getDataFormatada(Curs.CURSOS_DataInici, true)}}</td>
+                        <td>{{Curs.CURSOS_Horaris}}</td>
+                        <td>{{Curs.CURSOS_Preu}}€</td>
+                    </tr>
+                    
+                </table>            
+            </article>                
             
         </section>  
 
@@ -138,7 +174,8 @@
                 DetallDescomptes: {},
                 DetallTeatre: {},
                 DetallSite: {},
-                LlistatCursos: null,  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
+                LlistatCursos: [],  //Només apareix quan enviem el llistat dels cursos. Sinó apareix la resta                                                
+                LlistatEquipaments: [], // Només apareix quan enviem el llistat de cursos i hi ha categoria Equipament (71)
                 SeientsOcupats: [],
                 MostraDetall: false,         
                 Horaris_i_llocs: '',
@@ -173,7 +210,10 @@
                     
                     //Paràmetre usat per llistar cursos
                     if(this.WebStructure.LlistatCursos) {
-                        this.LlistatCursos = this.WebStructure.LlistatCursos;                        
+                        for(let C of this.WebStructure.LlistatCursos){
+                            if(C.CURSOS_Categoria == 71) this.LlistatEquipaments.push(C);
+                            else this.LlistatCursos.push(C);
+                        }                        
                         this.DetallSite = this.WebStructure.Site;                        
                     }                    
                                      
