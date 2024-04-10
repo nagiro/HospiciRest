@@ -204,7 +204,7 @@ class WebApiController
         $HTML = str_replace('@@URL_DOWNLOAD@@', 'https://sites.hospici.cat/apiweb/GeneraResguard?i='.$InscripcioCodificada.'&g=&d=', $HTML);
         $HTML = str_replace('@@URL_PRINT@@', 'javascript:window.print()', $HTML);
                 
-        return $HTML;
+        return array("html" => $HTML, "SiteId" => $idS);
         
     }
 
@@ -370,7 +370,8 @@ class WebApiController
             } else {
                 
                 // isOKUrl == true -> Mostrem les inscripcions i a les inscripcions i posem un enllaç cap a la pàgina d'origen $_SESSION["TPV_UrlDesti"] = $UrlDesti;                
-                return $this->generaResguard( $this->Encrypt( $D['Ds_Order'] ), $UrlDesti, 0 );
+                $Resposta = $this->generaResguard( $this->Encrypt( $D['Ds_Order'] ), $UrlDesti, 0 );
+                return $Resposta['html'];
 
             }
         } else {
@@ -652,11 +653,14 @@ class WebApiController
      */
     public function EnviaEmailInscripcio( $Encrypted_IdMatricula, $email, $Tipus = array( self::TIPUS_RESGUARD_MAIL ), $UrlDesti ) {
                         
-        $HTML = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);        
+        $Resposta = $this->generaResguard( $Encrypted_IdMatricula, $UrlDesti, 0);        
+        $HTML = $Resposta["html"];
+        $HTML_EMAIL = $HTML;
         
         if(!empty($email) > 0) { 
             
-            if($this->SendEmail($email, 'informatica@casadecultura.cat', "Nova inscripció", $HTML)){
+            $HTML_EMAIL = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML_EMAIL);
+            if($this->SendEmail($email, $Resposta['SiteId'], "Nova inscripció", $HTML_EMAIL)){
                 $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);
                 $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);
                 $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);
@@ -709,12 +713,17 @@ class WebApiController
         
     }
 
-    public function SendEmail($to, $from, $subject, $HTML) {
+    public function SendEmail($to, $idSite, $subject, $HTML) {
         $url = 'https://api.elasticemail.com/v2/email/send';
 
+        // From, i From Name canviarà segons opció escollida
+        $OO = new OptionsModel();
+        $FromEmail = $OO->getOption("MAIL_FROM", $idSite);
+        $FromName = $OO->getOption("MAIL_NAME", $idSite);        
+        
         try{
-                $post = array('from' => $from,
-                'fromName' => 'Casa de Cultura de Girona',
+                $post = array('from' => $FromEmail,
+                'fromName' => $FromName,
                 'apikey' => '882D1E9420DA8EFC9A20F712B96703AC6D9D06099C059D20325B91A467DB449A558C4DAD46C13DC2712D8132F35847D3',
                 'subject' => $subject,
                 'to' => $to,
@@ -760,8 +769,7 @@ class WebApiController
 
         $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);
         
-        $ORE = $REM->insert($FormulariReservaEspai);
-
+        $ORE = $REM->insert($FormulariReservaEspai);        
         HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $REM->getReservaEspaiId($ORE, $REM->getReservaEspaiId($ORE) ) );
 
         //Envio un email a administració perquè puguin estar al cas que s'ha fet una reserva        
@@ -770,14 +778,14 @@ class WebApiController
         $idS = $EM->getSiteId($OE);
         
         $OM = new OptionsModel();
-        $Email = $OM->getOption('MAIL_SECRETARIA', $idS);        
+        $Email = $OM->getOption('MAIL_SECRETARIA', $idS);
         
         $Titol = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Nom)];        
-        $Codi = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Codi)];        
+        $Codi = $REM->getCodi($ORE);        
         $Organitzadors = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Organitzadors)];
-        $HTML = "S'ha registrat una nova reserva d'espai a l'Hospici amb el codi <b>{$Codi}</b> organitzada per <b>{$Organitzadors}</b> amb el títol <b>{$Titol}</b>  ";
+        $HTML = "S'ha registrat una nova reserva d'espai amb el codi <b>{$Codi}</b> organitzada per <b>{$Organitzadors}</b> amb el títol <b>{$Titol}</b>  ";
 
-        $this->SendEmail($Email, 'informatica@casadecultura.cat', "Nova reserva d'espai", $HTML);
+        $this->SendEmail($Email, $idS, "Nova reserva d'espai", $HTML);
 
         return $ORE;
 

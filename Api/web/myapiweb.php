@@ -61,7 +61,8 @@ class MyAPIWeb extends API
         $DownloadDocument = (isset($_GET['d']));
 
         if($isGrup) { 
-            $HTML = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); 
+            $Resposta = $WAPI->generaResguard( $InscripcioCodificada, $UrlDesti, 0 ); 
+            $HTML = $Resposta['html'];
             $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML); // Si encara hi ha el display... l'ensenyem perquè es vegi que s'ha enviat el correu.
 
             if($DownloadDocument) { 
