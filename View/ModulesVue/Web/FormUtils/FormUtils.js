@@ -52,7 +52,7 @@ Vue.component('form-utils', {
                         else if(this.checklist.length == 0 ) this.Errors.push("El camp és obligatori.");                    
                     
                     if(this.fieldtype !== 'multipleselect')
-                        if(!this.value) this.Errors.push("El camp és obligatori.");                                                
+                        if(!this.value && this.value !== 0) this.Errors.push("El camp és obligatori.");                                                
                         else if( this.value.length == 0 ) this.Errors.push("El camp és obligatori.");                                                
                 }
                 
@@ -215,7 +215,7 @@ Vue.component('form-utils', {
                     :aria-describedby="title"
                     :id="id"
                     :value="value"                    
-                    @change="inputChange"                    
+                    @change="inputChange"
                     >
                     <option value="">-- Escull una opció --</option>
                     <option v-for="o of options" :value="o.id">{{o.text}}</option>
