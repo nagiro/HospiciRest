@@ -3,6 +3,7 @@
 require_once DATABASEDIR . 'Queries/WebQueries.php';
 require_once DATABASEDIR . 'Tables/CursosModel.php';
 require_once DATABASEDIR . 'Tables/OptionsModel.php';
+require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
 require_once CONTROLLERSDIR.'FileController.php';
 
 

@@ -182,6 +182,20 @@ class MainModule {
                     $TAMO = new TipusActivitatsModel();                    
                     $Data['SiteTipusActivitats'] = $TAMO->getTipusActivitatsSelect($SiteId);
                     $Data['HeaderData'] = $this->setHeaderData(null, null, $Data['Site']);                                        
+                elseif($url[1] == 'condicions'):                    
+                    
+                    if( isset($url[2]) ):
+                        $REM = new ReservaEspaisModel();
+                        $REO = $REM->getUrlCondicions($url[2]);
+                        if($REO !== false) { 
+                            $Data['Reserva'] = $REO; 
+                            $Data['Site'] = $this->WebController->getSiteInfo( $REM->getSiteId($REO) );
+                            $Data['HeaderData'] = $this->setHeaderData(null, null, $Data['Site']);                                        
+                        } else { 
+                            $Data['Reserva'] = "";
+                        }
+                    endif;
+                    
                 endif;                                
 
                 $this->getModuleContent('HtmlHeaderWeb.php', $Data);                                                

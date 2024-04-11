@@ -34,7 +34,23 @@
     <main id="detall" class="page">
                   
         <show-errors style="padding-top:2vw;" v-if="Errors" :errors="WebStructure.Errors"></show-errors>
-            
+
+        <!-- Acceptació o no acceptació de condicions -->
+
+        <section class="detall_bloc" v-if="Loaded && !Errors && Reserva">
+
+            <div id="detall_imatge_entitat">                
+                <img :src="DetallSite.SITES_LogoUrl" alt="Logo de l'entitat" />
+            </div>
+
+            <h1>Resposta a les condicions de reserva</h1>                        
+
+            <div v-if="Reserva.RESERVAESPAIS_Estat == 3" class="alert alert-danger" role="alert">La reserva amb codi <b>{{Reserva.RESERVAESPAIS_Codi}}</b> ha quedat anul·lada ja que no ha acceptat les condicions. </div>
+            <div v-if="Reserva.RESERVAESPAIS_Estat == 1" class="alert alert-success" role="alert">Vostè ha acceptat les condicions vinculades amb la reserva <b>{{Reserva.RESERVAESPAIS_Codi}}</b>. </div>            
+                        
+        </section>  
+
+
         <!-- LListat de cursos disponibles -->
 
         <section class="detall_bloc" v-if="Loaded && !Errors && LlistatEspais">
@@ -127,6 +143,7 @@
                 Loaded: false,
                 Errors: false,
                 WebStructure: <?php echo $Data ?>,                                
+                Reserva: null,
                 EspaiDetall: null,         //Objecte inscripció                                                
                 EspaiHorarisOcupats: [],
                 EspaiImatges: [],
@@ -187,6 +204,11 @@
                         
                     }   
 
+                    // Si entrem una reserva que s'accepta o no les condicions... 
+                    if(this.WebStructure.Reserva){
+                        this.Reserva = this.WebStructure.Reserva;
+                        this.DetallSite = this.WebStructure.Site;
+                    }
 
                     this.UrlActual = window.location.href;  
                     this.Token = this.WebStructure.Token;                                          

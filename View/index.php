@@ -4,7 +4,7 @@ require_once '../const.php';
 require_once VIEWDIRMOD . 'HelperForm.php';
 require_once VIEWDIR . 'MainModule.php';
     
-error_reporting( E_ALL );
+error_reporting(E_ALL ^ E_NOTICE);
 ini_set('display_errors', 1);
 
 try {
