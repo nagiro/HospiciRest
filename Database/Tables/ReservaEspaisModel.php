@@ -172,7 +172,7 @@ class ReservaEspaisModel extends BDD {
                 // Enviem un correu
                 require_once AUXDIR . "ElasticEmail/ElasticEmail.php";
                 $EM = new ElasticEmail();                                
-                $EM->SendEmailToAdmin($REM->getSiteId($REO)), "Reserva amb codi ".$REM->getCodi($REO)." ha estat ".$nouEstat));
+                $EM->SendEmailToAdmin($REM->getSiteId($REO), "Reserva amb codi ".$REM->getCodi($REO)." ha estat ".$nouEstat, "");
                                 
                 return $REO;
             } else return false;            
