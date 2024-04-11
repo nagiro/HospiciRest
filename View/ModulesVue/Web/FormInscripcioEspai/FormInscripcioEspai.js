@@ -34,10 +34,12 @@ Vue.component('form-inscripcio-espai', {
     methods: {        
         submitFormulari: function() {
             this.isFormLoading = true;
+
+            if(this.formValues['RESERVAESPAIS_TipusActe'].length == 0) this.formValues['Activitat'];
             
             let FD = new FormData();            
             FD.append('Accio', 'addReservaEspai');            
-            FD.append('DadesFormulari', JSON.stringify(this.formValues));                                                
+            FD.append('DadesFormulari', JSON.stringify(this.formValues));
             
             axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
                 // Si hi ha hagut errors, ho ensenyo.
@@ -53,7 +55,7 @@ Vue.component('form-inscripcio-espai', {
         },
         isValidFormEspais: function($camp, $E) {
             this.formErrors[$camp] = $E;
-            this.isFormValid = const_and_helpers_isFormValid(this.formErrors, $camp);                                    
+            this.isFormValid = const_and_helpers_isFormValid(this.formErrors, $camp);
         },
 
     },
