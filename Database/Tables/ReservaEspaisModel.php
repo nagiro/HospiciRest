@@ -148,6 +148,7 @@ class ReservaEspaisModel extends BDD {
     }
 
     public function setReservaEspaiEstat($ORE, $Estat) { $ORE[$this->gnfnwt(self::Estat)] = $Estat; return $ORE; }
+    public function getReservaEspaiEstat($ORE) { return $ORE[$this->gnfnwt(self::Estat)]; }
 
     public function getUrlCondicions($url) {
         require_once AUXDIR . "Encrypt/encrypt.php";
@@ -157,9 +158,22 @@ class ReservaEspaisModel extends BDD {
             $REM = new ReservaEspaisModel();
             $REO = $REM->getReservaById($ArrayData['id'], false);
             if(sizeof($REO) > 0) {
-                if($ArrayData['formulari'] == 'Reserva_Espais_Mail_Accepta_Condicions') $REO = $REM->setReservaEspaiEstat($REO, 1);
-                elseif($ArrayData['formulari'] == 'Reserva_Espais_Mail_Rebutja_Condicions') $REO = $REM->setReservaEspaiEstat($REO, 3);
+                $nouEstat = 'error';
+                if($ArrayData['formulari'] == 'Reserva_Espais_Mail_Accepta_Condicions'){ 
+                    $REO = $REM->setReservaEspaiEstat($REO, 1);
+                    $nouEstat = "acceptada";
+                } elseif($ArrayData['formulari'] == 'Reserva_Espais_Mail_Rebutja_Condicions') { 
+                    $REO = $REM->setReservaEspaiEstat($REO, 3);
+                    $nouEstat = "rebutjada";
+                }
+
                 $this->_doUpdate($REO, array(self::ReservaEspaiId));
+                
+                // Enviem un correu
+                require_once AUXDIR . "ElasticEmail/ElasticEmail.php";
+                $EM = new ElasticEmail();                                
+                $EM->SendEmailToAdmin($REM->getSiteId($REO)), "Reserva amb codi ".$REM->getCodi($REO)." ha estat ".$nouEstat));
+                                
                 return $REO;
             } else return false;            
         endif;
