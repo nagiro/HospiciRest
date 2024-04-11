@@ -35,7 +35,7 @@ Vue.component('form-inscripcio-espai', {
         submitFormulari: function() {
             this.isFormLoading = true;
 
-            if(this.formValues['RESERVAESPAIS_TipusActe'].length == 0) this.formValues['Activitat'];
+            if(this.formValues['RESERVAESPAIS_TipusActe'].length == 0) this.formValues['RESERVAESPAIS_TipusActe'] = 'Activitat';
             
             let FD = new FormData();            
             FD.append('Accio', 'addReservaEspai');            
