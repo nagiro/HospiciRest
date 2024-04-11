@@ -262,6 +262,7 @@ Vue.component('form-utils', {
                     :value="value"
                     @change="inputChange"
                     @keyup="inputKeyup"
+                    @blur="inputKeyup"
                     >
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
             <small class="form-text text-muted">{{helptext}}</small>            
@@ -282,6 +283,7 @@ Vue.component('form-utils', {
                     :value="value"
                     @change="inputChange"
                     @keyup="inputKeyup"
+                    @blur="inputKeyup"
                     >
             <small v-for="E of Errors" class="form-text-error">{{E}}<br /></small>
             <small class="form-text text-muted">{{helptext}}</small>            
