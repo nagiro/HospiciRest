@@ -17,8 +17,8 @@ Vue.component('form-inscripcio-espai', {
         this.formErrors = const_and_helpers_iniciaErrors(this.formErrors);        // Funció que inicia tots els errors a 0        
         this.formdata.RESERVAESPAIS_EspaisSolicitats = [this.espaiescollit];        
         this.formValues.RESERVAESPAIS_EspaisSolicitats = [this.espaiescollit];        
-        this.formValues.RESERVAESPAIS_HorariActivitat2 = '';
-        Vue.set(this.formErrors, 'RESERVAESPAIS_HorariActivitat2', true);
+        Vue.set(this.formValues, "RESERVAESPAIS_HorariActivitat2", '');
+        Vue.set(this.formErrors, 'RESERVAESPAIS_HorariActivitat2', true);        
         
     },
     data: function() {
@@ -40,8 +40,9 @@ Vue.component('form-inscripcio-espai', {
 
             if(this.formValues['RESERVAESPAIS_TipusActe'].length == 0) this.formValues['RESERVAESPAIS_TipusActe'] = 'Activitat';
             if(this.formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2) {
+                debugger
                 this.formValues.RESERVAESPAIS_HorariActivitat = 'Inici: ' + this.formValues.RESERVAESPAIS_HorariActivitat + ' / Fi: ' +  this.formValues.RESERVAESPAIS_HorariActivitat2;
-                unset(this.formValues.RESERVAESPAIS_HorariActivitat2);
+                delete this.formValues.RESERVAESPAIS_HorariActivitat2;
             }
             
             let FD = new FormData();            
@@ -60,7 +61,7 @@ Vue.component('form-inscripcio-espai', {
             this.formValues.RESERVAESPAIS_UsuariId = this.IdUsuariEncrypted;            
             this.Pas = 1;
         },
-        isValidFormEspais: function($camp, $E) {
+        isValidFormEspais: function($camp, $E) {                        
             this.formErrors[$camp] = $E;
             this.isFormValid = const_and_helpers_isFormValid(this.formErrors, $camp);
         },
@@ -92,14 +93,14 @@ Vue.component('form-inscripcio-espai', {
                 <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_HorariActivitat'" :title = "'Proposta d\\'horaris per l\\'activitat'" :value = "formValues.RESERVAESPAIS_HorariActivitat" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_HorariActivitat', $event)"
                 ></form-utils>                
-                
+
                 <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2" :fieldtype="'time'" :id = "'RESERVAESPAIS_HorariActivitat'" :title = "'Proposta d\\'hora d\\'inici'" :value = "formValues.RESERVAESPAIS_HorariActivitat" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-3', 'col-6']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_HorariActivitat', $event)"
                 ></form-utils>                
                 <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2" :fieldtype="'time'" :id = "'RESERVAESPAIS_HorariActivitat2'" :title = "'Proposta d\\'hora de finalització'" :value = "formValues.RESERVAESPAIS_HorariActivitat2" @onkeyup="formValues.RESERVAESPAIS_HorariActivitat2 = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-3', 'col-6']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_HorariActivitat2', $event)"
                 ></form-utils>                
-                
+
                 <form-utils v-if="formularicampsvisibles.RESERVAESPAIS_Representacio == 1" :fieldtype="'input'" :id = "'RESERVAESPAIS_Representacio'" :title = "'A quina entitat representa?'" :value = "formValues.RESERVAESPAIS_Representacio" @onkeyup="formValues.RESERVAESPAIS_Representacio = $event" :errors = "[]" :sterrors = "['Required']" :groupclass="['col-lg-6', 'col-12']"
                 @isvalid="isValidFormEspais('RESERVAESPAIS_Representacio', $event)"
                 ></form-utils>
