@@ -24,7 +24,7 @@ class MenuModel extends BDD {
                 where usuaris_menus.usuari_id = :UsuariId
                   AND usuaris_menus.actiu = 1 
                   AND usuaris_menus.site_id = :SiteId 
-                  AND gestio_menus.url NOT like 'gestio/%'  
+                  AND gestio_menus.tipus = 3  
                   AND gestio_menus.actiu = 1                  
                 ORDER BY gestio_menus.ordre";        
         return $this->runQuery($SQL, array('UsuariId'=>$idUsuari, 'SiteId' => $idSite));
