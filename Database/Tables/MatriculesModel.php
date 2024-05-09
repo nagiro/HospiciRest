@@ -32,6 +32,7 @@ class MatriculesModel extends BDD {
     const PAGAMENT_RESERVA          = '35';
     const PAGAMENT_LLISTA_ESPERA    = '36';
     const PAGAMENT_INVITACIO        = '60';      
+    const PAGAMENT_PREAUTORITZACIO  = '72';
 
     public function __construct() {        
               

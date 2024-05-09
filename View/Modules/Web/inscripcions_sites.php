@@ -39,7 +39,7 @@
             
         <!-- LListat de cursos disponibles -->
 
-        <section class="detall_bloc" v-if="Loaded && !Errors">
+        <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos.length > 0">
 
             <div id="detall_imatge_entitat">                
                 <img :src="DetallSite.SITES_LogoUrl" alt="Logo de l'entitat" />

@@ -286,12 +286,15 @@ class WebApiController
      * $Ids: Site d'on és el pagament
      * $origen: On s'ha de tornar amb aquesta petició
      */
-    public function generaPeticioTPV( $idMatriculaGrup, $import = 0, $idS = 1, $UrlDesti = 'https://www.casadecultura.cat') {        	
+    public function generaPeticioTPV( $idMatriculaGrup, $import = 0, $idS = 1, $UrlDesti = 'https://www.casadecultura.cat', $Tipus = 0) {        	
  
         // Se crea Objeto
         $miObj = new RedsysAPI;
         $OM = new OptionsModel();                
         $TPV = json_decode($OM->getOption("TPV_C_PARAMS", $idS), true);                                                                 
+
+        //Si entrem amb preautorització ho indiquem al paràmetre corresponent
+        $miObj->setParameter("DS_MERCHANT_TRANSACTIONTYPE", $Tipus);
         
         // Calculem l'ID i l'import 
         $id = $idMatriculaGrup;
@@ -301,8 +304,7 @@ class WebApiController
         $miObj->setParameter("DS_MERCHANT_AMOUNT",          $amount);
         $miObj->setParameter("DS_MERCHANT_ORDER",           strval($id));
         $miObj->setParameter("DS_MERCHANT_MERCHANTCODE",    $TPV['DS_MERCHANT_MERCHANTCODE']);
-        $miObj->setParameter("DS_MERCHANT_CURRENCY",        $TPV['DS_MERCHANT_CURRENCY']);
-        $miObj->setParameter("DS_MERCHANT_TRANSACTIONTYPE", $TPV['DS_MERCHANT_TRANSACTIONTYPE']);
+        $miObj->setParameter("DS_MERCHANT_CURRENCY",        $TPV['DS_MERCHANT_CURRENCY']);        
         $miObj->setParameter("DS_MERCHANT_TERMINAL",        $TPV['DS_MERCHANT_TERMINAL']);
         $miObj->setParameter("DS_MERCHANT_MERCHANTURL",     $TPV['DS_MERCHANT_MERCHANTURL']);
         $miObj->setParameter("DS_MERCHANT_URLOK",           $TPV['DS_MERCHANT_URLOK']);		
@@ -633,7 +635,9 @@ class WebApiController
             $RET['TIPUS_PAGAMENT'] = $TipusPagament;
             if( $TipusPagament == MatriculesModel::PAGAMENT_TARGETA ) {                
                 $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $idSite, $UrlDesti);
-            } elseif (   sizeof($Matricules) > 0 
+            } elseif ( $TipusPagament == MatriculesModel::PAGAMENT_PREAUTORITZACIO ){
+                $RET['TPV'] = $this->generaPeticioTPV($idMatriculaGrup, $Import, $idSite, $UrlDesti);
+            } elseif (  sizeof($Matricules) > 0 
                         && $TipusPagament != MatriculesModel::PAGAMENT_LLISTA_ESPERA 
                         && $TipusPagament != MatriculesModel::PAGAMENT_DATAFON ) {
                 $this->EnviaEmailInscripcio($Matricules[0], $UM->getEmail($OU), array(self::TIPUS_RESGUARD_MAIL), $UrlDesti);                    
