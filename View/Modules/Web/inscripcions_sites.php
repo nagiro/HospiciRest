@@ -39,7 +39,7 @@
             
         <!-- LListat de cursos disponibles -->
 
-        <section class="detall_bloc" v-if="Loaded && !Errors && LlistatCursos.length > 0">
+        <section class="detall_bloc" v-if="Loaded && !Errors ">
 
             <div id="detall_imatge_entitat">                
                 <img :src="DetallSite.SITES_LogoUrl" alt="Logo de l'entitat" />
@@ -47,11 +47,12 @@
 
             <h1>{{DetallSite.SITES_Nom}}</h1>            
             
-            <hr style="margin-top: 3rem;">
-
-            <h2>Activitats</h2>            
+            <hr style="margin-top: 3rem;">            
 
             <article>
+
+                <h2>Activitats</h2>            
+
                 <table id="Taula_Llistat_Cursos">                
                     <tr>
                         <th>&nbsp;</th>
