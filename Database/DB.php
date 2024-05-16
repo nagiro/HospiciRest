@@ -10,15 +10,17 @@ class BDD extends PDO {
     private $OldFieldsNameArray;
     public $NewFieldsNameArray;
     public $NewFieldsWithTableArray;
+    public $TextFieldsNameArray;
+
     // abstract function getEmptyObject();
 
-    public function __construct($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray) {
+    public function __construct($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray, $TextFieldsNameArray = array()) {
                 
         $this->db = new PDO( PDOString, Username, Password );                    
         $this->db->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        if(strlen($OldTableName) > 0) $this->ConstructStructure($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray);        
+        if(strlen($OldTableName) > 0) $this->ConstructStructure($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray, $TextFieldsNameArray);        
 
     }            
 
@@ -39,11 +41,12 @@ class BDD extends PDO {
         return $O;        
     }
 
-    private function ConstructStructure($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray) {
+    private function ConstructStructure($OldTableName, $NewTableName, $OldFieldsNameArray, $NewFieldsNameArray, $TextFieldsNameArray = array()) {
         $this->OldTableName = $OldTableName;
         $this->NewTableName = $NewTableName;
         $this->OldFieldsNameArray = $OldFieldsNameArray;
         $this->NewFieldsNameArray = $NewFieldsNameArray;
+        $this->TextFieldsNameArray = $TextFieldsNameArray;
         foreach($this->NewFieldsNameArray as $K => $F) {
             $this->NewFieldsWithTableArray[$K] = $this->getNewFieldNameWithTable($F);
         }
@@ -109,6 +112,13 @@ class BDD extends PDO {
         if($index > -1) return $this->getOldFieldNameWithTable( $this->NewFieldsNameArray[$index] );
         else throw new Exception("getFromNewFieldTableNameToOldFieldTableName: Camp {$FIELD} no trobat." );
 
+    }
+
+    public function getFromNewFieldTableNameToTextFieldTableName($FIELD) {
+
+        $index = array_search($FIELD, $this->NewFieldsWithTableArray, true);
+        if($index > -1) return $this->TextFieldsNameArray[$index];
+        else throw new Exception("getFromNewFieldTableNameToTextFieldTableName: Camp {$FIELD} no trobat." );
     }
 
     public function getFromNewFieldTableNameToNewFieldName($FIELD) {

@@ -773,7 +773,7 @@ class WebApiController
 
         $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);
         
-        $ORE = $REM->insert($FormulariReservaEspai);        
+        $ORE = $REM->insert($FormulariReservaEspai);
         HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $REM->getReservaEspaiId($ORE, $REM->getReservaEspaiId($ORE) ) );
 
         //Envio un email a administració perquè puguin estar al cas que s'ha fet una reserva        
