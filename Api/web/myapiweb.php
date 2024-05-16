@@ -19,7 +19,7 @@ class MyAPIWeb extends API
 
     public $dbh;
     private $LOCAL_URL;    
-    private $Auth = false;
+    private $Auth = false;    
 
     public $C = array();
 
@@ -29,13 +29,8 @@ class MyAPIWeb extends API
         session_start();
         
         //Comprovem si el token que ha arribat és vàlid o no.
-        $this->Auth = new AuthController();                                             
-//        $this->Auth->TokenDecode($_SESSION['AuthToken']);                
+        $this->Auth = new AuthController();
 
-        try {
-            $this->dbh = new BDD("","",array(),array());            
-        } catch (Exception $e) { return array($e->getMessage(), 500); }        
-        
     }
     
     /**
@@ -432,16 +427,16 @@ class MyAPIWeb extends API
         }
     }    
 
+    /*
     protected function getEmailWufooEspais() {        
         if( isset($this->request['idS']) ) {
-            // Capturo totes les activitats a 15 dies vista i reviso si ha firmat que ok a la reserva i si hi ha un Email al camp responsable. 
-            
-            return array($CV->loadArxiusNous( $this->request['node'] ), 200);
+            // Capturo totes les activitats a 15 dies vista i reviso si ha firmat que ok a la reserva i si hi ha un Email al camp responsable.             
+            // return array($CV->loadArxiusNous( $this->request['node'] ), 200);
         } else {
             throw new Exception('No hi ha cap site i node amb aquesta codificació.');
         }
     }    
-
+*/
     /**
      * 
      */
@@ -484,7 +479,7 @@ class MyAPIWeb extends API
      * A més pot portar una acció = on / off / idle
      *
      * @return void
-     */
+     */    
     protected function apiControlHorari() {        
 
         $idS = ( isset($this->request['idS']) && is_numeric($this->request['idS'] ) ) ? $this->request['idS'] : 0;
@@ -501,7 +496,7 @@ class MyAPIWeb extends API
         if( $idS > 0 && $idU > 0 && ( $Accio == 'pdf' || $Accio == 'idle' || $Accio == 'on' || $Accio == 'off' || $Accio == 'save') ) {
 
             $FAPI = new FrontApiController();                        
-            return array($FAPI->doControlHorari( $idS, $idU, $Accio, $MesAny, $DadesFormulari ), 200);
+            // return array($FAPI->doControlHorari( $idS, $idU, $Accio, $MesAny, $DadesFormulari ), 200);
 
         } else {
             throw new Exception('Paràmetres incorrectes.');

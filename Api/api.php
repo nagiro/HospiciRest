@@ -33,6 +33,12 @@ abstract class API
      */
      protected $file = Null;
 
+     /**
+     * Property: request
+     * Stores the request[data, post, files...]
+     */
+     protected $request = null;
+
     /**
      * Constructor: __construct
      * Allow for CORS, assemble and pre-process the data
@@ -61,7 +67,7 @@ abstract class API
         }
         
         header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
         header("Content-Type: application/json");        
 
         $this->args = explode('/', rtrim($request, '/'));

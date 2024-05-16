@@ -94,7 +94,7 @@ class EspaisModel extends BDD {
     public function getEspaisTextFromReserva($EspaisFromReserva) {
         $Retorn = array();
         $EspaisArray = explode("@", $EspaisFromReserva);        
-        foreach($EspaisArray as $index => $idEspai) {
+        foreach($EspaisArray as $idEspai) {
             $OE = $this->_getRowWhere( array( $this->gofnwt('EspaiId') => intval($idEspai)) );
             $Retorn[] = $this->getNom($OE);
         }

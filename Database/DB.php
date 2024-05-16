@@ -83,7 +83,7 @@ class BDD extends PDO {
         return $this->NewFieldsWithTableArray;
     }
 
-    public function gnfnwt($Field, $isTableField = true) {
+    public function gnfnwt($Field, $isTableField = true) : string {
         return $this->getNewFieldNameWithTable($Field, $isTableField);
     }
 
