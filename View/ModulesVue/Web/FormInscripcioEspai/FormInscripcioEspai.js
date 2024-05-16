@@ -39,8 +39,7 @@ Vue.component('form-inscripcio-espai', {
             this.isFormLoading = true;
 
             if(this.formValues['RESERVAESPAIS_TipusActe'].length == 0) this.formValues['RESERVAESPAIS_TipusActe'] = 'Activitat';
-            if(this.formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2) {
-                debugger
+            if(this.formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2) {                
                 this.formValues.RESERVAESPAIS_HorariActivitat = 'Inici: ' + this.formValues.RESERVAESPAIS_HorariActivitat + ' / Fi: ' +  this.formValues.RESERVAESPAIS_HorariActivitat2;
                 delete this.formValues.RESERVAESPAIS_HorariActivitat2;
             }
@@ -51,8 +50,18 @@ Vue.component('form-inscripcio-espai', {
             
             axios.post( CONST_api_web + '/ajaxReservaEspais', FD ).then( X => {
                 // Si hi ha hagut errors, ho ensenyo.
-                this.formValues = Vue.util.extend({}, X.data.FormulariReservaComplet),
-                this.formErrors = Vue.util.extend({}, X.data.FormulariReservaComplet),                
+                this.formValues = Vue.util.extend({}, X.data.FormulariReservaComplet);
+                this.formErrors = Vue.util.extend({}, X.data.FormulariReservaComplet);
+                debugger
+                // Separem HorariEspai2 en cas que sigui necessari
+                if(this.formularicampsvisibles.RESERVAESPAIS_HorariActivitat == 2)  {
+                    const regex = /Inici:\s*(\d{2}:\d{2})\s*\/\s*Fi:\s*(\d{2}:\d{2})/;
+                    const match = this.formValues.RESERVAESPAIS_HorariActivitat.match(regex);
+                    Vue.set(this.formValues, "RESERVAESPAIS_HorariActivitat", match[1] )
+                    Vue.set(this.formValues, "RESERVAESPAIS_HorariActivitat2", match[2]);
+                    Vue.set(this.formErrors, "RESERVAESPAIS_HorariActivitat2", false );
+                }
+
                 this.Pas = 2;
             }).catch( E => { alert(E); });
         },
