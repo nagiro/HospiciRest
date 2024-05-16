@@ -77,7 +77,7 @@ class WebApiController
      * Funció que retorna un resguard en HTML
      * $idMatricula: Identificador de la matrícula que entra.     
      * $Tipus : array() (C) Té codi de barres, (I) Inscripció, (E) Entrada numerada (W) = Web
-     * @return Resguard HTML
+     * return Resguard HTML
      * 
     **/
     public function generaResguard( $InscripcioCodificada, $UrlDesti = 'https://www.casadecultura.cat', $Preu = 0 ) {
@@ -263,7 +263,7 @@ class WebApiController
      * Funció que guarda el codi de la operació que s'ha fet amb un TPV
      * $CodiOperacio = El codi que dóna el datàfon
      * $Matricules = Llistat de les matrícules associades a aquest número codificades
-     * @return true si ha anat bé
+     * return true si ha anat bé
      */
     public function setCodiOperacio($CodiOperacio, $Matricules, $PagatCorrectament) {
         
@@ -389,7 +389,7 @@ class WebApiController
      * $idMatriculaGrup: Number indicador del grup de matrícules
      * $Import: Valor a pagar
      * $Ids: Site d'on és el pagament
-     * @return ARRAY('CODI', 'URL')
+     * return ARRAY('CODI', 'URL')
      */
     public function generaCodiBarres( $idMatriculaGrup, $preu = 0, $idS = 1) {        	
  
@@ -664,7 +664,7 @@ class WebApiController
         if(!empty($email) > 0) { 
             
             $HTML_EMAIL = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML_EMAIL);
-            if($this->SendEmail($email, $Resposta['SiteId'], "Nova inscripció", $HTML_EMAIL)){
+            if(HelperForm_SendEmail($email, $Resposta['SiteId'], "Nova inscripció", $HTML_EMAIL)){
                 $HTML = str_replace('@@DISPLAY_MAIL_COLOR@@',  '#EEEEEE', $HTML);
                 $HTML = str_replace('@@DISPLAY_MAIL@@',  'none', $HTML);
                 $HTML = str_replace('@@EMAIL_SEND@@',  'Correu enviat correctament a: '.$email, $HTML);
@@ -717,80 +717,32 @@ class WebApiController
         
     }
 
-    public function SendEmail($to, $idSite, $subject, $HTML) {
-        $url = 'https://api.elasticemail.com/v2/email/send';
-
-        // From, i From Name canviarà segons opció escollida
-        $OO = new OptionsModel();
-        $FromEmail = $OO->getOption("MAIL_FROM", $idSite);
-        $FromName = $OO->getOption("MAIL_NAME", $idSite);        
-        
-        try{
-                $post = array('from' => $FromEmail,
-                'fromName' => $FromName,
-                'apikey' => '882D1E9420DA8EFC9A20F712B96703AC6D9D06099C059D20325B91A467DB449A558C4DAD46C13DC2712D8132F35847D3',
-                'subject' => $subject,
-                'to' => $to,
-                'bodyHtml' => $HTML,                
-                'isTransactional' => false);
-                
-                $ch = curl_init();
-                curl_setopt_array($ch, array(
-                    CURLOPT_URL => $url,
-                    CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => $post,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_HEADER => false,
-                    CURLOPT_SSL_VERIFYPEER => false
-                ));
-                
-                $result=curl_exec ($ch);
-                $RES = json_decode($result, true);                                
-                curl_close ($ch);
-                
-                if( $RES['success'] === false ){
-                    throw new Exception($RES['error']);
-                }                
-                
-                return true;
-                
-        }
-        catch(Exception $ex){
-            return false;            
-        }        
-    }
-
     /**
     * Funció que es crida quan es fa una nova reserva d'espai a través de l'Hospici
-    */
+    *     
+    **/
     public function setReservaEspai($FormulariReservaEspai, $isNew){
         require_once DATABASEDIR . 'Tables/ReservaEspaisModel.php';
 
         // Treballem el que rebem de reserva espai, per adaptar-ho a la nostra base de dades. Els camps múltiples els convertim a @ i els arxius els guardem. 
-        $REM = new ReservaEspaisModel();        
+        $REM = new ReservaEspaisModel();
         
-        $PrimerEspaiEscollit = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::EspaisSolicitats)][0];
-
-        $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);
-        
-        $ORE = $REM->insert($FormulariReservaEspai);
-        HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $REM->getReservaEspaiId($ORE, $REM->getReservaEspaiId($ORE) ) );
-
-        //Envio un email a administració perquè puguin estar al cas que s'ha fet una reserva        
+        // Escullo el primer espai, per saber de quin site m'arriba la petició
         $EM = new EspaisModel();        
+        $PrimerEspaiEscollit = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::EspaisSolicitats)][0];
         $OE = $EM->getEspaiDetall($PrimerEspaiEscollit);
         $idS = $EM->getSiteId($OE);
-        
-        $OM = new OptionsModel();
-        $Email = $OM->getOption('MAIL_SECRETARIA', $idS);
-        
-        $Titol = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Nom)];        
-        $Codi = $REM->getCodi($ORE);        
-        $Organitzadors = $FormulariReservaEspai[$REM->gnfnwt(ReservaEspaisModel::Organitzadors)];
-        $HTML = "S'ha registrat una nova reserva d'espai amb el codi <b>{$Codi}</b> organitzada per <b>{$Organitzadors}</b> amb el títol <b>{$Titol}</b>  ";
 
-        $this->SendEmail($Email, $idS, "Nova reserva d'espai", $HTML);
+        // Converteixo el formulari d'entrada per poder-lo guardar a la base de dades
+        $FormulariReservaEspai = $REM->adaptFromFormFields($FormulariReservaEspai, $isNew);        
+        
+        // Insereixo la nova reserva
+        $ORE = $REM->insert($FormulariReservaEspai);
+        HelperForm_FileRenameFromTempToId(DOCUMENTS_RESERVAESPAIS_DIR, $REM->getReservaEspaiId($ORE) );
 
+        //Envio un email a administració perquè puguin estar al cas que s'ha fet una reserva i també a l'usuari
+        $REM->sendEmailNewRegistre($ORE);
+                
         return $ORE;
 
     }

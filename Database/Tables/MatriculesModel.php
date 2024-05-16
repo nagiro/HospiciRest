@@ -97,7 +97,7 @@ class MatriculesModel extends BDD {
      * Aplico el preu que requereix la matrícula
      * $OM: Objecte Matrícula
      * Preu: Preu base del curs
-     * @return OM: Objecte Matrícula
+     * return OM: Objecte Matrícula
      */
     public function setPreuMatricula($OM, $Preu) {
         

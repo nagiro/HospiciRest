@@ -35,7 +35,7 @@ class TipusActivitatsModel extends BDD {
         $Options = array();
         foreach($this->getTipusActius($idS) as $OT):
             $Options[] = new OptionClass($OT[$this->gnfnwt('IdTipusActivitat')], $OT[$this->gnfnwt('Nom')]);
-            usort($Options, function($a, $b) { return ($b->text < $a->text); });
+            usort($Options, function($a, $b) { return ($b->text <=> $a->text); });
         endforeach;
         if(empty($Options)) $Options[] = new OptionClass(98, 'Altres');
         return $Options;

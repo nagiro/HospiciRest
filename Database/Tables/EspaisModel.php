@@ -25,6 +25,10 @@ class EspaisModel extends BDD {
         $O = $this->getDefaultObject();        
     }
 
+    public function getNom($OE) {
+        return $OE[$this->gnfnwt(self::FIELD_Nom)];
+    }
+
     /**
     * Retorna els espais disponibles del SiteId
     */
@@ -82,6 +86,19 @@ class EspaisModel extends BDD {
 
     public function getSiteId($OEM) {
         return $OEM[$this->gnfnwt('SiteId')];
+    }
+
+    /**
+     * EspaisFromReserva en format Espai@espai@espai...
+     */
+    public function getEspaisTextFromReserva($EspaisFromReserva) {
+        $Retorn = array();
+        $EspaisArray = explode("@", $EspaisFromReserva);        
+        foreach($EspaisArray as $index => $idEspai) {
+            $OE = $this->_getRowWhere( array( $this->gofnwt('EspaiId') => intval($idEspai)) );
+            $Retorn[] = $this->getNom($OE);
+        }
+        return implode(",", $Retorn);
     }
 }
 

@@ -141,7 +141,7 @@ class BDD extends PDO {
     public function _getRowWhere($W, $multiple = false) {        
         $WHERE = array();
         $SQL = "Select {$this->getSelectFieldsNames()} 
-        from {$this->getTableName()}
+        from ". $this->getTableName() ."
         where 1 = 1 "; 
         foreach($W as $K => $V) {
             $PdoKey = str_replace(".", "_", $K);            
@@ -215,12 +215,12 @@ class BDD extends PDO {
         $WV = array();
         foreach($WhereArray as $NewFieldName){            
             $W[]  = $this->getOldFieldNameWithTable($NewFieldName).' = :W_'.$NewFieldName;
-            $WV[':W_'.$NewFieldName] = $NewFieldsWithTableArray[$this->getNewFieldNameWithTable($NewFieldName)];
+            $WV[':W_'.$NewFieldName] = $this->NewFieldsWithTableArray[$this->getNewFieldNameWithTable($NewFieldName)];
         }                
         
         $SQL = "UPDATE {$this->OldTableName} SET ".implode(", ", $VALUES).' WHERE '.implode(' AND ', $W);
         
-        return $this->runQuery($SQL, array_merge($NewFieldsWithTableArray, $WV), false, false, 'U');
+        return $this->runQuery($SQL, array_merge($this->NewFieldsWithTableArray, $WV), false, false, 'U');
     }
 
 

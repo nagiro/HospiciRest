@@ -47,16 +47,10 @@ class ReservaEspaisModel extends BDD {
         $TextField = array("ID", "Representació", "Responsable", "Telèfon del responsable", "Personal autoritzat", "Previsio d'assistents","És un cicle?", "Comentaris", "Estat", "ID Usuari", "Organitzadors", "Data de l'activitat", "Horari de l'activitat", "Tipus d'acte", "Nom", "És enregistrable?", "Espais", "Material", "Data d'alta", "Compromís", "Codi", "Condicions", "Data d'acceptació de les condicions", "Observacions a les condicions", "Té difusió?","Té descripció web?", "Lloc", "Actiu?","Tractada?");
         $OldFields = array("ReservaEspaiID", "Representacio", "Responsable", "TelefonResponsable", "PersonalAutoritzat", "PrevisioAssistents","EsCicle", "Comentaris", "Estat", "Usuaris_usuariID", "Organitzadors", "DataActivitat", "HorariActivitat", "TipusActe", "Nom", "isEnregistrable", "EspaisSolicitats", "MaterialSolicitat", "DataAlta", "Compromis", "Codi", "CondicionsCCG", "DataAcceptacioCondicions", "ObservacionsCondicions", "HasDifusio","WebDescripcio", "site_id", "actiu","tractada");        
         $NewFields = array(self::ReservaEspaiId, self::Representacio, self::Responsable, self::TelefonResponsable, self::PersonalAutoritzat, self::PrevisioAssistents, self::EsCicle, self::Comentaris, self::Estat, self::UsuariId, self::Organitzadors, self::DataActivitat, self::HorariActivitat, self::TipusActe, self::Nom, self::IsEnregistrable, self::EspaisSolicitats, self::MaterialSolicitat, self::DataAlta, self::Compromis, self::Codi, self::Condicions, self::DataAcceptacioCondicions, self::ObservacionsCondicions, self::HasDifusio, self::WebDescripcio, self::SiteId, self::Actiu, self::IsTractada);        
-        parent::__construct("reservaespais", "RESERVAESPAIS", $OldFields, $NewFields );                        
+        parent::__construct("reservaespais", "RESERVAESPAIS", $OldFields, $NewFields, $TextField );
 
     }
     
-    public function getFieldLabel($Field) {
-        $index = array_search($FIELD, $this->NewFieldsWithTableArray, true);
-        if($index > -1) return $this->getTextFieldName( $this->NewFieldsNameArray[$index] );
-        else throw new Exception("getFromNewFieldTableNameToOldFieldTableName: Camp {$FIELD} no trobat." );
-    }
-
     // Retorna el camp estats per a un formulari json
     public function getEstatsForForm() {
         $RET = array();
@@ -142,6 +136,13 @@ class ReservaEspaisModel extends BDD {
         return $ORE[$this->gnfnwt(self::ReservaEspaiId)];
     }
 
+    public function getNom($ORE) { return $ORE[$this->gnfnwt(self::Nom)]; }
+
+    public function getEspais($ORE) { return $ORE[$this->gnfnwt(self::EspaisSolicitats)]; }
+    public function setEspais($ORE, $Espais) { $ORE[$this->gnfnwt(self::EspaisSolicitats)] = $Espais; return $ORE; }
+
+    public function getOrganitzadors($ORE) { return $ORE[$this->gnfnwt(self::Organitzadors)]; }
+
     public function getUsuariId($ORE){ return $ORE[$this->gnfnwt(self::UsuariId)]; } 
     
     public function setReservaEspaiId($ORE, $id) { $ORE[$this->gnfnwt(self::ReservaEspaiId)] = $id; return $ORE;  }
@@ -163,7 +164,7 @@ class ReservaEspaisModel extends BDD {
         $ArrayData = unserialize($Data);    // ArrayData(formulari, id) Reserva_Espais_Mail_Accepta_Condicions o Reserva_Espais_Mail_Rebutja_Condicions
         if($ArrayData !== false):
             $REM = new ReservaEspaisModel();
-            $REO = $REM->getReservaById($ArrayData['id'], false);
+            $REO = $REM->getReservaById($ArrayData['id']);
             if(sizeof($REO) > 0) {
                 $nouEstat = 'error';
                 if($ArrayData['formulari'] == 'Reserva_Espais_Mail_Accepta_Condicions'){ 
@@ -188,41 +189,54 @@ class ReservaEspaisModel extends BDD {
         return false;
     }
     
-    public function getHTMLFormTable($REO) {
-
-        //Hauria de carregar de les opcions, els camps que tinc visibles i posteriorment, carregar els valors que he entrat per mostrar-los.
+    public function convertAllFieldsToText($ORE) {
+        
+        // Convertim els espais en "text" per enviar el correu
+        $OE = new EspaisModel();
+        $ORE = $this->setEspais( $ORE, $OE->getEspaisTextFromReserva($this->getEspais($ORE)) );
+                
         $OM = new OptionsModel();
-        $VisibleFields = json_decode($OM->getOption('FORMULARI_CAMPS_VISIBLES', $this->getSiteId($REO)), true);
+        $VisibleFields = json_decode($OM->getOption('FORMULARI_CAMPS_VISIBLES', $this->getSiteId($ORE) ), true);
         $FinalFields = array();        
-        foreach($VisibleFields as $F) if(isset($REO[$F])) $FinalFields[$F] = $REO[$F];        
+        foreach($this->NewFieldsWithTableArray as $F){
+            if( isset($VisibleFields[$F]) && $VisibleFields[$F] == 1 && isset($ORE[$F] ) ) $FinalFields[$F] = $ORE[$F];
+        }        
+                
+        return $FinalFields;
+    }
+    public function sendEmailNewRegistre($ORE) {
+                
+        // Enviem un correu a la secretaria amb la nova reserva
+        $OM = new OptionsModel();
+        $idS = $this->getSiteId($ORE);
+        $Email = $OM->getOption('MAIL_SECRETARIA', $idS);
+        $Titol = $this->getNom($ORE);
+        $Codi = $this->getCodi($ORE);        
+        $Organitzadors = $this->getOrganitzadors($ORE);
+        $HTML = "S'ha registrat una nova reserva d'espai amb el codi <b>{$Codi}</b> organitzada per <b>{$Organitzadors}</b> amb el títol <b>{$Titol}</b>";
+        HelperForm_SendEmail($Email, $idS, "Nova reserva d'espai", $HTML);
 
-        $html = '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">';
-        $html .= '<thead><tr>';
-        foreach (array_keys($FinalFields) as $key) {
+        //Generem un correu amb una taula HTML per enviar a l'usuari final i amb els valors.        
+        $FinalFields = $this->convertAllFieldsToText($ORE);
+                                
+        $html = '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">';        
+        foreach ($FinalFields as $key => $value) {
             $FieldLabel = $this->getFromNewFieldTableNameToTextFieldTableName($key);
-            $html .= '<th>' . htmlspecialchars($FieldLabel) . '</th>';
-        }
-        $html .= '</tr></thead>';
-        $html .= '<tbody><tr>';
-        foreach ($array as $value) {
-            $html .= '<td>' . htmlspecialchars($value) . '</td>';
-        }
-        $html .= '</tr></tbody>';
+            $html .= '<tr><th>' . htmlspecialchars($FieldLabel) . '</th><td>' . htmlspecialchars($value) . '</td>';
+        }                        
         $html .= '</table>';
         
         $message = '<html><body>';
         $message .= '<h1>Detalls de la reserva</h1>';
-        $message .= $htmlTable;
-        $message .= '</body></html>';
+        $message .= $html;
+        $message .= '</body></html>';        
 
-        return $message;
-
+        $UM = new UsuarisModel();
+        $OU = $UM->getUsuariId( $this->getUsuariId($ORE) );
+        $Email = $UM->getEmail($OU);
+        HelperForm_SendEmail($Email, $idS, "Nova reserva d'espai", $message);
+        
     }
-
-        // Carrego la informació d'un espai i els seus horaris ocupats ( si n'hi ha )
-//    public function getEspaiDetall($idEspai) {
-//        return $this->_getRowWhere( array( $this->gofnwt('EspaiId') => intval($idEspai)) );
-//    }
 
 }
 
