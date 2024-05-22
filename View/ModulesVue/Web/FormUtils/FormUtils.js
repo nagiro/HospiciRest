@@ -48,12 +48,12 @@ Vue.component('form-utils', {
 
                 if(VP == 'Required') {
                     if(this.fieldtype == 'multipleselect') 
-                        if(!this.checklist) this.Errors.push('El camp és obligatori');
-                        else if(this.checklist.length == 0 ) this.Errors.push("El camp és obligatori.");                    
+                        if(!this.checklist) this.Errors.push('Obligatori');
+                        else if(this.checklist.length == 0 ) this.Errors.push("Obligatori.");                    
                     
                     if(this.fieldtype !== 'multipleselect')
-                        if(!this.value && this.value !== 0) this.Errors.push("El camp és obligatori.");                                                
-                        else if( this.value.length == 0 ) this.Errors.push("El camp és obligatori.");                                                
+                        if(!this.value && this.value !== 0) this.Errors.push("Obligatori.");                                                
+                        else if( this.value.length == 0 ) this.Errors.push("Obligatori.");                                                
                 }
                 
             };
@@ -380,11 +380,6 @@ Vue.component('form-utils', {
                 </table>
             </div>  
         </div>
-
-
-
-
-
               
     </div>
 

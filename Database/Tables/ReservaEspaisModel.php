@@ -2,6 +2,81 @@
 
 require_once BASEDIR."Database/DB.php";
 
+class JSON_HorarisReservats_type {
+    public $data = '';
+    public $hora_inicial = '';
+    public $hora_final = '';
+    public $espai = '';
+
+    function __construct(array $HorarisReservats = array()){        
+        $this->data = $HorarisReservats['data'] ?? '';
+        $this->hora_inicial = $HorarisReservats['hora_inicial'] ?? '';
+        $this->hora_final = $HorarisReservats['hora_final'] ?? '';
+        $this->espai = $HorarisReservats['espai'];        
+    }
+
+    public function fromJSON(string $json): void {
+        $array = json_decode($json, true);
+        if (is_array($array)) {
+            $this->data = $array['data'] ?? '';
+            $this->hora_inicial = $array['hora_inicial'] ?? '';
+            $this->hora_final = $array['hora_final'] ?? '';
+            $this->espai = $array['espai'] ?? '';            
+        }
+    }
+
+    public function toJSON(): string {
+        return json_encode($this->getArray());
+    }
+
+    public function getJson(): string {
+        return $this->toJSON();
+    }
+
+    public function getArray(): array {
+        return [
+            'data' => $this->data,
+            'hora_inicial' => $this->hora_inicial,
+            'hora_final' => $this->hora_final,
+            'espai' => $this->espai            
+        ];
+    }
+
+}
+
+class JSON_HorarisReservats {
+    public array $horarisReservats = array();
+
+    function __construct(string $Array_horaris_reservats_type = ""){
+        $ArrayHorarisReservats = json_decode($Array_horaris_reservats_type, true);
+        foreach($ArrayHorarisReservats as $A){
+            array_push($this->horarisReservats, new JSON_HorarisReservats_type($A));
+        }
+        if(empty($Array_horaris_reservats_type)) array_push($this->horarisReservats, new JSON_HorarisReservats_type());
+    }
+
+    function fromJSON(string $json_horaris_reservats_field){
+        $array = json_decode($json_horaris_reservats_field, true);
+        if (is_array($array)) {
+            foreach ($array as $item) {                
+                $this->horarisReservats[] = new JSON_HorarisReservats_type($item);
+            }
+        }
+    }
+
+    function toJSON(){        
+        $array_horaris_reservats_field = [];
+        foreach ($this->horarisReservats as $horari) {
+            if ($horari instanceof JSON_HorarisReservats_type) {
+                $array_horaris_reservats_field[] = $horari->getArray();
+            }
+        }
+        return json_encode($array_horaris_reservats_field);
+    }
+
+    function getHorarisReservatsArray() {return $this->horarisReservats; }
+}
+
 class ReservaEspaisModel extends BDD {
 
     // Variables de la taula    
@@ -34,6 +109,7 @@ class ReservaEspaisModel extends BDD {
     const SiteId = "SiteId";
     const Actiu = "Actiu";
     const IsTractada = "IsTractada";
+    const HorarisReservats = "HorarisReservats";
     
     // Hi ha possibles camps temp per càrrega d'arxius
     const TmpArxiuImatge = "TMP_ArxiuImatge";
@@ -44,9 +120,9 @@ class ReservaEspaisModel extends BDD {
 
     public function __construct() {                      
 
-        $TextField = array("ID", "Representació", "Responsable", "Telèfon del responsable", "Personal autoritzat", "Previsio d'assistents","És un cicle?", "Comentaris", "Estat", "ID Usuari", "Organitzadors", "Data de l'activitat", "Horari de l'activitat", "Tipus d'acte", "Nom", "És enregistrable?", "Espais", "Material", "Data d'alta", "Compromís", "Codi", "Condicions", "Data d'acceptació de les condicions", "Observacions a les condicions", "Té difusió?","Té descripció web?", "Lloc", "Actiu?","Tractada?");
-        $OldFields = array("ReservaEspaiID", "Representacio", "Responsable", "TelefonResponsable", "PersonalAutoritzat", "PrevisioAssistents","EsCicle", "Comentaris", "Estat", "Usuaris_usuariID", "Organitzadors", "DataActivitat", "HorariActivitat", "TipusActe", "Nom", "isEnregistrable", "EspaisSolicitats", "MaterialSolicitat", "DataAlta", "Compromis", "Codi", "CondicionsCCG", "DataAcceptacioCondicions", "ObservacionsCondicions", "HasDifusio","WebDescripcio", "site_id", "actiu","tractada");        
-        $NewFields = array(self::ReservaEspaiId, self::Representacio, self::Responsable, self::TelefonResponsable, self::PersonalAutoritzat, self::PrevisioAssistents, self::EsCicle, self::Comentaris, self::Estat, self::UsuariId, self::Organitzadors, self::DataActivitat, self::HorariActivitat, self::TipusActe, self::Nom, self::IsEnregistrable, self::EspaisSolicitats, self::MaterialSolicitat, self::DataAlta, self::Compromis, self::Codi, self::Condicions, self::DataAcceptacioCondicions, self::ObservacionsCondicions, self::HasDifusio, self::WebDescripcio, self::SiteId, self::Actiu, self::IsTractada);        
+        $TextField = array("ID", "Representació", "Responsable", "Telèfon del responsable", "Personal autoritzat", "Previsio d'assistents","És un cicle?", "Comentaris", "Estat", "ID Usuari", "Organitzadors", "Data de l'activitat", "Horari de l'activitat", "Tipus d'acte", "Nom", "És enregistrable?", "Espais", "Material", "Data d'alta", "Compromís", "Codi", "Condicions", "Data d'acceptació de les condicions", "Observacions a les condicions", "Té difusió?","Té descripció web?", "Lloc", "Actiu?","Tractada?", "Horaris demanats");
+        $OldFields = array("ReservaEspaiID", "Representacio", "Responsable", "TelefonResponsable", "PersonalAutoritzat", "PrevisioAssistents","EsCicle", "Comentaris", "Estat", "Usuaris_usuariID", "Organitzadors", "DataActivitat", "HorariActivitat", "TipusActe", "Nom", "isEnregistrable", "EspaisSolicitats", "MaterialSolicitat", "DataAlta", "Compromis", "Codi", "CondicionsCCG", "DataAcceptacioCondicions", "ObservacionsCondicions", "HasDifusio","WebDescripcio", "site_id", "actiu","tractada", "HorarisReservats");        
+        $NewFields = array(self::ReservaEspaiId, self::Representacio, self::Responsable, self::TelefonResponsable, self::PersonalAutoritzat, self::PrevisioAssistents, self::EsCicle, self::Comentaris, self::Estat, self::UsuariId, self::Organitzadors, self::DataActivitat, self::HorariActivitat, self::TipusActe, self::Nom, self::IsEnregistrable, self::EspaisSolicitats, self::MaterialSolicitat, self::DataAlta, self::Compromis, self::Codi, self::Condicions, self::DataAcceptacioCondicions, self::ObservacionsCondicions, self::HasDifusio, self::WebDescripcio, self::SiteId, self::Actiu, self::IsTractada, self::HorarisReservats);
         parent::__construct("reservaespais", "RESERVAESPAIS", $OldFields, $NewFields, $TextField );
 
     }
@@ -80,7 +156,10 @@ class ReservaEspaisModel extends BDD {
         $O[$this->gnfnwt(self::HasDifusio)] = "";
         $O[$this->gnfnwt(self::PrevisioAssistents)] = "";        
         $O[$this->gnfnwt(self::Compromis)] = "";        
-        $O[$this->gnfnwt(self::Codi)] = "";        
+        $O[$this->gnfnwt(self::Codi)] = "";
+        $HRO = new JSON_HorarisReservats();
+        $O[$this->gnfnwt(self::HorarisReservats)] = $HRO->toJSON();
+
 
         $O[self::TmpArxiuImatge] = HelperForm_DefaultValueForFileUploadForm();
         $O[self::TmpArxiuPdf] = HelperForm_DefaultValueForFileUploadForm();
@@ -93,7 +172,8 @@ class ReservaEspaisModel extends BDD {
         $FieldsFromForm[ $this->gnfnwt( self::UsuariId ) ] = HelperForm_Decrypt( $this->getUsuariId($FieldsFromForm) );
         $FieldsFromForm[ $this->gnfnwt( self::EspaisSolicitats ) ] = implode('@', $FieldsFromForm[ $this->gnfnwt( self::EspaisSolicitats ) ]);
         $FieldsFromForm[ $this->gnfnwt( self::MaterialSolicitat ) ] = implode('@', $FieldsFromForm[ $this->gnfnwt( self::MaterialSolicitat ) ]);
-                
+        $FieldsFromForm[ $this->gnfnwt( self::HorarisReservats ) ] = json_encode($FieldsFromForm[ $this->gnfnwt( self::HorarisReservats ) ]);
+                        
         $imageName = $this->getId($FieldsFromForm);
         
         // Si l'arxiu és nou, esborrem arxius antics
@@ -138,8 +218,13 @@ class ReservaEspaisModel extends BDD {
 
     public function getNom($ORE) { return $ORE[$this->gnfnwt(self::Nom)]; }
 
-    public function getEspais($ORE) { return $ORE[$this->gnfnwt(self::EspaisSolicitats)]; }
-    public function setEspais($ORE, $Espais) { $ORE[$this->gnfnwt(self::EspaisSolicitats)] = $Espais; return $ORE; }
+//    public function getEspais($ORE) { return $ORE[$this->gnfnwt(self::EspaisSolicitats)]; }
+//    public function setEspais($ORE, $Espais) { $ORE[$this->gnfnwt(self::EspaisSolicitats)] = $Espais; return $ORE; }
+    
+    public function getHorarisReservats($ORE): JSON_HorarisReservats {
+        $HRO = new JSON_HorarisReservats($ORE[$this->gnfnwt(self::HorarisReservats)]);
+        return $HRO;
+    }
 
     public function getOrganitzadors($ORE) { return $ORE[$this->gnfnwt(self::Organitzadors)]; }
 
@@ -189,15 +274,29 @@ class ReservaEspaisModel extends BDD {
         return false;
     }
     
+    /**
+     * Convertim els camps a text, per poder enviar per correu o altres i hi he afegit els camps visibles
+     */
     public function convertAllFieldsToText($ORE) {
-        
-        // Convertim els espais en "text" per enviar el correu
-        $OE = new EspaisModel();
-        $ORE = $this->setEspais( $ORE, $OE->getEspaisTextFromReserva($this->getEspais($ORE)) );
                 
-        $OM = new OptionsModel();
-        $VisibleFields = json_decode($OM->getOption('FORMULARI_CAMPS_VISIBLES', $this->getSiteId($ORE) ), true);
+        $Text = array();
         $FinalFields = array();        
+
+        //Carrego els espais del site
+        $EM = new EspaisModel();
+        $LlistatEspaisObjecte = $EM->getAllSiteEspais( $this->getSiteId($ORE) );
+        $JSON_HorarisReservatsObject = $this->getHorarisReservats($ORE);
+        
+        foreach($JSON_HorarisReservatsObject->getHorarisReservatsArray() as $JSON_HorarisReservats_type):
+            $EspaiNom = array_filter($LlistatEspaisObjecte, function ($EO) use ($JSON_HorarisReservats_type, $EM) {
+                return $EM->getEspaiId($EO) === intval($JSON_HorarisReservats_type->espai);
+            });
+            $Text[] = $EM->getNom($EspaiNom[0]) . ' el dia ' . $JSON_HorarisReservats_type->data . ' de ' . $JSON_HorarisReservats_type->hora_inicial . ' a ' . $JSON_HorarisReservats_type->hora_final;
+        endforeach;
+        $ORE[$this->gnfnwt(self::HorarisReservats)] = $Text;            // Canviem el text del JSON per un text html per imprimir. 
+
+        $OM = new OptionsModel();
+        $VisibleFields = json_decode($OM->getOption('FORMULARI_CAMPS_VISIBLES', $this->getSiteId($ORE) ), true);        
         foreach($this->NewFieldsWithTableArray as $F){
             if( isset($VisibleFields[$F]) && $VisibleFields[$F] == 1 && isset($ORE[$F] ) ) $FinalFields[$F] = $ORE[$F];
         }        
@@ -222,7 +321,8 @@ class ReservaEspaisModel extends BDD {
         $html = '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">';        
         foreach ($FinalFields as $key => $value) {
             $FieldLabel = $this->getFromNewFieldTableNameToTextFieldTableName($key);
-            $html .= '<tr><th>' . htmlspecialchars($FieldLabel) . '</th><td>' . htmlspecialchars($value) . '</td>';
+            if($key == $this->gnfnwt(self::HorarisReservats)) $html .= '<tr><th>' . htmlspecialchars($FieldLabel) . '</th><td>' . implode("<br />", $value) . '</td>';
+            else $html .= '<tr><th>' . htmlspecialchars($FieldLabel) . '</th><td>' . htmlspecialchars($value) . '</td>';
         }                        
         $html .= '</table>';
         

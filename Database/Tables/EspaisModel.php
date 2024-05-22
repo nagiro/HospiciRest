@@ -25,6 +25,9 @@ class EspaisModel extends BDD {
         $O = $this->getDefaultObject();        
     }
 
+    public function getEspaiId($OE) {
+        return $OE[$this->gnfnwt(self::FIELD_EspaiId)];
+    }
     public function getNom($OE) {
         return $OE[$this->gnfnwt(self::FIELD_Nom)];
     }
@@ -100,6 +103,12 @@ class EspaisModel extends BDD {
         }
         return implode(",", $Retorn);
     }
+
+    public function getAllSiteEspais($idSite) {             
+        $LlistatEspaisObjecte = $this->_getRowWhere( array( $this->gofnwt(self::FIELD_SiteId) => intval($idSite)), true );        
+        return $LlistatEspaisObjecte;
+    }
+
 }
 
 ?>
