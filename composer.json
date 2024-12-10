@@ -1,6 +1,6 @@
 {
     "require": {
-        "mpdf/mpdf": "7.0",
+        "mpdf/mpdf": "8.1.6",
         "wobeto/php-barcode-generator": "^1.1",
         "aferrandini/phpqrcode": "^1.0",
         "phpmailer/phpmailer": "^6.1",
